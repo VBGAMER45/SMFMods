@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:PostScheduler2</id>
+	<name>Post Scheduler</name>
+	<type>modification</type>
+	<version>1.0.1</version>
+
+	<install for="1.1 - 1.1.99">
+		<redirect url="?action=postscheduler">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">PostScheduler.xml</modification>
+		<require-file name="PostScheduler.php" destination="$sourcedir" />
+		<require-file name="cronpost.php" destination="$boarddir" />
+		<require-file name="PostScheduler.template.php" destination="$themedir" />
+		<require-file name="PostScheduler.english.php" destination="$themedir/languages" />
+		<require-file name="PostScheduler.english-utf8.php" destination="$themedir/languages" />
+		<code>PostSchedulersql.php</code>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">PostScheduler.xml</modification>
+		<remove-file name="$sourcedir/PostScheduler.php" />
+		<remove-file name="$boarddir/cronpost.php" />
+		<remove-file name="$themedir/PostScheduler.template.php" />
+		<remove-file name="$themedir/languages/PostScheduler.english.php" />
+		<remove-file name="$themedir/languages/PostScheduler.english-utf8.php" />
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99">
+			<redirect url="?action=admin;area=postscheduler">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<modification type="file">PostScheduler2.xml</modification>
+			<require-file name="PostScheduler2.php" destination="$sourcedir" />
+			<require-file name="cronpost.php" destination="$boarddir" />
+			<require-file name="PostScheduler2.template.php" destination="$themedir" />
+			<require-file name="PostScheduler.english.php" destination="$themedir/languages" />
+			<require-file name="PostScheduler.english-utf8.php" destination="$themedir/languages" />
+			<database>PostSchedulersql2.php</database>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99">
+			<modification type="file" reverse="true">PostScheduler2.xml</modification>
+			<remove-file name="$sourcedir/PostScheduler2.php" />
+			<remove-file name="$boarddir/cronpost.php" />
+			<remove-file name="$themedir/PostScheduler2.template.php" />
+			<remove-file name="$themedir/languages/PostScheduler.english.php" />
+			<remove-file name="$themedir/languages/PostScheduler.english-utf8.php" />	
+	</uninstall>
+
+</package-info>

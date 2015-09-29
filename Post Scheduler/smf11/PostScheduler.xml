@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:PostScheduler</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Post Scheduler Text Strings
+$txt['postscheduler_admin'] = 'Post Scheduler';
+
+// END Post Scheduler		
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Post Scheduler Text Strings
+$txt['postscheduler_admin'] = 'Post Scheduler';
+
+// END Post Scheduler			
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[loadPermissions();]]></search>
+		<add><![CDATA[
+		// Post Scheduler run fake cron job
+		if (!empty($modSettings['post_fakecron']))
+		{
+			
+			if (empty($modSettings['post_lastcron']) || $modSettings['post_lastcron'] < time())
+			{
+				require_once($sourcedir . '/PostScheduler.php');
+				CheckPostScheduler();
+				
+			}
+			
+			
+		}
+		
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[
+		'postscheduler' => array('PostScheduler.php', 'PostSchedulerMain'),]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'postscheduler_settings' => '<a href="' . $scripturl . '?action=postscheduler;sesc=' . $sc . '">' . $txt['postscheduler_admin'] . '</a>',
+]]></add>
+	</operation>
+</file>
+</modification>

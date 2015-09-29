@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:FeedIcon</id>
+<version>1.1</version>
+
+
+<file name="$themedir/BoardIndex.template.php">
+	<operation>
+		<search position="before"><![CDATA[$board['name'], '</a>]]></search>
+		<add><![CDATA[&nbsp;<a href="' . $scripturl . '?action=.xml;board=' . $board['id'] . ';type=rss"><img src="' . $settings['images_url'] . '/rss.png" alt="rss" /></a>]]></add>
+
+	</operation>
+</file>
+<file name="$themedir/MessageIndex.template.php">
+	<operation>
+		<search position="before"><![CDATA[$board['name'], '</a>]]></search>
+		<add><![CDATA[&nbsp;<a href="' . $scripturl . '?action=.xml;board=' . $board['id'] . ';type=rss"><img src="' . $settings['images_url'] . '/rss.png" alt="rss" /></a>]]></add>
+
+	</operation>
+</file>
+
+</modification>

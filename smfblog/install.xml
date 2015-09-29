@@ -1,0 +1,435 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+    <id>Daniel15:Blog</id>
+    <version>2.0</version>
+    
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'buddy' => array('Subs-Members.php', 'BuddyListToggle'),
+]]></search>
+			<add><![CDATA[
+		// --- Begin modification - SMFBlog ---
+		'blog' => array('Blog.php', 'Blog'),
+		// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+
+	<file name="$sourcedir/Subs-BoardIndex.php">
+		<operation>
+			<search position="replace"><![CDATA[AND b.child_level >= {int:child_level}') : '
+			AND b.child_level BETWEEN ' . $boardIndexOptions['base_level'] . ' AND ' . ($boardIndexOptions['base_level'] + 1))]]></search>
+			<add><![CDATA[AND b.child_level >= {int:child_level}') : '
+			AND b.child_level BETWEEN ' . $boardIndexOptions['base_level'] . ' AND ' . ($boardIndexOptions['base_level'] + 1))
+			 . (!empty($modSettings['blog_hide_boards']) ? " 
+			AND b.is_blog = 0" : '')]]></add>
+		</operation>
+	</file>
+	
+  
+	<file name="$sourcedir/ManageBoards.php">
+
+		
+		<operation>
+			<search position="after"><![CDATA[
+		$boardOptions['posts_count'] = isset($_POST['count']);
+]]></search>
+			<add><![CDATA[
+		// --- Begin modification - SMFBlog ---
+		$boardOptions['is_blog'] = isset($_POST['is_blog']);
+		// --- End modification ---]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+			'name' => $txt['mboards_new_board_name'],
+]]></search>
+			<add><![CDATA[
+			// --- Begin modification - SMFBlog ---
+			'is_blog' => 0,
+			// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+	
+	<file name="$sourcedir/Admin.php">
+
+		
+		<operation>
+			<search position="after"><![CDATA['sig' => array($txt['signature_settings_short']),]]></search>
+			<add><![CDATA[
+		// --- Begin modification - SMFBlog ---
+		'blog' => array($txt['blog']),
+		// --- End modification ---
+		]]></add>
+		</operation>
+		
+
+	</file>
+		
+	
+	
+	<file name="$sourcedir/ManageSettings.php">
+	
+		
+		<operation>
+			<search position="after"><![CDATA['karma' => array(
+			),]]></search>
+			<add><![CDATA[
+			// --- Begin modification - SMFBlog ---
+			'blog' => array(
+				'title' => $txt['blog_settings'],
+				
+			),
+			// --- End modification ---
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[);
+
+	loadGeneralSettingParameters($subActions, 'basic');
+]]></search>
+			<add><![CDATA[
+		// --- Begin modification - SMFBlog ---
+		'blog' => 'ModifyBlogSettings',
+		// --- End modification ---
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+// --- Begin modification - SMFBlog ---
+function ModifyBlogSettings()
+{
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+
+	$config_vars = array(
+			array('check', 'blog_enable'),
+			array('check', 'blog_enable_rewrite'),
+			array('check', 'blog_hide_boards'),
+		'',
+			array('int', 'blog_posts_perpage'),
+			array('int', 'blog_comments_perpage'),			
+	);
+
+	// Saving?
+	if (isset($_GET['save']))
+	{
+		saveDBSettings($config_vars);
+
+		writeLog();
+		redirectexit('action=admin;area=featuresettings;sa=blog');
+	}
+
+	$context['post_url'] = $scripturl . '?action=admin;area=featuresettings;save;sa=blog';
+	$context['settings_title'] = $txt['blog_settings'];
+
+	prepareDBSettingContext($config_vars);
+}
+// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="after"><![CDATA[
+	if (!empty($_POST['announce_topic']))
+]]></search>
+			<add><![CDATA[
+	// --- Begin modification - SMFBlog ---
+	// Did we get here from a blog post?
+	if (!empty($_POST['blog_post']))
+		// Do we have a blog name?
+		if (!empty($_POST['blog_name']))
+			// Redirect using the blog name at the end
+			redirectexit('action=blog;sa=view_post;id=' . (int) $_POST['blog_post'] . ';blog_name=' . strtolower(preg_replace('/[^A-Za-z0-9\-_]/', '', $_POST['blog_name'])) . '#new');
+		// Otherwise, just the ID.
+		else
+			redirectexit('action=blog;sa=view_post;id=' . (int) $_POST['blog_post'] . '#new');
+	// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// This should work even in 4.2.x, just not CGI without cgi.fix_pathinfo.
+]]></search>
+			<add><![CDATA[
+	// --- Begin modification - SMFBlog ---
+	global $boardurl;
+	// Is URL rewriting enabled?
+	if (!empty($modSettings['blog_enable_rewrite']))
+	{
+		// The main blog page
+		$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?action=blog"/', '"' . $boardurl . '/blog/"', $buffer);
+		// The blog itself
+		$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?action=blog;sa=view_blog;name=([A-Za-z0-9\-_]+)"/', '"' . $boardurl . '/blog/$1/"', $buffer);
+		// A specific page in the blog
+		$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?action=blog;sa=view_blog;name=([A-Za-z0-9\-_]+);start=([0-9]+)"/', '"' . $boardurl . '/blog/$1/$2.html"', $buffer);
+		// A post in the blog (with its alias)
+		$buffer = preg_replace('/"' . preg_quote($scripturl, '/') . '\?action=blog;sa=view_post;id=([0-9]+);blog_name=([A-Za-z0-9\-_]+)"/', '"' . $boardurl . '/blog/$2/post-$1.html"', $buffer);
+	}
+	// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs-Boards.php">
+		<operation>
+			<search position="before"><![CDATA[// Should the board theme override the user preferred theme?
+	if (isset($boardOptions['override_theme']))
+	{
+		$boardUpdates[] = 'override_theme = {int:override_theme}';
+		$boardUpdateParameters['override_theme'] = $boardOptions['override_theme'] ? 1 : 0;
+	}]]></search>
+			<add><![CDATA[
+	// --- Begin modification - SMFBlog ---
+	// Is this board a blog?
+	if (isset($boardOptions['is_blog']))
+	{
+		// We'll need to set the "is_blog" value, depending on what the user chose.
+		$boardUpdates[] = 'is_blog = ' . ($boardOptions['is_blog'] ? '1' : '0');
+		// Is it actually a blog? If it is, we need to generate an "alias" for it.
+		// Only do this if a board name was passed (otherwise, what can we do?).
+		if ($boardOptions['is_blog'] && isset($boardOptions['board_name']))
+		{
+			// Remove any non-alphanumeric characters
+			$alias = strtolower(preg_replace('/[^A-Za-z0-9 ]/', '', $boardOptions['board_name']));
+			// Replace any spaces with dashes
+			$alias = str_replace(' ', '-', $alias);
+			
+			// Is this alias ambiguous (is it in use by something else?)
+			$result = $smcFunc['db_query']('', "
+				SELECT 
+					COUNT(ID_BOARD)
+				FROM {db_prefix}boards
+				WHERE blog_alias = '{$alias}'");
+			list($temp_count) = $smcFunc['db_fetch_row']($result);
+			$smcFunc['db_free_result']($result);
+			
+			// It is? Add the board ID to the end.
+			if ($temp_count > 0)
+				$alias .= '_' . $board_id;
+			
+			// Add this as an update
+			$boardUpdates[] = 'blog_alias = \'' . $alias . '\'';
+		}
+	}
+	// --- End modification ---
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+		'override_theme' => false,
+]]></search>
+			<add><![CDATA[
+		// --- Begin modification - SMFBlog ---
+		'is_blog' => false,
+		// --- End modification ---
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before">b.id_theme, b.override_theme,</search>
+			<add> b.is_blog,</add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[
+				'override_theme' => $row['override_theme'],
+]]></search>
+			<add><![CDATA[
+				// --- Begin modification - SMFBlog ---
+				'is_blog' => $row['is_blog'],
+				// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="after"><![CDATA[
+	if (!empty($modSettings['queryless_urls']) && (empty($context['server']['is_cgi']) || @ini_get('cgi.fix_pathinfo') == 1 || @get_cfg_var('cgi.fix_pathinfo') == 1) && (!empty($context['server']['is_apache']) || !empty($context['server']['is_lighttpd'])))
+]]></search>
+			<add><![CDATA[
+	// --- Begin modification - SMFBlog ---
+	global $boardurl;
+	// Is URL rewriting enabled?
+	if (!empty($modSettings['blog_enable_rewrite']))
+	{
+		// The blog itself (using a name)
+		$setLocation = preg_replace('/^' . preg_quote($scripturl, '/') . '\?action=blog;sa=view_blog;name=([A-Za-z0-9\-_]+)/', $boardurl . '/blog/$1/', $setLocation);
+		// A post in the blog (with its alias)
+		$setLocation = preg_replace('/^' . preg_quote($scripturl, '/') . '\?action=blog;sa=view_post;id=([0-9]+);blog_name=([A-Za-z0-9\-_]+)/', $boardurl . '/blog/$2/post-$1.html', $setLocation);
+		// The main blog page
+		$setLocation = preg_replace('/^' . preg_quote($scripturl, '/') . '\?action=blog$/', $boardurl . '/blog/', $setLocation);
+	}
+	// --- End modification ---
+]]></add>
+		</operation>
+	</file>
+	
+
+	
+<file name="$sourcedir/Subs.php">
+
+		<operation>
+			<search position="after"><![CDATA['mlist' => array(]]></search>
+			<add><![CDATA[			
+			// SMFBlog button
+				'blog' => array(
+					'title' => $txt['blog'],
+					'href' => $scripturl . '?action=blog',
+					'show' => true,
+					'icon' => '',
+				),
+	]]></add>
+		</operation>
+</file>
+	
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+			<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />
+]]></search>
+			<add><![CDATA[
+			<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '" />', (!empty($_POST['blog_post']) ? '
+ 			<input type="hidden" name="blog_post" value="' . $_POST['blog_post'] . '" />' : ''), (!empty($_POST['blog_name']) ? '
+			<input type="hidden" name="blog_name" value="' . htmlentities($_POST['blog_name']) . '" />' : ''), '
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/ManageBoards.template.php">
+		<operation>
+			<search position="replace"><![CDATA[if (empty($context['board']['is_recycle']) && empty($context['board']['topics']))]]></search>
+			<add><![CDATA[
+	
+			echo '
+							<dl class="settings">
+								<dt><b>', $txt['blog_board'], '</b><br />
+									', $txt['blog_board_desc'], '<br /><br />
+								</dt>
+								<dd valign="top" align="right">
+									<input type="checkbox" name="is_blog"', $context['board']['is_blog'] ? ' checked="checked"' : '', ' class="check" />
+								</dd>
+							</dl>
+	';
+	
+	if (empty($context['board']['is_recycle']) && empty($context['board']['topics']))
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+// --- Begin modification - SMFBlog ---
+// General text strings
+$txt['blog'] = 'Blog';
+// Text used in the frontend (user section).
+$txt['blog_boards'] = 'Blog boards';
+$txt['blog_blogs'] = 'Available blogs:';
+$txt['blog_comments'] = 'Comments';
+$txt['blog_no_comments'] = 'No comments have been posted for this post yet.';
+$txt['blog_write_comment'] = 'Write a Comment';
+// Errors in the frontend.
+$txt['blog_error_disabled'] = 'Sorry, but blogs are currently disabled!';
+$txt['blog_error_login'] = 'Sorry, you must be logged in to post a comment!';
+$txt['blog_error_not_exist'] = 'Sorry, but the blog you requested does not exist!';
+$txt['blog_error_not_blog'] = 'Sorry, but this board is not a blog!';
+
+// Settings for the blog administration.
+$txt['blog_comments_perpage'] = 'Number of comments to display per page';
+$txt['blog_posts_perpage'] = 'Number of blog posts to display per page'; // NEW!
+$txt['blog_enable'] = 'Enable blog?';
+$txt['blog_enable_rewrite'] = 'Enable pretty URLs?';
+$txt['blog_hide_boards'] = 'Hide blog boards?';
+$txt['blog_settings'] = 'Blog Settings';
+// Board administration.
+$txt['blog_board'] = 'Use this board as a blog?';
+$txt['blog_board_desc'] = 'Enabling this option will show this board on the blog page.';
+// --- End modification ---
+
+// --- Begin modification - SSI Topic and Replies ---
+$txt['ssiTopic_no_id'] = 'ssi_topic(): Please specify a topic ID';
+$txt['ssiTopic_notfound'] = 'The topic you are looking for appears to be either missing or off limits to you.';
+$txt['ssiTopic_replies'] = 'Replies';
+$txt['ssiTopic_reply'] = 'Reply ';
+// --- End modification ---
+
+// Template
+$txt['smfblog_by'] = 'by';
+$txt['smfblog_subject'] = 'Subject';
+$txt['smfblog_re'] = 'Re: ';
+$txt['smfblog_shortcuts'] = 'shortcuts: hit alt+s to submit/post or alt+p to preview';
+$txt['smfblog_save'] = 'Save';
+$txt['smfblog_preview'] = 'Preview';
+// END SMF Blog
+]]></add>
+		</operation>
+	</file>
+
+
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+// --- Begin modification - SMFBlog ---
+// General text strings
+$txt['blog'] = 'Blog';
+// Text used in the frontend (user section).
+$txt['blog_boards'] = 'Blog boards';
+$txt['blog_blogs'] = 'Available blogs:';
+$txt['blog_comments'] = 'Comments';
+$txt['blog_no_comments'] = 'No comments have been posted for this post yet.';
+$txt['blog_write_comment'] = 'Write a Comment';
+// Errors in the frontend.
+$txt['blog_error_disabled'] = 'Sorry, but blogs are currently disabled!';
+$txt['blog_error_login'] = 'Sorry, you must be logged in to post a comment!';
+$txt['blog_error_not_exist'] = 'Sorry, but the blog you requested does not exist!';
+$txt['blog_error_not_blog'] = 'Sorry, but this board is not a blog!';
+
+// Settings for the blog administration.
+$txt['blog_comments_perpage'] = 'Number of comments to display per page';
+$txt['blog_posts_perpage'] = 'Number of blog posts to display per page'; // NEW!
+$txt['blog_enable'] = 'Enable blog?';
+$txt['blog_enable_rewrite'] = 'Enable pretty URLs?';
+$txt['blog_hide_boards'] = 'Hide blog boards?';
+$txt['blog_settings'] = 'Blog Settings';
+// Board administration.
+$txt['blog_board'] = 'Use this board as a blog?';
+$txt['blog_board_desc'] = 'Enabling this option will show this board on the blog page.';
+// --- End modification ---
+
+// --- Begin modification - SSI Topic and Replies ---
+$txt['ssiTopic_no_id'] = 'ssi_topic(): Please specify a topic ID';
+$txt['ssiTopic_notfound'] = 'The topic you are looking for appears to be either missing or off limits to you.';
+$txt['ssiTopic_replies'] = 'Replies';
+$txt['ssiTopic_reply'] = 'Reply ';
+// --- End modification ---
+
+// Template
+$txt['smfblog_by'] = 'by';
+$txt['smfblog_subject'] = 'Subject';
+$txt['smfblog_re'] = 'Re: ';
+$txt['smfblog_shortcuts'] = 'shortcuts: hit alt+s to submit/post or alt+p to preview';
+$txt['smfblog_save'] = 'Save';
+$txt['smfblog_preview'] = 'Preview';
+// END SMF Blog
+]]></add>
+		</operation>
+	</file>
+	
+</modification>

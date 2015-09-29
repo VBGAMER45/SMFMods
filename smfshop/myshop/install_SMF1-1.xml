@@ -1,0 +1,520 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+    <id>daniel15:SMFShop</id>
+    <version>3.0</version>
+
+    <file name="$boarddir/index.php">
+        <operation>
+            <search position="before"><![CDATA[
+		'.xml' => array('News.php', 'ShowXmlFeed'),
+]]></search>
+            <add><![CDATA[
+		// Begin SMFShop code
+		'shop' => array('shop/Shop.php', 'Shop'),
+		'shop_general' => array('shop/ShopAdmin.php', 'ShopGeneral'),
+		'shop_inventory' => array('shop/ShopAdmin.php', 'ShopInventory'),
+		'shop_items_add' => array('shop/ShopAdmin.php', 'ShopItemsAdd'),
+		'shop_items_edit' => array('shop/ShopAdmin.php', 'ShopItemsEdit'),
+		'shop_restock' => array('shop/ShopAdmin.php', 'ShopRestock'),
+		'shop_usergroup' => array('shop/ShopAdmin.php', 'ShopUserGroup'),	
+		'shop_cat' => array('shop/ShopAdmin.php', 'ShopCategories'),
+		// End SMFShop code
+]]></add>
+        </operation>
+    </file>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA[IFNULL(pg.groupName, '') AS post_group, mem.is_activated,]]></search>
+			<add><![CDATA[ mem.money,]]></add>
+		</operation>
+		<operation>
+			<search position="before">IF(mem.ID_GROUP = 0 OR mg.stars = '', pg.stars, mg.stars) AS stars, </search>
+			<add>mem.money, </add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+		'is_guest' => false,
+]]></search>
+			<add><![CDATA[
+		// Begin SMFShop MOD Version New Version 
+		'money' => $profile['money'],
+		// End SMFShop MOD
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+		'total_time_logged_in' => empty($user_settings['totalTimeLoggedIn']) ? 0 : $user_settings['totalTimeLoggedIn'],]]></search>
+			<add><![CDATA[
+		// Begin SMFShop MOD Version New Version
+		'money' => isset($user_settings['money']) ? $user_settings['money'] : '',
+		'moneyBank' => isset($user_settings['moneyBank']) ? $user_settings['moneyBank'] : '',
+		// End SMFShop MOD
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+		'language' => &$user_info['language'],]]></search>
+			<add><![CDATA[
+		// Begin SMFShop MOD New Version
+		'money' => &$user_info['money'],
+		'moneyBank' => &$user_info['moneyBank'],
+		// End SMFShop MOD New Version
+]]></add>
+		</operation>
+	</file>
+    <file name="$sourcedir/ManageBoards.php">
+        <operation>
+            <search position="before"><![CDATA[
+			'override_theme' => 0,
+]]></search>
+           <add><![CDATA[
+			// Begin SMFShop code
+			'countMoney' => 1,
+			'shop_pertopic' => 0,
+			'shop_perpost' => 0,
+			'shop_bonuses' => 1,
+			// End SMFShop code
+]]></add>
+        </operation>
+		<operation>
+			<search position="after"><![CDATA[
+		// Checkboxes....
+]]></search>
+			<add><![CDATA[
+		// Begin SMFShop code
+		// Are we counting credits in this board?
+		// TODO: Rename this? It's kept as countMoney for backwards compatibility...
+		$boardOptions['countMoney'] = isset($_POST['countMoney']);
+		// How many credits do we get per post/topic?
+		$boardOptions['shop_pertopic'] = !empty($_POST['shop_pertopic']) ? (float) $_POST['shop_pertopic'] : 0;
+		$boardOptions['shop_perpost'] = !empty($_POST['shop_perpost']) ? (float) $_POST['shop_perpost'] : 0;
+		// Bonuses in this board?
+		$boardOptions['shop_bonuses'] = isset($_POST['shop_bonuses']);
+		// End SMFShop code
+]]></add>
+        </operation>
+	</file>
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'profile_remote_avatar',
+		'profile_remove_own',
+]]></search>
+			<add><![CDATA[
+		// Begin SMFShop code
+		'shop_main',
+		'shop_buy',
+		'shop_invother',
+		'shop_sendmoney',
+		'shop_senditems',
+		'shop_bank',
+		// End SMFShop code			
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA['pm' => array(]]></search>
+			<add><![CDATA[
+			// Begin SMFShop code
+			'shop' => array(
+				'shop_main' => false,
+				'shop_buy' => false,
+				'shop_invother' => false,
+				'shop_sendmoney' => false,
+				'shop_senditems' => false,
+				'shop_bank' => false,
+				'shop_trade' => false,
+			),
+			// End SMFShop code
+]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Post.php">
+        <operation>
+            <search position="before"><![CDATA[
+		createPost($msgOptions, $topicOptions, $posterOptions);
+
+]]></search>
+            <add><![CDATA[
+		// Begin SMFShop code
+		// Get some information on this board
+		$result_shop = db_query("
+			SELECT countMoney, shop_pertopic, shop_perpost, shop_bonuses
+			FROM {$db_prefix}boards
+			WHERE ID_BOARD = $board
+			LIMIT 1", __FILE__, __LINE__);
+		$boardInfo = mysql_fetch_assoc($result_shop);
+		
+		// If we do give credits...
+		if (!empty($boardInfo['countMoney']))
+		{
+			// New topic?
+			if ($newTopic)
+				$points = ($boardInfo['shop_pertopic'] != 0) ? $boardInfo['shop_pertopic'] : $modSettings['shopPointsPerTopic'];
+			else
+				$points = ($boardInfo['shop_perpost'] != 0) ? $boardInfo['shop_perpost'] : $modSettings['shopPointsPerPost'];
+
+		
+			// Are bonuses allowed in this board?
+			if (!empty($boardInfo['shop_bonuses']))
+			{
+				// Strip out all BBCode
+				$plaintext = preg_replace('[\[(.*?)\]]', ' ', $_POST['message']);
+				// Convert all newlines into spaces
+				$plaintext = str_replace(array('<br />', "\r", "\n"), ' ', $plaintext);
+				// Convert multiple successive spaces into a single space
+				$plaintext = preg_replace('/\s+/', ' ', $plaintext);
+			
+				// The bonus for each word...
+				$points += ($modSettings['shopPointsPerWord'] * str_word_count($plaintext));
+				// ...and bonus for each letter
+				$points += ($modSettings['shopPointsPerChar'] * strlen($plaintext));
+			
+				// Is there a limit set, and are we over it?
+				if (isset($modSettings['shopPointsLimit']) && $modSettings['shopPointsLimit'] != 0 && $points > $modSettings['shopPointsLimit'])
+					// If so, set the number of points to the limit
+					$points = $modSettings['shopPointsLimit'];
+			}
+			
+			// Give the user their points
+			$result_shop = db_query("
+				UPDATE {$db_prefix}members
+				 SET money = money + {$points}
+				 WHERE ID_MEMBER = {$ID_MEMBER}
+				 LIMIT 1", __FILE__, __LINE__);
+			cache_put_data('user_settings-' . $ID_MEMBER, null, 60);
+		}
+		// End SMFShop code
+]]></add>
+        </operation>
+	</file>
+	<file name="$sourcedir/RemoveTopic.php">
+		<operation>
+			<search position="replace"><![CDATA[
+			while ($rowMembers = mysql_fetch_assoc($requestMembers))
+				updateMemberData($rowMembers['ID_MEMBER'], array('posts' => 'posts - ' . $rowMembers['posts']));
+]]></search>
+			<add><![CDATA[
+//BEGIN SMFShop (Removes Topic Credits)
+			while ($rowMembers = mysql_fetch_assoc($requestMembers)) {
+				updateMemberData($rowMembers['ID_MEMBER'], array('posts' => 'posts - ' . $rowMembers['posts']));
+			
+			global $board;
+			$result_shop = db_query("
+						SELECT shop_pertopic, shop_perpost, countMoney
+						FROM {$db_prefix}boards
+						WHERE ID_BOARD = $board
+						LIMIT 1", __FILE__, __LINE__);
+					$boardInfo = mysql_fetch_assoc($result_shop);
+				
+			if($boardInfo['shop_pertopic'] != 0)
+				$shop = $boardInfo['shop_pertopic'];
+			else
+				$shop = $modSettings['shopPointsPerTopic'];
+			
+			if(!empty($boardInfo['countMoney']))
+				{
+				db_query("UPDATE {$db_prefix}members
+					  SET money = money - {$shop}
+					  WHERE ID_MEMBER = {$rowMembers['ID_MEMBER']}
+					  LIMIT 1", __FILE__, __LINE__);
+				}
+			}
+			//END SMFShop 2.0 code
+			
+	
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+	if (!empty($row['ID_MEMBER']) && $decreasePostCount && empty($row['countPosts']))
+		updateMemberData($row['ID_MEMBER'], array('posts' => '-'));
+]]></search>
+			<add><![CDATA[
+//BEGIN SMFShop (Removes Post Credits)
+		global $board;
+		$result_shop = db_query("
+						SELECT shop_pertopic, shop_perpost, countMoney
+						FROM {$db_prefix}boards
+						WHERE ID_BOARD = $board
+						LIMIT 1", __FILE__, __LINE__);
+					$boardInfo = mysql_fetch_assoc($result_shop);
+				
+			if($boardInfo['shop_perpost'] != 0)
+				$shop = $boardInfo['shop_perpost'];
+			else
+				$shop = $modSettings['shopPointsPerPost'];
+		
+		if(!empty($boardInfo['countMoney']))
+			{
+			db_query("UPDATE {$db_prefix}members
+				  SET money = money - {$shop}
+				  WHERE ID_MEMBER = {$row['ID_MEMBER']}
+				  LIMIT 1", __FILE__, __LINE__);
+			}
+		//END SMFShop New Version code
+]]></add>
+		</operation>
+	</file>
+    <file name="$sourcedir/Subs.php">
+        <operation>
+            <search position="after"><![CDATA[
+	validateSession();
+]]></search>
+            <add><![CDATA[
+	// Begin SMFShop code
+	loadLanguage('Shop');
+        if (allowedTo('shop_admin'))
+		    $context['admin_areas']['shop'] = array (
+			    'title' => $txt['shop_admin'],
+			    'areas' => array(
+	 			    'shop_general' => '<a href="' . $scripturl . '?action=shop_general">' . $txt['shop_admin_general'] . '</a>',
+					'shop_items_edit' => '<a href="' . $scripturl . '?action=shop_items_edit">' . $txt['shop_admin_items_addedit'] . '</a>',
+					'shop_cat' => '<a href="' . $scripturl . '?action=shop_cat">' . $txt['shop_admin_cat'] . '</a>',
+				    'shop_inventory' => '<a href="' . $scripturl . '?action=shop_inventory">' . $txt['shop_admin_inventory'] . '</a>',
+					'shop_restock' => '<a href="' . $scripturl . '?action=shop_restock">' . $txt['shop_admin_restock'] . '</a>',
+					'shop_usergroup' => '<a href="' . $scripturl . '?action=shop_usergroup">' . $txt['shop_admin_usergroup'] . '</a>',
+			    ) 
+		    );
+	// End SMFShop code
+]]></add>
+        </operation>
+    </file>
+	<file name="$sourcedir/Subs-Boards.php">
+		<operation>
+			<search position="before"><![CDATA[
+	// Should the board theme override the user preferred theme?
+	if (isset($boardOptions['override_theme']))
+		$boardUpdates[] = 'override_theme = ' . ($boardOptions['override_theme'] ? '1' : '0');
+
+]]></search>
+			<add><![CDATA[
+	// Begin SMFShop code
+	// Should posts in this board give gredits?
+	if (isset($boardOptions['countMoney']))
+		$boardUpdates[] = 'countMoney = ' . ($boardOptions['countMoney'] ? '1' : '0');
+	// Custom credits per post/topic
+	if (isset($boardOptions['shop_pertopic']))
+		$boardUpdates[] = 'shop_pertopic = ' . (int) $boardOptions['shop_pertopic'];
+	if (isset($boardOptions['shop_perpost']))
+		$boardUpdates[] = 'shop_perpost = ' . (int) $boardOptions['shop_perpost'];
+
+	// Any bonuses here?
+	if (isset($boardOptions['shop_bonuses']))
+		$boardUpdates[] = 'shop_bonuses = ' . ($boardOptions['shop_bonuses'] ? '1' : '0');
+	// End SMFShop code
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+		'override_theme' => false,]]></search>
+			<add><![CDATA[
+		// Begin SMFShop code
+		'countMoney' => 1,
+		'shop_pertopic' => 0,
+		'shop_perpost' => 0,
+		'shop_bonuses' => 1,
+		// End SMFShop code
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[c.canCollapse]]></search>
+			<add><![CDATA[,
+			b.countMoney, b.shop_pertopic, b.shop_perpost, b.shop_bonuses]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+				'override_theme' => $row['override_theme'],]]></search>
+			<add><![CDATA[
+				// Begin SMFShop code
+				'countMoney' => $row['countMoney'],
+				'shop_pertopic' => $row['shop_pertopic'],
+				'shop_perpost' => $row['shop_perpost'],
+				'shop_bonuses' => $row['shop_bonuses'],
+				// End SMFShop code
+]]></add>
+		</operation>
+    </file>
+	<file name="$sourcedir/Subs-Members.php">
+		<operation>
+			<search position="before"><![CDATA['ID_POST_GROUP' => 4,
+]]></search>
+			<add><![CDATA[
+		// Begin SMFShop 2.3 (Build 11) code
+		'money' => $modSettings['shopRegAmount'],
+		// End SMFShop code		
+]]></add>
+		</operation>
+	</file>
+    <file name="$themedir/Display.template.php">
+        <operation>
+            <search position="replace"><![CDATA[
+			// Show how many posts they have made.
+			echo '
+								', $txt[26], ': ', $message['member']['posts'], '<br />
+								<br />';
+]]></search>
+           <add><![CDATA[
+			// Show how many posts they have made.
+//			echo '
+//								', $txt[26], ': ', $message['member']['posts'], '<br />
+//								<br />';
+
+            // BEGIN SMFShop MOD New Version Code
+			// Removed one <br /> from end of post count line.
+			echo '
+								', $txt[26], ': ', $message['member']['posts'], '<br /> 
+								';
+								
+			echo '
+								', $modSettings['shopCurrencyPrefix'], $message['member']['money'], $modSettings['shopCurrencySuffix'], '<br /><br />
+								<a href="', $scripturl, '?action=shop;do=invother2;member=', $message['member']['username'], '">View Inventory</a><br />
+								<a href="', $scripturl, '?action=shop;do=sendmoney;member=', $message['member']['username'], '">Send Money to ', $message['member']['name'], '</a><br />';
+			//END SMFShop code
+]]></add>
+        </operation>
+    </file>
+    <file name="$themedir/index.template.php">
+        <operation>
+            <search position="before"><![CDATA[
+	if ($context['current_action'] == 'theme')
+		$current_action = isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'pick' ? 'profile' : 'admin';
+]]></search>
+            <add><![CDATA[
+	// Begin SMFShop code
+	if ($context['current_action'] == 'shop')
+		$current_action = 'shop';
+	if (in_array($context['current_action'], array('shop_general', 'shop_items_add', 'shop_items_edit', 'shop_cat', 'shop_inventory', 'shop_restock', 'shop_usergroup')))
+		$current_action = 'admin';
+	// End SMFShop code
+]]></add>
+        </operation>
+		<operation>
+			<search position="before"><![CDATA[
+					<a href="', $scripturl, '?action=calendar">' , $txt['calendar24'] , '</a>
+				</td>' , $current_action == 'calendar' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+]]></search>
+			<add><![CDATA[
+	//Begin SMFShop code
+	//loadLanguage("shop");
+	echo ($current_action == 'shop' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+			<td valign="top" class="maintab_' , $current_action == 'shop' ? 'active_back' : 'back' , '">
+				<a href="', $scripturl, '?action=shop">Shop</a>
+			</td>' , $current_action == 'shop' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+	//END SMFShop code
+]]></add>
+		</operation>
+    </file>
+	<file name="$themedir/ManageBoards.template.php">
+		<operation>
+			<search position="before"><![CDATA[<input type="checkbox" name="override_theme"', $context['board']['override_theme'] ? ' checked="checked"' : '', ' class="check" />
+								</td>
+							</tr>';]]></search>
+			<add><![CDATA[
+	// Begin SMFShop code
+	loadLanguage('Shop');
+	echo '
+							<tr>
+								<td>
+									<b>', $txt['shop_count_points'], '</b><br />
+									', $txt['shop_count_points_msg'], '<br /><br />
+								</td>
+								<td valign="top" align="right">
+									<input type="checkbox" name="countMoney"', $context['board']['countMoney'] ? ' checked="checked"' : '', ' class="check" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<b>', $txt['shop_credits'], '</b><br />
+									', $txt['shop_credits_msg'], '<br /><br />
+								</td>
+								<td valign="top" align="right">
+									', $txt['shop_per_new_topic'], ': ', $modSettings['shopCurrencyPrefix'], '<input type="text" name="shop_pertopic" value="', $context['board']['shop_pertopic'], '" size="5" />', $modSettings['shopCurrencySuffix'], '<br />
+									', $txt['shop_per_new_post'], ': ', $modSettings['shopCurrencyPrefix'], '<input type="text" name="shop_perpost" value="', $context['board']['shop_perpost'], '" size="5" />', $modSettings['shopCurrencySuffix'], '
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<b>', $txt['shop_bonuses_enabled'], '</b><br />
+									', $txt['shop_bonuses_enabled_msg'], '<br /><br />
+								</td>
+								<td valign="top" align="right">
+									<input type="checkbox" name="shop_bonuses"', $context['board']['shop_bonuses'] ? ' checked="checked"' : '', ' class="check" />
+								</td>
+							</tr>';
+	// End SMFShop code		
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+				<tr>
+					<td><b>', $txt[86], ': </b></td>
+					<td>', $context['member']['posts'], ' (', $context['member']['posts_per_day'], ' ', $txt['posts_per_day'], ')</td>]]></search>
+			<add><![CDATA[
+				<!-- Begin SMFShop MOD New version -->
+				</tr><tr>
+					<td><b>Credits:</b></td>
+					<td>', $modSettings['shopCurrencyPrefix'], $context['member']['money'], $modSettings['shopCurrencySuffix'], '</td>
+				<!-- End SMFShop MOD -->			
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Errors.english.php">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+// Begin SMFShop code
+$txt['cannot_shop_main'] = 'You are not allowed to access the Shop!';
+$txt['cannot_shop_buy'] = 'You are not allowed to buy items from the shop.';
+$txt['cannot_shop_invother'] = 'You are not allowed to view the inventory of another member.';
+$txt['cannot_shop_sendmoney'] = 'You are not allowed to send money to another member.';
+$txt['cannot_shop_senditems'] = 'You are not allowed to send items to another member.';
+$txt['cannot_shop_bank'] = 'You are not allowed to access the bank.';
+$txt['cannot_shop_trade'] = 'You are not allowed to access the shop\'s Trade Centre.';
+// End SMFShop code
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/ManagePermissions.english.php">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+// Begin SMFShop code
+$txt['permissiongroup_shop'] = 'SMFShop';
+
+$txt['permissionname_shop_main'] = 'Allow access to SMFShop';
+$txt['permissionname_shop_buy'] = 'Buy Items';
+$txt['permissionname_shop_invother'] = 'View Other Members\' Inventory';
+$txt['permissionname_shop_sendmoney'] = 'Send Money to Someone';
+$txt['permissionname_shop_senditems'] = 'Send an Item to Someone';
+$txt['permissionname_shop_bank'] = 'Bank';
+$txt['permissionname_shop_trade'] = 'Trade Centre';
+
+$txt['permissionhelp_shop_main'] = 'If this option is unticked, the user will not be able to use the shop at all. If you want to disable access to only a particular section of the shop, use the permissions below this one.';
+// End SMFShop code
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Who.english.php">
+		<operation>
+			<search position="before"><![CDATA[
+$txt['who_poll'] = 'Posting a new poll in <a href="' . $scripturl . '?board=%d.0">%s</a>.';]]></search>
+			<add><![CDATA[
+//Begin SMFShop MOD 2.2 (Build 10)
+$txt['whoall_shop'] = 'Viewing the forum <a href="'.$scripturl.'?action=shop">Shop</a>.';
+//End SMFShop MOD
+]]></add>
+		</operation>
+	</file>	
+</modification>
+
+<!-- $Id: install_SMF1-1.xml 89 2007-01-19 08:05:03Z daniel15 $ -->

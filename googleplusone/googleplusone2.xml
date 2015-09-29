@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:GooglePlusOne</id>
+<version>1.0</version>
+
+
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="after"><![CDATA[// Maybe they want to report this post to the moderator(s)?]]></search>
+		<add><![CDATA[
+		// Start Google +1 Mod smfhacks.com
+		if ($message['id'] == $context['topic_first_message'] )
+		{
+			echo '<g:plusone href="' . $scripturl . '?topic=' . $context['current_topic'] . '" size="small"></g:plusone>
+			<script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script>';
+		}
+		// End Google Plus +1 Mod smfhacks.com
+		]]></add>
+
+	</operation>
+</file>
+
+
+</modification>

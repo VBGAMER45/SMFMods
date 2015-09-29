@@ -1,0 +1,4 @@
+Thank you for using [b]Pretty URLs[/b]!
+
+If you don't intend to reinstall this mod, you should consider using the Reverter package, which will redirect your pretty URLs back to the normal SMF URLs. This should be considered essential if your forum has been indexed by search engines, or if your pages have been linked to from other websites. You can download the Reverter package from the [url=http://code.google.com/p/prettyurls]Pretty URLs project home page[/url].
+[b]Note:[/b] to install the Reverter package do not remove the database settings, tables and .htaccess file.

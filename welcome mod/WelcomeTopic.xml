@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:WelcomeTopic</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Welcome Topic Text Strings
+$txt['welcome_admin'] = 'Welcome Configuration';
+// End Welcome Topic Mod Text Strings
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Welcome Topic Text Strings
+$txt['welcome_admin'] = 'Welcome Configuration';
+// End Welcome Topic Mod Text Strings
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[
+		'welcome' => array('WelcomeTopic.php', 'WelcomeTopic'),]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'welcome_settings' => '<a href="' . $scripturl . '?action=welcome;sesc=' . $sc . '">' . $txt['welcome_admin'] . '</a>',
+]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Register.php">
+	<operation>
+		<search position="before"><![CDATA[// Let the integration know that they've been activated!
+	if (isset($modSettings['integrate_activate']) && function_exists($modSettings['integrate_activate']))
+		call_user_func($modSettings['integrate_activate'], $row['memberName']);
+]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	require_once($sourcedir . '/Subs-Post.php');
+	if ($modSettings['welcome_boardid'] != 0)
+	{
+		global $db_prefix;
+		
+		$result = db_query("SELECT welcomesubject, welcomebody FROM {$db_prefix}welcome 
+		 ORDER BY RAND() LIMIT 1", __FILE__, __LINE__);
+		if (mysql_num_rows($result) != 0)
+		{
+			$row2 =  mysql_fetch_assoc($result);
+
+
+						$msgOptions = array(
+									'id' => 0,
+									'subject' => str_replace("{username}",$row['memberName'],$row2['welcomesubject']),
+									'body' => str_replace("{username}",$row['memberName'],$row2['welcomebody']),
+									'icon' => 'xx',
+									'smileys_enabled' => 1,
+									'attachments' => array(),
+								);
+								$topicOptions = array(
+									'id' => 0,
+									'board' => $modSettings['welcome_boardid'],
+									'poll' => null,
+									'lock_mode' => null,
+									'sticky_mode' => null,
+									'mark_as_read' => false,
+								);
+								$posterOptions = array(
+									'id' => $modSettings['welcome_memberid'],
+									'name' => $modSettings['welcome_membername'],
+									'email' => '',
+									'update_post_count' => (($modSettings['welcome_memberid'] == 0) ? 0 : 1),
+								);
+
+			createPost($msgOptions, $topicOptions, $posterOptions);
+		}
+
+		mysql_free_result($result);
+								
+								
+	}
+	// End Welcome Topic Mod]]></add>
+	</operation>
+<operation>
+		<search position="before"><![CDATA[setLoginCookie(60 * $modSettings['cookieTime'], $memberID, sha1(sha1(strtolower($regOptions['username']) . $regOptions['password']) . substr($regOptions['register_vars']['passwordSalt'], 1, -1)));]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	require_once($sourcedir . '/Subs-Post.php');
+	if ($modSettings['welcome_boardid'] != 0)
+	{
+		global $db_prefix;
+		
+		$result = db_query("SELECT welcomesubject, welcomebody FROM {$db_prefix}welcome 
+		 ORDER BY RAND() LIMIT 1", __FILE__, __LINE__);
+		if (mysql_num_rows($result) != 0)
+		{
+			$row2 =  mysql_fetch_assoc($result);
+
+
+						$msgOptions = array(
+									'id' => 0,
+									'subject' => str_replace("{username}",$regOptions['username'],$row2['welcomesubject']),
+									'body' => str_replace("{username}",$regOptions['username'],$row2['welcomebody']),
+									'icon' => 'xx',
+									'smileys_enabled' => 1,
+									'attachments' => array(),
+								);
+								$topicOptions = array(
+									'id' => 0,
+									'board' => $modSettings['welcome_boardid'],
+									'poll' => null,
+									'lock_mode' => null,
+									'sticky_mode' => null,
+									'mark_as_read' => false,
+								);
+								$posterOptions = array(
+									'id' => $modSettings['welcome_memberid'],
+									'name' => $modSettings['welcome_membername'],
+									'email' => '',
+									'update_post_count' => (($modSettings['welcome_memberid'] == 0) ? 0 : 1),
+								);
+
+			createPost($msgOptions, $topicOptions, $posterOptions);
+		}
+
+		mysql_free_result($result);
+								
+								
+	}
+	// End Welcome Topic Mod]]></add>
+	</operation>
+</file>	
+<file name="$sourcedir/ManageMembers.php">
+<operation>
+		<search position="before"><![CDATA[// Do we have to let the integration code know about the activations?
+		if (isset($modSettings['integrate_activate']) && function_exists($modSettings['integrate_activate']))
+		{
+			foreach ($member_info as $member)
+				call_user_func($modSettings['integrate_activate'], $member['username']);
+		}]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	require_once($sourcedir . '/Subs-Post.php');
+	if ($modSettings['welcome_boardid'] != 0)
+	{
+		global $db_prefix;
+		
+		$result = db_query("SELECT welcomesubject, welcomebody FROM {$db_prefix}welcome 
+		 ORDER BY RAND() LIMIT 1", __FILE__, __LINE__);
+		if (mysql_num_rows($result) != 0)
+		{
+			$row2 =  mysql_fetch_assoc($result);
+
+			foreach ($member_info as $member)
+			{
+						$msgOptions = array(
+									'id' => 0,
+									'subject' => str_replace("{username}",$member['username'],$row2['welcomesubject']),
+									'body' => str_replace("{username}",$member['username'],$row2['welcomebody']),
+									'icon' => 'xx',
+									'smileys_enabled' => 1,
+									'attachments' => array(),
+								);
+								$topicOptions = array(
+									'id' => 0,
+									'board' => $modSettings['welcome_boardid'],
+									'poll' => null,
+									'lock_mode' => null,
+									'sticky_mode' => null,
+									'mark_as_read' => false,
+								);
+								$posterOptions = array(
+									'id' => $modSettings['welcome_memberid'],
+									'name' => $modSettings['welcome_membername'],
+									'email' => '',
+									'update_post_count' => (($modSettings['welcome_memberid'] == 0) ? 0 : 1),
+								);
+
+				createPost($msgOptions, $topicOptions, $posterOptions);
+			}
+		}
+
+		mysql_free_result($result);
+								
+								
+	}
+	// End Welcome Topic Mod]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile.php">
+	<operation>
+		<search position="before"><![CDATA[// Actually update this member now, as it guarantees the unapproved count can't get corrupted.
+			updateMemberData($memID, array('is_activated' => $old_profile['is_activated'] >= 10 ? '11' : '1', 'validation_code' => '\'\''));
+]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	
+
+
+	require_once($sourcedir . '/Subs-Post.php');
+	if ($modSettings['welcome_boardid'] != 0)
+	{
+		$result = db_query("SELECT realName FROM {$db_prefix}members 
+			 WHERE ID_MEMBER = $memID LIMIT 1", __FILE__, __LINE__);
+		$memRow = mysql_fetch_assoc($result);
+		mysql_free_result($result);
+		
+	
+		global $db_prefix;
+		
+		$result = db_query("SELECT welcomesubject, welcomebody FROM {$db_prefix}welcome 
+		 ORDER BY RAND() LIMIT 1", __FILE__, __LINE__);
+		if (mysql_num_rows($result) != 0)
+		{
+			$row2 =  mysql_fetch_assoc($result);
+
+
+						$msgOptions = array(
+									'id' => 0,
+									'subject' => str_replace("{username}",$memRow['realName'],$row2['welcomesubject']),
+									'body' => str_replace("{username}",$memRow['realName'],$row2['welcomebody']),
+									'icon' => 'xx',
+									'smileys_enabled' => 1,
+									'attachments' => array(),
+								);
+								$topicOptions = array(
+									'id' => 0,
+									'board' => $modSettings['welcome_boardid'],
+									'poll' => null,
+									'lock_mode' => null,
+									'sticky_mode' => null,
+									'mark_as_read' => false,
+								);
+								$posterOptions = array(
+									'id' => $modSettings['welcome_memberid'],
+									'name' => $modSettings['welcome_membername'],
+									'email' => '',
+									'update_post_count' => (($modSettings['welcome_memberid'] == 0) ? 0 : 1),
+								);
+
+			createPost($msgOptions, $topicOptions, $posterOptions);
+		}
+
+		mysql_free_result($result);
+								
+								
+	}
+	// End Welcome Topic Mod]]></add>
+	</operation>
+</file>
+</modification>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>SA Twitter</name>
+	<id>wdm2005:Twitter</id>
+	<type>modification</type>
+	<version>1.2</version>  
+	
+	<install for="2.0 - 2.99.99">
+	<code>install.php</code>
+	<redirect url="?action=admin;area=twitter">redirect.txt</redirect>
+	<require-dir name="Twitter" destination="$sourcedir" />
+	<require-file name="Twitter.template.php" destination="$themedir" />
+	<require-file name="TwitterAdmin.template.php" destination="$themedir" />
+	<require-dir name="twitterauth" destination="$boarddir" />
+	<require-file name="Twitter.english.php" destination="$languagedir" />
+	<require-file name="Twitter.english-utf8.php" destination="$languagedir" />
+	<require-file name="twitter.png" destination="$imagesdir" />
+    </install>
+	
+	<uninstall for="2.0 - 2.99.99">
+	<code>remove_hooks.php</code>
+	<remove-dir name="$boarddir/twitterauth" />
+	<remove-dir name="$sourcedir/Twitter" />
+	<remove-file name="$themedir/Twitter.template.php" />
+	<remove-file name="$themedir/TwitterAdmin.template.php" />
+	<remove-file name="$languagedir/Twitter.english.php" />
+	<remove-file name="$languagedir/Twitter.english-utf8.php" />
+	<code>UnInstall.php</code>
+	</uninstall>
+</package-info>
+

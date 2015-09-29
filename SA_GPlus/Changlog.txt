@@ -1,0 +1,4 @@
+changed to oauth2 authentication
+mod now works with standard google accounts aswell as plus accounts
+added support for auto register
+fixed approval promt now it only show on first authorisation

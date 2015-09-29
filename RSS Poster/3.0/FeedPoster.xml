@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:FeedPoster</id>
+<version>1.1</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin RSS FeedPoster Text Strings
+$txt['smfrssposter_admin'] = 'Feed Poster Configuration';
+
+// END  RSS FeedPoster		
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[loadPermissions();]]></search>
+		<add><![CDATA[
+		// RSS Feed Poster run fake cron job
+		if (!empty($modSettings['rss_fakecron']))
+		{
+			
+			if (empty($modSettings['rss_lastcron']) || $modSettings['rss_lastcron'] + (1 * 60) > time())
+			{
+				require_once($sourcedir . '/Subs-RSS.php');
+				UpdateRSSFeedBots();
+				updateSettings(array('rss_lastcron' => time()));
+			}
+			
+			
+		}
+		
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[
+		'feedsadmin' => array('FeedPoster.php', 'FeedsMain'),]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'feeds_settings' => '<a href="' . $scripturl . '?action=feedsadmin;sesc=' . $sc . '">' . $txt['smfrssposter_admin'] . '</a>',
+]]></add>
+	</operation>
+</file>
+</modification>

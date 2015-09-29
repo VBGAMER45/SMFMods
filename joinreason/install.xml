@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>runic:join_reason</id>
+	<version>1.4</version>
+	<name>Join Reason</name>
+	<type>modification</type>
+
+	<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="before"><![CDATA[<dt><strong><label for="smf_autov_pwverify">', $txt['verify_pass'], ':</label></strong></dt>
+						<dd>
+							<input type="password" name="passwrd2" id="smf_autov_pwverify" size="30" tabindex="', $context['tabindex']++, '" class="input_password" />
+							<span id="smf_autov_pwverify_div" style="display: none;">
+								<img id="smf_autov_pwverify_img" src="', $settings['images_url'], '/icons/field_valid.gif" alt="*" />
+							</span>
+						</dd>]]></search>
+			<add><![CDATA[<dt><strong><label for="smf_join_reason">', $txt['join_reason'], ':</label></strong></dt>
+						<dd>
+							<input type="text" name="join_reason" id="smf_join_reason" size="30" tabindex="', $context['tabindex']++, '" />
+						</dd>]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="before"><![CDATA[// You can't register if it's disabled.
+	if (!empty($modSettings['registration_method']) && $modSettings['registration_method'] == 3)
+		fatal_lang_error('registration_disabled', false);]]></search>
+			<add><![CDATA[
+
+	// You can't register without a reason..
+	 if (empty($_POST['join_reason']) || trim($_POST['join_reason']) == '')
+		fatal_lang_error('error_join_reason_empty', false);]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[ 'secret_answer',]]></search>
+			<add><![CDATA[ 'join_reason',]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA['theme_vars' => array(),]]></search>
+			<add><![CDATA[
+		'join_reason' => $_POST['join_reason'],]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="replace" whitespace="loose"><![CDATA[		'mods' => array(]]></search>
+			<add><![CDATA[		'mods' => array( $txt['jrcopy'],]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Subs-Members.php">
+		<operation>
+			<search position="before"><![CDATA['smiley_set' => '',]]></search>
+			<add><![CDATA[
+		'join_reason' => (!empty($regOptions['join_reason']) ? $regOptions['join_reason'] : ''),]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[mem.last_login,]]></search>
+			<add><![CDATA[ mem.join_reason,]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageMembers.php">
+		<operation>
+			<search position="replace"><![CDATA['date_registered' => array('label' => $txt['admin_browse_registered']),
+	);]]></search>
+			<add><![CDATA['date_registered' => array('label' => $txt['admin_browse_registered']),
+		'join_reason' => array('label' => $txt['admin_browse_join_reason']),
+	);]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+				'sort' => array(
+					'default' => 'date_registered DESC',
+					'reverse' => 'date_registered',
+				),
+			),]]></search>
+			<add><![CDATA['join_reason' => array(
+				'header' => array(
+					'value' => $txt['admin_browse_join_reason'],
+				),
+				'data' => array(
+					'db_htmlsafe' => 'join_reason',
+				),
+				'sort' =>  array(
+					'default' => 'join_reason DESC',
+					'reverse' => 'join_reason',
+				),
+			),]]></add>
+		</operation>
+	</file>
+</modification>

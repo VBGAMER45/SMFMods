@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:ContactPage</id>
+	<name>Contact Page</name>
+	<type>modification</type>
+	<version>3.2</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">contact.xml</modification>
+		<require-file name="Contact.php" destination="$sourcedir" />
+		<require-file name="Contact.template.php" destination="$themedir" />
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<modification type="file" reverse="true">contact.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	<install for="1.0 - 1.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">contact107.xml</modification>
+		<require-file name="Contact.php" destination="$sourcedir" />
+		<require-file name="Contact.template.php" destination="$themedir" />
+		<require-file name="contact.gif" destination="$themedir/images/english" />
+
+	</install>
+
+	<uninstall for="1.0 - 1.0.99">
+		<modification type="file" reverse="true">contact107.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">contact2.xml</modification>
+			<require-file name="Contact2.php" destination="$sourcedir" />
+			<require-file name="Contact2.template.php" destination="$themedir" />
+		</install>
+	
+		<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<modification type="file" reverse="true">contact2.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+
+</package-info>

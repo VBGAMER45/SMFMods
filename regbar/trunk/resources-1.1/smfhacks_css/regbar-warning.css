@@ -1,0 +1,56 @@
+/**
+ * Regbar Warning (regbar-warning_)
+ *
+ * @file ./smfhacks_css/regbar-warning.css
+ * @author SMFHacks <http://www.smfhacks.com/>
+ * @copyright SMFHacks.com Team, 2012
+ *
+ * @version 1.0.3
+ */
+
+/* Benefit of the Doubt */
+body {
+	margin-top: 15px;
+}
+
+#regbar_warning {
+	width: 100%;
+	/* Wait, we want to copy Internet Explorer...? */
+	font: message-box;
+	background: #ffffe1;
+	top: 0;
+	left: 0;
+	position: fixed;
+}
+
+#regbar_icon {
+	width: 18px;
+	margin-right: 2px;
+}
+
+#regbar_message {
+	margin-top: 1px;
+}
+
+#regbar_warning:hover {
+	background: #3169B6;
+}
+
+#regbar_warning a {
+	color: #000;
+	display: block;
+	width: auto;
+	font-size: 11px;
+	height: auto;
+	padding: 4px;
+	text-decoration: none;
+	border-bottom: 1px outset #c9c9c9;
+}
+
+.floatleft {
+	float: left;
+}
+
+.clear {
+	clear: both;
+}

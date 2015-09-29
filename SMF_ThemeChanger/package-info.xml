@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>ClickSafe:cls-smf-theme-changer</id>
+	<name>SMF Theme Changer</name>
+	<version>1.0.1</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+    <readme parsebbc="true">readme.txt</readme>
+		<database>install.php</database>
+    <modification type="file">install2.0.xml</modification>
+		<require-file name="cls.php" destination="$sourcedir" />
+		<require-file name="cls.english.php" destination="$languagedir" />
+		<require-file name="cls.dutch.php" destination="$languagedir" />
+    <require-file name="cls.tc.js" destination="$themedir/scripts" />
+    <redirect url="$scripturl?action=admin;area=modsettings;sa=cls;" timeout="4000">redirect.txt</redirect>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<code>uninstall-required.php</code>
+    <modification type="file" reverse="true">install2.0.xml</modification>
+		<remove-file name="$sourcedir/cls.php" />
+		<remove-file name="$languagedir/cls.english.php" />
+		<remove-file name="$languagedir/cls.dutch.php" />
+    <remove-file name="$themedir/scripts/cls.tc.js" />
+	</uninstall>
+
+</package-info>

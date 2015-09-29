@@ -1,0 +1,33 @@
+SMF Shop Changelog
+
+Version 3.3
+!Better remove topic shop points code thanks to Liam_michael
+
+Version 3.1.7
+!Added better request protection for race conditions when sending items/shop money
+
+Version 3.1.6
+!Fixed issue sending money only checking for username and not displayname too
++Now using comma seperators for points/cash
+
+Version 3.1.1
++Added checking if the username already exists when using the Change Username item.
++Edited several item files to use updateMemberData() instead of using a database query
++Added support for board-specific credit amounts, based off request at http://www.daniel15.com/forum/index.php/topic,554.html. This may not be fully functional at the moment.
+![Shop.template.php] Fixed bug on View Other Members' Inventory page (reported by Sakuragi - http://www.daniel15.com/forum/index.php/topic,525.45.html)
+![install_SMF1-1.xml] Fixed bug regarding Load.php edit (reported by feeble - http://www.daniel15.com/forum/index.php/topic,635.html)
+![Steal.php] Fixed bug reported by jdv (thanks to Sakuragi) - http://www.daniel15.com/forum/index.php/topic,559.0.html
+![Shop-Inventory.php] Fixed bug when viewing member's inventory, reported by thelastkiss (http://www.daniel15.com/forum/index.php/topic,532.msg2772.html#msg2772)
+![Shop.template.php] Removed unneeded (commented) code
+![Shop.template.php] Fixed 'Buy Stuff' display issue in Firefox
+
+
+Version 3.1 for SMF 1.1.X
+!Fixed missing global in ChangeDisplayName item
+!Fixed missing global IncreaseKarma item
+!Fixed issues with mod_security with ;id= in the url
+!Fixed two broken link trees action=shop;do=invother and action=shop missing ?
+!Fixed some joins for better mysql 5 suport
++Added Shop.english-utf8.php if you are using utf8 on your board
+!Fixed some spelling bugs in Shop.english.php
+!Removed ` from queries in the installScript file for Shop which could fail in some setups.

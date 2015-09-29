@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:globalhf</id>
+	<name>Global Headers Footers</name>
+	<type>modification</type>
+	<version>2.0.1</version>
+	<!-- !! INSTALLS !! -->
+	<install for="1.1 - 1.1.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file" format="xml">modifications-1.1.xml</modification>
+		<!-- Required Directories -->
+		<require-dir name="/resources-1.1/smfhacks_source" destination="$sourcedir"></require-dir>
+		<require-dir name="/resources-1.1/smfhacks_templates" destination="$themedir"></require-dir>
+		<require-dir name="/resources-1.1/smfhacks_css" destination="$themedir"></require-dir>
+		<require-dir name="/resources-1.1/smfhacks_images" destination="$themedir/images"></require-dir>
+		<require-dir name="/resources-1.1/smfhacks_languages" destination="$languagedir"></require-dir>
+		<require-dir name="/resources-1.1/smfhacks_resources" destination="$boarddir"></require-dir>
+		<!-- Redirect To: ?action=admin -->
+		<redirect url="?action=admin;area=globalhf" timeout="5" type="inline">Redirecting...</redirect>
+	</install>
+	<install for="2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5, 2.0 - 2.0.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file" format="xml">modifications-2.0.xml</modification>
+		<!-- Required Directories -->
+		<require-dir name="/resources-2.0/smfhacks_source" destination="$sourcedir"></require-dir>
+		<require-dir name="/resources-2.0/smfhacks_templates" destination="$themedir"></require-dir>
+		<require-dir name="/resources-2.0/smfhacks_css" destination="$themedir/css"></require-dir>
+		<require-dir name="/resources-2.0/smfhacks_images" destination="$themedir/images"></require-dir>
+		<require-dir name="/resources-2.0/smfhacks_languages" destination="$languagedir"></require-dir>
+		<require-dir name="/resources-2.0/smfhacks_resources" destination="$boarddir"></require-dir>
+		<!-- Redirect To: ?action=admin -->
+		<redirect url="?action=admin;area=globalhf" timeout="5" type="inline">Redirecting...</redirect>
+	</install>
+	<!-- !! UNINSTALLS !! -->
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" format="xml" reverse="true">modifications-1.1.xml</modification>
+		<code type="file">uninstall-1.1.php</code>
+	</uninstall>
+	<uninstall for="2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5, 2.0 - 2.0.99">
+		<modification type="file" format="xml" reverse="true">modifications-2.0.xml</modification>
+		<!-- Execute Code -->
+		<code type="file">uninstall-2.0.php</code>
+	</uninstall>
+</package-info>

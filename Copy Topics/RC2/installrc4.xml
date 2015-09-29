@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<name>Copy Topics</name>
+	<id>karlbenson:copytopics</id>
+	<version>1.6</version>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="after"><![CDATA[
+		'deletemsg' => array('RemoveTopic.php', 'DeleteMessage'),
+]]></search>
+		<add><![CDATA[
+		'copytopic' => array('CopyTopic.php', 'CopyTopic'),
+		'copytopic2' => array('CopyTopic.php', 'CopyTopic2'),
+]]></add>
+	</operation>
+</file>
+
+<!--// Different from 1.1.x as moved from Subs-Boards to MessageIndex //-->
+<file name="$sourcedir/MessageIndex.php">
+	<operation>
+		<search position="after"><![CDATA[
+	// Only a few possible actions.
+	$possibleActions = array();
+]]></search>
+		<add><![CDATA[
+	// Start of CopyTopics mod
+	if (isset($_REQUEST['qaction']) && $_REQUEST['qaction'] == "copy")
+	{	
+		require_once($sourcedir . '/CopyTopic.php');
+		CopyMultipleTopics();
+		$redirect_url = isset($_POST['redirect_url']) ? $_POST['redirect_url'] : (isset($_SESSION['old_url']) ? $_SESSION['old_url'] : '');
+		redirectexit($redirect_url);
+		return;
+	}
+	// End of CopyTopics mod
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[
+		$context['can_merge'] = allowedTo('merge_any');
+]]></search>
+		<add><![CDATA[
+		$context['can_copy'] = allowedTo('copy');
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[
+				'move' => allowedTo('move_any') || ($started && allowedTo('move_own')),
+]]></search>
+		<add><![CDATA[
+				'copy' => allowedTo('copy'),
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'can_split' => 'split_any',
+]]></search>
+		<add><![CDATA[
+		'can_copy' => 'copy',
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'send_mail',
+]]></search>
+		<add><![CDATA[
+		'copy',
+]]></add>
+	</operation>
+	<!--// Different from 1.1.x //-->
+	<operation>
+		<search position="before"><![CDATA[
+			'move' => array(true, 'topic', 'moderate', 'moderate'),
+]]></search>
+		<add><![CDATA[
+			'copy' => array(false, 'topic', 'moderate'),
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/MessageIndex.template.php">	
+	<!--// Different from 1.1.x //-->
+	<operation>
+		<search position="before"><![CDATA[
+					if ($topic['quick_mod']['move'])
+						echo '<a href="', $scripturl, '?action=movetopic;board=', $context['current_board'], '.', $context['start'], ';topic=', $topic['id'], '.0"><img src="', $settings['images_url'], '/icons/quick_move.gif" width="16" alt="', $txt['move_topic'], '" title="', $txt['move_topic'], '" /></a>';
+]]></search>
+		<add><![CDATA[
+					if ($topic['quick_mod']['copy'])
+						echo '<a href="', $scripturl, '?action=copytopic;board=', $context['current_board'], '.', $context['start'], ';topic=', $topic['id'], '.0"><img src="', $settings['images_url'], '/icons/quick_copy.gif" width="16" alt="', $txt['copytopic'], '" title="', $txt['copytopic'], '" /></a>';
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[<select class="qaction" name="qaction"', $context['can_move'] ? ' onchange="this.form.moveItTo.disabled = (this.options[this.selectedIndex].value != \'move\');"' : '', '>
+]]></search>
+		<add><![CDATA[<select class="qaction" name="qaction"', ($context['can_move'] || $context['can_copy'])  ? ' onchange="this.form.moveItTo.disabled = (this.options[this.selectedIndex].value != \'move\' && this.options[this.selectedIndex].value != \'copy\' );"' : '', '>
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$context['can_merge'] ? '
+							<option value="merge">' . $txt['quick_mod_merge'] . '</option>' : '',]]></search>
+		<add><![CDATA[$context['can_copy'] ? '
+							<option value="copy">' . $$txt['quick_mod_copy']  . '</option>' : '',]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[if ($context['can_move'])]></search>
+		<add><![CDATA[if ($context['can_move'] || $context['can_copy'])]]></add>
+	</operation>
+</file>
+
+<!--// Different from 1.1.x //-->
+<file name="$themedir/Display.template.php">	
+	<operation>
+		<search position="before"><![CDATA[
+		'move' => array('test' => 'can_move', 'text' => 'move_topic', 'image' => 'admin_move.gif', 'lang' => true, 'url' => $scripturl . '?action=movetopic;topic=' . $context['current_topic'] . '.0'),
+]]></search>
+		<add><![CDATA[
+		'copy' => array('test' => 'can_copy', 'text' => 'copytopic', 'image' => 'admin_copy.gif', 'lang' => true, 'url' => $scripturl . '?action=copytopic;topic=' . $context['current_topic'] . '.0'),
+]]></add>
+	</operation>
+</file>
+
+</modification>

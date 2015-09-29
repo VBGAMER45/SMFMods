@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is an example modification file for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://www.simplemachines.org/redirect/manual_mod_install
+
+================================================================================
+
+	Modification files can be used to modify files so that they do what
+	your package needs them to do to work properly.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>ClickSafe:cls-smf-theme-changer</id>
+	<version>1.0.1</version>
+
+  
+	<file name="$sourcedir/Subs.php">	
+				<operation>
+			<search position="after"><![CDATA[		loadSubTemplate($layer . '_above', true);
+]]></search>
+			<add><![CDATA[  
+  //ClickSafe Header Start   
+  if (in_array($layer, array('head', 'body')))
+    {cls_change_theme_top();}
+  //ClickSafe Header End 
+  
+]]></add>
+		</operation>
+	</file>
+
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	echo '
+			<span class="smalltext" style="display: inline; visibility: visible; font-family: Verdana, Arial, sans-serif;">' . $forum_copyright . '
+			</span>';
+]]></search>
+			<add><![CDATA[
+  //ClickSafe Bottom Start       
+      cls_change_theme_bot();
+  //ClickSafe Bottom End
+	echo '
+			<span class="smalltext" style="display: inline; visibility: visible; font-family: Verdana, Arial, sans-serif;">' . $forum_copyright . '
+			</span>';       
+]]></add>
+		</operation>
+   </file>
+    
+</modification>

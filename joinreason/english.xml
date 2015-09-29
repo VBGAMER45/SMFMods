@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:join_reason</id>
+	<version>1.3</version>
+
+	<file name="$languagedir/ManageMembers.english.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['admin_browse_join_reason'] = 'Reason for joining';]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManageMembers.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['admin_browse_join_reason'] = 'Reason for joining';]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Modifications.english.php" >
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['join_reason'] = 'Reason for joining this forum';
+$txt['jrcopy'] = 'Join Reason Mod &copy; <a href="http://www.bryandeakin.com">Bryan Runic Deakin</a>';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['join_reason'] = 'Reason for joining this forum';
+$txt['jrcopy'] = 'Join Reason Mod &copy; <a href="http://www.bryandeakin.com">Bryan Runic Deakin</a>';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Errors.english.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['error_join_reason_empty'] = 'Reason for joining this forum';]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Errors.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['error_join_reason_empty'] = 'Reason for joining this forum';]]></add>
+		</operation>
+	</file>
+</modification>

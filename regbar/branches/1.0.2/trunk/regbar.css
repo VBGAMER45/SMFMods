@@ -1,0 +1,26 @@
+/* A fake IE information bar */
+#infobar {
+	font: message-box;
+}
+
+/* Please adjust the values if the infobar is not looking good */
+#infobar a, #infobar a:link, #infobar a:visited, #infobar a:active {
+	display: block;
+	color: #000;
+	width:100%;
+	background: #FFFFE1 url(warning.gif) no-repeat center left;
+	border-bottom: .16em outset;
+	text-decoration: none;
+	cursor: default;
+}
+
+#infobar a:hover {
+	color: #FFF;
+	background: #3169B6 url(warning.gif) no-repeat center left;
+}
+
+#infobar p{
+	margin:0px;
+	padding: .45em 0em .45em 22px;
+	font-size:11px;
+}

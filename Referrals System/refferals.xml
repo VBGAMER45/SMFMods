@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:refferalsystem</id>
+<version>3.0</version>
+
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'editpoll2' => array('Poll.php', 'EditPoll2'),]]></search>
+		<add><![CDATA[
+		'refferals' => array('refferals.php', 'refferalsMain'),
+		]]></add>
+	</operation>
+
+	
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[// Admin area 'Forum'.]]></search>
+	<add><![CDATA[
+	// Start Refferals System
+if (allowedTo(array('admin_forum')))
+{
+	$context['admin_areas']['refferals'] = array(
+	'title' => $txt['ref_admin'],
+	'areas' => array());
+
+	 $context['admin_areas']['refferals']['areas']['ref_admin'] =  '<a href="' . $scripturl . '?action=refferals;sa=settings;sesc=' . $sc . '">' . $txt['ref_settings'] . '</a>';
+}
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+	
+
+</file>
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+//  Start Referrals System
+$txt['ref_admin'] = 'Referrals System';
+$txt['ref_settings'] = 'Settings';
+$txt['ref_save_settings'] = 'Save Settings';
+$txt['ref_refferals'] = 'Referrals:';
+$txt['ref_refferal_link'] = 'Referral Link:';
+$txt['ref_reffered_by'] = 'Referred by Membername:';
+// Setttings
+$txt['ref_showreflink'] = 'Show referral link on profile page';
+$txt['ref_showonpost'] = 'Show referrals on post display';
+$txt['ref_trackcookiehits'] = 'Track hits for referral link clicks';
+$txt['ref_cookietrackdays'] = 'Number of days to store the tracking cookie for referrals';
+
+$txt['ref_txt_copyright'] = 'Copyright';
+$txt['ref_txt_copyrightremoval'] = 'Copyright Removal';
+$txt['ref_txt_copyrightkey'] = 'Copyright Key';
+$txt['ref_txt_ordercopyright'] = 'Order Copyright Removal';
+
+
+$txt['ref_txt_copyremovalnote'] = 'Copyright removal removes the copyright line "Referrals System by CreateAForum.com"';
+
+
+//  End Referrals System			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+//  Start Referrals System
+$txt['ref_admin'] = 'Referrals System';
+$txt['ref_settings'] = 'Settings';
+$txt['ref_save_settings'] = 'Save Settings';
+$txt['ref_refferals'] = 'Referrals:';
+$txt['ref_refferal_link'] = 'Referral Link:';
+$txt['ref_reffered_by'] = 'Referred by Membername:';
+// Setttings
+$txt['ref_showreflink'] = 'Show referral link on profile page';
+$txt['ref_showonpost'] = 'Show referrals on post display';
+$txt['ref_trackcookiehits'] = 'Track hits for referral link clicks';
+$txt['ref_cookietrackdays'] = 'Number of days to store the tracking cookie for referrals';
+
+$txt['ref_txt_copyright'] = 'Copyright';
+$txt['ref_txt_copyrightremoval'] = 'Copyright Removal';
+$txt['ref_txt_copyrightkey'] = 'Copyright Key';
+$txt['ref_txt_ordercopyright'] = 'Order Copyright Removal';
+
+
+$txt['ref_txt_copyremovalnote'] = 'Copyright removal removes the copyright line "Referrals System by CreateAForum.com"';
+
+
+//  End Referrals System
+		
+]]></add>
+	</operation>
+</file>
+
+
+
+
+<file name="$sourcedir/Register.php">
+	<operation>
+		<search position="replace"><![CDATA[$memberID = registerMember($regOptions);]]></search>
+	<add><![CDATA[$memberID = registerMember($regOptions);
+	// Start Refferals System
+	global $sourcedir;
+	
+	if (!isset($_REQUEST['refferedbyname']))
+		$_REQUEST['refferedbyname'] = '';
+	
+	require_once($sourcedir . '/refferals.php');
+	refferalsProcessSignup($_REQUEST['refferedbyname'],$memberID);
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+	
+	<operation>
+		<search position="replace"><![CDATA[// Check if the administrator has it disabled.]]></search>
+	<add><![CDATA[// Check if the administrator has it disabled.
+	// Start Refferals System
+	global $sourcedir;
+	require_once($sourcedir . '/refferals.php');
+	ProcessRefferalLink();
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Register.template.php">
+	<operation>
+		<search position="before"><![CDATA[// Are there age restrictions in place?]]></search>
+	<add><![CDATA[
+	// Start Refferals System
+	echo '<tr>
+						<td width="40%">
+							<b>', $txt['ref_reffered_by'], '</b>
+						</td>
+						<td>
+							<input type="text" name="refferedbyname" size="30" tabindex="', $context['tabindex']++, '" />
+						</td>
+					</tr>';
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+	
+
+</file>
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<add><![CDATA[
+			
+	// Refferal System
+		// You can order copyright removal! From the mod settings cheap and helps support the mod author!
+		$showInfo = ReferralsCheckInfo();
+		    
+	    	if ($showInfo == true)
+	    	{
+			$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><span class="smalltext">Referrals System by <a href="http://www.createaforum.com" target="_blank">CreateAForum.com</a></span>', $buffer);
+			$buffer = preg_replace('~(, Simple Machines</a>)~', ', Simple Machines</a><br /><span class="smalltext">Referrals System by <a href="http://www.createaforum.com" title="Forum Hosting" target="_blank">CreateAForum.com</a></span>', $buffer);
+		}
+	// End Refferal System
+			
+	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></add>
+	</operation>
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+//  Start Referrals System
+function ReferralsCheckInfo()
+{
+    global $modSettings, $boardurl;
+    
+    if (isset($modSettings['ref_copyrightkey']))
+    {
+        $m = 38;
+        if (!empty($modSettings['ref_copyrightkey']))
+        {
+            if ($modSettings['ref_copyrightkey'] == sha1($m . '-' . $boardurl))
+            {
+                return false;
+            }
+            else
+                return true;
+        }
+    }
+    
+    return true;
+}
+
+//  End Referrals System
+		
+]]></add>
+	</operation>
+	
+</file>
+
+
+<file name="$sourcedir/Load.php">
+	<operation>
+		<search position="before"><![CDATA[if (!empty($users))]]></search>
+	<add><![CDATA[
+	// Start Refferals System
+	$select_columns .= ', mem.referrals_no, mem.referred_by, mem.referrals_hits ';
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA['blurb' => &$profile['personalText'],]]></search>
+	<add><![CDATA[
+	// Start Refferals System
+	'referrals_no' => &$profile['referrals_no'],
+	'referred_by' => &$profile['referred_by'],
+	'referrals_hits' => &$profile['referrals_hits'],
+	
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+		<search position="before"><![CDATA[// Messenger type information.]]></search>
+	<add><![CDATA[
+	// Start Refferals System
+	
+	echo '
+								<tr>
+									<td><b>', $txt['ref_refferals'] , '</b></td>
+									<td>', $context['member']['referrals_no'], '</td>
+							</tr>';
+	// Refferals Link
+	if ($modSettings['ref_showreflink'])
+	if ($context['user']['is_admin'] || $context['user']['is_owner'])
+			echo '
+							<tr>
+								<td><b>', $txt['ref_refferal_link'], '</b></td>
+								<td><input type="text" size="50" value="', $scripturl, '?action=refferals;refferedby=', $context['member']['id'], '" /></td>
+							</tr>';
+							
+							
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+	
+
+</file>
+
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="before"><![CDATA[// This shows the popular messaging icons.]]></search>
+	<add><![CDATA[
+	// Start Refferals System
+	if ($modSettings['ref_showonpost'])
+		echo $txt['ref_refferals'] . ' ' . $message['member']['referrals_no'] . '<br />';
+
+	// End Refferals System
+	
+]]></add>
+	</operation>
+	
+
+</file>
+
+
+
+
+</modification>

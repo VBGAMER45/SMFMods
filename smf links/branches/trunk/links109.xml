@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFLinks</id>
+<version>1.4</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Links Text Strings
+$txt['smflinks_menu'] = 'Links';
+$txt['smflinks_admin'] = 'Links Configuration';
+
+$txt['permissiongroup_smflinks'] = 'SMF Links';
+$txt['permissionname_view_smflinks'] = 'View Links Page';
+$txt['permissionhelp_view_smflinks'] = 'Sets if the user can view the links page.';
+$txt['cannot_view_smflinks'] = 'You can not view the links page.';
+$txt['permissionname_add_links'] = 'Add Links';
+$txt['permissionhelp_add_links'] = 'If the user is allowed to submit links';
+$txt['cannot_add_links'] = 'You can not add links.';
+$txt['permissionname_edit_links'] = 'Edit Links';
+$txt['permissionhelp_edit_links'] = 'If the user is allowed to edit links';
+$txt['cannot_edit_links'] = 'You can not edit links.';
+$txt['permissionname_delete_links'] = 'Delete Links';
+$txt['permissionhelp_delete_links'] = 'If the user is allowed to delete links';
+$txt['cannot_delete_links'] = 'You can not delete links.';
+$txt['permissionname_approve_links'] = 'Approve Links';
+$txt['permissionhelp_approve_links'] = 'If the user is allowed to approve links';
+$txt['cannot_approve_links'] = 'You can not approve links.';
+$txt['permissionname_links_auto_approve'] = 'Links Auto Approved';
+$txt['permissionhelp_links_auto_approve'] = 'If the users links are auto approved when submitted.';
+$txt['permissionname_rate_links'] = 'Rate Links';
+$txt['permissionhelp_rate_links'] = 'If the user is allowed to rate links';
+$txt['cannot_rate_links'] = 'You are not allowed to rate links.';
+$txt['permissionname_links_manage_cat'] = 'Manage Categories';
+$txt['permissionhelp_links_manage_cat'] = 'User can add/remove/edit/reorder categories';
+$txt['cannot_links_manage_cat'] = 'You are not allowed to manage categories.';
+//END SMF Links Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Links
+$txt['whoall_links'] = 'Viewing the <a href="' . $scripturl . '?action=links">' . $txt['smflinks_menu']  . '</a>';
+//END SMF Links Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['jsoption' => array('Themes.php', 'SetJavaScript'),]]></search>
+		<add><![CDATA[
+		'links' => array('Links.php', 'LinksMain'),]]></add>
+	</operation>
+</file>
+<file name="$themedir/index.template.php" error="ignore">
+	<operation>
+		<search position="before"><![CDATA[	// The [calendar]!
+	if ($context['allow_calendar'])
+		echo '
+				<a href="', $scripturl, '?action=calendar">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/calendar.gif" alt="' . $txt['calendar24'] . '" style="margin: 2px 0;" border="0" />' : $txt['calendar24']), '</a>', $context['menu_separator'];]]></search>
+		<add><![CDATA[
+	// the [Links] button
+	if ($context['allow_view_smflinks'])
+		echo '
+				<a href="', $scripturl, '?action=links">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/links.gif" alt="' . $txt['smflinks_menu'] . '" style="margin: 2px 0;" border="0" />' : $txt['smflinks_menu']), '</a>', $context['menu_separator'];
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA['pm' => array(
+				'pm_read' => false,
+				'pm_send' => false,
+			),]]></search>
+		<add><![CDATA[
+'smflinks' => array(
+				'view_smflinks' => false,
+				'add_links' => false,
+				'edit_links' => true,
+				'delete_links' => true,
+				'links_manage_cat' => false,
+				'approve_links' => false,
+				'links_auto_approve' => false,
+				'rate_links' => false,
+			),]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+<operation>
+		<search position="before"><![CDATA[$context['admin_areas']['config']['areas']['edit_settings'] = '<a href="' . $scripturl . '?action=modsettings;sesc=' . $sc . '">' . $txt[222] . '</a>';]]></search>
+	<add><![CDATA[
+	$context['admin_areas']['config']['areas']['links_settings'] = '<a href="' . $scripturl . '?action=links;sa=admin;sesc=' . $sc . '">' . $txt['smflinks_admin'] . '</a>';
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_smflinks'] = allowedTo('view_smflinks');
+		]]></add>
+	</operation>
+</file>
+</modification>

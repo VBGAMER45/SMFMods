@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>ENotify</name>
+	<id>forsakenlad:enotify</id>
+	<type>modification</type>
+	<version>3.0</version>
+	<install for="2.0-2.99.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<code>install.php</code>
+		<modification>install.xml</modification>
+		<require-file name="ENotify.php" destination="$sourcedir" />
+		<require-file name="ENotify.template.php" destination="$themedir" />
+		<require-file name="enotify.js" destination="$themedir/scripts" />
+		<require-file name="jquery.jgrowl.css" destination="$themedir/css" />
+		<require-file name="ENotify.english.php" destination="$languagedir" />
+		<require-file name="ENotify.english-utf8.php" destination="$languagedir" />
+		<require-file name="ENotify.turkish.php" destination="$languagedir" />
+		<require-file name="ENotify.turkish-utf8.php" destination="$languagedir" />
+	</install>
+	<uninstall for="2.0-2.99.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification reverse="true">install.xml</modification>
+		<remove-file name="$sourcedir/ENotify.php" />
+		<remove-file name="$themedir/ENotify.template.php" />
+		<remove-file name="$themedir/scripts/enotify.js" />
+		<remove-file name="$themedir/css/jquery.jgrowl.css" />
+		<remove-file name="$languagedir/ENotify.english.php" />
+		<remove-file name="$languagedir/ENotify.english-utf8.php" />
+		<remove-file name="$languagedir/ENotify.turkish.php" />
+		<remove-file name="$languagedir/ENotify.turkish-utf8.php" />
+	</uninstall>
+	
+	
+	
+	
+	<install for="1.1-1.99.99">
+		<code>install1.php</code>
+		<modification>install1.xml</modification>
+		<require-file name="ENotify1.php" destination="$sourcedir" />
+		<require-file name="ENotify1.template.php" destination="$themedir" />
+		<require-file name="enotify.js" destination="$themedir" />
+		<require-file name="jquery.jgrowl.css" destination="$themedir" />
+		<require-file name="ENotify.english.php" destination="$languagedir" />
+		<require-file name="ENotify.english-utf8.php" destination="$languagedir" />
+		<require-file name="ENotify.turkish.php" destination="$languagedir" />
+		<require-file name="ENotify.turkish-utf8.php" destination="$languagedir" />
+	</install>
+	<uninstall for="1.1-1.99.99">
+		<modification reverse="true">install1.xml</modification>
+		<remove-file name="$sourcedir/ENotify1.php" />
+		<remove-file name="$themedir/ENotify1.template.php" />
+		<remove-file name="$themedir/enotify.js" />
+		<remove-file name="$themedir/jquery.jgrowl.css" />
+		<remove-file name="$languagedir/ENotify.english.php" />
+		<remove-file name="$languagedir/ENotify.english-utf8.php" />
+		<remove-file name="$languagedir/ENotify.turkish.php" />
+		<remove-file name="$languagedir/ENotify.turkish-utf8.php" />
+	</uninstall>
+</package-info>

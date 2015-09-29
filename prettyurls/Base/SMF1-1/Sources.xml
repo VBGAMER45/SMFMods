@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification">
+	<id>el:prettyurls</id>
+	<version>1.0</version>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="replace"><![CDATA[
+// Clean the request variables, add slashes, etc.
+cleanRequest();
+$context = array();
+]]></search>
+			<add><![CDATA[
+// Unserialize the array of pretty board URLs
+$context = array('pretty' => array(
+	'action_array' => unserialize($modSettings['pretty_action_array']),
+	'board_urls' => unserialize($modSettings['pretty_board_urls']),
+	'db_count' => 0,
+));
+// Clean the request variables, add slashes, etc.
+cleanRequest();
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$boarddir/SSI.php">
+		<operation>
+			<search position="replace"><![CDATA[
+// Clean the request variables.
+]]></search>
+			<add><![CDATA[
+// Unserialize the array of pretty board URLs
+$context = array('pretty' => array(
+	'action_array' => unserialize($modSettings['pretty_action_array']),
+	'board_urls' => unserialize($modSettings['pretty_board_urls']),
+	'db_count' => 0,
+));
+// Clean the request variables.
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		return ManageCopyright();
+]]></search>
+			<add><![CDATA[
+		return ManageCopyright();
+
+	//	Pretty URLs area hack
+	if (isset($_GET['area']) && $_GET['area'] == 'pretty')
+	{
+		require_once($sourcedir . '/PrettyUrls.php');
+		return PrettyInterface();
+	}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageErrors.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	$context['sub_template'] = 'error_log';
+]]></search>
+			<add><![CDATA[
+	$context['sub_template'] = 'error_log';
+
+	//	Don't rewrite any URLs, we need these ones to remain exact!
+	$modSettings['pretty_enable_filters'] = false;
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ModSettings.php">
+		<operation>
+			<search position="replace"><![CDATA[
+			array('check', 'queryless_urls'),
+]]></search>
+			<add><![CDATA[
+			//	Pretty URLs mod - disable the default queryless URLs
+			//	array('check', 'queryless_urls'),
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/News.php">
+		<operation>
+			<search position="after"><![CDATA[
+	if ($xml_format == 'smf' || isset($_REQUEST['debug']))
+]]></search>
+			<add><![CDATA[
+	//	Pretty URLs need to be rewritten
+	ob_start('ob_sessrewrite');
+	$context['pretty']['search_patterns'][] = '~(<link>|<id>|<comments>|<guid>)([^#<]+)~';
+	$context['pretty']['replace_patterns'][] = '~(<link>|<id>|<comments>|<guid>)([^<]+)~';
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+	if (empty($modSettings['queryless_urls']) || ($context['server']['is_cgi'] && @ini_get('cgi.fix_pathinfo') == 0) || !$context['server']['is_apache'])
+		return $val;
+
+	$val = preg_replace('/^' . preg_quote($scripturl, '/') . '\?((?:board|topic)=[^#"]+)(#[^"]*)?$/e', "'' . \$scripturl . '/' . strtr('\$1', '&;=', '//,') . '.html\$2'", $val);
+]]></search>
+			<add><![CDATA[
+/***	if (empty($modSettings['queryless_urls']) || ($context['server']['is_cgi'] && @ini_get('cgi.fix_pathinfo') == 0) || !$context['server']['is_apache'])
+		return $val;
+
+	$val = preg_replace('/^' . preg_quote($scripturl, '/') . '\?((?:board|topic)=[^#"]+)(#[^"]*)?$/e', "'' . \$scripturl . '/' . strtr('\$1', '&;=', '//,') . '.html\$2'", $val); ***/
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/QueryString.php">
+
+		<operation>
+			<search position="after"><![CDATA[// This should work even in 4.2.x, just not CGI without cgi.fix_pathinfo.]]></search>
+			<add><![CDATA[
+/***	Pretty URLs says no!
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[// Return the changed buffer.]]></search>
+			<add><![CDATA[
+***/
+	global $context, $boardurl, $db_count, $sourcedir, $time_start, $txt;
+	//	Rewrite the buffer with Pretty URLs!
+	if (!empty($modSettings['pretty_enable_filters']))
+	{
+		require_once($sourcedir . '/PrettyUrls-Filters.php');
+		$buffer = pretty_rewrite_buffer($buffer);
+	}
+
+	//	Update the load times
+	$pattern = '~<span class="smalltext">' . $txt['smf301'] . '([.0-9]+)' . $txt['smf302'] . '([0-9]+)' . $txt['smf302b'] . '</span>~';
+	if (preg_match($pattern, $buffer, $matches))
+	{
+		$newTime = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)), 3);
+		$timeDiff = $newTime - (float) $matches[1];
+		$queriesDiff = $db_count + $context['pretty']['db_count'] - (int) $matches[2];
+		//	Remove the link if you like, I won't enforce it like others do
+		$newLoadTime = '<span class="smalltext">' . $txt['smf301'] . $newTime . $txt['smf302'] . $db_count . $txt['smf302b'] . ' (<a href="http://code.google.com/p/prettyurls/">Pretty URLs</a> adds ' . $timeDiff . 's, ' . $queriesDiff . 'q)</span>';
+		$buffer = str_replace($matches[0], $newLoadTime, $buffer);
+	}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Security.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	if (!empty($from_action) && (!isset($_SESSION['old_url']) || preg_match('~[?;&]action=' . $from_action . '([;&]|$)~', $_SESSION['old_url']) == 0))
+]]></search>
+			<add><![CDATA[
+	if (!empty($from_action) && (!isset($_SESSION['old_url']) || preg_match('~[?;&]action=' . $from_action . '([;&]|$)|' . $boardurl . '/' . $from_action . '~', $_SESSION['old_url']) == 0))
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+
+
+		<operation>
+			<search position="replace"><![CDATA[if (isset($modSettings['integrate_redirect']) && function_exists($modSettings['integrate_redirect']))]]></search>
+			<add><![CDATA[
+	//	Redirections should be pretty too
+	if (!empty($modSettings['pretty_enable_filters']))
+	{
+		global $sourcedir;
+		require_once($sourcedir . '/PrettyUrls-Filters.php');
+		$url = array(0 => array('url' => $setLocation, 'url_id' => 'setLocation'));
+		$filter_callbacks = unserialize($modSettings['pretty_filter_callbacks']);
+		foreach ($filter_callbacks as $callback)
+		{
+			$pretty_url = call_user_func($callback, $url);
+			if (isset($pretty_url[0]['replacement']))
+				break;
+		}
+		if (isset($pretty_url[0]['replacement']))
+			$setLocation = $pretty_url[0]['replacement'];
+		$setLocation = str_replace("\x12", '\'', $setLocation);
+		$setLocation = preg_replace(array('~;+|=;~', '~\?;~', '~\?#|;#|=#~', '~\?$|;$|#$|=$~'), array(';', '?', '#', ''), $setLocation);
+	}
+	
+	if (isset($modSettings['integrate_redirect']) && function_exists($modSettings['integrate_redirect']))
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+				'manage_themes' => '<a href="' . $scripturl . '?action=theme;sa=admin;sesc=' . $sc . '">' . $txt['theme_admin'] . '</a>',
+]]></search>
+			<add><![CDATA[
+				'manage_themes' => '<a href="' . $scripturl . '?action=theme;sa=admin;sesc=' . $sc . '">' . $txt['theme_admin'] . '</a>',
+				'pretty_admin' => '<a href="' . $scripturl . '?action=admin;area=pretty">' . (isset($txt['pretty_urls']) ? $txt['pretty_urls'] : 'Pretty URLs') . '</a>',
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	global $webmaster_email, $context, $modSettings, $txt, $scripturl;
+]]></search>
+			<add><![CDATA[
+	global $webmaster_email, $context, $modSettings, $txt, $scripturl, $boardurl, $sourcedir;
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+	$message = str_replace(array("\r", "\n"), array('', $line_break), stripslashes($message));
+]]></search>
+			<add><![CDATA[
+	// Prettify any URLs
+	if (!empty($modSettings['pretty_enable_filters']))
+	{
+		require_once($sourcedir . '/PrettyUrls-Filters.php');
+		$context['pretty']['search_patterns'][] = '`(\s)(' . $scripturl . '[^#\s]*)`';
+		$context['pretty']['replace_patterns'][] = '`(\s)(' . $scripturl . '[^\s]*)`';
+		$message = pretty_rewrite_buffer($message);
+	}
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		$message = preg_replace('~(' . preg_quote($scripturl, '~') . '([?/][\w\-_%\.,\?&;=#]+)?)~', '<a href="$1">$1</a>', $message);
+]]></search>
+			<add><![CDATA[
+		//$message = preg_replace('~(' . preg_quote($scripturl, '~') . '([?/][\w\-_%\.,\?&;=#]+)?)~', '<a href="$1">$1</a>', $message);
+		// We have to account for rewritten URLs now
+		$message = preg_replace('`\s(' . $boardurl . '[^\s<]*)`', '<a href="$1">$1</a>', $message);
+]]></add>
+		</operation>
+	</file>
+
+</modification>

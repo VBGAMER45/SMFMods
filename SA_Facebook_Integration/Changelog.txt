@@ -1,0 +1,22 @@
+3.0
+Some Updates to work with facebook better. Register and login with facebook. New facebook API 3.2.3
+
+2.0.5
+!Better php 5.5 support in FacebookHooks.php
+
+2.0.4
+!Removed username from the api call
+
+2.0.3
+!Fixed comment setting to work correclty
+
+Old Release:
+updated open grath tag tags
+bought the auto login setting to admin panel to enable disable featrue
+fixed more hardcoded text
+fixed issue with publisher reply tokens[now requires user to save the pub settings before granting permissions to get set the session var to be able to get the access tokens]
+fixed error htmlentities() Invalid multibyte sequence in argument
+publisher use ogtag for image now if no image in post
+added checcks for valide local set in admin
+added sceduled task to try and ensure fb tokens dont expire [runs every hour ca be changed in admin sceduled task]
+added support for auto registration can be set in admin>facebook>registration method> AUTO or MANUAL

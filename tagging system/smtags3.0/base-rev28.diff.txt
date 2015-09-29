@@ -1,0 +1,3108 @@
+Index: Sources/MessageIndex.php
+===================================================================
+--- Sources/MessageIndex.php	(revision 3)
++++ Sources/MessageIndex.php	(working copy)
+@@ -569,6 +569,7 @@
+ 					'href' => $scripturl . '?topic=' . $row['ID_TOPIC'] . ($row['numReplies'] == 0 ? '.0' : '.msg' . $row['ID_LAST_MSG']) . '#new',
+ 					'link' => '<a href="' . $scripturl . '?topic=' . $row['ID_TOPIC'] . ($row['numReplies'] == 0 ? '.0' : '.msg' . $row['ID_LAST_MSG']) . '#new">' . $row['lastSubject'] . '</a>'
+ 				),
++				'tagCount' => 0,
+ 				'is_sticky' => !empty($modSettings['enableStickyTopics']) && !empty($row['isSticky']),
+ 				'is_locked' => !empty($row['locked']),
+ 				'is_poll' => $modSettings['pollMode'] == '1' && $row['ID_POLL'] > 0,
+@@ -591,6 +592,21 @@
+ 		}
+ 		mysql_free_result($result);
+ 
++		// Tagging system 
++		if ($modSettings['smftags_set_display_messageindex'] && in_array($context['current_board'],split(" ",$modSettings['smftags_set_taggable'])) && !empty($topic_ids)) {
++			// this query is seperated due to lack of optimisation if integrated in to the main query above
++			$result = db_query('
++				SELECT ID_TOPIC, COUNT(ID_TAG) AS tagCount
++				FROM smf_tags_log
++				WHERE ID_TOPIC IN (' . implode(', ', $topic_ids) . ')
++				GROUP BY ID_TOPIC
++				', __FILE__, __LINE__);
++			while ($row = mysql_fetch_assoc($result))
++				$context['topics'][$row['ID_TOPIC']]['tagCount'] = (!empty($row['tagCount'])) ? $row['tagCount'] : 0;
++			mysql_free_result($result);
++		}
++		// End tagging system
++
+ 		// Fix the sequence of topics if they were retrieved in the wrong order. (for speed reasons...)
+ 		if ($fake_ascending)
+ 			$context['topics'] = array_reverse($context['topics'], true);
+@@ -658,4 +674,4 @@
+ 	$context['no_topic_listing'] = !empty($context['boards']) && empty($context['topics']) && !$context['can_post_new'];
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Sources/RemoveTopic.php
+===================================================================
+--- Sources/RemoveTopic.php	(revision 3)
++++ Sources/RemoveTopic.php	(working copy)
+@@ -379,6 +379,12 @@
+ 		DELETE FROM {$db_prefix}topics
+ 		WHERE ID_TOPIC $condition
+ 		LIMIT " . count($topics), __FILE__, __LINE__);
++	
++	// Tagging System for Topics
++	db_query("DELETE FROM {$db_prefix}tags_log 
++		WHERE ID_TOPIC $condition", __FILE__, __LINE__);
++	// End Tagging System for Topics
++
+ 	db_query("
+ 		DELETE FROM {$db_prefix}log_search_subjects
+ 		WHERE ID_TOPIC $condition", __FILE__, __LINE__);
+@@ -666,4 +672,4 @@
+ 	return false;
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Sources/Display.php
+===================================================================
+--- Sources/Display.php	(revision 3)
++++ Sources/Display.php	(working copy)
+@@ -146,7 +146,28 @@
+ 
+ 		$_SESSION['last_read_topic'] = $topic;
+ 	}
++	// Tagging System
++    if (in_array($context['current_board'],split(" ",$modSettings['smftags_set_taggable'])) && allowedTo('smftags_view')) {
++		$dbresult= db_query("
++			SELECT t.tag,l.ID,t.ID_TAG,l.approved 
++			FROM {$db_prefix}tags_log as l, {$db_prefix}tags as t 
++			WHERE t.approved && t.ID_TAG = l.ID_TAG && l.ID_TOPIC = $topic
++			ORDER BY l.approved DESC, t.tag ASC", __FILE__, __LINE__);
++		$context['topic_tags'][0] = array();
++		$context['topic_tags'][1] = array();
++		while($row = mysql_fetch_assoc($dbresult))
++		{
++			$context['topic_tags'][$row['approved']][] = array(
++				'ID' => $row['ID'],
++				'ID_TAG' => $row['ID_TAG'],
++				'tag' => $row['tag'],
++			);
++		}
++		mysql_free_result($dbresult);
++	}
++	// End Tagging System
+ 
++
+ 	// Get all the important topic info.
+ 	$request = db_query("
+ 		SELECT
+@@ -1244,4 +1265,4 @@
+ 	return $attachmentData;
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Sources/Tags.php
+===================================================================
+--- Sources/Tags.php	(revision 0)
++++ Sources/Tags.php	(revision 25)
+@@ -0,0 +1,1316 @@
++<?php
++/*
++Tagging System
++Version 2.4.1+stef
++http://www.smfhacks.com
++  by: vbgamer45 and stefann
++  license: this modification is licensed under the Creative Commons BY-NC-SA 3.0 License
++
++Included icons are from Silk Icons 1.3 availble at http://www.famfamfam.com/lab/icons/silk/
++  and are licensed under the Creative Commons Attribution 2.5 License
++*/
++
++if (!defined('SMF'))
++    die('Hacking attempt...');
++
++function TagsMain()
++{
++
++    // Load the main Tags template
++    loadtemplate('Tags');
++
++    // Load the language files
++    if (loadlanguage('Tags') == false) {
++        loadLanguage('Tags','english');
++    }
++
++
++    // Tags actions
++    $subActions = array(
++        'edittopic' => 'EditTopic',
++        'edittopic2' => 'EditTopic2',
++        'suggesttopic' => 'SuggestTopic',
++        'suggesttopic2' => 'SuggestTopic2',
++        'approvetopic' => 'ApproveTopic',
++        'deletetopic' => 'DeleteTopic',
++        'rename' => 'RenameTag',
++        'viewall' => 'ViewAllTags',
++        'merge' => 'MergeTag',
++        'move' => 'MoveTag',
++        'admin' => 'TagsSettings',
++        'admin2' => 'TagsSettings2',
++        'cleanup' => 'TagCleanUp',
++    );
++
++
++    // Follow the sa or just go to main links index.
++    if (!empty($subActions[@$_GET['sa']])) {
++        $subActions[$_GET['sa']]();
++    }
++    else {
++        if (allowedTo('smftags_manage')) {
++            if (isset($_REQUEST['todo']) || isset($_REQUEST['create'])) {
++                ManageTags2();
++            }
++            ManageTags();
++        }
++        ViewTags();
++    }
++}
++
++// build arrays for moderators to manage new tags and tagged topics
++// keep newtags_pp high as pagination does not work for new tags - this is flood control only
++function ManageTags($newtags_pp = 50, $newtagged_pp = 20)
++{
++    global $context, $txt, $mbname, $db_prefix, $scripturl, $user_info;
++
++        if (allowedTo('smftags_create')) { filltags(); }
++        // no pagination for new tags
++        $context['tags_newtags_start'] = 0;
++        $context['tags_newtagged_start'] = (int) (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
++        $context['tags_newtagged_pp'] = (int) $newtagged_pp;
++        $context['tags_newtags_pp'] = (int) $newtags_pp;
++        $limits = $context['tags_newtags_start'] . ',' . $context['tags_newtags_pp'];
++        $limited = $context['tags_newtagged_start'] . ',' . $context['tags_newtagged_pp'];
++
++        // this function is also called externally
++        // so only set the title if action=tags
++        if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tags') {
++            $context['page_title'] = $mbname . ' - ' . $txt['smftags_manage'];
++        }
++
++        // find pending tags
++        $dbresult = db_query("
++            SELECT ID_TAG, tag, parent_id, approved, taggable
++                FROM {$db_prefix}tags
++                WHERE approved < 1 LIMIT $limits",
++            __FILE__, __LINE__);
++
++        $context['tags_newtags'] = array();
++        $parentcache = array();
++        while ($row = mysql_fetch_assoc($dbresult))
++        {
++            $parentarray = array();
++            if (!empty($row['parent_id'])) {
++                $parent = $row['parent_id'];
++                while (!empty($parent)) {
++                    if (isset($parentcache[$parent])) {
++                        $parentarray[$parent] = $parentcache[$parent];
++                    }
++                    else {
++                        $dbchild = db_query("
++                            SELECT ID_TAG, tag, parent_id, approved, taggable
++                                FROM {$db_prefix}tags
++                                WHERE ID_TAG = $parent", __FILE__, __LINE__);
++                        $childrow = mysql_fetch_assoc($dbchild);
++                        $parentarray[$parent] = array(
++                            'tag' => $childrow['tag'],
++                            'parent_id' => $childrow['parent_id'],
++                            'approved' => $childrow['approved'],
++                            'taggable' => $childrow['taggable'],
++                        );
++                        $parentcache[$parent] = $parentarray[$parent];
++                        mysql_free_result($dbchild);
++                    }
++                    $parent = $parentarray[$parent]['parent_id'];
++                }
++            }
++            $context['tags_newtags'][] = array(
++                'ID_TAG' => $row['ID_TAG'],
++                'tag' => $row['tag'],
++                'approved' => $row['approved'],
++                'parent_id' => $row['parent_id'],
++                'parent_array' => $parentarray,
++                'taggable' => $row['taggable'],
++            );
++        }
++
++        mysql_free_result($dbresult);
++        unset($parentcache);
++
++        // and pending tagged
++        if (isset($context['tags_idarray'])) {
++            // if this is set, we're expanding these tags
++            $context['tags_expand'] = 1;
++            $idarray = $context['tags_idarray'];
++        }
++        else {
++            // else, look up the database for ourselves
++            $context['tags_expand'] = 0;
++            $idarray = array();
++            $dbresult = db_query("
++                SELECT ID_TOPIC, ID_MEMBER
++                    FROM {$db_prefix}tags_log
++                    WHERE approved < 1
++                    GROUP BY ID_TOPIC, ID_MEMBER
++                    ORDER BY ID_TOPIC, ID_MEMBER
++                    LIMIT $limited",
++                __FILE__, __LINE__);
++
++            while ($row = mysql_fetch_array($dbresult)) {
++                $idarray[] = intval($row[0]) . 'x' . intval($row[1]);
++            }
++
++            mysql_free_result($dbresult);
++        }
++
++        $dbresult = db_query("
++            SELECT tl.ID, tl.ID_TOPIC, tl.ID_MEMBER, tl.ID_TAG, t.tag, ul.realName AS memberName, tl.approved, m.subject, um.realName as posterName, m.ID_MEMBER as posterID
++                FROM {$db_prefix}tags_log AS tl
++                LEFT JOIN {$db_prefix}topics AS top ON tl.ID_TOPIC = top.ID_TOPIC
++                LEFT JOIN {$db_prefix}messages AS m ON top.id_first_msg = m.id_msg
++                LEFT JOIN {$db_prefix}members AS ul ON tl.id_member = ul.id_member
++                LEFT JOIN {$db_prefix}members AS um ON m.ID_MEMBER = um.id_member
++                LEFT JOIN {$db_prefix}tags AS t ON tl.ID_TAG = t.ID_TAG
++                WHERE CONCAT(tl.ID_TOPIC,'x',tl.ID_MEMBER) IN ('" . implode("','", $idarray) . "')
++                ORDER BY ID_TOPIC, ID_MEMBER",
++            __FILE__, __LINE__);
++
++        $context['tags_newtagged'] = array();
++        $prev = array();
++        while ($row = mysql_fetch_assoc($dbresult))
++        {
++            if (isset($prev['ID_TOPIC'],$prev['ID_MEMBER']) && $prev['ID_TOPIC'] == $row['ID_TOPIC'] && $prev['ID_MEMBER'] == $row['ID_MEMBER']) {
++                $prev['tags'][] = array(
++                    'ID' => $row['ID'],
++                    'ID_TAG' => $row['ID_TAG'],
++                    'tag' => $row['tag'],
++                    'approved' => $row['approved'],
++                );
++            }
++            else {
++                if (!empty($prev)) { $context['tags_newtagged'][] = $prev; }
++
++                $prev = array(
++                    'ID_TOPIC' => $row['ID_TOPIC'],
++                    'ID_MEMBER' => $row['ID_MEMBER'],
++                    'approved' => $row['approved'],
++                    'subject' => $row['subject'],
++                    'memberName' => $row['memberName'],
++                    'posterName' => $row['posterName'],
++                    'posterID' => $row['posterID'],
++                    'tags' => array()
++                );
++
++                $prev['tags'][] = array(
++                    'ID' => $row['ID'],
++                    'ID_TAG' => $row['ID_TAG'],
++                    'tag' => $row['tag'],
++                    'approved' => $row['approved'],
++                );
++            }
++        }
++        if (!empty($prev)) { $context['tags_newtagged'][] = $prev; }
++
++        mysql_free_result($dbresult);
++
++        // find totals for pagination
++        // the constructPageIndex function only allows a single pagination per http request
++        //   so we just have to hope nobody floods us with new tag requests
++
++        // if we're on the first page and have less than the max results, we can safely ignore pagination
++        if (!$context['tags_newtagged_start'] && count($context['tags_newtagged']) < $newtagged_pp) {
++            $context['tags_newtagged_count'] = count($context['tags_newtagged']);
++            $context['tags_index'] = "";
++        }
++        else {
++            $dbresult = db_query("
++                SELECT COUNT(distinct CONCAT(ID_MEMBER,'x',ID_TOPIC))
++                    FROM {$db_prefix}tags_log
++                    WHERE approved < 1", __FILE__, __LINE__);
++            $context['tags_newtagged_count'] = (int) mysql_result($dbresult, 0);
++            mysql_free_result($dbresult);
++
++            $context['tags_index'] = constructPageIndex($scripturl . '?action=tags', $context['tags_newtagged_start'], $context['tags_newtagged_count'], $context['tags_newtagged_pp']);
++        }
++}
++
++// called for all changes made on the manage tags base pages
++function ManageTags2 ()
++{
++    global $context, $txt, $mbname, $db_prefix, $scripturl, $user_info, $modSettings;
++    // permissions checking already done, so just do a sanity check
++    if (isset($_REQUEST['pendingtags'])) {
++        // manage tagging pending tag functions (approve|delete)
++        if (in_array(strtolower($_REQUEST['todo']),array('approve','delete'))) {
++            $idarray = array();
++            foreach ($_REQUEST as $key => $value) {
++                if (preg_match('/^a[0-9]+$/', $key)) { $idarray[] = (int) substr($key,1); }
++            }
++        }
++        if (strtolower($_REQUEST['todo']) == 'approve') {
++            $dbresult = db_query("
++                UPDATE {$db_prefix}tags
++                SET approved = 1
++                WHERE `ID_TAG` IN (" . implode(",", $idarray) . ")"
++                , __FILE__, __LINE__);
++        }
++        else if (strtolower($_REQUEST['todo']) == 'delete') {
++            $dbresult = db_query("
++                DELETE FROM {$db_prefix}tags
++                WHERE `ID_TAG` IN (".implode(",", $idarray) . ")"
++                , __FILE__, __LINE__);
++        }
++    }
++    else if (isset($_REQUEST['tagusertopic'])) {
++        // manage topic tagging (expand|approve|delete)topic
++        if (strtolower($_REQUEST['todo']) == 'expandusertopic') {
++            // if expanding we'll need to store some data for later
++            $idarray = array();
++            foreach ($_REQUEST as $key => $value) {
++                if (preg_match('/^[0-9]+x[0-9]+$/', $key)) {
++                    $idarray[] = $key;
++                }
++            }
++            $context['tags_idarray'] = $idarray;
++        }
++        else if (in_array(strtolower($_REQUEST['todo']),array('approveusertopic','deleteusertopic'))) {
++            // if not expanding, process only, and we'll be sent back to the display page 
++            $conditions = array();
++            foreach ($_REQUEST as $key => $value) {
++                if (preg_match('/^[0-9]+x[0-9]+$/', $key)) {
++                    list ($topic_id, $member_id) = array_map('intval', split('x', $key));
++                    $conditions[] = "(ID_MEMBER = $member_id AND ID_TOPIC = $topic_id)";
++                }
++                else if (preg_match('/^i[0-9]+$/', $key)) {
++                    $conditions[] = "ID = " . intval(substr($key,1));
++                }
++            }
++            if (strtolower($_REQUEST['todo']) == 'approveusertopic') {
++                $dbresult = db_query("
++                    UPDATE {$db_prefix}tags_log
++                    SET approved = 1
++                    WHERE ".implode(' OR ',$conditions) 
++                    , __FILE__, __LINE__);
++            }
++            else if (strtolower($_REQUEST['todo']) == 'deleteusertopic') {
++                $dbresult = db_query("
++                    DELETE FROM {$db_prefix}tags_log
++                    WHERE ".implode(' OR ',$conditions) 
++                    , __FILE__, __LINE__);
++            }
++        }
++        // no else required, return and continue as planned
++    }
++    else if (isset($_REQUEST['create'])) {
++        // create new tags
++        $carray = array();
++        foreach ($_REQUEST as $key => $value) {
++            if (preg_match('/^tag[0-9]+$/', $key)) {
++                $id = intval(substr($key, 3));
++                if (!isset($_REQUEST['tag'.$id]) || empty($_REQUEST['tag'.$id])) { continue 1; } 
++                $tag = trim($_REQUEST['tag'.$id]);
++                $parent = ((isset($_REQUEST['parent'.$id]) && $_REQUEST['parent'.$id] != 0) ? (int) $_REQUEST['parent'.$id] : 'NULL');
++                $taggable = (isset($_REQUEST['taggable'.$id]) ? (int) $_REQUEST['taggable'.$id] : 0);
++                $approved = (isset($_REQUEST['approved'.$id]) ? (int) $_REQUEST['approved'.$id] : 0);
++                $carray[] = "(\"" . mysql_real_escape_string($tag) . "\", $parent, $taggable, $approved)";
++            }
++        }
++        $q = db_query("
++            INSERT INTO {$db_prefix}tags (`tag`, `parent_id`, `taggable`, `approved`)
++                VALUES ".implode(',', $carray),
++                __FILE__, __LINE__);
++    }
++}
++
++// used for admin only, may be resource and bandwidth intensive for large forums
++function ViewAllTags ($displaytags = 0, $sort = 0) {
++    global $context, $mbname, $txt, $db_prefix;
++
++    if (!allowedTo('smftags_manage')) {
++        fatal_error($txt['cannot_smftags_manage'],false);
++    }
++
++    $render = true;
++
++    if (!empty($_REQUEST['todo'])) {
++        $idarray = array_map('intval', array_keys($_REQUEST['tag']));
++        if (in_array($_REQUEST['todo'],array('move','merge'))) {
++            $act = $_REQUEST['todo'];
++            $context['smftags_list'] = array_map('intval',array_keys($_REQUEST['tag']));
++            $context['sub_template']  = 'viewall2';
++            $context['page_title'] = $mbname . ' - ' . $txt['smftags_act_'.$act];
++            $render = false;
++
++            filltags(0, $context['smftags_list']); 
++
++            // hacky fix: move any orphaned tags to the root
++            foreach ($context['tags']['by_parent'] as $parent => $children) {
++                foreach ($children as $i => $child) {
++                    $foundtags[$child[0]] = 1;
++                }
++            }
++            if (!isset($context['tags']['by_parent'][0])) { $context['tags']['by_parent'][0] = array(); }
++            foreach ($context['tags']['by_parent'] as $parent => $children) {
++                if ($parent > 0 && !isset($foundtags[$parent])) {
++                    $context['tags']['by_parent'][0] = array_merge($context['tags']['by_parent'][0],$context['tags']['by_parent'][$parent]);
++                    unset($context['tags']['by_parent'][$parent]);
++                }
++            }
++            unset($foundtags);
++            ViewTags();
++        }
++        else if (in_array($_REQUEST['todo'],array('untaggable','taggable','unapprove'))) {
++            $set = (($_REQUEST['todo'] == 'unapprove') ? 'approved = 0' : 'taggable = ' . (($_REQUEST['todo'] == 'taggable') ? '1' : '0'));
++            $dbresult = db_query("
++                UPDATE {$db_prefix}tags
++                SET $set 
++                WHERE `ID_TAG` IN (" . implode(",", $idarray) . ")"
++                , __FILE__, __LINE__);
++            $context['tags']['modifiedtxt'] = sprintf($txt['smftags_success_'.strtolower($_REQUEST['todo'])],count(($idarray)));
++        }
++        else if (in_array($_REQUEST['todo'],array('delete'))) {
++            $dbresult = db_query("
++                DELETE t, l FROM {$db_prefix}tags AS t
++                LEFT JOIN {$db_prefix}tags_log AS l ON t.`ID_TAG` = l.`ID_TAG`
++                WHERE t.`ID_TAG` IN (" . implode(",", $idarray) . ")"
++                , __FILE__, __LINE__);
++            $context['tags']['modifiedtxt'] = sprintf($txt['smftags_success_delete'],count($idarray),db_affected_rows());
++        }
++    }
++    else if (isset($_REQUEST['move']) || isset($_REQUEST['merge'])) {
++        $master = (int) substr($_REQUEST['master'],4,-1);
++        $slaves = array_map('intval', explode(',', $_REQUEST['slaves']));
++        // it's futile trying to merge/move tags to themselves
++        while (in_array($master, $slaves)) { unset($slaves[array_search($master, $slaves)]); }
++        if (isset($_REQUEST['move'])) {
++            $dbresult = db_query("
++                UPDATE {$db_prefix}tags
++                SET `parent_id` = $master
++                WHERE `ID_TAG` IN (" . implode(",", $slaves) . ")"
++                , __FILE__, __LINE__);
++            $context['tags']['modifiedtxt'] = sprintf($txt['smftags_success_move'],count($slaves));
++        }
++        else if (isset($_REQUEST['merge'])) {
++            // ignore key collisions on (ID_TAG, ID_TOPIC)
++            $dbresult = db_query("
++                UPDATE IGNORE {$db_prefix}tags_log
++                SET `ID_TAG` = $master
++                WHERE `ID_TAG` IN (" . implode(",", $slaves) . ")"
++                , __FILE__, __LINE__);
++            $count = db_affected_rows();
++            $dbresult = db_query("
++                DELETE t.*, tl.* FROM {$db_prefix}tags AS t
++                LEFT JOIN {$db_prefix}tags_log AS tl ON tl.ID_TAG = t.ID_TAG
++                WHERE t.ID_TAG IN (" . implode(",", $slaves) . ")"
++                , __FILE__, __LINE__);
++            $count += db_affected_rows();
++            $context['tags']['modifiedtxt'] = sprintf($txt['smftags_success_merge'],count($slaves),$count);
++        }
++    }
++
++    if ($render) {  
++        filltags(0, array(), 1);
++        ViewTags($displaytags, $sort);
++        $context['sub_template']  = 'viewall';
++        $context['page_title'] = $mbname . ' - ' . $txt['smftags_all'];
++    }
++}
++
++// print tag cloud
++function ViewTags($displaytags = -1, $sort = 0)
++{
++    global $context, $txt, $mbname, $db_prefix, $scripturl, $user_info, $modSettings;
++
++    $a_view = allowedTo('smftags_view');
++
++    if ($a_view == false)
++        fatal_error($txt['cannot_smftags_view'],false);
++    
++    // Views that tag results and popular tags
++    if (isset($_REQUEST['id']))
++    {
++        $context['tag_search'] = array();
++        // create an array with all the tag ids
++        $idr = array_map('intval',explode(',', $_REQUEST['id']));
++        $topics = array();
++
++        // find the name of tags in the array, just in case one isn't used
++        $dbresult = db_query("
++            SELECT ID_TAG, tag
++            FROM {$db_prefix}tags 
++            WHERE approved AND taggable AND ID_TAG IN(".implode(',', $idr).")
++            ORDER BY tag ASC", __FILE__, __LINE__);
++
++        while ($row = mysql_fetch_assoc($dbresult)) {
++            $context['tag_search'][$row['ID_TAG']] = $row['tag'];
++        }
++        mysql_free_result($dbresult);
++
++        if (empty($context['tag_search'])) { fatal_error($txt['smftags_err_invalidtag'], false); }
++        
++        $context['page_title'] = $mbname . ' - ' . $txt['smftags_resultsfor'] . implode(', ', $context['tag_search']);
++        $context['start'] = (int) $_REQUEST['start'];
++
++        // find the topics where all requested tags are used
++        $dbresult = db_query("
++            SELECT ID_TOPIC, COUNT(*) AS count
++            FROM {$db_prefix}tags_log AS l
++            WHERE approved AND ID_TAG IN(".implode(',', $idr).")
++            GROUP BY ID_TOPIC
++            HAVING count = " . count($idr) . "
++            ORDER BY ID_TOPIC ASC",
++            __FILE__, __LINE__);
++
++        while ($row = mysql_fetch_row($dbresult)) { $topics[] = $row[0]; }
++        mysql_free_result($dbresult);
++
++        if (empty($topics)) { fatal_error($txt['smftags_err_emptytag'], false); }
++
++        // Find Results
++        $dbresult = db_query("
++            SELECT t.numReplies, t.numViews, f.subject, f.ID_TOPIC, f.ID_MEMBER AS first_ID_MEMBER, u.ID_MEMBER AS last_ID_MEMBER, fm.realName AS first_posterName, um.realName as last_posterName, f.posterTime AS first_posterTime, u.posterTime AS last_posterTime, t.ID_BOARD, ll.ID_TAG, lt.tag
++            FROM {$db_prefix}topics AS t
++            LEFT JOIN {$db_prefix}boards AS b ON t.ID_BOARD = b.ID_BOARD
++            LEFT JOIN {$db_prefix}messages AS f ON t.ID_FIRST_MSG = f.ID_MSG
++            LEFT JOIN {$db_prefix}messages AS u ON t.ID_LAST_MSG = u.ID_MSG
++            LEFT JOIN {$db_prefix}tags_log AS l ON t.ID_TOPIC = l.ID_TOPIC
++            LEFT JOIN {$db_prefix}tags_log AS ll ON l.ID_TOPIC = ll.ID_TOPIC AND ll.approved AND ll.ID_TAG NOT IN (".implode(',', array_keys($context['tag_search'])).")
++            LEFT JOIN {$db_prefix}tags AS lt ON ll.ID_TAG = lt.ID_TAG AND lt.approved
++            LEFT JOIN {$db_prefix}members AS fm ON f.ID_MEMBER = fm.ID_MEMBER
++            LEFT JOIN {$db_prefix}members AS um ON u.ID_MEMBER = um.ID_MEMBER
++            WHERE l.approved AND t.ID_TOPIC IN (".implode(',', array_values($topics)).") AND " . $user_info['query_see_board'] . "
++            ORDER BY u.posterTime DESC, lt.tag ASC
++        ", __FILE__, __LINE__);
++        
++        $context['tags_topics'] = array();
++        $prev = array();
++        while ($row = mysql_fetch_assoc($dbresult))
++        {
++            if (isset($prev['ID_TOPIC']) && $prev['ID_TOPIC'] == $row['ID_TOPIC']) {
++                if (!empty($row['ID_TAG']))
++                    $prev['othertags'][$row['ID_TAG']] = $row['tag'];
++            }
++            else {
++                if (!empty($prev))
++                    $context['tags_topics'][] = $prev;
++                $prev = array(
++                    'subject' => $row['subject'],
++                    'ID_TOPIC' => $row['ID_TOPIC'],
++                    'first_ID_MEMBER' => $row['first_ID_MEMBER'],
++                    'first_posterName' => $row['first_posterName'],
++                    'first_posterTime' => $row['first_posterTime'],
++                    'last_ID_MEMBER' => $row['last_ID_MEMBER'],
++                    'last_posterName' => $row['last_posterName'],
++                    'last_posterTime' => $row['last_posterTime'],
++                    'numViews' => $row['numViews'],
++                    'numReplies' => $row['numReplies'],
++                    'othertags' => array(),
++                );
++                if (!empty($row['ID_TAG']))
++                    $prev['othertags'][$row['ID_TAG']] = $row['tag'];
++            }
++        }
++        if (!empty($prev))
++            $context['tags_topics'][] = $prev;
++        mysql_free_result($dbresult);
++
++        $context['sub_template']  = 'results';
++    }
++    else {
++        // so we're wanting a cloud of all the tags then
++
++        // this function is also called externally
++        // so only set the title if action=tags
++        if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'tags' && !isset($_REQUEST['sa'])) {
++            $context['page_title'] = $mbname . ' - ' . $txt['smftags_popular'];
++        }
++
++        if ($displaytags == -1) {
++            $displaytags = (int) $modSettings['smftags_set_cloud_tags_to_show'];
++        }
++
++        //Tag cloud from http://www.prism-perfect.net/archive/php-tag-cloud-tutorial/
++        // order by logic revised to ensure optimal tags are selected, this is then resorted later on request
++        $dbresult = db_query("
++            SELECT t.tag AS tag, l.ID_TAG, COUNT(l.ID_TAG) AS quantity
++            FROM {$db_prefix}tags as t, {$db_prefix}tags_log as l
++            WHERE t.ID_TAG = l.ID_TAG AND t.taggable AND t.approved AND l.approved
++            GROUP BY l.ID_TAG
++            ORDER BY COUNT(l.ID_TAG) DESC, RAND()" . (($displaytags < 1) ? "" : "
++            LIMIT $displaytags
++        "), __FILE__, __LINE__);
++
++        // here we loop through the results and put them into a two arrays
++        // $tagq[id] = $quantity; so we can do a popularity sort
++        // $tagn[id] = 'name';
++        $tagq = array();
++        $tagn = array();
++
++        while ($row = mysql_fetch_array($dbresult)) {
++            $tagq[$row['ID_TAG']] = $row['quantity'];
++            $tagn[$row['ID_TAG']] = $row['tag'];
++        }
++
++        // if there are tags, sort them,
++        //  and define $tagsort so we know how to loop through the array later
++        if ((empty($sort) && $modSettings['smftags_set_cloud_sort'] == 'alpha') || strval($sort) == 'alpha') {
++            if (!empty($tagn)) {
++                natcasesort($tagn);
++            }
++            $tagsort = &$tagn;
++        }
++        elseif ((empty($sort) && $modSettings['smftags_set_cloud_sort'] == 'count') || strval($sort) == 'count') {
++            if (!empty($tagq)) {
++                arsort($tagq, SORT_NUMERIC);
++            }
++            $tagsort = &$tagq;
++        }
++        else {
++            // there's no shuffle_assoc function
++            //  based on code by andjones at gmail dot com from php.net
++            if (!empty($tagq)) {
++                $keys = array_keys($tagq);
++                shuffle($keys); 
++                $newtagq = array(); 
++                foreach ($keys as $key) {
++                    $newtagq[$key] = $tagq[$key];
++                }
++                $tagq = $newtagq;
++                unset($newtagq);
++            }
++            $tagsort = &$tagq;
++        }
++
++        $row_count = 0;
++        if (count($tagn) > 0) {
++
++            // max and min font sizes in precent [sic] configurable in admin settings
++            $max_size = $modSettings['smftags_set_cloud_max_font_size_precent'];
++            $min_size = $modSettings['smftags_set_cloud_min_font_size_precent'];
++
++            // get the largest and smallest array values
++            $max_qty = max(array_values($tagq));
++            $min_qty = min(array_values($tagq));
++
++            // find the range of values
++            $spread = $max_qty - $min_qty;
++            if (0 == $spread)
++            { // we don't want to divide by zero
++                $spread = 1;
++            }
++
++            // determine the font-size increment
++            // this is the increase per tag quantity (times used)
++            $step = ($max_size - $min_size)/($spread);
++
++            $context['poptags'] = '';
++
++            // loop through our tag array
++            foreach ($tagsort as $id => $null) {
++                // get data - we don't know which array we've been passed
++                $quantity = $tagq[$id];
++                $name = $tagn[$id];
++
++                $row_count++;
++
++                // calculate CSS font-size
++                // find the $value in excess of $min_qty
++                // multiply by the font-size increment ($size)
++                // and add the $min_size set above
++                $size = $min_size + (($quantity - $min_qty) * $step);
++                // comment if you don't want sizes in whole %:
++                $size = ceil($size);
++
++                // link to the tag details page, with a hover title
++                //  make spaces non-breaking for auto-wrapped dynamic width
++                $context['poptags'] .= '<a href="' . $scripturl . '?action=tags;id=' . $id . '" style="font-size: '.$size.'%" title="'.sprintf($txt['smftags_ntopicstaggedwithx'], $quantity, $name).'">'.str_replace(' ','&nbsp;',$name).'</a> ';
++
++            }
++        }
++        $context['tagCount'] = $row_count;
++
++        $latest_limit = $modSettings['smftags_set_latest_limit'];
++
++        // Find Results
++        $dbresult = db_query("
++            SELECT DISTINCT l.ID_TOPIC, t.numReplies, t.numViews, m.ID_MEMBER, u.realName AS posterName, m.subject, m.ID_TOPIC, m.posterTime, t.ID_BOARD
++            FROM {$db_prefix}tags_log as l
++            LEFT JOIN {$db_prefix}topics AS t ON l.ID_TOPIC = t.ID_TOPIC
++            LEFT JOIN {$db_prefix}boards AS b ON b.ID_BOARD = t.ID_BOARD
++            LEFT JOIN {$db_prefix}messages AS m ON t.ID_FIRST_MSG = m.ID_MSG
++            LEFT JOIN {$db_prefix}members AS u ON m.ID_MEMBER = u.ID_MEMBER
++            WHERE l.approved AND " . $user_info['query_see_board'] . "
++            ORDER BY l.ID DESC LIMIT $latest_limit", __FILE__, __LINE__);
++
++        $context['tags_topics'] = array();
++        while ($row = mysql_fetch_assoc($dbresult))
++        {
++            $context['tags_topics'][] = array(
++                'ID_MEMBER' => $row['ID_MEMBER'],
++                'posterName' => $row['posterName'],
++                'subject' => $row['subject'],
++                'ID_TOPIC' => $row['ID_TOPIC'],
++                'posterTime' => $row['posterTime'],
++                'numViews' => $row['numViews'],
++                'numReplies' => $row['numReplies'],
++            );
++        }
++        mysql_free_result($dbresult);
++    }
++}
++
++// look up relevant tags, for the topic provided if applicable
++function filltags ($ID_TOPIC = NULL, $LIST = array(), $flag = 0) {
++    // flag = 0 => default, both approved and suggested
++    // flag = -1 => suggested tags only
++    // flag = 1 => approved tags only
++    global $db_prefix, $context;
++    $context['tags']['topic'] = $ID_TOPIC;
++    $context['tags']['by_parent'] = $context['tags']['has_tagged_children'] = array();
++    $context['tags']['show_rmsuggest'] = (allowedTo('smftags_manage') ? 0 : -1);
++
++    if (empty($ID_TOPIC)) {
++        // use of this query needs much refinement as it will be massive on larger forums
++        $where = array();
++        if (!empty($LIST)) { $where[] = "t.ID_TAG IN ('" . implode("','", $LIST) . "')"; }
++        if (!empty($flag)) { $where[] = "t.approved = ".max(0,$flag); }
++        $query = db_query("
++            SELECT t.ID_TAG AS ID_TAG, t.tag AS tag, COUNT(l.ID_TAG) AS quantity, t.approved AS approved1, t.parent_id AS parent_id, t.taggable AS taggable
++            FROM {$db_prefix}tags AS t
++            LEFT JOIN {$db_prefix}tags_log AS l ON t.ID_TAG = l.ID_TAG
++            " . (empty($where) ? '' : 'WHERE ' . implode(' AND ', $where)) . "
++            GROUP BY t.ID_TAG
++            ORDER BY t.tag ASC
++        ", __FILE__, __LINE__);
++
++        while ($array = mysql_fetch_assoc($query)) {
++
++            if (!$array['parent_id']) { $array['parent_id'] = 0; }
++            // define an array of tags by their parent ids - yes it looks ugly
++            $context['tags']['by_parent'][$array['parent_id']][] = array(
++                $array['ID_TAG'],
++                $array['tag'],
++                $array['approved1'],
++                $array['taggable'],
++                0,
++                -1,
++                $array['quantity']
++            );
++        }
++    }
++    else {
++        $query = db_query("
++            SELECT t.ID_TAG AS ID_TAG, t.tag AS tag, COUNT(l.ID_TAG) AS quantity, t.approved AS approved1, t.parent_id AS parent_id, t.taggable AS taggable, tl.ID_TAG AS tagged, tl.approved AS approved2
++            FROM {$db_prefix}tags AS t
++            LEFT JOIN {$db_prefix}tags_log AS tl ON t.ID_TAG = tl.ID_TAG AND tl.ID_TOPIC = $ID_TOPIC
++            LEFT JOIN {$db_prefix}tags_log AS l ON t.ID_TAG = l.ID_TAG
++            GROUP BY t.ID_TAG
++            ORDER BY t.tag ASC
++        ", __FILE__, __LINE__);
++
++        while ($array = mysql_fetch_assoc($query)) {
++            if ($context['tags']['show_rmsuggest'] == 0 && isset($array['approved2']) && $array['approved2'] == 0 && $array['approved1'] == 1) { $context['tags']['show_rmsuggest'] = 1; }
++            if (!$array['parent_id']) { $array['parent_id'] = 0; }
++            // define an array of tags by their parent ids - yes it looks ugly
++            $context['tags']['by_parent'][$array['parent_id']][] = array(
++                $array['ID_TAG'],
++                $array['tag'],
++                $array['approved1'],
++                $array['taggable'],
++                $array['tagged'],
++                $array['approved2'],
++                $array['quantity']
++            );
++            $parents_by_children[$array['ID_TAG']] = $array['parent_id'];
++            if ($array['parent_id'] && $array['tagged']) {
++                $tempid = $array['ID_TAG'];
++                // expand self if tagged and has a parent
++                // TODO simplify this convoluted logic and unneccesary data storage
++                $context['tags']['has_tagged_children'][$tempid] = TRUE;
++                while (isset($parents_by_children[$tempid])) { $tempid = $parents_by_children[$tempid]; $context['tags']['has_tagged_children'][$tempid] = TRUE;}
++            }
++        }
++        $context['tags']['show_rmsuggest'] = max(0, $context['tags']['show_rmsuggest']);
++    }
++}
++
++// called only from Post for new topics
++function AddTopic()
++{
++    global $context, $txt, $mbname, $db_prefix, $ID_MEMBER;
++
++    // Check permission
++    $a_add = allowedTo('smftags_add');
++
++    if ($a_add == false)
++        fatal_error($txt['cannot_smftags_add'],false);
++
++    // get query results to build array of all tags
++    $query = db_query("
++        SELECT t.tag AS tag, t.ID_TAG AS ID_TAG, COUNT(l.ID_TAG) AS quantity, t.approved AS approved
++        FROM {$db_prefix}tags AS t
++        LEFT JOIN {$db_prefix}tags_log AS l ON t.ID_TAG = l.ID_TAG
++        GROUP BY t.ID_TAG
++        ORDER BY t.tag ASC",
++    __FILE__, __LINE__);
++
++    $context['tags'] = array();
++    while ($row = mysql_fetch_assoc($query))
++    {
++        $context['tags'][] = array(
++            'ID_TAG' => $row['ID_TAG'],
++            'tag' => $row['tag'],
++            'quantity' => $row['quantity'],
++            'approved' => $row['approved'],
++            'tagged' => 0,
++        );
++    }
++    // don't load the subtemplate
++}
++
++function EditTopic()
++{
++    global $context, $txt, $mbname, $db_prefix, $ID_MEMBER;
++
++    // Get the Topic (id)
++    $topic = (int) $_REQUEST['topic'];
++
++    if (empty($topic))
++        fatal_error($txt['smftags_err_notopic'],false);
++
++    // Check permission
++    $a_edit = allowedTo('smftags_edit_any');
++
++    if (!$a_edit && allowedTo('smftags_edit_own')) {
++        $dbresult = db_query("
++            SELECT m.ID_MEMBER
++            FROM {$db_prefix}topics as t, {$db_prefix}messages as m
++            WHERE t.ID_FIRST_MSG = m.ID_MSG AND t.ID_TOPIC = $topic
++            LIMIT 1
++        ", __FILE__, __LINE__);
++
++        $row = mysql_fetch_assoc($dbresult);
++        mysql_free_result($dbresult);
++        if ($ID_MEMBER == $row['ID_MEMBER'])
++        $a_edit = true;
++    }
++
++    if (!$a_edit)
++        fatal_error($txt['cannot_smftags_edit'],false);
++
++    $context['tags_topic'] = $topic;
++
++    filltags($topic);
++
++    // if allowed to manage, all editable, otherwise only approved editable
++    $context['smftags_flag'] = (allowedTo('smftags_manage') ? 2 : 1);
++    $context['smftags_act'] = 'edit';
++
++    // Load the subtemplate
++    $context['sub_template']  = 'edittopic';
++    $context['page_title'] = $mbname . ' - ' . $txt['smftags_edittag'];
++}
++
++// called from Display.php form with manual tag data, or sa=edittopic with list tag data
++// this entire function needs to be taken out the back and shot
++function EditTopic2()
++{
++    global $db_prefix, $txt, $modSettings, $ID_MEMBER;
++    $topic = (int) $_REQUEST['topic'];
++    $type = (int) $_REQUEST['type']; // 1 = manual; 2 = list
++
++    if (empty($topic))
++        fatal_error($txt['smftags_err_notopic'],false);
++
++    // Check Permission
++    $a_edit = allowedTo('smftags_edit_any');
++    $a_suggest = allowedTo('smftags_suggest_any');
++
++    if ((!$a_edit && allowedTo('smftags_edit_own')) || (!$a_suggest && allowedTo('smftags_suggest_own'))) {
++        $dbresult = db_query("
++            SELECT m.ID_MEMBER
++            FROM {$db_prefix}topics as t, {$db_prefix}messages as m
++            WHERE t.ID_FIRST_MSG = m.ID_MSG AND t.ID_TOPIC = $topic
++            LIMIT 1
++        ", __FILE__, __LINE__);
++
++        $row = mysql_fetch_assoc($dbresult);
++        mysql_free_result($dbresult);
++
++        if ($ID_MEMBER == $row['ID_MEMBER']) {
++            if (!$a_edit)
++                $a_edit = allowedTo('smftags_edit_own');
++            if (!$a_suggest)
++                $a_suggest = allowedTo('smftags_suggest_own');
++        }
++    }
++    if ((!$a_edit && !$a_suggest) || ($type == 1 && !$modSettings['smftags_set_manualtags']) || ($type == 2 && !$modSettings['smftags_set_listtags']))
++        fatal_error($txt['cannot_smftags_edit'],false);
++
++    $dbresult= db_query("
++        SELECT t.tag,l.ID,t.ID_TAG,l.approved
++        FROM {$db_prefix}tags_log as l, {$db_prefix}tags as t
++        WHERE t.approved && t.ID_TAG = l.ID_TAG && l.ID_TOPIC = $topic
++        ORDER BY l.approved DESC, t.tag ASC", __FILE__, __LINE__);
++
++    $tags[0] = $tags[1] = array();
++    $tagcount[0] = $tagcount[1] = 0;
++    $tagnames = array();
++
++    // topic tags that are already applied 
++    $oldtags[0] = $oldtags[1] = array();        // keyed by ID_TAG
++    // topic tags that must now be applied
++    $addtags[0] = $addtags[1] = array();        // keyed by ID_TAG
++    // tags which exist, but require a new topic tag entry
++    $reusetags[0] = $reusetags[1] = array();    // keyed by ID_TAG
++    // tags which must first be created
++    $createtags[0] = $createtags[1] = array();  // keyed by lowercase tag name
++
++    while($row = mysql_fetch_assoc($dbresult))
++    {
++        $tagcount[$row['approved']]++;
++        $oldtags[$row['approved']][$row['ID_TAG']] = $row['tag'];
++        if ($type == 1) { $tagnames[strtolower($row['tag'])] = $row['ID_TAG']; }
++    }
++    mysql_free_result($dbresult);
++
++    if ($type == 1) {
++        // determine how new tags are created
++        $createtype = (allowedTo('smftags_suggesttag') ? 0 : (allowedTo('smftags_createtag') ? 1 : -1));
++        // do manual tagging only
++        $rawtags[0] = $rawtags[1] = array();
++        if ($a_edit || $a_suggest) { $rawtags[0] = array_unique(array_map('trim', explode(chr($modSettings['smftags_set_delimiter']), $_REQUEST['suggesttags']))); }
++        if ($a_edit) { $rawtags[1] = array_unique(array_map('trim', explode(chr($modSettings['smftags_set_delimiter']), $_REQUEST['tags']))); }
++
++        // attempt to identify tags by name
++        foreach ($rawtags as $i => $array) {
++            if (!empty($rawtags[$i])) {
++                foreach ($array as $j => $tag) {
++                    if (empty($tag)) {
++                        // ignore null tags
++                        unset($rawtags[$i][$j]);
++                    }
++                    else if (isset($tagnames[strtolower($tag)])) {
++                        // tag is already known
++                        $j = $tagnames[strtolower($tag)];
++                        $addtags[$i][$j] = $tag;
++                        // just check we're not trying to approve and suggest the same tag
++                        if (isset($addtags[1-$i][$j])) { unset($addtags[0][$j]); }
++                    }
++                    else if ($createtype > -1) {
++                        // tag probably needs creating
++                        $j = strtolower($tag);
++                        $createtags[$i][$j] = $tag;
++                        if (isset($createtags[1-$i][$j])) { unset($createtags[0][$j]); }
++                    }
++                }
++            }
++        }
++        if (!empty($createtags[0]) || !empty($createtags[1])) {
++            // see if these tags have already been added or not, we do not care if they are approved or not
++            $dbresult = db_query("
++                SELECT DISTINCT tag AS tag, ID_TAG
++                FROM {$db_prefix}tags
++                WHERE tag IN (\"" . implode('", "', array_merge($createtags[0], $createtags[1])) . '")
++                ORDER BY `ID_TAG` DESC', __FILE__, __LINE__);
++
++            while($row = mysql_fetch_assoc($dbresult))
++            {
++                $j = 0;
++                $ltag = strtolower($row['tag']);
++                // remove any occurances from the create lists
++                if (isset($createtags[0][$ltag])) {
++                    unset($createtags[0][$ltag]);
++                }
++                if (isset($createtags[1][$ltag])) {
++                    unset($createtags[1][$ltag]);
++                    $j = 1;
++                }
++                // move tag to the new list
++                $reusetags[$j][$row['ID_TAG']] = 1;
++            }
++            mysql_free_result($dbresult);
++        }
++    }
++    else if ($type == 2) {
++        // do list tagging only
++        // submissions will always be the highest permission available to the user ($a_edit)
++        foreach ($_REQUEST as $key => $value) {
++            if (substr($key,0,3) == "tag" && is_numeric(substr($key,3))) {
++                $addtags[$a_edit][substr($key,3)] = 1;
++            }
++        }
++    }
++
++    // discard any tags that do not meet our size constraints - silently
++	// this is intentionally done after checking for existing tags to allow for grandfathered tags outside the current constraints
++    foreach ($createtags as $i => $array) {
++        foreach ($array as $j => $tag) {
++            if (strlen($tag) < $modSettings['smftags_set_mintaglength'] || strlen($tag) > $modSettings['smftags_set_maxtaglength']) {
++                unset($createtags[$i][$j]);
++            }
++        }
++    }
++
++    // check if need to prune some tags - for now will be discarded silently
++    foreach (array(0,1) as $i) {
++        while ($modSettings['smftags_set_maxtags'] < (count($addtags[$i]) + count($createtags[$i]) + count($reusetags[$i]) - count($oldtags[$i]))) {
++            if (!empty($addtags)) { array_pop($addtags[$i]); }
++            else if (!empty($createtags)) { array_pop($reusetags[$i]); }
++            else if (!empty($reuseetags)) { array_pop($createtags[$i]); }
++        }
++    }
++
++    // action arrays
++    $add = $create = $delete = array();
++
++    // if topic tags were applied to new but existing tags
++    if (!empty($reusetags[0]) || !empty($reusetags[1])) {
++        foreach ($reusetags as $i => $array) {
++            foreach ($array as $key => $j) {
++                $add[] = "($key,$topic,$ID_MEMBER,$i)";
++            }
++        }
++    }
++    unset ($reusetags);
++
++    // firstly delete tags that have been unticked or removed
++    // suggested tags are not deletable with list tags, by design
++    // (recall that disabled form elements will not be submitted)
++    foreach (($type == 2 ? array(1) : array(0,1)) as $i) {
++        foreach (array_diff_key($oldtags[$i],$addtags[$i]) as $j => $tag) {
++            $delete[] = (int) $j;
++        }
++    }
++    if (!empty($delete)) {
++        $q = db_query("DELETE FROM {$db_prefix}tags_log WHERE `ID_TOPIC` = $topic AND `ID_TAG` IN (".implode(',',$delete).")", __FILE__, __LINE__);
++    }
++    unset($delete);
++
++    // secondly we create any new tags
++    foreach ($createtags as $i => $j) {
++        foreach ($j as $tag) {
++            // this first query has to be done individually for last_insert_id() support
++            $q = db_query("INSERT INTO {$db_prefix}tags (`TAG`, `approved`) VALUES (\"".mysql_real_escape_string($tag)."\", $createtype)", __FILE__, __LINE__);
++            // but the rest we store for later
++            $add[] = "(".db_insert_id().", $topic, $ID_MEMBER, $i)";
++        }
++    }
++    unset($createtags);
++
++    // thirdly, replace the topic tag entries
++    foreach (array(0,1) as $i) {
++        foreach (array_diff_key($addtags[$i],$oldtags[$i]) as $j => $tag) {
++            $add[] = "($j, $topic, $ID_MEMBER, $i)";
++        }
++    }
++    if (!empty($add)) {
++        $q = db_query("REPLACE INTO {$db_prefix}tags_log (`ID_TAG`,`ID_TOPIC`,`ID_MEMBER`,`approved`) VALUES ".implode(',', $add), __FILE__, __LINE__);
++    }
++    unset($add);
++
++    // finally, if the 'remove suggestions' option has been ticked, clear out any remaining suggestions
++    if (isset($_REQUEST['tags_rmsuggest']) && allowedTo('smftags_manage')) {
++        $q = db_query("DELETE FROM {$db_prefix}tags_log WHERE `approved` = 0 AND `ID_TOPIC` = $topic", __FILE__, __LINE__);
++    }
++
++    //Redirect back to the topic
++    redirectexit('topic=' . $topic);
++}
++
++function ApproveTopic()
++{
++    global $db_prefix, $ID_MEMBER, $txt;
++    
++    $id = (int) $_REQUEST['id'];
++    //Check permission
++    $a_approve = allowedTo('smftags_manage');
++
++    if (!$a_approve)
++        fatal_error($txt['cannot_smftags_approve'],false);
++    
++    // get some more details
++    $dbresult = db_query("
++        SELECT ID_MEMBER,ID_TOPIC,ID_TAG
++        FROM {$db_prefix}tags_log
++        WHERE ID = '$id'
++        LIMIT 1
++        ", __FILE__, __LINE__);
++
++    $row = mysql_fetch_assoc($dbresult);
++    mysql_free_result($dbresult);
++
++    // Approve the taggings
++    db_query("
++        UPDATE {$db_prefix}tags_log
++        SET `approved` = 1
++        WHERE ID = '$id'
++        LIMIT 1
++    ", __FILE__, __LINE__);
++
++    // Redirect back to the topic
++    redirectexit('topic='.$row['ID_TOPIC']);
++}
++
++function DeleteTopic()
++{
++    global $db_prefix, $ID_MEMBER, $txt;
++    
++    $id = (int) $_REQUEST['id'];
++    //Check permission
++    $a_edit = allowedTo('smftags_edit_any');
++
++    // if we have a chance of having rights
++    if ($a_edit || allowedTo('smftags_edit_own')) {
++        // get some more details
++        $dbresult = db_query("
++            SELECT ID_MEMBER,ID_TOPIC,ID_TAG
++            FROM {$db_prefix}tags_log
++            WHERE ID = '$id'
++            LIMIT 1
++        ", __FILE__, __LINE__);
++
++        $row = mysql_fetch_assoc($dbresult);
++        mysql_free_result($dbresult);
++
++        // check owner permissions
++        if (!$a_edit && $row['ID_MEMBER'] == $ID_MEMBER)
++            $a_edit = true;
++    }
++
++    if (!$a_edit)
++        fatal_error($txt['cannot_smftags_edit'],false);
++    
++    // Delete the tagging
++    db_query("
++        DELETE FROM {$db_prefix}tags_log
++        WHERE ID = '$id'
++        LIMIT 1
++    ", __FILE__, __LINE__);
++
++    // Redirect back to the topic
++    redirectexit('topic='.$row['ID_TOPIC']);
++}
++
++function RenameTag()
++{
++    global $db_prefix, $txt;
++    
++    //Check permission
++    $a_manage = allowedTo('smftags_manage');
++    if (!$a_manage)
++        fatal_error($txt['cannot_smftags_manage'],false);
++
++    $ida = array();
++    foreach ($_REQUEST as $key => $value) {
++        if (preg_match('/^rename[0-9]+$/', $key)) { $ida[substr($key,6)] = $value; }
++    }
++
++    // get these tag names
++    $dbresult = db_query("
++        SELECT ID_TAG, tag
++        FROM {$db_prefix}tags
++        WHERE ID_TAG IN(".implode(',', array_keys($ida)).")
++        ORDER BY tag ASC", __FILE__, __LINE__);
++
++    while ($row = mysql_fetch_array($dbresult)) {
++        if ($row['tag'] != $ida[$row['ID_TAG']]) {
++            $id = (int) $row['ID_TAG'];
++            // get some more details
++            $dbupdate = db_query("
++                UPDATE {$db_prefix}tags
++                SET tag = '".mysql_real_escape_string($ida[$row['ID_TAG']])."'
++                WHERE ID_TAG = '$id'
++                LIMIT 1
++                ", __FILE__, __LINE__);
++        } 
++    }
++    mysql_free_result($dbresult);
++    redirectexit('action=tags;id='.implode(',', array_keys($ida)));
++}
++
++function TagsSettings()
++{
++    global $context, $txt, $mbname;
++    adminIndex('tags_settings');
++    // Check permission
++    $a_admin = allowedTo('smftags_admin');
++    if ($a_admin == false)
++        fatal_error($txt['cannot_smftags_admin'],false);
++    
++    $context['sub_template']  = 'admin_settings';
++    $context['page_title'] = $mbname . ' - ' . $txt['smftags_settings'];
++}
++
++function TagsSettings2()
++{
++    global $txt, $db_prefix, $modSettings;
++    // Check permission
++    $a_admin = allowedTo('smftags_admin');
++    if ($a_admin == false)
++        fatal_error($txt['cannot_smftags_admin'],false);
++    
++    // Get the settings
++    $smftags_set_mintaglength = (int) max(1,$_REQUEST['smftags_set_mintaglength']);
++    $smftags_set_maxtaglength =  (int) min(64,$_REQUEST['smftags_set_maxtaglength']);
++    $smftags_set_maxtags = (int) $_REQUEST['smftags_set_maxtags'];
++
++    $smftags_set_manualtags = (int) isset($_REQUEST['smftags_set_manualtags']);
++    $smftags_set_delimiter = (int) ord($_REQUEST['smftags_set_delimiter']);
++
++    $dbresult = db_query("
++        SELECT COUNT(*)
++        FROM {$db_prefix}tags
++        WHERE `tag` LIKE '%" . chr(ord($_REQUEST['smftags_set_delimiter'])) . "%'
++    ", __FILE__, __LINE__);
++
++    $delresult = mysql_fetch_row($dbresult);
++    $smftags_set_delimiter = (int) ($delresult[0] == 0 ? ord($_REQUEST['smftags_set_delimiter']) : $modSettings['smftags_set_delimiter']);
++
++    $smftags_set_listtags = (int) isset($_REQUEST['smftags_set_listtags']);
++    $smftags_set_listcols = (int) $_REQUEST['smftags_set_listcols'];
++
++    $smftags_set_display_top = (int) isset($_REQUEST['smftags_set_display_top']);
++    $smftags_set_display_bottom = (int) isset($_REQUEST['smftags_set_display_bottom']);
++    $smftags_set_display_messageindex = (int) isset($_REQUEST['smftags_set_display_messageindex']);
++
++    $smftags_set_latest_limit = (int) $_REQUEST['smftags_set_latest_limit'];
++    
++    $smftags_set_cloud_tags_to_show = (int) $_REQUEST['smftags_set_cloud_tags_to_show'];
++    // precent [sic] variables
++    $smftags_set_cloud_max_font_size_precent = (int) $_REQUEST['smftags_set_cloud_max_font_size_precent'];
++    $smftags_set_cloud_min_font_size_precent = (int) $_REQUEST['smftags_set_cloud_min_font_size_precent'];
++    $smftags_set_cloud_sort = (in_array($_REQUEST['smftags_set_cloud_sort'],array('alpha','count','random'))) ? $_REQUEST['smftags_set_cloud_sort'] : $modSettings['smftags_set_cloud_sort'];
++
++    $smftags_set_taggable = '';
++    foreach (split(" ", $_REQUEST['smftags_set_taggable']) as $item)
++        if (is_numeric($item)) { $smftags_set_taggable .= " $item"; }
++
++
++    // Save the setting information
++    updateSettings(
++    array('smftags_set_maxtags' => $smftags_set_maxtags,
++    'smftags_set_mintaglength' => $smftags_set_mintaglength,
++    'smftags_set_maxtaglength' => $smftags_set_maxtaglength,
++    'smftags_set_manualtags' => $smftags_set_manualtags,
++    'smftags_set_delimiter' => $smftags_set_delimiter,
++    'smftags_set_listtags' => $smftags_set_listtags,
++    'smftags_set_listcols' => $smftags_set_listcols,
++    'smftags_set_display_top' => $smftags_set_display_top,
++    'smftags_set_display_bottom' => $smftags_set_display_bottom,
++    'smftags_set_display_messageindex' => $smftags_set_display_messageindex,
++    'smftags_set_latest_limit' => $smftags_set_latest_limit,
++    'smftags_set_taggable' => trim($smftags_set_taggable),
++    'smftags_set_cloud_sort' => $smftags_set_cloud_sort,
++    'smftags_set_cloud_tags_to_show' => $smftags_set_cloud_tags_to_show,
++    // precent [sic] variables
++    'smftags_set_cloud_max_font_size_precent' => $smftags_set_cloud_max_font_size_precent,
++    'smftags_set_cloud_min_font_size_precent' => $smftags_set_cloud_min_font_size_precent,
++    ));
++
++    // check if we need to complain about the tag delimiter
++    if ($delresult[0] > 0) { fatal_error(sprintf($txt['smftags_err_delimiterused'], $delresult[0])); }
++    
++    // Redirect to the admin section
++    redirectexit('action=tags;sa=admin');
++}
++
++// delete only empty tags, not sure why?
++function TagCleanUp($ID_TAG)
++{
++    global $db_prefix;
++    if (!allowedTo('smftags_admin')) { fatal_error($txt['cannot_smftags_admin']); }
++
++    db_query("
++        SELECT ID_TAG 
++        FROM {$db_prefix}tags_log 
++        WHERE ID_TAG = " . $ID_TAG
++        , __FILE__, __LINE__);
++
++    if (db_affected_rows() == 0) 
++        db_query("DELETE FROM {$db_prefix}tags WHERE ID_TAG = " . $ID_TAG, __FILE__, __LINE__);
++    
++    //Redirect to the admin section - not any more
++    //redirectexit('action=tags;sa=admin');
++}
++
++function SuggestTopic()
++{
++    global $context, $txt, $mbname;
++    // Check permission
++    // Get the Topic (id)
++    $topic = (int) $_REQUEST['topic'];
++
++    if (empty($topic))
++        fatal_error($txt['smftags_err_notopic'],false);
++
++    // Check permission
++    $a_suggest = allowedTo('smftags_suggest_any');
++
++    if (!$a_suggest && allowedTo('smftags_suggest_own')) {
++        $dbresult = db_query("
++            SELECT m.ID_MEMBER
++            FROM {$db_prefix}topics as t, {$db_prefix}messages as m
++            WHERE t.ID_FIRST_MSG = m.ID_MSG AND t.ID_TOPIC = $topic
++            LIMIT 1
++        ", __FILE__, __LINE__);
++
++        $row = mysql_fetch_assoc($dbresult);
++        mysql_free_result($dbresult);
++
++        if ($ID_MEMBER == $row['ID_MEMBER'])
++            $a_suggest = true;
++    }
++
++    if (!$a_suggest)
++        fatal_error($txt['cannot_smftags_suggest'],false);
++
++    $context['tags_topic'] = $topic;
++
++    filltags($topic);
++
++    // never allow editing of existing topic tags
++    $context['smftags_flag'] = 0;
++    $context['smftags_act'] = 'suggest';
++
++    // Load the subtemplate
++    $context['sub_template']  = 'edittopic';
++    $context['page_title'] = $mbname . ' - ' . $txt['smftags_suggest'];
++}
++function SuggestTopic2()
++{
++    global $db_prefix, $txt, $modSettings, $ID_MEMBER;
++    $topic = (int) $_REQUEST['topic'];
++
++    if (empty($topic))
++        fatal_error($txt['smftags_err_notopic'],false);
++
++    // Check permission
++    $a_suggest = allowedTo('smftags_suggest_any');
++
++    if (!$a_suggest && allowedTo('smftags_suggest_own')) {
++        $dbresult = db_query("
++            SELECT m.ID_MEMBER
++            FROM {$db_prefix}topics as t, {$db_prefix}messages as m
++            WHERE t.ID_FIRST_MSG = m.ID_MSG AND t.ID_TOPIC = $topic
++            LIMIT 1
++        ", __FILE__, __LINE__);
++
++        $row = mysql_fetch_assoc($dbresult);
++        mysql_free_result($dbresult);
++
++        if ($ID_MEMBER == $row['ID_MEMBER'])
++            $a_suggest = true;
++    }
++
++    if (!$a_suggest)
++        fatal_error($txt['cannot_smftags_suggest'],false);
++
++    foreach ($_REQUEST as $key => $value) {
++        if (substr($key,0,3) == "tag" && is_numeric(substr($key,3)) && !isset($old[substr($key,3)])) {
++            $k = (int) substr($key,3);
++            $new[substr($key,3)] = "($k,$topic,$ID_MEMBER,0)";
++        }
++    }
++
++    $q = db_query("
++        INSERT {$db_prefix}tags_log (`ID_TAG`,`ID_TOPIC`,`ID_MEMBER`,`approved`)
++        VALUES " . implode(',', $new),
++        __FILE__, __LINE__);
++
++    //Redirect back to the topic
++    redirectexit('topic=' . $topic);
++}
++
++?>
+Index: Sources/Subs.php
+===================================================================
+--- Sources/Subs.php	(revision 3)
++++ Sources/Subs.php	(working copy)
+@@ -2778,6 +2778,8 @@
+ 			'areas' => array(
+ 				'edit_mods_settings' => '<a href="' . $scripturl . '?action=featuresettings">' . $txt['modSettings_title'] . '</a>',
+ 				'edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',
++				'tags_settings' => '<a href="' . $scripturl . '?action=tags;sa=admin;sesc=' . $sc . '">' . $txt['smftags_admin'] . '</a>',
++
+ 				'edit_theme_settings' => '<a href="' . $scripturl . '?action=theme;sa=settings;th=' . $settings['theme_id'] . ';sesc=' . $sc . '">' . $txt['theme_current_settings'] . '</a>',
+ 				'manage_themes' => '<a href="' . $scripturl . '?action=theme;sa=admin;sesc=' . $sc . '">' . $txt['theme_admin'] . '</a>',
+ 			)
+@@ -3666,4 +3668,4 @@
+ 	updateSettings(array('rand_seed' => mt_rand()));
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Sources/ManagePermissions.php
+===================================================================
+--- Sources/ManagePermissions.php	(revision 3)
++++ Sources/ManagePermissions.php	(working copy)
+@@ -1307,6 +1307,16 @@
+ 				'pm_read' => false,
+ 				'pm_send' => false,
+ 			),
++			'smftags' => array(
++				'smftags_view' => false,
++				'smftags_add' => false,
++				'smftags_suggest' => true,
++				'smftags_edit' => true,
++				'smftags_createtag' => false,
++				'smftags_suggesttag' => false,
++				'smftags_manage' => false,
++				'smftags_admin' => false,
++			),
+ 			'calendar' => array(
+ 				'calendar_view' => false,
+ 				'calendar_post' => false,
+@@ -1604,4 +1614,4 @@
+ 		$context['illegal_permissions'][] = 'manage_permissions';
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Sources/Post.php
+===================================================================
+--- Sources/Post.php	(revision 3)
++++ Sources/Post.php	(working copy)
+@@ -934,6 +934,10 @@
+ 			}
+ 	}
+ 
++	if (empty($topic) && (allowedTo('smftags_add') || allowedTo('smftags_suggest_own')) && @include_once($sourcedir.'/Tags.php')) {
++		filltags();
++	}
++
+ 	// If we are coming here to make a reply, and someone has already replied... make a special warning message.
+ 	if (isset($newRepliesError))
+ 	{
+@@ -1638,6 +1642,84 @@
+ 			$topic = $topicOptions['id'];
+ 	}
+ 
++	// Tagging System
++	// Version 2.4.1+stef
++	if (!isset($_REQUEST['num_replies']) && (allowedTo('smftags_add') || allowedTo('smftags_suggest_own'))) {
++		$addtype = (allowedTo('smftags_add') ? 1 : 0);
++        $createtype = (allowedTo('smftags_suggesttag') ? 0 : (allowedTo('smftags_createtag') ? 1 : -1));
++
++		$tagcount = 0;
++		$rawtags = array();
++		$createtags = array();
++		$addtags = array();
++		$add = array();
++
++		// manual tagging block 
++		if ($modSettings['smftags_set_manualtags'] && isset($_REQUEST['tags']) && !empty($_REQUEST['tags'])) {
++			// fill $rawtags with a sanitised array of inputted tags
++			$rawtags = array_unique(array_map('trim', explode(chr($modSettings['smftags_set_delimiter']), $_REQUEST['tags'])));
++
++			// move valid tags to $createtags
++			foreach ($rawtags as $i => $tag) {
++				if (!empty($tag) && strlen($tag) >= $modSettings['smftags_set_mintaglength'] && strlen($tag) <= $modSettings['smftags_set_maxtaglength'] && $tagcount++ >= $modSettings['smftags_set_maxtags']) {
++					$createtags[strtolower($tag)] = $tag;
++				}
++			}
++			unset($rawtags);
++
++			if (!empty($createtags)) {
++				// find if any of these tags already exist
++	            $dbresult = db_query("
++    	            SELECT DISTINCT tag AS tag, ID_TAG
++        	        FROM {$db_prefix}tags
++            	    WHERE tag IN (\"" . implode('", "', $createtags) . '")
++                	ORDER BY `ID_TAG` DESC', __FILE__, __LINE__);
++
++				while ($row = mysql_fetch_row($dbresult)) {
++					$addtags[$row[1]] = 1;
++					unset($createtags[strtolower($row[0])]);
++				}
++
++				// check user has permissions to create new tags
++				if ($createype > -1) {
++					foreach ($createtags as $i => $tag) {
++			            // this first query has to be done individually for last_insert_id() support
++			            $q = db_query("INSERT INTO {$db_prefix}tags (`TAG`, `approved`) VALUES (\"".mysql_real_escape_string($tag)."\", $createtype)", __FILE__, __LINE__);
++			            // but the rest we store for later
++			            $add[] = "(".db_insert_id().", $topic, $ID_MEMBER, $addtype)";
++					}
++				}
++			}
++			unset($createtags);
++        }
++
++		// list tagging block
++		if ($modSettings['smftags_set_listtags']) {
++			foreach ($_REQUEST as $key => $value) {
++				if (substr($key,0,3) == "tag" && is_numeric(substr($key,3))) {
++					$ID_TAG = (int) substr($key,3);
++					if (!isset($addtags[$ID_TAG]) && $tagcount++ >= $modSettings['smftags_set_maxtags']) {
++						$addtags[$ID_TAG] = 1;
++					}
++				}
++			}
++		}
++
++		if (!empty($addtags)) {
++			foreach ($addtags as $i => $tag) {
++				$add[] = "($tag, $topic, $ID_MEMBER, $addtype)";
++			}
++		}
++
++		// now actually add the topic taggings as required
++		if (!empty($add)) {
++	        $q = db_query("REPLACE INTO {$db_prefix}tags_log (`ID_TAG`,`ID_TOPIC`,`ID_MEMBER`,`approved`) VALUES ".implode(',', $add), __FILE__, __LINE__);
++		}
++		unset($addtags,$add);
++	}
++	//End Tagging System
++
++
+ 	// Editing or posting an event?
+ 	if (isset($_POST['calendar']) && (!isset($_REQUEST['eventid']) || $_REQUEST['eventid'] == -1))
+ 	{
+@@ -2093,7 +2175,7 @@
+ 			AND b.ID_BOARD = m.ID_BOARD
+ 			AND t.ID_TOPIC = m.ID_TOPIC
+ 			AND $user_info[query_see_board]" . (!isset($_REQUEST['modify']) || (!empty($moderate_boards) && $moderate_boards[0] == 0) ? '' : '
+- 			AND (t.locked = 0' . (empty($moderate_boards) ? '' : ' OR b.ID_BOARD IN (' . implode(', ', $moderate_boards) . ')') . ')') . "
++			AND (t.locked = 0' . (empty($moderate_boards) ? '' : ' OR b.ID_BOARD IN (' . implode(', ', $moderate_boards) . ')') . ')') . "
+ 		LIMIT 1", __FILE__, __LINE__);
+ 	$context['close_window'] = mysql_num_rows($request) == 0;
+ 
+@@ -2392,4 +2474,4 @@
+ 		obExit(false);
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Themes/default/images/icons/tag_blue.gif
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: Themes/default/images/icons/tag_blue.gif
+___________________________________________________________________
+Added: svn:executable
+   + *
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: Themes/default/images/icons/tag_blue_edit.gif
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: Themes/default/images/icons/tag_blue_edit.gif
+___________________________________________________________________
+Added: svn:executable
+   + *
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: Themes/default/images/icons/tag_blue_add.gif
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: Themes/default/images/icons/tag_blue_add.gif
+___________________________________________________________________
+Added: svn:executable
+   + *
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: Themes/default/images/icons/tagplus.png
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: Themes/default/images/icons/tagplus.png
+___________________________________________________________________
+Added: svn:executable
+   + *
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: Themes/default/images/icons/tag_blue_delete.gif
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: Themes/default/images/icons/tag_blue_delete.gif
+___________________________________________________________________
+Added: svn:executable
+   + *
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: Themes/default/images/icons/tagminus.png
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: Themes/default/images/icons/tagminus.png
+___________________________________________________________________
+Added: svn:executable
+   + *
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: Themes/default/index.template.php
+===================================================================
+--- Themes/default/index.template.php	(revision 3)
++++ Themes/default/index.template.php	(working copy)
+@@ -492,7 +492,7 @@
+ 	$current_action = 'home';
+ 	if (in_array($context['current_action'], array('admin', 'ban', 'boardrecount', 'cleanperms', 'detailedversion', 'dumpdb', 'featuresettings', 'featuresettings2', 'findmember', 'maintain', 'manageattachments', 'manageboards', 'managecalendar', 'managesearch', 'membergroups', 'modlog', 'news', 'optimizetables', 'packageget', 'packages', 'permissions', 'pgdownload', 'postsettings', 'regcenter', 'repairboards', 'reports', 'serversettings', 'serversettings2', 'smileys', 'viewErrorLog', 'viewmembers')))
+ 		$current_action = 'admin';
+-	if (in_array($context['current_action'], array('search', 'admin', 'calendar', 'profile', 'mlist', 'register', 'login', 'help', 'pm')))
++	if (in_array($context['current_action'], array('tags','search', 'admin', 'calendar', 'profile', 'mlist', 'register', 'login', 'help', 'pm')))
+ 		$current_action = $context['current_action'];
+ 	if ($context['current_action'] == 'search2')
+ 		$current_action = 'search';
+@@ -571,7 +571,15 @@
+ 					<a href="', $scripturl, '?action=mlist">' , $txt[331] , '</a>
+ 				</td>' , $current_action == 'mlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+ 
++		// the [tags] button
++	if (allowedTo('smftags_view'))
++		echo ($current_action == 'tags' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
++				<td valign="top" class="maintab_' , $current_action == 'tags' ? 'active_back' : 'back' , '">
++					<a href="', $scripturl, '?action=tags">' , $txt['smftags_menu']  , '</a>
++				</td>' , $current_action == 'tags' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+ 
++		
++
+ 	// If the user is a guest, show [login] button.
+ 	if ($context['user']['is_guest'])
+ 		echo ($current_action == 'login' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+@@ -631,4 +639,4 @@
+ 		<td class="', $direction == 'top' ? 'main' : 'mirror', 'tab_' , $context['right_to_left'] ? 'first' : 'last' , '">&nbsp;</td>';
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Themes/default/MessageIndex.template.php
+===================================================================
+--- Themes/default/MessageIndex.template.php	(revision 3)
++++ Themes/default/MessageIndex.template.php	(working copy)
+@@ -213,6 +213,21 @@
+ 						</td>
+ 						<td class="windowbg' , !empty($settings['seperate_sticky_lock']) && $topic['is_sticky'] ? '3' : '' , '" valign="middle" ', (!empty($topic['quick_mod']['remove']) ? 'id="topic_' . $topic['first_post']['id'] . '" onmouseout="mouse_on_div = 0;" onmouseover="mouse_on_div = 1;" ondblclick="modify_topic(\'' . $topic['id'] . '\', \'' . $topic['first_post']['id'] . '\', \'' . $context['session_id'] . '\');"' : ''), '>';
+ 
++			// Tagging System
++			// Version 2.4.1+stef
++			if ($modSettings['smftags_set_display_messageindex'] && in_array($context['current_board'],split(" ",$modSettings['smftags_set_taggable']))) {
++				if (allowedTo('smftags_edit_any') || ($topic['first_post']['member']['id'] == $context['user']['id']&& allowedTo('smftags_edit_own'))) {
++					// if we have edit rights and there are tags, show edit button
++					echo '<a href="' . $scripturl . '?action=tags;sa=edittopic;topic=' . $topic['id'] . '"><img src="' . $settings['images_url'] . '/icons/tag_blue', (empty($topic['tagCount']) ? '_add.gif" title="'.$txt['smftags_addtopic'].'" ' : ('_edit.gif" title="'.$txt['smftags_edittopic'].' ('. ($topic['tagCount'] == 1 ? $txt['smftags_1tag'] : sprintf($txt['smftags_xtags'], $topic['tagCount'])) . ')"')), ' align="right" id="tagicon' . $topic['id'] . '" style="margin: 0;" /></a>';
++				}
++				else if (!empty($topic['tagCount'])) {
++					// otherwise just show tag icon if there any
++					echo '<img src="' . $settings['images_url'] . '/icons/tag_blue.gif" title="' . ($topic['tagCount'] == 1 ? $txt['smftags_1tag'] : sprintf($txt['smftags_ntags'], $topic['tagCount'])) . '" align="right" id="tagicon' . $topic['id'] . '" style="margin: 0;" />';
++				}
++			}
++
++			// End tagging system
++
+ 			if (!empty($settings['seperate_sticky_lock']))
+ 				echo '
+ 							' , $topic['is_locked'] ? '<img src="' . $settings['images_url'] . '/icons/quick_lock.gif" align="right" alt="" id="lockicon' . $topic['first_post']['id'] . '" style="margin: 0;" />' : '' , '
+@@ -471,4 +486,4 @@
+ 	return implode(' &nbsp;|&nbsp; ', $buttonArray);
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Themes/default/Post.template.php
+===================================================================
+--- Themes/default/Post.template.php	(revision 3)
++++ Themes/default/Post.template.php	(working copy)
+@@ -451,6 +451,45 @@
+ 								</td>
+ 							</tr>';
+ 
++	// Tagging system
++    // Version 2.4.1+stef
++	if(!isset($context['num_replies']) && in_array($context['current_board'],split(" ",$modSettings['smftags_set_taggable'])) && (allowedTo('smftags_add') || allowedTo('smftags_suggest_own')))
++	{
++		if ($modSettings['smftags_set_manualtags']) {
++		echo '
++		<tr>
++										<td align="right">
++											<b>', $txt['smftags_topic'], '</b></td>
++										<td>
++											<input type="text" name="tags"', ' tabindex="', $context['tabindex']++, '" size="80" maxlength="80" />
++											<br /><span class="smalltext">', sprintf($txt['smftags_separate'],chr($modSettings['smftags_set_delimiter'])), '</span>
++										</td>
++							</tr>';
++							
++		}
++		
++		if($modSettings['smftags_set_listtags'] && !empty($context['tags']) && @include_once($settings['default_theme_dir'].'/Tags.tree.inc.php'))
++		{
++			echo '
++	<tr>
++		<td align="right">
++			<b>', $txt['smftags_topic'], '</b>
++		</td>
++		<td>
++';
++			tag_draw_js();
++			$context['tags']['rows'] = ($modSettings['smftags_set_listcols'] < 1) ? 0 : ceil(count($context['tags']['by_parent'][0]) / $modSettings['smftags_set_listcols']);
++			tag_draw_branch(0,0,2);
++			if ($modSettings['smftags_set_manualtags']) {
++				echo '<div style="clear:both;"><small>' . $txt['smftags_bothtags'] . '</small>';
++			}
++			echo '
++				</td>
++		</tr>';
++		}
++	}
++	// End Tagging System
++
+ 	// If this is a poll then display all the poll options!
+ 	if ($context['make_poll'])
+ 	{
+@@ -1186,4 +1225,4 @@
+ 		// ]]></script>';
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Themes/default/Tags.tree.inc.php
+===================================================================
+--- Themes/default/Tags.tree.inc.php	(revision 0)
++++ Themes/default/Tags.tree.inc.php	(revision 28)
+@@ -0,0 +1,158 @@
++<?php
++/*
++Tagging System
++Version 2.4.1+stef
++http://www.smfhacks.com
++  by: vbgamer45 and stefann
++  license: this modification is licensed under the Creative Commons BY-NC-SA 3.0 License
++
++Included icons are from Silk Icons 1.3 availble at http://www.famfamfam.com/lab/icons/silk/
++  and are licensed under the Creative Commons Attribution 2.5 License
++*/
++
++// this file is only used if and when a tag entry tree is required
++//   either in the form of a custom tree or an optgroup select box
++
++// render custom tag tree
++// flag describes which types of tags are editable
++//   values: 0 = neither editable (default), 1 = approved editable, 2 = all editable
++function tag_draw_branch($flag = 0, $pid = 0, $origindent = 0, $depth = 0, $indent = 0, $visible = TRUE) {
++	global $context, $settings;
++	$row = 0;
++	if ($depth > 0) {
++		// increase indent
++		$indent += 2;
++	}
++	else if ($depth == 0) {
++		// set root indent
++		$indent = $origindent;
++	}
++	// ideally this would be a css class, but luckily it's only for each column
++	echo str_repeat("\t",$indent + 1) . '<ul ' . (($pid) ? 'id="tagu' . $pid . '" ' : ''), 'style="list-style-type:none;' . (($visible) ? '' : ' display:none;') , ((!$pid) ? ' float:left;padding:5px;margin:0px;">' : '" id="tagu' . $pid . '">'), "\n";
++	foreach ($context['tags']['by_parent'][$pid] as $branch) {
++		list($id,$tag,$approved1,$taggable,$tagged,$approved2,$quantity) = $branch;
++		$has_children = array_key_exists($id,$context['tags']['by_parent']);
++		$children_tagged = isset($context['tags']['has_tagged_children'][$id]);
++		if ($has_children || $taggable) {
++			if ($row >= $context['tags']['rows']) {
++				$row = 0;
++				echo str_repeat("\t",$indent + 1).'</ul>'."\n".str_repeat("\t",$indent + 1).'<ul style="list-style-type:none;float:left;padding:5px;margin:0px;">'."\n";
++			}
++			echo str_repeat("\t",$indent + 2).'<li style="clear:left;">'."\n";
++			if ($has_children) {
++				echo str_repeat("\t",$indent + 3).'<img src="' . $settings['images_url'] . '/icons/tagplus.png" alt="+" id="tagh'.$id.'" ' , (($children_tagged) ? 'style="display:none;" ' : ''), 'onclick="tagtog('.$id.');" height="17" width="17">'."\n";
++				echo str_repeat("\t",$indent + 3).'<img src="' . $settings['images_url'] . '/icons/tagminus.png" alt="-" id="tags'.$id.'"' , (($children_tagged) ? '' : 'style="display:none;" ') , 'onclick="tagtog('.$id.',1);" height="17" width="17">'."\n";
++			}
++			if ($taggable) {
++				$onclick = '';
++				$suffix = array();
++				if ($tagged) {
++					if ($approved2) { $suffix[] = 'checked'; }
++					if ($flag == 0 || ($flag == 1 && !$approved2)) { $suffix[] = 'disabled'; }
++				}
++				echo str_repeat("\t",$indent + 3).'<input type="checkbox" name="tag'.$id.'" value="1" id="tagcs'.$id.'"' , (($has_children && !$children_tagged) ? ' style="display:none;" ' : ' '), implode(' ', $suffix), ">\n";
++			}
++			echo str_repeat("\t",$indent + 3), (($tagged && !$approved2) ? '<font color="red">'.$tag.'</font>' : $tag), (($taggable) ? ' (' . $quantity . ')' : ''), "\n";
++			if ($has_children)
++				tag_draw_branch($flag,$id,$origindent,$depth + 1,$indent,$children_tagged,$visible);
++			echo str_repeat("\t",$indent + 2).'</li>'."\n";
++			if ($depth == 0)
++				$row++;
++		}
++	}
++	echo str_repeat("\t",$indent + 1) . '</ul>' . "\n";
++}
++
++
++// render optgroup select tree 
++function tag_draw_optgroup($pid = 0, $origindent = 0, $depth = 0, $indent = 0, $offset = 0) {
++	global $context, $settings;
++    if ($depth > 0) {
++        $offset += 2;
++	}
++	else if ($depth == 0) {
++		$indent = $origindent;
++	}
++	foreach ($context['tags']['by_parent'][$pid] as $branch) {
++		list($id,$tag,$approved1,$taggable,$tagged,$approved2,$quantity) = $branch;
++		$has_children = array_key_exists($id,$context['tags']['by_parent']);
++		echo str_repeat("\t", $indent) . '<option value="'.$id.'">' . str_repeat("&nbsp;",$offset) . $tag.'</option>'."\n";
++		if ($has_children)
++			tag_draw_optgroup($id, $origindent, $depth + 1, $indent, $offset);
++	}
++}
++
++function tag_draw_js () {
++?>
++
++<script language="JavaScript">
++// tag tree toggle 
++function tagtog(id, t) {
++        ul = "tagu" + id;
++        hide = "tagh" + id;
++        show = "tags" + id;
++        show2 = "tagcs" + id;
++        if (t == 1) { a = 'none'; au = 'none'; b = 'inline'; }
++        else { a = 'inline'; au = 'list-item'; b = 'none'; }
++        if (document.getElementById) {
++                document.getElementById(ul).style.display = au;
++                document.getElementById(hide).style.display = b;
++                document.getElementById(show).style.display = a;
++                document.getElementById(show2).style.display = a;
++        } else {
++                if (document.layers) {
++                        document.ul.display = au;
++                        document.hide.display = b;
++                        document.show.display = a;
++                        document.show2.display = a;
++                } else {
++                        document.all.ul.style.display = au;
++                        document.all.hide.style.display = b;
++                        document.all.show.style.display = a;
++                        document.all.show2.style.display = a;
++                }
++        }
++}
++</script>
++
++<?php
++}
++
++function tagadmin_draw_branch($pid = 0, $origindent = 0, $depth = 0, $bg = "", $indent = 0, $type = 'checkbox', $offset = 0) {
++	// depth = -1 will stop recursion, = -2 will force drawing of a root element
++	// type can be 'checkbox' or 'radio' only
++	global $context, $settings, $txt, $scripturl;
++	$row = 0;
++	if ($depth > 0) {
++		// add &nbsp; offset
++		$offset += 2;
++	}
++	else if ($depth < 0) {
++		// no recursion
++		$bg = 2;
++        echo str_repeat("\t",$indent).'<tr>'."\n";
++        echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '" colspan="3">', str_repeat("&nbsp;", $offset), '<a href="', $scripturl, '?action=tags;id=0"><i>[', $txt['smftags_roottag'], ']</i></a></td>', "\n";
++        if ($type == "checkbox") { echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', '<input type="checkbox" name="tag[0]" value="1"></td>', "\n"; }
++        else if ($type == "radio") { echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', '<input type="radio" name="master" value="tag[0]"</td>', "\n"; }
++	}
++	else {
++		// set root indent
++		$indent = $origindent;
++	}
++	foreach ($context['tags']['by_parent'][$pid] as $branch) {
++		$bg = (empty($bg)) ? 2 : "";
++		list($id,$tag,$approved1,$taggable,$tagged,$approved2,$quantity) = $branch;
++		$has_children = array_key_exists($id,$context['tags']['by_parent']);
++		echo str_repeat("\t",$indent).'<tr>'."\n";
++		echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', str_repeat("&nbsp;", $offset), '<a href="', $scripturl, '?action=tags;id=', $id, '">', $tag, '</a></td>', "\n";
++		echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', $quantity, '</td>', "\n";
++		echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', (($taggable) ? strtolower($txt['smftags_taggable']) : strtolower($txt['smftags_untaggable'])), '</td>', "\n";
++        if ($type == "checkbox") { echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', '<input type="checkbox" name="tag[', $id, ']" value="1"></td>', "\n"; }
++		else if ($type == "radio") { echo str_repeat("\t",$indent + 1), '<td class="windowbg', $bg, '">', '<input type="radio" name="master" value="tag[', $id, ']"</td>', "\n"; }
++		echo str_repeat("\t",$indent).'</tr>'."\n";
++		if ($has_children && $depth >= 0)
++			tagadmin_draw_branch($id, $origindent, $depth + 1, $bg, $indent, $type, $offset);
++	}
++}
++
++?>
+Index: Themes/default/Tags.template.php
+===================================================================
+--- Themes/default/Tags.template.php	(revision 0)
++++ Themes/default/Tags.template.php	(revision 26)
+@@ -0,0 +1,646 @@
++<?php
++/*
++Tagging System
++Version 2.4.1+stef
++http://www.smfhacks.com
++	by: vbgamer45 and stefann
++	license: this modification is licensed under the Creative Commons BY-NC-SA 3.0 License
++
++Included icons are from Silk Icons 1.3 availble at http://www.famfamfam.com/lab/icons/silk/
++	and are licensed under the Creative Commons Attribution 2.5 License
++*/
++
++function template_main()
++{
++	global $txt,$context,$scripturl,$settings;
++
++	echo '
++		<div class="tborder">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_popular'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">';
++
++	if(isset($context['poptags']))
++		echo $context['poptags'];
++
++		echo '
++					</td>
++				</tr>
++			</table>';
++
++	// check we have the variables set
++	if (isset($context['tags_newtagged'])) {
++		echo '
++			<br />
++			<div align="center"><large><a href="', $scripturl ,'?action=tags;sa=viewall">', $txt['smftags_viewall'], '</a>', $txt['smftags_viewall2'], '</large></div>
++			<br />
++			<form name="pendingtags" action="', $scripturl, '?action=tags" method="post" accept-charset="', $context['character_set'], '">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_manage_tags'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">
++						<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
++							<tr>
++								<td class="catbg3">',$txt['smftags_tag'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_parents'],'</td>
++								<td class="catbg3" align="center">', $txt['smftags_taggable'], '</td>
++								<td class="catbg3" align="center">', $txt['smftags_select'], '</td>
++							</tr>';
++		foreach ($context['tags_newtags'] as $i => $newtag)
++		{
++			echo '
++							<tr>
++								<td class="windowbg2"><a href="' . $scripturl . '?action=tags;id=' . $newtag['ID_TAG'] . '">' . $newtag['tag'] . '</a></td>
++								<td class="windowbg2">';
++			if (!empty($newtag['parent_id'])) {
++				$output = array();
++				$parent = $newtag['parent_id'];
++				while (isset($newtag['parent_array'][$parent])) {
++					$output[] = $newtag['parent_array'][$parent]['tag'];
++					$parent = $newtag['parent_array'][$parent]['parent_id']; 
++				}
++				echo implode(' &rArr; ',$output);
++			}
++			echo '</td>
++								<td class="windowbg2">', (($newtag['taggable']) ? strtolower($txt['smftags_taggable']) : strtolower($txt['smftags_untaggable'])), '</td>
++								<td class="windowbg"><input type="checkbox" name="a' . $newtag['ID_TAG'] . '" value="1"></td>
++							</tr>';
++		}
++		echo '
++						</table>
++					</td>
++				</tr>
++				<tr class="catbg">
++					<td align="right"> 
++						<select name="todo">
++							<option>-------</option>
++							<option value="approve">', $txt['smftags_act_approve'], '</option>
++							<option value="delete">', $txt['smftags_act_delete'], '</option>
++						</select>
++						<input type="submit" name="pendingtags" value="', $txt['smftags_act_go'], '">
++						<input type="reset" value="', $txt['smftags_act_reset'], '">
++					</td>
++				</tr>
++			</table>
++			</form>
++
++			<br />';
++
++		if (allowedTo('smftags_create')) {
++			echo '
++		<script language="JavaScript" type="text/javascript"><!-- // --><![CDATA[
++		function addCreateTag() {
++			var oldtr = document.getElementById(\'newCreateTag\');
++			var newtr = document.createElement(\'tr\');
++			var table = document.getElementById(\'newCreateTagtable\');
++			var rows = table.getElementsByTagName("TR").length;
++			newtr.innerHTML = oldtr.innerHTML;
++			document.getElementById(\'tag1\').setAttribute(\'name\',\'tag\' + rows);
++			document.getElementById(\'parent1\').setAttribute(\'name\',\'parent\' + rows);
++			document.getElementById(\'taggable1\').setAttribute(\'name\',\'taggable\' + rows);
++			document.getElementById(\'approved1\').setAttribute(\'name\',\'approved\' + rows);
++			document.getElementById(\'tag1\').setAttribute(\'id\',\'tag\' + rows);
++			document.getElementById(\'parent1\').setAttribute(\'id\',\'parent\' + rows);
++			document.getElementById(\'taggable1\').setAttribute(\'id\',\'taggable\' + rows);
++			document.getElementById(\'approved1\').setAttribute(\'id\',\'approved\' + rows);
++			newtr.setAttribute(\'id\',\'newCreateTag\');
++			oldtr.removeAttribute(\'id\');
++			table.appendChild(newtr);
++		}
++	// ]]></script>
++			<form name="create" action="', $scripturl, '?action=tags" method="post" accept-charset="', $context['character_set'], '">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_create'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">
++						<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor" id="newCreateTagtable">
++							<tr>
++								<td class="catbg3">',$txt['smftags_tag'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_parent'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_taggable'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_approved'],'</td>
++							</tr>
++							<tr id="newCreateTag">
++								<td class="windowbg"><input type="text" name="tag1" id="tag1" size="50" max="256"></td>
++								<td class="windowbg">
++									<select name="parent1" id="parent1">
++										<option value="0">- ', $txt['smftags_noparent'], ' -</option>
++';
++			if (include_once($settings['default_theme_dir'].'/Tags.tree.inc.php')) {
++				tag_draw_optgroup(0,10);
++			}
++			echo '
++									</select>
++								<td class="windowbg"><input type="checkbox" name="taggable1" id="taggable1" value="1"></td>
++								<td class="windowbg2"><input type="checkbox" name="approved1" id="approved1" value="1"></td>
++							</tr>
++						</table>
++					</td>
++				</tr>
++				<tr class="catbg">
++					<td colspan="3" align="right">
++						<input type="button" value="Add more" onClick="addCreateTag()">
++						<input type="submit" value="', $txt['smftags_act_create'], '" name="create">
++						<input type="reset" value="', $txt['smftags_act_reset'], '">
++					</td>
++				</tr>
++			</table>
++			</form>';
++
++		}
++
++		if (isset($context['tags_newtagged']) && !empty($context['tags_newtagged'])) {
++			echo '
++			<br />
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_manage_topictags'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">
++					<form name="tagusertopic" action="', $scripturl, '?action=tags" method="post" accept-charset="', $context['character_set'], '">
++						<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
++							<tr>
++								<td class="catbg3">',$txt['smftags_tag'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_postedby'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_suggestedby'],'</td>
++								<td class="catbg3" align="center">', $txt['smftags_tagssuggested'], '</td>
++								<td class="catbg3" align="center">', $txt['smftags_select'], '</td>
++							</tr>';
++
++				// draw header row for each unique topic/suggested by pair
++			foreach ($context['tags_newtagged'] as $i => $newtagged)
++			{
++				$rowspan_suggestedby = (empty($context['tags_expand'])) ? '' : ' rowspan="'.count($newtagged['tags']).'"';
++				echo '
++							<tr>
++								<td class="windowbg2"'.$rowspan_suggestedby.'><a href="' . $scripturl . '?topic=' . $newtagged['ID_TOPIC'] . '.0"'.$rowspan_suggestedby.'>' . $newtagged['subject'] . '</a></td>
++								<td class="windowbg"'.$rowspan_suggestedby.'><a href="' . $scripturl . '?action=profile;u=' . $newtagged['posterID'] . '">' . $newtagged['posterName'] . '</a></td>
++								<td class="windowbg2"'.$rowspan_suggestedby.'><a href="' . $scripturl . '?action=profile;u=' . $newtagged['ID_MEMBER'] . '">' . $newtagged['memberName'] . '</a></td>';
++				$tl = array();
++				// now look at each individual tag suggested for this pair
++				if (!empty($context['tags_expand'])) {
++					foreach ($newtagged['tags'] as $j => $t) {
++						if ($j != 0)
++							echo '
++							<tr>';
++						echo '
++								<td class="windowbg">', ($t['approved'] ? '<i>' : '') . '<a href="' . $scripturl . '?action=tags;id=' . $t['ID_TAG'] . '">' . $t['tag'] . '</a>' . ($t['approved'] ? '</i>' : ''), '</td><td class="windowbg2">', ($t['approved'] ? '' : '<input type="checkbox" name="i' . $t['ID'] . '" value="1">'), '</td>
++							</tr>';
++					}
++				}
++				else {
++					foreach ($newtagged['tags'] as $j => $t) {
++						$tl[] = ($t['approved'] ? '<i>' : '') . '<a href="' . $scripturl . '?action=tags;id=' . $t['ID_TAG'] . '">' . $t['tag'] . '</a>' . ($t['approved'] ? '</i>' : '');
++					}
++					echo '
++								<td class="windowbg">' . implode(' · ',$tl) . '</td>
++								<td class="windowbg2"><input type="checkbox" name="' . $newtagged['ID_TOPIC'] . 'x' . $newtagged['ID_MEMBER'] . '" value="1"></td>';
++				}
++			}
++			echo '
++							</tr>
++							<tr class="catbg">
++								<td colspan="3" align="left">', (!empty($context['tags_index'])) ? '<b>'.$txt[139].':</b> '.$context['tags_index'] : '', '</td>
++								<td colspan="2" align="right"> 
++									<select name="todo">
++										<option>-------</option>
++										<option value="approveusertopic">', $txt['smftags_act_approve'], ' </option>',
++				($context['tags_expand'] ? '' : '
++										<option value="expandusertopic">' . $txt['smftags_act_expand'] . '</option>'), '
++										<option value="deleteusertopic">', $txt['smftags_act_delete'], '</option>
++									</select>
++									<input type="submit" name="tagusertopic" value="', $txt['smftags_act_go'], '">
++									<input type="reset" value="', $txt['smftags_act_reset'], '">
++								</td>
++							</tr>
++						</table>
++						</form>
++					</td>
++				</tr>
++			</table>
++			<br /> ';
++		}
++	}
++
++	 echo '
++			<br />
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_latest'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">
++						<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++							<tr>
++								<td class="catbg3">',$txt['smftags_subject'],'</td>
++								<td class="catbg3" width="11%">',$txt['smftags_startedby'],'</td>
++								<td class="catbg3" width="4%" align="center">', $txt['smftags_replies'], '</td>
++								<td class="catbg3" width="4%" align="center">', $txt['smftags_views'], '</td>
++							</tr>';
++	if (!isset($context['tags_topics'])) { $context['tags_topics'] = array(); }
++		foreach ($context['tags_topics'] as $i => $topic) {
++			echo '
++							<tr>
++								<td class="windowbg2"><a href="' . $scripturl . '?topic=' . $topic['ID_TOPIC'] . '.0">' . $topic['subject'] . '</a></td>
++								<td class="windowbg"><a href="' . $scripturl . '?action=profile;u=' . $topic['ID_MEMBER'] . '">' . $topic['posterName'] . '</a></td>
++								<td class="windowbg2">' . $topic['numReplies'] . '</td>
++								<td class="windowbg2">' . $topic['numViews'] . '</td>
++							</tr>';
++		}
++		echo '
++						</table>
++					</td>
++				</tr>
++			</table>
++			<br />
++		</div>';
++
++	//The Copyright is required to remain or contact me to purchase link removal.
++	echo '
++		<br />
++		<div align="center"><a href="http://www.smfhacks.com" target="blank">SMF Tags</a></div>';
++}
++
++function template_viewall() {
++	global $txt,$context,$scripturl,$settings;
++	if (isset($context['tags']['modifiedtxt'])) { echo '<div align="center">'.$context['tags']['modifiedtxt'].'</div>'; }
++		echo '
++		<div class="tborder">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_all'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">';
++
++		if(isset($context['poptags']))
++			echo $context['poptags'];
++
++		echo '
++					</td>
++				</tr>
++			</table>
++			<form method="POST" name="tags" action="', $scripturl, '?action=tags;sa=viewall">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td class="catbg3">', $txt['smftags_tag'], '</td>
++					<td class="catbg3">', $txt['smftags_count'], '</td>
++					<td class="catbg3">', $txt['smftags_taggable'], '</td>
++					<td class="catbg3">', $txt['smftags_select'], '</td>
++				</tr>
++';
++		$context['tags']['rows'] = 99;
++		if (@include_once($settings['default_theme_dir'].'/Tags.tree.inc.php'))
++			tagadmin_draw_branch(0,5);
++
++		echo '
++				<tr class="catbg">
++					<td colspan="4" align="right">
++						<select name="todo">
++							<option>------------------</option>';
++	foreach (array('move', 'merge', 'taggable', 'untaggable', 'unapprove', 'delete') as $i) {
++		echo '
++							<option value="', $i, '">', $txt["smftags_act_$i"], '</option>';
++	}
++	echo '
++						</select>
++						<input type="submit" name="tags" value="', $txt['smftags_act_go'], '">
++						<input type="reset" value="', $txt['smftags_act_reset'], '">
++					</td>
++				</tr>
++			</table>
++			</form>
++			<p>
++';
++	foreach (array('merge', 'move') as $i) {
++		echo '
++				<b>', $txt['smftags_act_'.$i], '</b> ', $txt['smftags_desc_'.$i], '<br />';
++	}
++echo '
++			</p>
++		</div>';
++
++		//The Copyright is required to remain or contact me to purchase link removal.
++		echo '
++		<br />
++		<div align="center"><a href="http://www.smfhacks.com" target="blank">SMF Tags</a></div>';
++}
++
++// used for confirmation or second data page
++function template_viewall2() {
++	global $txt,$context,$scripturl,$settings;
++	echo '
++		<div class="tborder">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">',$txt['smftags_popular'], '</td>
++				</tr>
++				<tr>
++					<td align="center" class="windowbg2">';
++
++		$ids = array();
++
++		if(isset($context['poptags']))
++				echo $context['poptags'];
++
++		echo '</td>
++				</tr>
++			</table>
++			<form method="POST" name="', strtolower($_REQUEST['todo']), '" action="', $scripturl, '?action=tags;sa=viewall">';
++	if ($_REQUEST['todo'] == "merge") {
++		echo '
++			<div align="center">', $txt['smftags_merge2'], '</div>
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td class="catbg3">', $txt['smftags_tag'], '</td>
++					<td class="catbg3">', $txt['smftags_count'], '</td>
++					<td class="catbg3">', $txt['smftags_taggable'], '</td>
++					<td class="catbg3">', $txt['smftags_select'], '</td>
++				</tr>';
++		foreach ($context['tags']['by_parent'] as $parent => $children) {
++			foreach ($children as $child) {
++				list($id,$tag,$approved1,$taggable,$tagged,$approved2,$quantity) = $child;
++				$bg = (empty($bg)) ? 2 : "";
++				echo '
++				<tr>
++					<td class="windowbg', $bg, '"><a href="', $scripturl, '?action=tags;id=', $id, '">', $tag, '</a></td>
++					<td class="windowbg', $bg, '">', $quantity, '</td>
++					<td class="windowbg', $bg, '">', $taggable, '</td>
++					<td class="windowbg', $bg, '"><input type="radio" name="master" value="tag[', $id, ']"></td>
++				</tr>';
++				$ids[] = $id;
++			}
++		}
++		echo '
++				<tr class="catbg">
++					<td colspan="4" align="right">
++						<input type="submit" name="merge" value="', $txt['smftags_act_merge'], '">
++						<input type="reset" value="', $txt['smftags_act_reset'], '">
++					</td>
++				</tr>
++			</table>
++			<input type="hidden" name="slaves" value="', implode(',', $ids), '">';
++	}
++	else if ($_REQUEST['todo'] == "move") {
++		echo '
++		<div align="center">', $txt['smftags_move2'], '</div>
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td class="catbg3">Tag</td>
++					<td class="catbg3">Count</td>
++					<td class="catbg3">Taggable</td>
++					<td class="catbg3">Select</td>
++				</tr>';
++		if (@include_once($settings['default_theme_dir'].'/Tags.tree.inc.php'))
++			// using depth = -2 to include the root element and stop recursion, as moving to a child tag would create orphans
++			tagadmin_draw_branch(0, 4, -2, "", 0, "radio");
++
++		foreach ($context['tags']['by_parent'] as $parent => $children) { foreach ($children as $child) { $ids[] = $child[0]; } }
++
++		echo '
++				<input type="hidden" name="slaves" value="', implode(',', $ids), '">
++				<tr class="catbg">
++					<td colspan="4" align="right">
++						<input type="submit" name="move" value="', $txt['smftags_act_move'], '">
++						<input type="reset" value="', $txt['smftags_act_reset'], '">
++					</td>
++				</tr>
++			</table>
++			</form>';
++	}
++	else {
++		fatal_error($txt['smftags_err_nodirect']);
++	}
++
++	echo '
++			<br />
++		</div>';
++
++		//The Copyright is required to remain or contact me to purchase link removal.
++		echo '
++		<br />
++		<div align="center"><a href="http://www.smfhacks.com" target="blank">SMF Tags</a></div>';
++}
++
++function template_results()
++{
++	global $scripturl, $txt, $context, $user_info;
++	if (empty($context['tag_search'])) { fatal_error($txt['smftags_err_notag']); }
++
++	echo '
++		<div class="tborder">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td align="center" class="catbg">' . $txt['smftags_resultsfor'] . implode(', ', $context['tag_search']) . '</td>
++				</tr>
++				<tr>
++					<td>
++						<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++							<tr>
++								<td class="catbg3">',$txt['smftags_subject'],'</td>
++								<td class="catbg3">',$txt['smftags_othertags'],'</td>
++								<td class="catbg3">',$txt['smftags_startedby'],'</td>
++								<td class="catbg3" align="center">',$txt['smftags_replies'],'</td>
++								<td class="catbg3" align="center">', $txt['smftags_views'], '</td>
++							</tr>';
++	foreach ($context['tags_topics'] as $i => $topic) {
++		echo '
++							<tr>
++								<td class="windowbg2"><a href="' . $scripturl . '?topic=' . $topic['ID_TOPIC'] . '.0">' . $topic['subject'] . '</a></td>';
++		$tl = array();
++		foreach ($topic['othertags'] as $j => $t)
++			$tl[] = '<a href="' . $scripturl . '?action=tags;id=' . $_REQUEST['id'] . ',' . $j . '">' . $t . '</a>';
++		echo '
++								<td class="windowbg2">' . implode(' · ',$tl) . '</td>
++								<td class="windowbg"><a href="' . $scripturl . '?action=profile;u=' . $topic['first_ID_MEMBER'] . '">' . $topic['first_posterName'] . '</a></td>
++								<td class="windowbg2">' . $topic['numReplies'] . '</td>
++								<td class="windowbg2">' . $topic['numViews'] . '</td>
++							</tr>';
++	}
++	echo '
++						</table>
++					</td>
++				</tr>
++			</table>
++		</div>';
++
++	if (allowedTo('smftags_manage')) { 
++		echo '
++		<form method="POST" name="rename" action="', $scripturl, '?action=tags;sa=rename">';
++		foreach ($context['tag_search'] as $id => $tag) {
++			echo '
++		'.$txt['smftags_renametag'].' `'.$tag.'` '.$txt['smftags_renametag_to'].': <input type="text" value="'.$tag.'" name="rename'.$id.'"><br />';
++		} 
++		echo '
++		<input type="submit" name="rename" value="', $txt['smftags_act_rename'], '">
++		<input type="reset" value="', $txt['smftags_act_reset'], '">
++		</form>';
++	}
++
++	//The Copyright is required to remain or contact me to purchase link removal.
++	echo '
++		<br />
++		<div align="center"><a href="http://www.smfhacks.com" target="blank">SMF Tags</a></div>';
++}
++function template_edittopic()
++{
++	global $scripturl, $txt, $context, $settings, $sourcedir, $modSettings;
++	if ($modSettings['smftags_set_listtags']) {
++		$act = $context['smftags_act'];
++		require_once($settings['default_theme_dir'].'/Tags.tree.inc.php');
++		$context['tags']['rows'] = ($modSettings['smftags_set_listcols'] < 1) ? 0 : ceil(count($context['tags']['by_parent'][0]) /	$modSettings['smftags_set_listcols']); 
++		tag_draw_js();
++		echo '
++		<div class="tborder">
++			<form method="POST" name="updated" action="', $scripturl, '?action=tags;sa=', $act, 'topic2">
++			<input type="hidden" name="type" value="2">
++			<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4" class="bordercolor">
++				<tr>
++					<td width="50%" height="19" align="center" class="catbg"><b>', $txt["smftags_${act}topic"], '</b></td>
++				</tr>
++				<tr valign="top">
++					<td class="windowbg2">
++';
++		tag_draw_branch($context['smftags_flag'],0,5,0,0);
++		echo '
++					</td>
++				</tr>
++				<tr>
++					<td width="28%" height="26" align="center" class="windowbg2">', ($context['tags']['show_rmsuggest']) ? '<input type="checkbox" name="tags_rmsuggest" value="1">'.$txt['smftags_rmsuggest'].'<br />' : '', '
++						<input type="hidden" name="topic" value="', $context['tags_topic'], '" />
++						<input type="submit" name="update" value="', $txt['smftags_act_update'], '" />
++						<input type="reset" value="', $txt['smftags_act_reset'], '" />
++					</td>
++				</tr>
++			</table>
++			</form>
++		</div>';
++		//The Copyright is required to remain or contact me to purchase link removal.
++		echo '
++		<br />
++		<div align="center"><a href="http://www.smfhacks.com" target="blank">SMF Tags</a></div>';
++	}
++}
++function template_admin_settings()
++{
++	global $scripturl, $txt, $modSettings;
++
++	echo '
++		<table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
++			<tr class="titlebg">
++				<td>' . $txt['smftags_settings']. '</td>
++			</tr>
++			<tr class="windowbg">
++				<td>
++					<b>' . $txt['smftags_settings']. '</b><br />
++					<form method="post" action="' . $scripturl . '?action=tags;sa=admin2">
++					<table border="0" width="100%" align="center" cellspacing="1" cellpadding="4">
++						<tr>
++							<td width="30%">' . $txt['smftags_set_taggable'] . '</td>
++							<td><input type="text" name="smftags_set_taggable" value="' . $modSettings['smftags_set_taggable'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_type'] . '</td>
++							<td>
++								<label for="smftags_set_manualtags">
++								<input type="checkbox" name="smftags_set_manualtags" value="1"', (($modSettings['smftags_set_manualtags']) ? ' checked' : ''), ' /> ' . $txt['smftags_set_manualtags'] . '
++								<label for="smftags_set_listtags">
++								<input type="checkbox" name="smftags_set_listtags" value="1"', (($modSettings['smftags_set_listtags']) ? ' checked' : ''), ' /> ' . $txt['smftags_set_listtags'] . '
++							</td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_display'] . '</td>
++							<td>
++								<label for="smftags_set_display_top">
++								<input type="checkbox" name="smftags_set_display_top" value="1"', (($modSettings['smftags_set_display_top']) ? ' checked' : ''), ' /> ' . $txt['smftags_set_display_top'] . '
++								<label for="smftags_set_display_bottom">
++								<input type="checkbox" name="smftags_set_display_bottom" value="1"', (($modSettings['smftags_set_display_bottom']) ? ' checked' : ''), ' /> ' . $txt['smftags_set_display_bottom'] . '
++								<label for="smftags_set_display_messageindex">
++								<input type="checkbox" name="smftags_set_display_messageindex" value="1"', (($modSettings['smftags_set_display_messageindex']) ? ' checked' : ''), ' /> ' . $txt['smftags_set_display_messageindex'] . '
++							</td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_delimiter'] . '</td>
++							<td><input type="text" size="1" maxlength="1" name="smftags_set_delimiter" value="' . chr($modSettings['smftags_set_delimiter']) . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_listcols'] . '</td>
++							<td><input type="text" name="smftags_set_listcols" value="' .	$modSettings['smftags_set_listcols'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_mintaglength'] . '</td>
++							<td><input type="text" name="smftags_set_mintaglength" value="' .	$modSettings['smftags_set_mintaglength'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_maxtaglength'] . '</td>
++							<td><input type="text" name="smftags_set_maxtaglength" value="' .	$modSettings['smftags_set_maxtaglength'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_maxtags'] . '</td>
++							<td><input type="text" name="smftags_set_maxtags" value="' .	$modSettings['smftags_set_maxtags'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_latest_limit'] . '</td>
++							<td><input type="text" name="smftags_set_latest_limit" value="' .	$modSettings['smftags_set_latest_limit'] . '" /></td>
++						</tr>
++						<tr>
++							<td clospan="2"><b>',$txt['smftags_tagcloud_settings'],'</b></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_cloud_sort'] . '</td>
++							<td>
++								<select name="smftags_set_cloud_sort">
++									<option value="alpha"', ($modSettings['smftags_set_cloud_sort'] == "alpha" ? ' selected' : ''), '>' . $txt['smftags_set_cloud_sort_alpha'] . '</option>
++									<option value="count"', ($modSettings['smftags_set_cloud_sort'] == "count" ? ' selected' : ''), '>' . $txt['smftags_set_cloud_sort_count'] . '</option>
++									<option value="random"', ($modSettings['smftags_set_cloud_sort'] == "random" ? ' selected' : ''), '>' . $txt['smftags_set_cloud_sort_random'] . '</option>
++								</select>
++							</td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_cloud_tags_to_show'] . '</td>
++							<td><input type="text" name="smftags_set_cloud_tags_to_show" value="' .	$modSettings['smftags_set_cloud_tags_to_show'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_cloud_max_font_size_precent'] . '</td>
++							<td><input type="text" name="smftags_set_cloud_max_font_size_precent" value="' .	$modSettings['smftags_set_cloud_max_font_size_precent'] . '" /></td>
++						</tr>
++						<tr>
++							<td width="30%">' . $txt['smftags_set_cloud_min_font_size_precent'] . '</td>
++							<td><input type="text" name="smftags_set_cloud_min_font_size_precent" value="' .	$modSettings['smftags_set_cloud_min_font_size_precent'] . '" /></td>
++						</tr>
++					</table>
++					<input type="submit" name="savesettings" value="', $txt['smftags_savesettings'],	'" />
++					<input type="reset" value="', $txt['smftags_act_reset'],	'" />
++					</form>
++					<b>Has SMF Tags helped you?</b> Then support the developers:<br />
++					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
++					<input type="hidden" name="cmd" value="_xclick">
++					<input type="hidden" name="business" value="sales@visualbasiczone.com">
++					<input type="hidden" name="item_name" value="SMF Tags">
++					<input type="hidden" name="no_shipping" value="1">
++					<input type="hidden" name="no_note" value="1">
++					<input type="hidden" name="currency_code" value="USD">
++					<input type="hidden" name="tax" value="0">
++					<input type="hidden" name="bn" value="PP-DonationsBF">
++					<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-butcc-donate.gif" border="0" name="submit" alt="Make payments with PayPal - it is fast, free and secure!">
++					<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
++					</form>
++				</td>
++			</tr>
++		</table>';
++
++	//The Copyright is required to remain or contact me to purchase link removal.
++	echo '
++		<br />
++		<div align="center"><a href="http://www.smfhacks.com" target="blank">SMF Tags</a></div>';
++}
++
++?>
+Index: Themes/default/Display.template.php
+===================================================================
+--- Themes/default/Display.template.php	(revision 3)
++++ Themes/default/Display.template.php	(working copy)
+@@ -164,6 +164,87 @@
+ </table>';
+ 	}
+ 
++	// Tagging System
++	// Version 2.4.1+stef
++	// make sure variables are set from Sources
++	if (isset($context['topic_tags']))
++	{
++		// set output to a variable for configurable display later
++		$smftags['html'] = '
++<b>' . $txt['smftags_topic'] . '</b> ';
++		$smftags['html2'] = array();
++		$smftags['html3'] = array();
++		$smftags['a_edit'] = (!$context['user']['is_guest'] && ((allowedTo('smftags_edit_any') || ($context['user']['id'] == $context['topic_starter_id'] && allowedTo('smftags_edit_own')))));
++		$smftags['a_suggest'] = (!$context['user']['is_guest'] && ((allowedTo('smftags_suggest_any') || ($context['user']['id'] == $context['topic_starter_id'] && allowedTo('smftags_suggest_own')))));
++		foreach ($context['topic_tags'][1] as $i => $tag)
++		{
++			$html = '<a href="' . $scripturl . '?action=tags;id=' . $tag['ID_TAG']  . '">' . $tag['tag'] . '</a>';
++			if ($smftags['a_edit'] && !$modSettings['smftags_set_manualtags']) {
++				// use a link to edit tags if manual tags isn't enabled
++				$html .= '&nbsp;<a href="' . $scripturl . '?action=tags;sa=deletetopic;id=' . $tag['ID']  . '"><img src="' . $settings['images_url'] . '/icons/tag_blue_delete.gif" title="' . sprintf($txt['smftags_deletextag'], $tag['tag']) . '"></a>';
++			}
++			$smftags['html2'][] = $html;
++		}
++		global $topic;
++		if ($smftags['a_suggest'] || $smftags['a_edit']) {
++			if ($modSettings['smftags_set_manualtags']) {
++				$smftags['html'] = '
++<form method="POST" name="manualtag%tagformid%" action="' . $scripturl . '?action=tags;sa=edittopic2">
++<input type="hidden" name="type" value="1"><input type="hidden" name="topic" value="' . $topic . '">' . $smftags['html'];
++				$smftags['html3'][] =  '<input type="submit" name="manualtags" value="' . $txt['smftags_act_submit'] . '">';
++				$smftags['html3'][] = '</form>';
++
++				if ($smftags['a_edit']) {
++					$delimited = array();
++					foreach ($context['topic_tags'][1] as $i => $tag) { $delimited[] = $tag['tag']; }
++					$delimited = implode(chr($modSettings['smftags_set_delimiter']) . ' ', $delimited);
++					$smftags['html2'][] = '<input type="text" name="tags" id="tags" size="' . (strlen($delimited) + 10) . '" value="' . $delimited . '">';
++				}
++			}
++			foreach ($context['topic_tags'][0] as $i => $tag) {
++				$html = '<a href="' . $scripturl . '?action=tags;id=' . $tag['ID_TAG']  . '"><font color="red">' . $tag['tag'] . '</font></a>';
++				if ($smftags['a_edit'] && !$modSettings['smftags_set_manualtags']) {
++					$html .= '&nbsp;<a href="' . $scripturl . '?action=tags;sa=approvetopic;id=' . $tag['ID']  . '"><img src="' . $settings['images_url'] . '/icons/tag_blue_add.gif" title="' . sprintf($txt['smftags_approvextag'], $tag['tag']) . '"></a><a href="' . $scripturl . '?action=tags;sa=deletetopic;id=' . $tag['ID']  . '"><img src="' . $settings['images_url'] . '/icons/tag_blue_delete.gif" title="' . sprintf($txt['smftags_deletextag'], $tag['tag']) . '"></a>';
++				}
++				$smftags['html2'][] = $html;
++			}
++
++			if ($modSettings['smftags_set_manualtags'] && $smftags['a_suggest']) {
++                $delimited = array();
++                foreach ($context['topic_tags'][0] as $i => $tag) { $delimited[] = $tag['tag']; }
++                $delimited = implode(chr($modSettings['smftags_set_delimiter']) . ' ', $delimited);
++				$smftags['html2'][] = '<b>'.$txt['smftags_suggested'].':</b>' . "\n" . '<input type="text" name="suggesttags" size="' . (strlen($delimited) + 10) . '" value="' . $delimited . '">';
++			}
++		}
++
++		if ($modSettings['smftags_set_listtags']) {
++			// otherwise, if list tagging is on, we show links and icons
++			if ($smftags['a_edit']) {
++				$smftags['html3'][] = $txt['smftags_tagsep'];
++				$smftags['html3'][] = '<a href="' . $scripturl . '?action=tags;sa=edittopic;topic=' . $topic . '"><img src="' . $settings['images_url'] . '/icons/tag_blue_' . ((count($context['topic_tags']) > 0) ? 'edit.gif" title="'.$txt['smftags_act_edit'].'"> '.$txt['smftags_act_edit'] : 'add.gif" title="'.$txt['smftags_act_add'].'"> '.$txt['smftags_act_add']) . '</a>';
++			}
++			else if (!$context['user']['is_guest'] && ((allowedTo('smftags_suggest_any') || ($context['user']['id'] == $context['topic_starter_id'] && allowedTo('smftags_suggest_own'))))) {
++				$smftags['html3'][] = $txt['smftags_tagsep'];
++				$smftags['html3'][] = '<a href="' . $scripturl . '?action=tags;sa=suggesttopic;topic=' . $topic . '"><img src="' . $settings['images_url'] . '/icons/tag_blue_add.gif" title="' . $txt['smftags_act_suggest'] . '"> ' . $txt['smftags_act_suggest'] . '</a>';
++			}
++		}
++
++		if ($modSettings['smftags_set_manualtags']) {
++			$smftags['html3'][] = '<small>'.sprintf($txt['smftags_separate'], chr($modSettings['smftags_set_delimiter'])).'</small>';
++		}
++
++		$smftags['html'] .= "\n" . implode("\n".$txt['smftags_tagsep']."\n", $smftags['html2']) . "\n" . implode("\n", $smftags['html3']);
++		unset($smftags['html2'], $smftags['html3']);
++
++		if ($modSettings['smftags_set_display_top']) {
++			echo '
++<div width="100%">', str_replace('%tagformid%', '1', $smftags['html']), '</div>';
++		}
++	}
++
++	// End Tagging System 
++		
++
+ 	// Build the normal button array.
+ 	$normal_buttons = array(
+ 		'reply' => array('test' => 'can_reply', 'text' => 146, 'image' => 'reply.gif', 'lang' => true, 'url' => $scripturl . '?action=post;topic=' . $context['current_topic'] . '.' . $context['start'] . ';num_replies=' . $context['num_replies']),
+@@ -606,7 +687,6 @@
+ 
+ 	echo '
+ </form>';
+-
+ 	echo '
+ <div class="tborder"><div class="titlebg2" style="padding: 4px;" align="', !$context['right_to_left'] ? 'right' : 'left', '">
+ 	<form action="', $scripturl, '" method="get" accept-charset="', $context['character_set'], '" style="padding:0; margin: 0;">
+@@ -631,6 +711,14 @@
+ 
+ 	echo '<br />';
+ 
++	// Tagging System
++    // Version 2.4.1+stef
++	// but only if set from previous call, and must be outside the moderation form
++	if (isset($smftags['html']) && $modSettings['smftags_set_display_bottom']) { 
++            echo '<div width="100%">', str_replace('%tagformid%', '2', $smftags['html']), '</div>';
++	}
++	// End Tagging System
++
+ 	if ($context['can_reply'] && !empty($options['display_quick_reply']))
+ 	{
+ 		echo '
+@@ -668,4 +756,4 @@
+ <form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
+ }
+ 
+-?>
+\ No newline at end of file
++?>
+Index: Themes/default/languages/Tags.english-utf8.php
+===================================================================
+--- Themes/default/languages/Tags.english-utf8.php	(revision 0)
++++ Themes/default/languages/Tags.english-utf8.php	(revision 25)
+@@ -0,0 +1,139 @@
++<?php
++/*
++Tagging System
++Version 2.4.1+stef
++http://www.smfhacks.com
++  by: vbgamer45 and stefann
++  license: this modification is licensed under the Creative Commons BY-NC-SA 3.0 License
++
++Included icons are from Silk Icons 1.3 availble at http://www.famfamfam.com/lab/icons/silk/
++  and are licensed under the Creative Commons Attribution 2.5 License
++*/
++
++//Tags text strings
++$txt['smftags_tags'] = 'Tags';
++$txt['smftags_tagtosuggest'] = 'Tag To Suggest:';
++$txt['smftags_popular'] = 'Popular Tags';
++$txt['smftags_latest'] = 'Latest Tagged Posts';
++$txt['smftags_resultsfor'] = 'Results for ';
++
++$txt['smftags_suggest'] = 'Suggest Tag';
++$txt['smftags_addtag2'] = 'Add Tag';
++$txt['smftags_tagtoadd'] = 'Tag to Add';
++$txt['smftags_edittag'] = 'Edit Tag';
++$txt['smftags_rmsuggest'] = 'Remove suggestions';
++$txt['smftags_select'] = 'Select';
++$txt['smftags_suggesttopic'] = 'Suggest Topic Tags';
++$txt['smftags_viewall'] = 'View all';
++$txt['smftags_viewall2'] = ' for a complete list of tags';
++
++$txt['smftags_manage'] = 'Manage Tags';
++$txt['smftags_manage_tags'] = 'Pending Tags';
++$txt['smftags_manage_topictags'] = 'Pending Topic Tags';
++$txt['smftags_manage_topic'] = 'Tagged topic';
++$txt['smftags_manage_suggestedby'] = 'Suggested by';
++$txt['smftags_taggable'] = 'Taggable';
++$txt['smftags_untaggable'] = 'Untaggable';
++$txt['smftags_renametag'] = 'Rename tag';
++$txt['smftags_renametag_to'] = 'to';
++$txt['smftags_all'] = 'All Tags';
++$txt['smftags_noparent'] = 'no parent';
++$txt['smftags_parents'] = 'Parent tag(s)';
++$txt['smftags_count'] = 'Count';
++$txt['smftags_roottag'] = 'root tag element';
++
++$txt['smftags_act_merge'] = 'Merge';
++$txt['smftags_desc_merge'] = 'Select tags to move tags to merge, moving all existing topic tags placed. All tags to be merged must be selected.';
++$txt['smftags_merge2'] = 'Please select the tag you wish to merge the selected tags to';
++$txt['smftags_act_move'] = 'Move';
++$txt['smftags_desc_move'] = 'Select tags to move tags to a single parent. The new parent must also be selected, if applicable';
++$txt['smftags_move2'] = 'Please select the parent tag you wish to move the selected tags to';
++$txt['smftags_act_delete'] = 'Delete';
++$txt['smftags_act_expand'] = 'Expand';
++$txt['smftags_act_approve'] = 'Approve';
++$txt['smftags_act_unapprove'] = 'Unapprove';
++$txt['smftags_act_taggable'] = 'Set taggable';
++$txt['smftags_act_untaggable'] = 'Set untaggable';
++$txt['smftags_act_rename'] = 'Rename';
++$txt['smftags_act_create'] = 'Create';
++$txt['smftags_act_update'] = 'Update';
++$txt['smftags_act_go'] = 'Go';
++$txt['smftags_act_reset'] = 'Reset';
++
++//Tags Admin Settings
++$txt['smftags_set_taggable'] = 'Choose taggable boards by id (space delimited)';
++$txt['smftags_set_mintaglength'] = 'Minimum Tag Length';
++$txt['smftags_set_maxtaglength'] = 'Maximum Tag Length';
++$txt['smftags_set_maxtags'] = 'Max number of tags per topic';
++
++$txt['smftags_set_type'] = 'Choose what style tagging to use';
++$txt['smftags_set_listtags'] = 'Tag list';
++$txt['smftags_set_delimiter'] = 'Delimiter character for manual tagging';
++$txt['smftags_set_listcols'] = 'Number of columns for tag list';
++$txt['smftags_set_manualtags'] = 'Manual tagging';
++$txt['smftags_set_display'] = 'Where to display tags';
++$txt['smftags_set_display_top'] = 'Top of topic';
++$txt['smftags_set_display_bottom'] = 'Bottom of topic';
++$txt['smftags_set_display_messageindex'] = 'Message Index icons';
++
++$txt['smftags_set_latest_limit'] = 'Latest tags to show at bottom of tags page';
++
++$txt['smftags_set_cloud_sort'] = 'Sort tag cloud by';
++$txt['smftags_set_cloud_sort_alpha'] = 'alphabetical order';
++$txt['smftags_set_cloud_sort_count'] = 'tag count';
++$txt['smftags_set_cloud_sort_random'] = 'random';
++
++
++
++$txt['smftags_tagcloud_settings'] = 'Tag Cloud Settings';
++$txt['smftags_set_cloud_tags_to_show'] = 'Number of tags to show in tag cloud';
++$txt['smftags_set_cloud_tags_per_row'] = 'Number of tags to show per row';
++$txt['smftags_set_cloud_max_font_size_precent'] = 'Max tag cloud font size in percent';
++$txt['smftags_set_cloud_min_font_size_precent'] = 'Min tag cloud font size in percent';
++
++
++
++$txt['smftags_err_notopic'] = 'No topic selected.';
++$txt['smftags_err_notag'] = 'You need to enter a tag.';
++$txt['smftags_err_nodirect'] = 'You cannot access this page directly.'; 
++$txt['smftags_err_invalidtag'] = 'This tag no longer exists, or is invalid';
++$txt['smftags_err_emptytag'] = 'This tag has not been used yet.'; 
++
++$txt['smftags_err_mintag'] = 'The tag is smaller than the minimum tag length of ';
++$txt['smftags_err_maxtag'] = 'The tag is greater than the maximum tag length of ';
++$txt['smftags_err_toomaxtag'] = 'Tag limit per topic exceeded.';
++
++$txt['smftags_err_alreadyexists'] = 'That tag for that topic already exists.';
++$txt['smftags_err_delimiterused'] = 'The delimiter you have chosen is already used in %d tags. Either choose another delimiter, or rename these tags first.';
++
++$txt['smftags_success_unapprove'] = 'Successfully unapproved %d tags'; 
++$txt['smftags_success_untaggable'] = 'Successfully marked %d tags as untaggable'; 
++$txt['smftags_success_taggable'] = 'Successfully marked %d tags as taggable'; 
++$txt['smftags_success_delete'] = 'Successfully deleted %d tags, affecting %d rows'; 
++$txt['smftags_success_move'] = 'Successfully moved %d tags'; 
++$txt['smftags_success_merge'] = 'Successfully merged %d tags, affecting %d rows'; 
++
++$txt['smftags_settings'] = 'Tags Settings';
++$txt['smftags_pages'] = 'Pages: ';
++
++$txt['smftags_savesettings'] = 'Save Settings';
++
++///Results Display
++$txt['smftags_subject'] = 'Subject';
++$txt['smftags_startedby'] = 'Started by';
++$txt['smftags_replies'] = 'Replies';
++$txt['smftags_views'] = 'Views';
++$txt['smftags_guest'] = 'Guest';
++$txt['smftags_othertags'] = 'Other tags';
++
++$txt['smftags_topictag'] = 'Tag';
++
++//Manage Display
++$txt['smftags_postedby'] = 'Posted by';
++$txt['smftags_suggestedby'] = 'Suggested by';
++$txt['smftags_tagssuggested'] = 'Tags suggested';
++$txt['smftags_create'] = 'Create new tags';
++$txt['smftags_parent'] = 'Parent tag';
++$txt['smftags_taggable'] = 'Taggable';
++$txt['smftags_approved'] = 'Approved';
++?>
+Index: Themes/default/languages/Modifications.english.php
+===================================================================
+--- Themes/default/languages/Modifications.english.php	(revision 3)
++++ Themes/default/languages/Modifications.english.php	(working copy)
+@@ -1,4 +1,71 @@
+ <?php
+ // Version: 1.1; Modifications
+ 
+-?>
+\ No newline at end of file
++// Tagging System
++// Version 2.4.1+stef
++$txt['smftags_menu'] = 'Tags';
++$txt['smftags_admin'] = 'Tags Configuration';
++$txt['whoall_tags'] = 'Accessing the tag database';
++
++$txt['smftags_addtopic'] = 'Add tags to this topic';
++$txt['smftags_edittopic'] = 'Edit tags on this topic';
++$txt['smftags_ntopicstaggedwithx'] = '%d topics tagged with `%s`';
++$txt['smftags_act_edit'] = 'Edit tags';
++$txt['smftags_act_add'] = 'Add tags';
++$txt['smftags_act_suggest'] = 'Suggest tags';
++$txt['smftags_act_submit'] = 'Submit';
++
++$txt['smftags_suggested'] = 'Suggested';
++$txt['smftags_separate'] = 'Separate each tag with a %s character'; 
++$txt['smftags_bothtags'] = 'Both check box and manual tagging systems are enabled above, you may apply tags using either or both systems as you desire.';
++$txt['smftags_tagsep'] = '&middot';
++
++$txt['smftags_1tag'] = '1 tag';
++$txt['smftags_xtags'] = '%d tags';
++$txt['smftags_tag'] = 'Tag';
++$txt['smftags_topic'] = 'Tags:';
++
++$txt['smftags_deletextag'] = 'Delete `%s` tag';
++$txt['smftags_approvextag'] = 'Approve `%s` tag';
++
++$txt['permissiongroup_smftags'] = 'Topic Tagging Mod';
++
++$txt['permissionname_smftags_view'] = 'View tags';
++$txt['permissionhelp_smftags_view'] = 'Users can view tags both on topics, and the tags page';
++$txt['cannot_smftags_view'] = 'You are not allowed to view tags.';
++
++$txt['permissionname_smftags_add'] = 'Add tags to own new topics';
++$txt['permissionhelp_smftags_add'] = 'Users can add tags to new topics they create';
++$txt['cannot_smftags_add'] = 'You are not allowed to add tags.';
++
++$txt['permissionname_smftags_suggest'] = 'Suggest tags for a topic';
++$txt['permissionhelp_smftags_suggest'] = 'Users can suggest tags to add for those with the Manage Tags permission to view and action';
++$txt['permissionname_smftags_suggest_own'] = 'Own topics';
++$txt['permissionname_smftags_suggest_any'] = 'Any topics';
++$txt['cannot_smftags_suggest'] = 'You are not allowed to suggest tags for this topic.';
++
++$txt['permissionname_smftags_edit'] = 'Edit tags for an existing topic';
++$txt['permissionhelp_smftags_edit'] = 'Users can edit (add and remove) tags on existing topics';
++$txt['permissionname_smftags_edit_own'] = 'Own topics';
++$txt['permissionname_smftags_edit_any'] = 'Any topics';
++$txt['cannot_smftags_edit'] = 'You are not allowed to edit tags.';
++
++$txt['permissionname_smftags_manage'] = 'Manage and approve tags';
++$txt['permissionhelp_smftags_manage'] = 'Users can access the interface to create, approve, remove and merge tags';
++$txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
++
++$txt['permissionname_smftags_createtag'] = 'Create new tags';
++$txt['permissionhelp_smftags_createtag'] = 'Users can create new tags. This is strongly suggested either create or suggest for manual tagging, and is reliant on having add/suggest rights. If both are granted, suggest will be the default.';
++$txt['cannot_smftags_createtag'] = 'You are not allowed to create new tags.';
++
++$txt['permissionname_smftags_suggesttag'] = 'Suggest new tags';
++$txt['permissionhelp_smftags_suggesttag'] = 'Users can suggest new tags. This is strongly suggested either create or suggest for manual tagging, and is reliant on having add/suggest rights. If both are granted, suggest will be the default.';
++$txt['cannot_smftags_suggesttag'] = 'You are not allowed to suggest new tags.';
++
++$txt['permissionname_smftags_admin'] = 'Administrate the tagging system';
++$txt['permissionhelp_smftags_admin'] = 'Users can modify the tag settings';
++$txt['cannot_smftags_admin'] = 'You are not allowed to administrate tags.';
++
++//END  Tagging System Strings
++
++?>
+Index: Themes/default/languages/Tags.english.php
+===================================================================
+--- Themes/default/languages/Tags.english.php	(revision 0)
++++ Themes/default/languages/Tags.english.php	(revision 25)
+@@ -0,0 +1,139 @@
++<?php
++/*
++Tagging System
++Version 2.4.1+stef
++http://www.smfhacks.com
++  by: vbgamer45 and stefann
++  license: this modification is licensed under the Creative Commons BY-NC-SA 3.0 License
++
++Included icons are from Silk Icons 1.3 availble at http://www.famfamfam.com/lab/icons/silk/
++  and are licensed under the Creative Commons Attribution 2.5 License
++*/
++
++//Tags text strings
++$txt['smftags_tags'] = 'Tags';
++$txt['smftags_tagtosuggest'] = 'Tag To Suggest:';
++$txt['smftags_popular'] = 'Popular Tags';
++$txt['smftags_latest'] = 'Latest Tagged Posts';
++$txt['smftags_resultsfor'] = 'Results for ';
++
++$txt['smftags_suggest'] = 'Suggest Tag';
++$txt['smftags_addtag2'] = 'Add Tag';
++$txt['smftags_tagtoadd'] = 'Tag to Add';
++$txt['smftags_edittag'] = 'Edit Tag';
++$txt['smftags_rmsuggest'] = 'Remove suggestions';
++$txt['smftags_select'] = 'Select';
++$txt['smftags_suggesttopic'] = 'Suggest Topic Tags';
++$txt['smftags_viewall'] = 'View all';
++$txt['smftags_viewall2'] = ' for a complete list of tags';
++
++$txt['smftags_manage'] = 'Manage Tags';
++$txt['smftags_manage_tags'] = 'Pending Tags';
++$txt['smftags_manage_topictags'] = 'Pending Topic Tags';
++$txt['smftags_manage_topic'] = 'Tagged topic';
++$txt['smftags_manage_suggestedby'] = 'Suggested by';
++$txt['smftags_taggable'] = 'Taggable';
++$txt['smftags_untaggable'] = 'Untaggable';
++$txt['smftags_renametag'] = 'Rename tag';
++$txt['smftags_renametag_to'] = 'to';
++$txt['smftags_all'] = 'All Tags';
++$txt['smftags_noparent'] = 'no parent';
++$txt['smftags_parents'] = 'Parent tag(s)';
++$txt['smftags_count'] = 'Count';
++$txt['smftags_roottag'] = 'root tag element';
++
++$txt['smftags_act_merge'] = 'Merge';
++$txt['smftags_desc_merge'] = 'Select tags to move tags to merge, moving all existing topic tags placed. All tags to be merged must be selected.';
++$txt['smftags_merge2'] = 'Please select the tag you wish to merge the selected tags to';
++$txt['smftags_act_move'] = 'Move';
++$txt['smftags_desc_move'] = 'Select tags to move tags to a single parent. The new parent must also be selected, if applicable';
++$txt['smftags_move2'] = 'Please select the parent tag you wish to move the selected tags to';
++$txt['smftags_act_delete'] = 'Delete';
++$txt['smftags_act_expand'] = 'Expand';
++$txt['smftags_act_approve'] = 'Approve';
++$txt['smftags_act_unapprove'] = 'Unapprove';
++$txt['smftags_act_taggable'] = 'Set taggable';
++$txt['smftags_act_untaggable'] = 'Set untaggable';
++$txt['smftags_act_rename'] = 'Rename';
++$txt['smftags_act_create'] = 'Create';
++$txt['smftags_act_update'] = 'Update';
++$txt['smftags_act_go'] = 'Go';
++$txt['smftags_act_reset'] = 'Reset';
++
++//Tags Admin Settings
++$txt['smftags_set_taggable'] = 'Choose taggable boards by id (space delimited)';
++$txt['smftags_set_mintaglength'] = 'Minimum Tag Length';
++$txt['smftags_set_maxtaglength'] = 'Maximum Tag Length';
++$txt['smftags_set_maxtags'] = 'Max number of tags per topic';
++
++$txt['smftags_set_type'] = 'Choose what style tagging to use';
++$txt['smftags_set_listtags'] = 'Tag list';
++$txt['smftags_set_delimiter'] = 'Delimiter character for manual tagging';
++$txt['smftags_set_listcols'] = 'Number of columns for tag list';
++$txt['smftags_set_manualtags'] = 'Manual tagging';
++$txt['smftags_set_display'] = 'Where to display tags';
++$txt['smftags_set_display_top'] = 'Top of topic';
++$txt['smftags_set_display_bottom'] = 'Bottom of topic';
++$txt['smftags_set_display_messageindex'] = 'Message Index icons';
++
++$txt['smftags_set_latest_limit'] = 'Latest tags to show at bottom of tags page';
++
++$txt['smftags_set_cloud_sort'] = 'Sort tag cloud by';
++$txt['smftags_set_cloud_sort_alpha'] = 'alphabetical order';
++$txt['smftags_set_cloud_sort_count'] = 'tag count';
++$txt['smftags_set_cloud_sort_random'] = 'random';
++
++
++
++$txt['smftags_tagcloud_settings'] = 'Tag Cloud Settings';
++$txt['smftags_set_cloud_tags_to_show'] = 'Number of tags to show in tag cloud';
++$txt['smftags_set_cloud_tags_per_row'] = 'Number of tags to show per row';
++$txt['smftags_set_cloud_max_font_size_precent'] = 'Max tag cloud font size in percent';
++$txt['smftags_set_cloud_min_font_size_precent'] = 'Min tag cloud font size in percent';
++
++
++
++$txt['smftags_err_notopic'] = 'No topic selected.';
++$txt['smftags_err_notag'] = 'You need to enter a tag.';
++$txt['smftags_err_nodirect'] = 'You cannot access this page directly.'; 
++$txt['smftags_err_invalidtag'] = 'This tag no longer exists, or is invalid';
++$txt['smftags_err_emptytag'] = 'This tag has not been used yet.'; 
++
++$txt['smftags_err_mintag'] = 'The tag is smaller than the minimum tag length of ';
++$txt['smftags_err_maxtag'] = 'The tag is greater than the maximum tag length of ';
++$txt['smftags_err_toomaxtag'] = 'Tag limit per topic exceeded.';
++
++$txt['smftags_err_alreadyexists'] = 'That tag for that topic already exists.';
++$txt['smftags_err_delimiterused'] = 'The delimiter you have chosen is already used in %d tags. Either choose another delimiter, or rename these tags first.';
++
++$txt['smftags_success_unapprove'] = 'Successfully unapproved %d tags'; 
++$txt['smftags_success_untaggable'] = 'Successfully marked %d tags as untaggable'; 
++$txt['smftags_success_taggable'] = 'Successfully marked %d tags as taggable'; 
++$txt['smftags_success_delete'] = 'Successfully deleted %d tags, affecting %d rows'; 
++$txt['smftags_success_move'] = 'Successfully moved %d tags'; 
++$txt['smftags_success_merge'] = 'Successfully merged %d tags, affecting %d rows'; 
++
++$txt['smftags_settings'] = 'Tags Settings';
++$txt['smftags_pages'] = 'Pages: ';
++
++$txt['smftags_savesettings'] = 'Save Settings';
++
++///Results Display
++$txt['smftags_subject'] = 'Subject';
++$txt['smftags_startedby'] = 'Started by';
++$txt['smftags_replies'] = 'Replies';
++$txt['smftags_views'] = 'Views';
++$txt['smftags_guest'] = 'Guest';
++$txt['smftags_othertags'] = 'Other tags';
++
++$txt['smftags_topictag'] = 'Tag';
++
++//Manage Display
++$txt['smftags_postedby'] = 'Posted by';
++$txt['smftags_suggestedby'] = 'Suggested by';
++$txt['smftags_tagssuggested'] = 'Tags suggested';
++$txt['smftags_create'] = 'Create new tags';
++$txt['smftags_parent'] = 'Parent tag';
++$txt['smftags_taggable'] = 'Taggable';
++$txt['smftags_approved'] = 'Approved';
++?>
+Index: index.php
+===================================================================
+--- index.php	(revision 3)
++++ index.php	(working copy)
+@@ -308,6 +308,7 @@
+ 		'splittopics' => array('SplitTopics.php', 'SplitTopics'),
+ 		'stats' => array('Stats.php', 'DisplayStats'),
+ 		'sticky' => array('LockTopic.php', 'Sticky'),
++		'tags' => array('Tags.php', 'TagsMain'),
+ 		'theme' => array('Themes.php', 'ThemesMain'),
+ 		'trackip' => array('Profile.php', 'trackIP'),
+ 		'about:mozilla' => array('Karma.php', 'BookOfUnknown'),
+Index: Packages/installed.list
+===================================================================
+--- Packages/installed.list	(revision 3)
++++ Packages/installed.list	(working copy)
+@@ -0,0 +1 @@
++Tagging System|^|TaggingSystem2.4.2.zip|^|vbgamer45:SMFTags|^|2.4.2

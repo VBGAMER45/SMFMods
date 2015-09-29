@@ -1,0 +1,20 @@
+2.2
+!Minor template tweaks for style SMF 2.0
+!Removed last two queries from the template files
+
+2.1
+!Fixed some function name conflicts with other mods
+
+2.0.1
+!Fixed issue with MySQL 5.5 since it no longer supports the Type for create tables uses Engine instead
+
+2.0
++Added support for SMF 2.0!
++Added user info box next to comments
+
+1.4
++Added page listing for user comment display. Show 10 comments per page
++Added comment approval options
++Added PM on a new comment added to a user's profile
+!Fixed issue with embarressed smiley in 1.0.x
+!Fixed issue when editing a comment caused by spell check

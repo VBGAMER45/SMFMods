@@ -1,0 +1,254 @@
+Changelog started November 2006; Currently at version 1.0
+
+Legend:
+--------------------------------------------------------------------------------
+ ! Minor change or bugfix. (don't bother to log typos except between releases.)
+ * Change like above, but affects templates.
+ & Change that affects a language file. (make two if it affects templates too.)
+ + Feature addition or improvement.
+ - Feature or option removal.
+ % Development flag or note, such as branching.
+ 
+Pretty URLs 1.1.1                                                12  November 2013
+================================================================================  
+ + Smarter rewriting subsystem for actions Thanks to Arantor
+ 
+ 
+Pretty URLs 1.1                                                20  September 2013
+================================================================================  
+ ! Fixed possible error in PrettyUrls-Filters.php
+ 
+Pretty URLs 1.0                                                 19  February 2012
+================================================================================  
+ ! Do no cache javascript or mailto links saves some room in the database performance improvement.
+ + New setting to use caching system instead of database tables thanks to nend.
+ 
+Pretty URLs 1.0 RC5                                                 5  January 2011
+================================================================================
+ ! Base: Fixed issue if queryless urls are enabled. Pretty urls will now disable them when enabling pretty urls to fix server errors.
+
+Pretty URLs 1.0 RC4                                                 12 December 2010
+================================================================================
+ ! Base: Fixed some install issues when Simple Portal mod is installed
+
+Pretty URLs 1.0 RC3                                                  28 November 2010
+================================================================================
+ ! Base: Fixed bug with handling single quotes in board names.
+ 
+Pretty URLs 1.0 RC2                                                  16 August 2010
+================================================================================
+ % Base/reverter: Installs on SMF 2.0 RC3.
+ ! Base: The relativising code needed some fixes. Sadly <base> can't be used. (PrettyUrls-Filters.php, QueryString.php)
+ % Base/reverter: Installs on SMF 2.0 RC2. Thanks Yağız!
+ + extras: Added SMF Tagging System filter.
+ + extras: Added more filters for Downloads System, ezPortal, SMF Articles, SMF Classifieds, SMF Gallery, and SMF Store
+ + extras: Added filter for Aeva Media. Thanks Nao for the code
+ + Base: Added new setting to allowing skipping of actions for url rewriting.
+ + extras: Added Google Tagged filter. Thanks to  Yagiz...
+ 
+Pretty URLs 1.0RC                                                  19 June, 2009
+================================================================================
+ % Base/reverter: Installs on SMF 2.0 RC1.
+ + Base: Prettify URLs in emails. (Subs-Post.php)
+ ! Base: Don't let fix_possible_url() change any URLs. (News.php)
+ ! Base: The previous changes needed a little more work. (News.php, PrettyUrls-Filters.php, Subs-Post.php)
+ ! Boards/Topics: Fix SMF bug #3418 (QueryString.php)
+ ! Boards/Topics: Always unset $_GET['pretty'] in SMF2. Never before. (QueryString.php)
+ ! Base: Quotes are back finally... (PrettyUrls-Filters.php)
+ ! Base/extras: Change pattern delimiters so that ~username URLs will work. (Many files)
+ + Base: Don't overwrite existing .htaccess files. (Subs-PrettyUrls.php)
+ ! Base: Always display something for the admin menu. (Admin.php, Subs.php)
+ + Base: Installation readme and CONTRIBUTORS file! :)
+ + Base: Absolutise relative URLs. (PrettyUrls-Filters.php, QueryString.php)
+ ! Base: Don't cache sc or $context['session_var']. (PrettyUrls-Filters.php)
+ ! Base: If the .htaccess file can't be written to, then don't enable rewriting. (install.php, Subs-PrettyUrls.php)
+ + Base: Use the chrome templates when installing. (install.php, PrettyUrls.php, PrettyUrls.template.php, etc)
+ ! Base: Changed the hotmail fix so that it now autolinks all URLs. (Subs-Post.php)
+ + Base: Automatically detect whether RewriteBase will be needed. (Subs-PrettyUrls.php)
+ + Base: Added an admin page for testing whether rewriting works. (PrettyUrls.php, PrettyUrls.template.php, etc)
+
+Pretty URLs 0.9                                                12 November, 2008
+================================================================================
+ % Branched off 0.8 so that changes for 2.0 support won't get confused with everything else.
+ ! Base: Some colour changes were needed for dark themes. (chrome.css)
+ - Base: Removed the cache table's log_time column as it's not used anymore.
+ ! Base: Some futher changes for 2.0 Beta 3 support were required.
+ % Base: Move the buffer rewriting code out of QueryString.php into it's own function in PrettyUrls-Filters.php.
+ + Base: Started reworking the URL generator. (Subs-PrettyUrls.php)
+ ! Boards/Topics: $_GET['pretty'] needs to be unset with the new SEO changes in SMF 2. (QueryString.php)
+ ! Boards/Topics: Don't add a 'b' or 't' before IDs unless it's really needed. (PrettyUrls-Filters.php, QueryString.php, Subs-PrettyUrls.php)
+ ! Topics: Fix broken quotes during maintenance rather than installation. (Subs-PrettyUrls.php)
+ + Base: Turkish ISO-8859-9 encoding is hopefully supported now. (Subs-PrettyUrls.php)
+ ! Boards/Topics: Fix $_REQUEST for silly mods that don't check $board/$topic. (Display.php, MessageIndex.php, QueryString.php)
+ % Base: Updated for SMF 2.0 Beta 3.1 Public.
+ % reverter: Added a package to help people uninstall the mod.
+ ! Base: Replace cached URLs in 2.0. (PrettyUrls-Filters.php)
+ + Boards: Added a simple interface to edit URLs. (ManageBoards.php, ManageBoards.template.php)
+ ! Base: Rewrite rules can now be arrays. (install.php, Subs-PrettyUrls.php)
+ ! Profiles: Profile names with a / will now work. (PrettyUrls-Filters.php)
+ ! Base/extras: Reorganised filter priorities. (install.php)
+ % Base/reverter: Now compatible with TinyPortal 1.0.5.
+ + Base: Live news and information is now displayed in the admin interface! (PrettyUrls.php, PrettyUrls.template.php, chrome.js, news.js etc)
+ % extras: Renamed the seo4smf package, and added a filter for TP articles.
+ ! Topics: Topics about unions are now fine. (PrettyUrls-Filters.php)
+ ! Boards/Topics: Make it easier for other mods by checking $_REQUEST['pretty'] rather than $_GET. (QueryString.php)
+ ! Base: Polishing the interface some more...
+ % Base: Updated for SMF 2.0 Beta 4 Public.
+ ! Base: Allow pretty URLs to be verified. (Security.php)
+ + extras: Added a patch to fix relative URLs used by the arcade mod.
+ ! Base: Don't strip final ;s in entities, it breaks validation. (PrettyUrls-Filters.php)
+ ! Base/reverter: Installs on SMF 2.0 Beta 4. Stupid versioning inconsistencies.
+ ! Base: Added a few characters needed for Czech. (Subs-PrettyUrls.php)
+
+Pretty URLs 0.8.1                                                 22 March, 2008
+================================================================================
+ + Base: Added a hidden tool to edit the filters array at sa=filters. (PrettyUrls.php, Subs-PrettyUrls.php, PrettyUrls.template.php)
+ ! Base: Added a place for notices to be displayed in the admin interface. (PrettyUrls.php, PrettyUrls.template.php)
+ ! Base: Started polishing it up a little.
+ % Base: Updated for SMF 2.0 Beta 3! (Though it's not all right for SQLite yet. And I haven't tested PostgreSQL yet at all!)
+
+Pretty URLs 0.8                                                    7 March, 2008
+================================================================================
+ ! Profiles: Fixed a minor typo.
+ + wiki: Added the DatabaseChanges page.
+ ! Topics: Use 301 redirections for topics with wrong board URLs. (Display.php)
+ + Base: Romanise Modern Greek. (Subs-PrettyUrls.php)
+ ! Boards: Don't be so eager to find board URLs, targetboard doesn't count! (PrettyUrls-Filters.php)
+ ! Topics: Don't rewrite URLs for topics that don't exist. (PrettyUrls-Filters.php)
+ % Display database changes on (un)installing. (install.php, uninstall.php)
+ + Created a script to uninstall all database changes. (uninstall.php)
+ ! Base: Finally fixed quotes. Sure hope I won't regret saying that. (QueryString.php, Subs-PrettyUrls.php)
+ % All functions now begin with 'pretty'.
+ ! Base: Process <form>s, but not <script>s. (QueryString.php)
+ ! Base: Added a .htaccess fix for shared hosts.
+ * Boards: Added an interface to edit a board's URL. (ManageBoards.template.php)
+ % seo4smf: Added a package to 301 redirect SEO4SMF's URLs.
+ ! Boards/Topics: Remove page numbers from URLs unless they're actually needed. (PrettyUrls-Filters.php)
+ & Base: Include language entries for english-utf8 too.
+ ! Base: Don't require the same file 20 times. (QueryString.php, Subs.php)
+ ! Base: Filters can now be enabled/disabled. (Subs-PrettyUrls.template.php)
+ - Base: Don't install the package server anymore. (install.php, PackageGet.php)
+ + Base: Started working on a better interface for administration. (index.php, PrettyUrls.php, chrome.css etc)
+ & Base: Include language strings for all settings. (ModSettings.php)
+ + Base: Enable/disable filters through the admin interface. (PrettyUrls.php, PrettyUrls.template.php)
+ % Merged the actions and profiles packages into the Base package, disabled by default.
+ ! Base: Allow individual actions to have specific buffer URL search patterns, used just by feeds for now. (QueryString.php, News.php)
+ % Base: Started work on 2.0 support. (/SMF2-0/*)
+ ! Base: Changed some queries in both 2.0 and 1.1 to support the 2.0 guidelines.
+ & Added French language files.
+ + Base: Use a text url_id rather than CRCs in the cache. (install.php, QueryString.php)
+ ! Base: Replacement URLs are now cached with VARCHAR(255). (install.php)
+ ! Base: Many changes required for 2.0.
+ + Base: Admin CP is now accessed through action=admin;area=pretty, even in 1.1. (Admin.php, PrettyUrls.php)
+ + Topics: Topic URLs are now generated as needed. (PrettyUrls-Filters.php)
+ - Topics: Removed the code that generates topic URLs in other places. (Subs-Post.php, Subs-PrettyUrls.php)
+ ! Boards/Topics: Fix old URLs by replacing ' with chr(18). (install.php, Subs-PrettyUrls.php)
+ + Actions: Only rewrite URLs with an action in $actionArray. (PrettyUrls-Filters.php, Subs-PrettyUrls.php)
+ % And as a result, the actions filter can now be enabled by default.
+ ! Boards: Current board URLs that are the same as an action must be changed. (Subs-PrettyUrls.php)
+ ! Boards/Topics: Don't make infinite redirects if the individual filters are disabled. (Display.php, MessageIndex.php)
+ + Base: Added an action for URL maintenence. (index.php, PrettyUrls.php, PrettyUrls.template.php, PrettyUrls.english.php)
+ ! Base: Remove redundant id entries from pretty_filters. (install.php, Subs-PrettyUrls.php)
+ ! Boards: Don't edit the ManageBoards template until it works.
+ + Base: The maintenance interface now works. (PrettyUrls.php, Subs-PrettyUrls.php, PrettyURls.template.php)
+
+Pretty URLs 0.7                                                    June 12, 2007
+================================================================================
+ + Base: Romanise Vietnamese, Croatian, Hiragana and Katakana. (Subs-PrettyUrls.php)
+ % Started the profiles package.
+ ! Base: URLs in <link> tags and feeds should be rewritten too. (QueryString.php, News.php)
+ ! Base: Fixed a broken query in Subs-Post.php.
+ ! Base: Don't use 301 redirections if rewriting isn't enabled! (Display.php, MessageIndex.php)
+ ! Base: Hopefully fixed the queries to work in MySQL 3.34. (install.php)
+ ! Base: Fixed some wrong variables in Subs-Boards.php, weird...
+
+Pretty URLs 0.6                                                      May 2, 2007
+================================================================================
+ + Base: Use pretty URLs in redirectExit(). (Subs.php)
+ + Base: Added the updateFilters() and filterAndHtaccessSettings() functions. (Subs-PrettyUrls.php, PrettyUrls-Filters.php)
+ ! Base: Fixed a missing global in generatePrettyUrl(). (Subs-PrettyUrls.php)
+ + Base: Filter board urls. (PrettyUrls-Filters.php)
+ + Base: Allow permanent redirects. (Subs.php)
+ + Base: Filter topic urls. (PrettyUrls-Filters.php)
+ ! Base: Don't try to rewrite urls once the code has been removed! (uninstall.php)
+ - Base: Remove the pretty_url column from the topics table as it's no longer needed. (install.php)
+ ! Base: Update the synchroniseTopicUrls() function for the above change. (Subs-PrettyUrls.php)
+ ! Base: Changed the format of specifying filters, which are now stored in a DB setting. (install.php, Subs-PrettyUrls.php, PrettyUrls-Filters.php)
+ % Base: All filter callbacks should now be placed only in PrettyUrls-Filters.php.
+ ! Base: Don't do anything if there are no URLs. (QueryString.php)
+ - Base: Remove the ID_BOARD column from the pretty_topic_urls table. (install.php)
+ ! Base: Rewrite topic URLs correctly if there is no pretty URL. (PrettyUrls-Filters.php)
+ + Base: Update the load time and query display. (QueryString.php)
+ ! Base: Made the topic and board filters a little more efficient. (PrettyUrls-Filters.php)
+ ! Base: Don't rewrite URLs on the error log page. (ManageErrors.php)
+ + Base: Better handling of session URLs to reduce queries. (QueryString.php)
+ % Base: Split out board and topic related changes to BoardsAndTopics.xml.
+ + Base: Use 301 redirects for numbered board and topic pages. (Display.php, MessageIndex.php)
+ + Base: Added the pretty_board_lookup setting to store all board URLs, even old ones. (install.php, QueryString.php, Subs-Boards.php)
+ + Base: Backup old .htaccess files. (Subs-PrettyUrls.php)
+ + Base: Build the .htaccess file from the pretty_filters settings array. example.htaccess is no longer needed! (install.php, Subs-PrettyUrls.php)
+ % Removed the ext-none package.
+ ! actions: Updated for the above changes.
+
+Pretty URLs 0.5                                                    April 8, 2007
+================================================================================
+ ! Base: Fixed problems with board URLs containing quotes. (install.php, Subs-Board.php)
+ + Base: Added the 'pretty_enable_filters' and 'pretty_filter_callbacks' settings. (install.php)
+ + Base: Added the 'pretty_urls_cache' table. (install.php)
+ + Base: Run the filter callbacks against all URLs in a page, caching any new urls. (QueryString.php)
+ ! Base: Made some minor changes so that the above will work. (QueryString.php)
+ ! Base: Don't cache URLs with a session. (QueryString.php)
+ + Base: Added a file, PrettyUrls-Filters.php, to place the code of filter extensions in.
+ % Started the actions-ext-none package, to rewrite miscellaneous action urls.
+ ! actions: Clear the URL cache when (un)installing a new filter. (install.php)
+ ! actions: Include an example.htaccess file too.
+ ! Base: Remove unneeded ';' and '?' characters from URLs. (QueryString.php)
+
+Pretty URLs 0.4                                                   March 14, 2007
+================================================================================
+ ! Base: Now following the SMF Coding Guidelines (I hope).
+ ! Base: It wasn't compatible with another mod, my own! (Oh the shame!) (PackageGet.php)
+ + Base: Transliterate some Cyrillic characters. (Subs-PrettyUrls.php)
+ % Removed the TP-ext-none package, and moved its changes to the ext-none package.
+ ! ext-none: Added error="skip" attributes to many less essential changes so it will have a better chance of installing.
+ ! Base: $context['pretty'] wasn't defined in SSI.php.
+ + Base: If the database encoding isn't UTF-8 and multibyte string functions are available, try converting the text to UTF-8. (Subs-PrettyUrls.php)
+ ! Base: Halved the number of queries used to synchronise the topic URLs. (Subs-PrettyUrls.php)
+ + Base: Allow Arabic to be romanised. (QueryString.php, Subs-PrettyUrls.php, example.htaccess)
+ % ext-none: Broke up Major.xml into 3 files because it was too big for the package manager.
+
+Pretty URLs 0.3                                                 January 20, 2007
+================================================================================
+ + Base: Added some Turkish (and other) characters. (Subs-PrettyUrls.php)
+ ! ext-none: Fixed some problems in SSI.php.
+ + Base: Give new topics a pretty URL. (Subs-Post.php)
+ + TP-ext-none: Change the URLs of the front page in TP_boardNews(). (TPortal.php)
+ + ext-none: Change the URLs of Stats.php.
+ + Added a Package List. (packages.xml)
+ + Base: Added the canonicaliseUrl() function to fix relative URLs. (PackageGet.php)
+
+Pretty URLs 0.2                                                December 26, 2006
+================================================================================
+ ! Base: Don't give pretty URLs to recycled topics, and fixed '&quot;' issues. (Subs-PrettyUrls.php)
+ ! Base: Adding and changing board URLs is now done through modifyBoard(). (Subs-Boards.php)
+ ! ext-none: Fixed the Display template because a change hadn't been committed somehow.
+ ! Base: Don't add an action in .htaccess because it won't work with an invalid board URL. (QueryString.php)
+ + ext-none: Replace topic urls in SSI.php, News.php and Recent.php.
+
+Pretty URLs 0.1                                                December 13, 2006
+================================================================================
+ + Base: Added generatePrettyUrl function and $characterHash with almost all characters from latin-1. (Subs-PrettyUrls.php)
+ + Base: Generate the pretty URLs of the forum's boards. (install.php)
+ + Base: Included an example .htaccess file (example.htaccess)
+ + Base: Added 'pretty_root_url' setting, defaulting to $boardurl.
+ + ext-none: Replace the board urls in the BoardIndex and MessageIndex templates.
+ ! Base: Fixed $characterHash so '+' would never be in a URL. (Subs-PrettyUrls.php)
+ ! Base: Fixed issues with '&amp;' and removed unwanted '-'s. (Subs-PrettyUrls.php)
+ + Base: A new board deserves a new URL! (ManageBoards.php)
+ + ext-none: Replaced the board URLs in SSI.php, News.php and Recent.php.
+ ! Base: generatePrettyUrl is now simpler and hopefully more efficient. (Subs-PrettyUrls.php)
+ + Base: If numbers were used in the query string, allow the possibility of redirecting to a pretty URL. (QueryString.php)
+ + Base: Added the smf_pretty_topic_urls table and the processing to allow topic urls. (install.php, QueryString.php)
+ + Base: Created the synchroniseTopicUrls() function. (Subs-PrettyUrls.php)
+ + ext-none: Replace the topic urls in the BoardIndex, MessageIndex and Display templates.
+ ! Base: Altered the example.htaccess file so that the new topic urls would work.

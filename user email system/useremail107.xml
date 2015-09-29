@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:User Email System</id>
+<version>1.2</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin User Email System Text Strings
+$txt['user_email_title'] = 'User Email System';
+$txt['permissionname_send_useremail'] = 'Send User Email';
+$txt['permissionhelp_send_useremail'] = 'See if the user is allowed to send email.';
+$txt['cannot_send_useremail'] = 'You can not send email.';
+
+$txt['user_email_sendtitle'] = 'Send an e-mail message';
+$txt['user_email_recipient'] = 'Recipient';
+$txt['user_email_youremail'] = 'Your Email';
+$txt['user_email_subject'] = 'Subject';
+$txt['user_email_body'] = 'Message body';
+$txt['user_email_options'] = 'Options';
+$txt['user_email_sendcopy'] = 'Send a copy of this e-mail to yourself';
+$txt['user_email_sendemail'] = 'Send e-mail';
+$txt['user_email_emailsent'] = 'Your email has been sent!';
+$txt['user_email_emailreturn'] = 'Your email has been sent! Click <a href="' . $scripturl . '">here</a> to return to the board.';
+$txt['user_email_errsubject'] = 'You need to enter a subject.';
+$txt['user_email_errmessage'] = 'You need to enter a message.';
+$txt['user_email_errnouser'] = 'No user selected.';
+$txt['user_email_errnousersend'] = 'This user has hidden their email and you can not email them.';
+$txt['user_email_errnoemail'] = 'Your email address is required.';
+$txt['user_email_err_invalidemail'] = 'Your email address is not valid. Check your input.';
+$txt['user_email_hello'] = "Hello ";
+$txt['user_email_emailsentby'] = ',
+
+The following is an email sent to you by ';
+$txt['user_email_viaaccount'] = ' via your account on ';
+$txt['user_email_ifmsgspam'] = ' . If this message is spam, contains abusive or other comments you find offensive please contact the webmaster of the board at the following address at ';
+$txt['user_email_msgsentas'] = 'Message sent to you follows';
+$txt['user_email_emailsent'] = ' - Email sent.';
+$txt['user_email_guest'] = 'Guest';
+
+
+// END Begin User Email System Text Strings		
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin User Email System Text Strings
+$txt['whoall_useremail'] = 'Writing a user an email.';
+//END User Email System Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'viewquery' => array('ViewQuery.php', 'ViewQuery'),]]></search>
+		<add><![CDATA[		'useremail' => array('User_Email.php', 'UserEmailMain'),]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="after"><![CDATA['karma_edit' => false,]]></search>
+		<add><![CDATA[
+		'send_useremail' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA['who_view',]]></search>
+		<add><![CDATA[
+		'send_useremail',]]></add>
+	</operation>
+</file>
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="replace"><![CDATA[<a href="mailto:', $message['member']['email'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/email_sm.gif" alt="' . $txt[69] . '" title="' . $txt[69] . '" border="0" />' : $txt[69]), '</a>';]]></search>
+		<add><![CDATA[<a href="' . $scripturl . '?action=useremail;u=' . $message['member']['id'] . '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/email_sm.gif" alt="' . $txt[69] . '" title="' . $txt[69] . '" border="0" />' : $txt[69]), '</a>';]]></add>
+	</operation>
+</file>
+<file name="$themedir/Memberlist.template.php">
+	<operation>
+		<search position="replace"><![CDATA[<td class="windowbg2">', $member['email'], '</td>]]></search>
+		<add><![CDATA[<td class="windowbg2"><a href="' . $scripturl . '?action=useremail;u=' . $member['id'] . '"><img src="' . $settings['images_url'] . '/user_email.gif" alt="' . $txt[69] . '" /></a></td>]]></add>
+
+	</operation>
+</file>
+<file name="$themedir/InstantMessage.template.php">
+	<operation>
+		<search position="replace"><![CDATA[<a href="mailto:', $message['member']['email'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/email_sm.gif" alt="' . $txt[69] . '" title="' . $txt[69] . '" border="0" />' : $txt[69]), '</a>';]]></search>
+		<add><![CDATA[<a href="' . $scripturl . '?action=useremail;u=' . $message['member']['id'] . '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/email_sm.gif" alt="' . $txt[69] . '" title="' . $txt[69] . '" />' : $txt[69]), '</a>';]]></add>
+	</operation>
+</file>
+<file name="$themedir/Profile.template.php">
+	<operation>
+		<search position="replace"><![CDATA[if ($context['member']['email_public'])
+		echo '
+						<a href="mailto:', $context['member']['email'], '">', $context['member']['email'], '</a>';]]></search>
+		<add><![CDATA[if ($context['member']['email_public'])
+		echo '
+						<a href="' . $scripturl . '?action=useremail;u=' . $context['member']['id'] . '"><img src="' . $settings['images_url'] . '/user_email.gif" alt="' . $txt[69] . '" /></a>';]]></add>
+	</operation>
+</file>
+</modification>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Daniel15:Blog</id>
+	<name>SMFBlog</name>
+	<version>2.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
+		<readme parsebbc="true">readme.txt</readme>
+		<require-file name="Blog.php" destination="$sourcedir" />
+		<require-file name="Blog.template.php" destination="$themedir" />
+		<require-file name="blog.css" destination="$themedir" />
+		
+		<modification format="xml" type="file">install.xml</modification>
+		<code>installScript.php</code>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
+		<remove-file name="$sourcedir/Blog.php" />
+		<remove-file name="$themedir/Blog.template.php" />
+		<remove-file name="$themedir/blog.css" />
+		
+		<modification format="xml" type="file" reverse="true">install.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

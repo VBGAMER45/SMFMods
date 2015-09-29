@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:QuickRegister</id>
+	<name>Qucik Register</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">quickregister.xml</modification>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
+		<modification type="file" reverse="true">quickregister.xml</modification>
+	</uninstall>
+
+
+</package-info>

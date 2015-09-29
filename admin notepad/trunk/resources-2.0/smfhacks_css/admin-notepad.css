@@ -1,0 +1,29 @@
+/**
+ * Admin Notepad (an_)
+ *
+ * @file ./smfhacks_css/admin-notepad.css
+ * @author SMFHacks <http://www.smfhacks.com/>
+ * @copyright SMFHacks.com Team, 2012
+ *
+ * @version 2.0.2
+ */
+
+.admin_notepad_success {
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+}
+
+#admin_notepad_cont {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+#admin_notepad_desc {
+	margin-left: 1px;
+}
+
+#admin_notepad_submit {
+	margin-left: 0px;
+}

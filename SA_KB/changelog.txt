@@ -1,0 +1,161 @@
+1.1
+!Bug fixes
+
+1.0.2
+!Fixed edit article going to guest
+
+1.0.1
+!Fixed spelling issues
+
+REV19
+increased width of like button
+increase width of permission info
+added missing txt strings
+
+
+REV18
+added profile view permission check to disable profile  
+links
+added option to disable link users names
+added option to disable all kb pms
+fixed issue Images disappearing from other articles when  
+editing
+
+REV17
+fixed issue undefined function kb_imageresize()
+added checks to see if hs was installed
+added check when submitting a report for empty comment
+added check when submitting a report for a valid article id
+fixed issue permission info was incorrect
+fixed error  Undefined index: cont
+fixed permission issues for adding articles
+renamed some text on the search page
+moved jquery validate js to scripts dir
+added delete article confirm box
+
+
+REV16
+fixed issues with custom menu options
+tweaked the way dates was displayed when viewing articles
+fixed sorting article by title was actually sorted by id
+Print article was not shown if no permission to add edit  
+delete report articles
+increased title size from 50 to 100
+avatars on comments was using original article creator  
+avatar
+added delete all/delete selected option to mange kb page
+managers can now see all categories by default
+images now get resized using jquery
+adding comments now closes the add com box after submission
+fixed hardcoded text
+
+
+REV14
+fixed issue using source used title 
+fixed issue with attachments failing and article where still  
+submitted
+fixed issue with avatars not resisized properly
+moved article details to the right of the article
+
+REV13
+added support for caching
+added option to attach images with settings 
+fixed display issue on view article page 
+implemented jquery/ajax for commenting on article and  
+previewing articles
+supports highslide for attachments will also convert img bb  
+code
+added option to add a source when add/editing articles
+
+
+
+REV11
+fixed invalid html
+isallowed and disabled check where in wrong place
+added index.php file to kb dir which redirects back to forum
+added files exist check to kb_file_include function
+fixed ints cast as strings
+
+
+REv10 
+adde category rss support [supports rss,rss2 formats]  
+;type=rss ;type=rss2
+fixed Undefined index: postername when searching with out a  
+member 
+added action logs
+added check to see if article exist on view article page
+added option to disable views
+fixed missing session checks
+fixed user being able to see unapproved article that isn’t  
+there’s
+now you can see your unapproved articles in your profile
+
+
+REv9 
+added support for featured articles
+updated text strings again
+
+REV8
+fixed users not being able to add articles
+category article counts now shows sub cats as well
+added default install settings
+renamed id_parant to id_parent many places
+more typos fixed what would I do with out you guys :D
+
+REV7
+changes to layout
+added title to edit and add category pages
+added title to edit and add article pages
+added new menu with display options
+moved search to it own action
+fixed incorrect database update logic
+
+
+REV5 & REV6
+added more admin options
+renamed kb_know table to kb_articles
+renamed veiw column to view
+renamed id_artical column to id_article several places
+enhanced category permissions
+renamed knowcont and cont actions to be more descriptive
+fixed incorrect page counts
+added support for sub categories
+fixed search and categories only showing one cat if more  
+than one to show
+some typos fixed
+added support for adding images to categories
+added option to set articles and categories per page
+many typos fixed
+added category permissions info
+added basic stats at index
+renamed many database columns
+
+REV4
+fixed invalid html
+added article comments
+added check for rates to see if less than 0
+deleting articles also now deletes rates and comments
+added descriptive page titles
+split more functions to own files
+added support to import faq's from faq mod
+fixed install errors
+fixed issue having wysiwyg editor on
+
+REV3
+added approval system
+added reports system
+added support for standalone mode
+fixed category counts not updating when deleting an article
+split edit function from article view function
+added support for importing smf articles
+added support for importing tp articles 
+
+
+REV2
+added enhanced per category permission
+add article now checks it category is present
+added link tree support
+added allow disallow robots to index kb page
+some typos fixed
+added rating
+cleaner article post layout

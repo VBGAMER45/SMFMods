@@ -1,0 +1,295 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:AvatarSelect</id>
+<version>2.0</version>
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end"></search>
+		<add><![CDATA[
+// Begin Avatar Select  Text Strings
+$txt['avatarselect_error_req'] =  'An avatar is required! Please select one.';
+$txt['avatarselect_avatar'] = 'Avatar Select:';
+$txt['avatarselect_pleaseselect'] = 'Please select an avatar.';
+// END Avatar Select Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end"></search>
+		<add><![CDATA[
+// Begin Avatar Select  Text Strings
+$txt['avatarselect_error_req'] =  'An avatar is required! Please select one.';
+$txt['avatarselect_avatar'] = 'Avatar Select:';
+$txt['avatarselect_pleaseselect'] = 'Please select an avatar.';
+// END Avatar Select Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/Register.template.php">
+	<operation>
+		<search position="after"><![CDATA[	// Are there age restrictions in place?
+	if (!empty($modSettings['coppaAge']))]]></search>
+	<add><![CDATA[						
+	
+	//For the no pic language file
+	loadlanguage('Profile');
+
+	echo '<tr>
+										<td width="40%">
+										<b>' . $txt['avatarselect_avatar'] . '</b>
+										<div class="smalltext">' . $txt['avatarselect_pleaseselect']  . '</div>
+										<div style="margin: 2ex;"><img name="avatar" id="avatar" src="' .  $modSettings['avatar_url'] . '/blank.gif', '" alt="Do Nothing" /></div>
+										</td>
+										<td>
+											<select name="cat" id="cat" size="10" onchange="changeSel(\'\');">';
+	// Get a list of all the avatars.
+		$context['avatar_list'] = array();
+		$context['avatars'] = is_dir($modSettings['avatar_directory']) ? getAvatars2('', 0) : array();
+
+		
+			// This lists all the file catergories.
+			foreach ($context['avatars'] as $avatar)
+				echo '
+												<option value="', $avatar['filename'] . ($avatar['is_dir'] ? '/' : ''), '"', ($avatar['checked'] ? ' selected="selected"' : ''), '>', $avatar['name'], '</option>';
+			echo '</select>
+
+											<select name="file" id="file" size="10" style="display: none;" onchange="showAvatar()"  disabled="disabled"><option></option></select>
+										</td>
+									</tr>';
+									]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[// Uncheck the agreement thing....]]></search>
+	<add><![CDATA[
+
+echo '			
+				var files = ["' . implode('", "', $context['avatar_list']) . '"];
+				var avatar = document.getElementById("avatar");
+				var cat = document.getElementById("cat");
+				var selavatar = "";
+				var avatardir = "' . $modSettings['avatar_url'] . '/";
+				var size = avatar.alt.substr(3, 2) + " " + avatar.alt.substr(0, 2) + String.fromCharCode(117, 98, 116);
+				var file = document.getElementById("file");
+
+				if (avatar.src.indexOf("blank.gif") > -1)
+					changeSel(selavatar);
+				else
+					previewExternalAvatar(avatar.src)
+
+				function changeSel(selected)
+				{
+					if (cat.selectedIndex == -1)
+						return;
+
+					if (cat.options[cat.selectedIndex].value.indexOf("/") > 0)
+					{
+						var i;
+						var count = 0;
+
+						file.style.display = "inline";
+						file.disabled = false;
+
+						for (i = file.length; i >= 0; i = i - 1)
+							file.options[i] = null;
+
+						for (i = 0; i < files.length; i++)
+							if (files[i].indexOf(cat.options[cat.selectedIndex].value) == 0)
+							{
+								var filename = files[i].substr(files[i].indexOf("/") + 1);
+								var showFilename = filename.substr(0, filename.lastIndexOf("."));
+								showFilename = showFilename.replace(/[_]/g, " ");
+
+								file.options[count] = new Option(showFilename, files[i]);
+
+								if (filename == selected)
+								{
+									if (file.options.defaultSelected)
+										file.options[count].defaultSelected = true;
+									else
+										file.options[count].selected = true;
+								}
+
+								count++;
+							}
+
+						if (file.selectedIndex == -1 && file.options[0])
+							file.options[0].selected = true;
+
+						showAvatar();
+					}
+					else
+					{
+						file.style.display = "none";
+						file.disabled = true;
+						document.getElementById("avatar").src = avatardir + cat.options[cat.selectedIndex].value;
+						document.getElementById("avatar").style.width = "";
+						document.getElementById("avatar").style.height = "";
+					}
+				}
+
+				function showAvatar()
+				{
+					if (file.selectedIndex == -1)
+						return;
+
+					document.getElementById("avatar").src = avatardir + file.options[file.selectedIndex].value;
+					document.getElementById("avatar").alt = file.options[file.selectedIndex].text;
+					document.getElementById("avatar").alt += file.options[file.selectedIndex].text == size ? "!" : "";
+					document.getElementById("avatar").style.width = "";
+					document.getElementById("avatar").style.height = "";
+				}
+
+				function previewExternalAvatar(src)
+				{
+					if (!document.getElementById("avatar"))
+						return;
+
+					var maxHeight = ', !empty($modSettings['avatar_max_height_external']) ? $modSettings['avatar_max_height_external'] : 0, ';
+					var maxWidth = ', !empty($modSettings['avatar_max_width_external']) ? $modSettings['avatar_max_width_external'] : 0, ';
+					var tempImage = new Image();
+
+					tempImage.src = src;
+					if (maxWidth != 0 && tempImage.width > maxWidth)
+					{
+						document.getElementById("avatar").style.height = parseInt((maxWidth * tempImage.height) / tempImage.width) + "px";
+						document.getElementById("avatar").style.width = maxWidth + "px";
+					}
+					else if (maxHeight != 0 && tempImage.height > maxHeight)
+					{
+						document.getElementById("avatar").style.width = parseInt((maxHeight * tempImage.width) / tempImage.height) + "px";
+						document.getElementById("avatar").style.height = maxHeight + "px";
+					}
+					document.getElementById("avatar").src = src;
+				}';
+
+	]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/Register.php">
+	<operation>
+		<search position="after"><![CDATA[// Collect all extra registration fields someone might have filled in.]]></search>
+	<add><![CDATA[
+		$_POST['avatar'] = strtr(empty($_POST['file']) ? (empty($_POST['cat']) ? '' : $_POST['cat']) : $_POST['file'], array('&amp;' => '&'));
+		$_POST['avatar'] = preg_match('~^([\w _!@%*=\-#()\[\]&.,]+/)?[\w _!@%*=\-#()\[\]&.,]+$~', $_POST['avatar']) != 0 && preg_match('/\.\./', $_POST['avatar']) == 0 && file_exists($modSettings['avatar_directory'] . '/' . $_POST['avatar']) ? ($_POST['avatar'] == 'blank.gif' ? '' : $_POST['avatar']) : '';
+
+]]></add>
+</operation>
+	<operation>
+		<search position="after"><![CDATA[		'extra_register_vars' => array(),]]></search>
+	<add><![CDATA[		'avatar' => $_POST['avatar'],
+	]]></add>
+</operation>
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Recursive function to retrieve avatar files
+function getAvatars2($directory, $level)
+{
+	global $context, $txt, $modSettings;
+	
+	
+	if (!isset($context['member']['avatar']['server_pic']))
+		$context['member']['avatar']['server_pic'] = '';
+
+	$result = array();
+
+	// Open the directory..
+	$dir = dir($modSettings['avatar_directory'] . (!empty($directory) ? '/' : '') . $directory);
+	$dirs = array();
+	$files = array();
+
+	if (!$dir)
+		return array();
+
+	while ($line = $dir->read())
+	{
+		if (in_array($line, array('.', '..', 'blank.gif', 'index.php')))
+			continue;
+
+		if (is_dir($modSettings['avatar_directory'] . '/' . $directory . (!empty($directory) ? '/' : '') . $line))
+			$dirs[] = $line;
+		else
+			$files[] = $line;
+	}
+	$dir->close();
+
+	// Sort the results...
+	natcasesort($dirs);
+	natcasesort($files);
+
+	if ($level == 0)
+	{
+		$result[] = array(
+			'filename' => 'blank.gif',
+			'checked' => in_array($context['member']['avatar']['server_pic'], array('', 'blank.gif')),
+			'name' => &$txt[422],
+			'is_dir' => false
+		);
+	}
+
+	foreach ($dirs as $line)
+	{
+		$tmp = getAvatars2($directory . (!empty($directory) ? '/' : '') . $line, $level + 1);
+		if (!empty($tmp))
+			$result[] = array(
+				'filename' => htmlspecialchars($line),
+				'checked' => strpos($context['member']['avatar']['server_pic'], $line . '/') !== false,
+				'name' => '[' . htmlspecialchars(str_replace('_', ' ', $line)) . ']',
+				'is_dir' => true,
+				'files' => $tmp
+		);
+		unset($tmp);
+	}
+
+	foreach ($files as $line)
+	{
+		$filename = substr($line, 0, (strlen($line) - strlen(strrchr($line, '.'))));
+		$extension = substr(strrchr($line, '.'), 1);
+
+		// Make sure it is an image.
+		if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0)
+			continue;
+
+		$result[] = array(
+			'filename' => htmlspecialchars($line),
+			'checked' => $line == $context['member']['avatar']['server_pic'],
+			'name' => htmlspecialchars(str_replace('_', ' ', $filename)),
+			'is_dir' => false
+		);
+		if ($level == 1)
+			$context['avatar_list'][] = $directory . '/' . $line;
+	}
+
+	return $result;
+}]]></add>
+</operation>
+</file>
+<file name="$sourcedir/Subs-Members.php">
+	<operation>
+		<search position="before"><![CDATA[// No name?!  How can you register with no name?
+	if (empty($regOptions['username']))
+		$reg_errors[] = array('lang', 'need_username');]]></search>
+	<add><![CDATA[
+// No avatar?!  You need to get an avatar!
+	if (empty($regOptions['avatar']) && $_REQUEST['action'] == 'register2')
+		fatal_error($txt['avatarselect_error_req'], false);
+	]]></add>
+
+</operation>
+	<operation>
+		<search position="replace"><![CDATA['avatar' => '',]]></search>
+	<add><![CDATA[
+'avatar' => "'$regOptions[avatar]'",]]></add>
+
+</operation>
+</file>		
+</modification>

@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Runic:MSNRemove</id>
+	<version>1.0</version>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="replace"><![CDATA[mem.YIM, mem.MSN,]]></search>
+			<add><![CDATA[mem.YIM,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[mem.YIM, mem.MSN,]]></search>
+			<add><![CDATA[mem.YIM,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[		'msn' => $profile['MSN'] !='' && (empty($modSettings['guest_hideContacts']) || !$user_info['is_guest']) ? array(
+			'name' => &$profile['MSN'],
+			'href' => 'http://members.msn.com/' . $profile['MSN'],
+			'link' => '<a href="http://members.msn.com/' . $profile['MSN'] . '" target="_blank"><img src="' . $settings['images_url'] . '/msntalk.gif" alt="' . $profile['MSN'] . '" border="0" /></a>',
+			'link_text' => '<a href="http://members.msn.com/' . $profile['MSN'] . '" target="_blank">' . $profile['MSN'] . '</a>'
+		) : array('name' => '', 'href' => '', 'link' => '', 'link_text' => ''),
+		'real_posts' => $profile['posts'],]]></search>
+			<add><![CDATA[		'real_posts' => $profile['posts'],]]></add>
+		</operation>
+	</file>	
+	<file name="$sourcedir/ManageMembers.php">
+		<operation>
+			<search position="replace"><![CDATA[, 'MSN'),]]></search>
+			<add><![CDATA[), // Changed MSN Remover]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/MemberList.php">
+		<operation>
+			<search position="replace"><![CDATA[		),
+		'MSN' => array(
+			'label' => $txt['MSN'],
+			'width' => '25'
+		),]]></search>
+			<add><![CDATA[		), // Removed MSN Remover.]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[),
+		'MSN' => array(
+			'down' => 'LENGTH(mem.MSN) > 0 DESC, ISNULL(mem.MSN) ASC, mem.MSN ASC',
+			'up' => 'LENGTH(mem.MSN) > 0 ASC, ISNULL(mem.MSN) DESC, mem.MSN DESC'
+		),]]></search>
+			<add><![CDATA[),// Changed MSN Remover 3]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['MSN', 'AIM',]]></search>
+			<add><![CDATA['AIM',]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/News.php">
+		<operation>
+			<search position="replace"><![CDATA[			$data['aim'] = $profile['aim']['name'];
+		if ($profile['msn']['name'] != '' && !(!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']))
+			$data['msn'] = $profile['msn']['name'];]]></search>
+			<add><![CDATA[			$data['aim'] = $profile['aim']['name'];]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Profile.php">
+		<operation>
+			<search position="replace"><![CDATA[		'msn' => array('name' => empty($user_profile[$memID]['MSN']) ? '' : $user_profile[$memID]['MSN']),
+		'website' => array(]]></search>
+			<add><![CDATA[		'website' => array(]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['MSN', 'AIM',]]></search>
+			<add><![CDATA['AIM',]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	// Make sure the MSN one is an email address, not something like 'none' :P.
+	if (isset($_POST['MSN']) && ($_POST['MSN'] == '' || preg_match('~^[0-9A-Za-z=_+\-/][0-9A-Za-z=_\'+\-/\.]*@[\w\-]+(\.[\w\-]+)*(\.[\w]{2,6})$~', $_POST['MSN']) != 0))
+		$profile_strings[] = 'MSN';
+
+	// Validate the title...]]></search>
+			<add><![CDATA[	// Validate the title...]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[		),
+		'msn' => array(
+			'name' => empty($_POST['msn']) ? '' : stripslashes($_POST['MSN'])
+		),]]></search>
+			<add><![CDATA[		),// Changed MSN Remover 4]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="replace"><![CDATA[	if (isset($_POST['MSN']) && preg_match('~^[0-9A-Za-z=_+\-/][0-9A-Za-z=_\'+\-/\.]*@[\w\-]+(\.[\w\-]+)*(\.[\w]{2,6})$~', $_POST['MSN']) != 0)
+		$profile_strings[] = 'MSN';
+
+	// Handle a string as a birthdate...]]></search>
+			<add><![CDATA[	// Handle a string as a birthdate...]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Subs-Members.php">
+		<operation>
+			<search position="replace"><![CDATA[		'yim' => '',
+		'msn' => '',]]></search>
+			<add><![CDATA[		'yim' => '',]]></add>
+		</operation>
+	</file>
+</modification>

@@ -1,0 +1,11 @@
+[b]Pretty URLs Reverter[/b]
+
+This package will allow you to revert to SMF's normal URLs without breaking any pretty URLs that may have been indexed or used elsewhere. Your pretty URLs will be redirected to the normal SMF URLs.
+
+[b]Note:[/b] to install this package Pretty URLs must have already been uninstalled, but the database settings, tables and .htaccess file must not have been removed.
+
+[hr]
+
+Version 0.9
+Copyright (c) 2006-2010, Dannii Willis
+[url=http://code.google.com/p/prettyurls]Pretty URLs project home[/url]

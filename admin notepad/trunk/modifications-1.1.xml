@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Vbgamer45:AdminNotepad</id>
+	<version>2.0.2</version>
+	<homepage>http://www.smfhacks.com/</homepage>
+	<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Is GD available?  If it is, we should show version information for it too.
+]]></search>
+			<add><![CDATA[
+	//-- SMFHacks.com; Admin Notepad
+	require_once($sourcedir . '/smfhacks_source/admin-notepad.php');
+	AdminNotepad();
+	// End SMFHacks.com; Admin Notepad --//
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Admin.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+		</tr></table>';
+]]></search>
+			<add><![CDATA[
+	//-- SMFHacks.com; Admin Notepad
+	if (allowedTo('admin_forum'))
+		template_admin_notepad();
+	// End SMFHacks.com; Admin Notepad --//
+]]></add>
+		</operation>
+	</file>
+</modification>

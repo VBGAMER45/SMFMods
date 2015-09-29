@@ -1,0 +1,17 @@
+Version 3.0
++Added support for img tags inside the first forum post for SMF 2.0 thanks to br360
+Setting to control height width found under Modification Settings. Use zero in both values to disable it.
+!Fixed board level permissions to hide thumbnails
+
+Version 2.0
+Big thanks to dougiefresh for this update.
++Adds an interface in the manage boards area to checkbox if the board has the thumbnail topic system enabled for it or not. 
+
+Version 1.1.1
+!Fixed a bug with multiple attachments in a post not showing all topics in a forum
+
+Version 1.1
+!Fixed showing an image if there was another attachment of a different type before it.
+!Also fixed issue with posts disappearing.
+
+Version 1.0 Intial Release

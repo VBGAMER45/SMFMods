@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:autotwitterembed</id>
+	<name>Auto Twitter Embed</name>
+	<type>modification</type>
+	<version>1.0</version>
+	
+
+	<install for="2.0 - 2.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">autotwitter.xml</modification>
+		<require-file name="tweet-cache.php" destination="$boarddir" />
+		<database>install.php</database>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99">
+		<remove-file name="$boarddir/tweet-cache.php" />
+		<modification type="file" reverse="true">autotwitter.xml</modification>
+	</uninstall>
+	
+
+</package-info>

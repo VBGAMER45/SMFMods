@@ -1,0 +1,471 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification">
+	<id>el:prettyurls-extras</id>
+	<version>1.0RC</version>
+
+	<file name="$sourcedir/PrettyUrls-Filters.php">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+
+//	Filter TP articles
+function pretty_tp_articles_filter($urls)
+{
+	global $boardurl, $scripturl;
+
+	$pattern = '`' . $scripturl . '(.*)page=([^;]+)`S';
+	$replacement = $boardurl . '/page/$2/$1';
+	foreach ($urls as $url_id => $url)
+		if (!isset($url['replacement']))
+			if (preg_match($pattern, $url['url']))
+				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
+	return $urls;
+}
+
+// Filter Tagging System
+function pretty_tagging_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do Tagging System Replacement
+	$pattern = '`' . $scripturl . '(.*)action=tags;tagid=([0-9]+)(.*)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the profile data ready to query the database with
+		if (!isset($url['replacement']))
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_TAG'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$urls[$url_id]['match3'] = $matches[3];
+				$query_data[] = $urls[$url_id]['ID_TAG'];
+			}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the Tags info
+		$tagids = array();
+		$tagNames = array();
+		$query = db_query("
+			SELECT 
+				ID_TAG, tag
+			FROM {$db_prefix}tags
+			WHERE ID_TAG IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($tagdata = mysql_fetch_assoc($query))
+		{
+			$tagids[$tagdata['ID_TAG']] = $tagdata['ID_TAG'];
+			$tagNames[$tagdata['ID_TAG']] = rawurlencode($tagdata['tag']);
+		}
+		mysql_free_result($query);
+	
+		
+
+	foreach ($urls as $url_id => $url)
+				if (isset($url['ID_TAG']))
+						$urls[$url_id]['replacement'] = $boardurl . '/tags/' . $tagNames[$url['ID_TAG']]
+	. '/' . $tagids[$url['ID_TAG']] . '/' . $url['match1'] . $url['match3'];
+		}
+	
+	
+	return $urls;
+}	
+
+// Filter Download System
+function pretty_downloadssystem_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do Download System Replacement
+	$pattern = '`' . $scripturl . '(.*)action=downloads;sa=view;down=([0-9]+)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the data ready to query the database with
+		if (!isset($url['replacement']))
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_FILE'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['ID_FILE'];
+			}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the Download info
+		$fileIDs = array();
+		$filesNames = array();
+		$catNames = array();
+		$query = db_query("
+			SELECT 
+				c.title as CatTitle, f.title, f.ID_FILE, c.ID_CAT 
+			FROM {$db_prefix}down_cat as c, {$db_prefix}down_file as f
+			WHERE c.ID_CAT = f.ID_CAT AND f.ID_FILE IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($filedata = mysql_fetch_assoc($query))
+		{
+			$fileIDs[$filedata['ID_FILE']] = $filedata['ID_FILE'];
+			$filesNames[$filedata['ID_FILE']] = rawurlencode(pretty_seo_url($filedata['title']));
+			$catNames[$filedata['ID_FILE']] = rawurlencode(pretty_seo_url($filedata['CatTitle']));
+		}
+		mysql_free_result($query);
+	
+		
+
+	foreach ($urls as $url_id => $url)
+				if (isset($url['ID_FILE']))
+						$urls[$url_id]['replacement'] = $boardurl . '/downloads/' . $catNames[$url['ID_FILE']] . '/' . $filesNames[$url['ID_FILE']]
+	. '/' . $fileIDs[$url['ID_FILE']];
+		}
+	
+	
+	return $urls;
+}	
+
+function pretty_seo_url($sef = null)
+{
+	$sef = strtolower($sef);
+	$degis1 = array('_',' ','--','---',' - ');
+	$degis2 = array('-','-','-','-','-');
+	$sef = str_replace($degis1,$degis2,$sef);
+	$sef = preg_replace("@[^A-Za-z0-9\-_]+@i","",$sef);
+	$sef = preg_replace(array('~^-+|-+$~', '~-+~'), array('', '-'), $sef);
+	return $sef;
+}
+
+// Pretty SMF Gallery Filter
+
+function pretty_smfgallery_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do SMF Gallery Replacement
+	$pattern = '`' . $scripturl . '(.*)action=gallery;sa=view;id=([0-9]+)`S';
+	$pattern2 = '`' . $scripturl . '(.*)action=gallery;sa=view&id=([0-9]+)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the data ready to query the database with
+		if (!isset($url['replacement']))
+		{
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_PICTURE'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['ID_PICTURE'];
+			}
+			
+			if (preg_match($pattern2, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_PICTURE'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['ID_PICTURE'];
+			}
+		}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the Gallery info
+		$fileIDs = array();
+		$filesNames = array();
+		$catNames = array();
+		$query = db_query("
+			SELECT 
+				c.title as CatTitle, f.title, f.ID_PICTURE, c.ID_CAT 
+			FROM {$db_prefix}gallery_pic as f  
+			LEFT JOIN {$db_prefix}gallery_cat as c ON (c.ID_CAT = f.ID_CAT)
+			WHERE  f.ID_PICTURE IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($filedata = mysql_fetch_assoc($query))
+		{
+			if (empty($filedata['ID_CAT']))
+				$filedata['CatTitle'] = 'usergallery';	
+			
+			$fileIDs[$filedata['ID_PICTURE']] = $filedata['ID_PICTURE'];
+			$filesNames[$filedata['ID_PICTURE']] = rawurlencode(pretty_seo_url($filedata['title']));
+			$catNames[$filedata['ID_PICTURE']] = rawurlencode(pretty_seo_url($filedata['CatTitle']));
+		}
+		mysql_free_result($query);
+	
+		foreach ($urls as $url_id => $url)
+				if (isset($url['ID_PICTURE']))
+						$urls[$url_id]['replacement'] = $boardurl . '/gallery/' . $catNames[$url['ID_PICTURE']] . '/' . $filesNames[$url['ID_PICTURE']]
+						. '/' . $fileIDs[$url['ID_PICTURE']];
+	}
+	
+	
+	return $urls;
+}	
+
+// Pretty SMF Articles Filter
+function pretty_smfarticles_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do SMF Articles Replacement
+	$pattern = '`' . $scripturl . '(.*)action=articles;sa=view;article=([0-9]+)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the data ready to query the database with
+		if (!isset($url['replacement']))
+		{
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_ARTICLE'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['ID_ARTICLE'];
+			}
+
+		}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the info
+		$fileIDs = array();
+		$filesNames = array();
+		$catNames = array();
+		$query = db_query("
+			SELECT 
+				c.title as CatTitle, f.title, f.ID_ARTICLE, c.ID_CAT 
+			FROM {$db_prefix}articles_cat as c, {$db_prefix}articles as f
+			WHERE c.ID_CAT = f.ID_CAT AND f.ID_ARTICLE IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($filedata = mysql_fetch_assoc($query))
+		{
+			$fileIDs[$filedata['ID_ARTICLE']] = $filedata['ID_ARTICLE'];
+			$filesNames[$filedata['ID_ARTICLE']] = rawurlencode(pretty_seo_url($filedata['title']));
+			$catNames[$filedata['ID_ARTICLE']] = rawurlencode(pretty_seo_url($filedata['CatTitle']));
+		}
+		mysql_free_result($query);
+	
+		foreach ($urls as $url_id => $url)
+				if (isset($url['ID_ARTICLE']))
+						$urls[$url_id]['replacement'] = $boardurl . '/articles/' . $catNames[$url['ID_ARTICLE']] . '/' . $filesNames[$url['ID_ARTICLE']]
+						. '/' . $fileIDs[$url['ID_ARTICLE']];
+	}
+	
+	
+	return $urls;
+}	
+
+// Pretty SMF Store Filter
+function pretty_smfstore_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do SMF Store Replacement
+	$pattern = '`' . $scripturl . '(.*)action=store;sa=view;id=([0-9]+)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the data ready to query the database with
+		if (!isset($url['replacement']))
+		{
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_ITEM'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['ID_ITEM'];
+			}
+
+		}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the info
+		$fileIDs = array();
+		$filesNames = array();
+		$catNames = array();
+		$query = db_query("
+			SELECT 
+				c.title as CatTitle, f.productname title, f.ID_ITEM, c.ID_CAT 
+			FROM {$db_prefix}store_item as f 
+			LEFT JOIN {$db_prefix}store_cat as c ON (c.ID_CAT = f.ID_CAT) 
+			WHERE  f.ID_ITEM IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($filedata = mysql_fetch_assoc($query))
+		{
+			if (empty($filedata['ID_CAT']))
+				$filedata['CatTitle'] = 'mainstore';
+			
+			$fileIDs[$filedata['ID_ITEM']] = $filedata['ID_ITEM'];
+			$filesNames[$filedata['ID_ITEM']] = rawurlencode(pretty_seo_url($filedata['title']));
+			$catNames[$filedata['ID_ITEM']] = rawurlencode(pretty_seo_url($filedata['CatTitle']));
+		}
+		mysql_free_result($query);
+	
+		foreach ($urls as $url_id => $url)
+				if (isset($url['ID_ITEM']))
+						$urls[$url_id]['replacement'] = $boardurl . '/store/' . $catNames[$url['ID_ITEM']] . '/' . $filesNames[$url['ID_ITEM']]
+						. '/' . $fileIDs[$url['ID_ITEM']];
+	}
+	
+	
+	return $urls;
+}	
+
+// Pretty SMF Classifieds Filter
+function pretty_smfclassifieds_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do SMF Classifieds Replacement
+	$pattern = '`' . $scripturl . '(.*)action=classifieds;sa=view;id=([0-9]+)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the data ready to query the database with
+		if (!isset($url['replacement']))
+		{
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['ID_LISTING'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['ID_LISTING'];
+			}
+
+		}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the info
+		$fileIDs = array();
+		$filesNames = array();
+		$catNames = array();
+		$query = db_query("
+			SELECT 
+				c.title as CatTitle, f.title, f.ID_LISTING, c.ID_CAT 
+			FROM {$db_prefix}class_cat as c, {$db_prefix}class_listing as f
+			WHERE c.ID_CAT = f.ID_CAT AND f.ID_LISTING IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($filedata = mysql_fetch_assoc($query))
+		{
+			$fileIDs[$filedata['ID_LISTING']] = $filedata['ID_LISTING'];
+			$filesNames[$filedata['ID_LISTING']] = rawurlencode(pretty_seo_url($filedata['title']));
+			$catNames[$filedata['ID_LISTING']] = rawurlencode(pretty_seo_url($filedata['CatTitle']));
+		}
+		mysql_free_result($query);
+	
+		foreach ($urls as $url_id => $url)
+				if (isset($url['ID_LISTING']))
+						$urls[$url_id]['replacement'] = $boardurl . '/classifieds/' . $catNames[$url['ID_LISTING']] . '/' . $filesNames[$url['ID_LISTING']]
+						. '/' . $fileIDs[$url['ID_LISTING']];
+	}
+	
+	
+	return $urls;
+}	
+
+// Pretty Urls ezPortal Filter
+function pretty_ezportalpages_filter($urls)
+{
+	global $scripturl, $boardurl, $db_prefix;
+
+	// Do ezPortal Pages Replacement
+	$pattern = '`' . $scripturl . '(.*)action=ezportal;sa=page;p=([0-9]+)`S';
+	$query_data = array();
+	foreach ($urls as $url_id => $url)
+	{
+		//	Get the data ready to query the database with
+		if (!isset($url['replacement']))
+		{
+			if (preg_match($pattern, $url['url'], $matches))
+			{
+				$urls[$url_id]['id_page'] = (int) $matches[2];
+				$urls[$url_id]['match1'] = $matches[1];
+				$query_data[] = $urls[$url_id]['id_page'];
+			}
+
+		}
+	}
+	
+	if (count($query_data) != 0)
+	{
+	
+		// Get the info
+		$fileIDs = array();
+		$filesNames = array();
+		$query = db_query("
+			SELECT 
+				f.title, f.id_page
+			FROM {$db_prefix}ezp_page as f
+			WHERE  f.id_page IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
+	
+		while ($filedata = mysql_fetch_assoc($query))
+		{
+			$fileIDs[$filedata['id_page']] = $filedata['id_page'];
+			$filesNames[$filedata['id_page']] = rawurlencode(pretty_seo_url($filedata['title']));
+
+		}
+		mysql_free_result($query);
+	
+		foreach ($urls as $url_id => $url)
+				if (isset($url['id_page']))
+						$urls[$url_id]['replacement'] = $boardurl . '/ezportal/' .  $filesNames[$url['id_page']]
+						. '/' . $fileIDs[$url['id_page']];
+	}
+	
+	
+	return $urls;
+}	
+
+// Prety Aeva Media Filter
+function pretty_aeva_filter($urls)
+{
+   global $boardurl;
+
+   $pattern = array(
+      '~.*[?;&]action=media;sa=media;in=([0-9]+);(thumba?|preview)(.*)~S',
+      '~.*[?;&]action=media;sa=(album|item|media);in=([0-9]+)(.*)~S',
+      '~.*[?;&]action=media(.*)~S',
+   );
+   $replacement = array(
+      $boardurl . '/media/$2/$1/?$3',
+      $boardurl . '/media/$1/$2/?$3',
+      $boardurl . '/media/?$2',
+   );
+   foreach ($urls as $url_id => $url)
+      if (!isset($url['replacement']) && strpos($url['url'], 'action=media') !== false)
+         $urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
+   return $urls;
+}
+
+// Pretty URLs for GoogleTagged
+function pretty_googletagged_filter($urls)
+{
+    global $boardurl, $scripturl;
+
+    $pattern = '`' . $scripturl . '(.*)action=tagged;id=([.0-9]+);tag=([^;]+)`S';
+    $replacement = $boardurl . '/tagged/$2/$3/';
+    foreach ($urls as $url_id => $url)
+    {
+        if (!isset($url['replacement']))
+        {
+            if (preg_match($pattern, $url['url']))
+                $urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
+        }
+    }
+    return $urls;
+}
+
+]]></add>
+		</operation>
+	</file>
+
+</modification>

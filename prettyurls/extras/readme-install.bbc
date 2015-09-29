@@ -1,0 +1,23 @@
+[b]Pretty URLs Extras[/b]
+
+This package will add a few officially supported but non-essential filters to Pretty URLs. You can turn these filters on in the settings page.
+
+Filters installed:
+[list]
+[li]A patch for the arcade mod[/li]
+[li]A redirection patch for the SEO4SMF mod[/li]
+[li]Pretty URLs for Tiny Portal's articles[/li]
+[li]Pretty URLs for SMF Tagging System tags[/li]
+[li]Pretty URLs for SMF Gallery pictures[/li]
+[li]Pretty URLs for Download System files[/li]
+[li]Pretty URLs for SMF Articles articles[/li]
+[li]Pretty URLs for SMF Stores products[/li]
+[li]Pretty URLs for SMF Classifieds listings and auctions[/li]
+[li]Pretty URLs for ezPortal pages[/li]
+[/list]
+
+[hr]
+
+Version 1.0
+Copyright (c) 2006-2013, Dannii Willis, Contributers
+[url=http://code.google.com/p/prettyurls]Pretty URLs project home[/url]

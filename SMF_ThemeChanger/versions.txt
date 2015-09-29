@@ -1,0 +1,7 @@
+Note: this file is not in use by this mod, here you find only:
+
+ClickSafe's Update Information
+
+install2.0.xml
+package-info.xml
+readme.txt

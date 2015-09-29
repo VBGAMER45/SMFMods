@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+   <name>SA Facebook</name>
+	<id>wdm2005:FBConnect</id>
+	<version>2.0 RC4 Rev58</version>
+	<homepage>http://sleepy-arcade.ath.cx</homepage>
+<file name="$themedir/Display.template.php">
+<operation>
+		<search position="after"><![CDATA[// Maybe we can approve it, maybe we should?
+		if ($message['can_approve'])]]></search>
+			<add><![CDATA[
+			    if (class_exists('SAFacebookhooks')) {
+				    echo 
+					SAFacebookhooks::facebook_showPub(
+					    array(
+							'subject' => $message['subject'],
+							'body' => $message['body'],
+							'href' => $message['href'],
+							'isPost' => true,
+				        )
+					);
+			    }
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])]]></search>
+			<add><![CDATA[
+			if (!empty($context['show_publish_button']) && !$context['user']['is_logged'] || !empty($context['show_publish_button']) && $context['user']['is_logged'] || $message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+]]></add>
+	</operation>
+</file>
+</modification>

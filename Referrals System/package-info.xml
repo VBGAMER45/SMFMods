@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+<id>S-M-FModdersTeam:refferalsystem</id>
+<name>Referrals System</name>
+<type>modification</type>
+<version>3.1</version>
+<install for="1.1 - 1.1.99">
+	<redirect url="?action=refferals;sa=settings">redirect.txt</redirect>
+	<require-file name="refferals.php" destination="$sourcedir" />
+	<require-file name="refferals.template.php" destination="$themedir" />
+	<modification type="file">refferals.xml</modification>
+	<code>refferalsInstall.php</code>
+	<readme>readme.txt</readme>
+</install>
+<uninstall for="1.1 - 1.1.99">
+	<modification type="file" reverse="true">refferals.xml</modification>
+	<code>UnInstall.php</code>
+</uninstall>
+
+<install for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+	<redirect url="?action=admin;area=refferals;sa=settings">redirect.txt</redirect>
+	<require-file name="refferals2.php" destination="$sourcedir" />
+	<require-file name="refferals2.template.php" destination="$themedir" />
+	<modification type="file">refferals2.xml</modification>
+	<code>refferalsInstall2.php</code>
+	<readme>readme.txt</readme>
+</install>
+<uninstall for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+	<modification type="file" reverse="true">refferals2.xml</modification>
+	<code>UnInstall.php</code>
+</uninstall>
+</package-info>

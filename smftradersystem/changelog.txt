@@ -1,0 +1,45 @@
+1.7
+!Fixed undefined errors in settings area for SMF 2.0.x
+!Fixed icon for trader system in admin area for SMF 2.0
+
+1.6
+!Do not show listings in submit feedback if already rated the listing - SMF Classifieds intergration
+!Do not show the submit feedback link for yourself
+!Do not ask for short topic url if classifieds option says you require to select a listing  - SMF Classifieds intergration
+
+1.5
+!Fix bug not showing reviews if a member deleted their account
+!Fixed missing language string on delete rating added Short Comment
+
+1.4.2
++Added SMF 2.0 RC3 Support!
+
+1.4.1
+!Fixed pm error SMF 2.0 with timeOffset
+
+1.4
++Better intergration with SMF Classifieds
+
+1.3.1
+!Removed Queries from the templates
+
+1.2
+!Major changes
++Feedback by pages
++More settings
+
+1.1.2
+!Minor changes and fixes
+
+1.1.1
+!Fixed one spelling typo
+
+Version 1.1
++Moved language strings to a language files
++Added trader rating approval sytem. Admins can now approve ratings
++Will send a PM to a user when a rating is added to their profile when it is approved.
+
+
+Version 1.0.1
+!Fixed trader count divide by zero bug
+!Changed from using the username to the display name.

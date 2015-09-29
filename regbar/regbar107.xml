@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:RegBar</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Regbar Text Strings
+$txt['regbar_text'] = 'It appears you have not registered with our community. To register please click here ...';
+//END Regbar Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[<body>';]]></search>
+		<add><![CDATA[
+		if($context['user']['is_guest'])
+			echo '<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="100%"><div id="infobar"><a href="' . $scripturl . '?action=register"><p>' . $txt['regbar_text'] . '</p></a></div></td></tr></table>';
+]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[</head>]]></search>
+	<add><![CDATA[
+	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/regbar.css" />]]></add>
+	</operation>
+</file>
+</modification>

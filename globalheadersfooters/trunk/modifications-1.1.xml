@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Vbgamer:Globalhf</id>
+	<version>2.0.1</version>
+	<homepage>http://www.smfhacks.com/</homepage>
+	<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="before"><![CDATA[
+		return ManageCopyright();
+]]></search>
+			<add><![CDATA[
+	//-- SMFHacks.com; Global Headers and Footers
+	if (isset($_GET['area']) && $_GET['area'] == 'globalhf')
+	{
+		require_once($sourcedir . '/smfhacks_source/global-hf.php');
+		return GlobalHF();
+	}
+	// End SMFHacks.com; Global Headers and Footers --//
+]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA[
+		$context['html_headers'] = '';
+]]></search>
+			<add><![CDATA[
+	//-- SMFHacks.com; Global Headers and Footers
+	if (empty($context['uninstalling']) && (!isset($_GET['package']) || !stripos($_GET['package'], 'Global-Headers-and-Footers')))
+	{
+		global $sourcedir;
+		require_once($sourcedir . '/smfhacks_source/global-hf.php');
+		retrieveGlobalHFContent('load');
+	}
+	// End SMFHacks.com; Global Headers and Footers --//
+]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="after"><![CDATA[
+	}
+
+	// Admin area 'Forum'.
+]]></search>
+			<add><![CDATA[
+		//-- SMFHacks.com; Global Headers and Footers
+		loadLanguage('smfhacks_languages/global-hf');
+		$context['admin_areas']['config']['areas']['globalhf'] = '<a href="' . $scripturl . '?action=admin;area=globalhf;sesc=' . $sc . '">' . $txt['global_hf']['title'] . '</a>';
+		// End SMFHacks.com; Global Headers and Footers --//
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[
+		loadSubTemplate($layer . '_above', true);
+]]></search>
+			<add><![CDATA[
+		//-- SMFHacks.com; Global Headers and Footers
+		if ($layer == 'main' && (empty($context['uninstalling']) && (!isset($_GET['package']) || !stripos($_GET['package'], 'Global-Headers-and-Footers'))))
+		{
+			global $sourcedir;
+			require_once($sourcedir . '/smfhacks_source/global-hf.php');
+			retrieveGlobalHFContent('_above');
+		}
+		// End SMFHacks.com; Global Headers and Footers --//
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+	foreach (array_reverse($context['template_layers']) as $layer)
+		loadSubTemplate($layer . '_below', true);
+]]></search>
+			<add><![CDATA[
+	foreach (array_reverse($context['template_layers']) as $layer)
+	{
+		//-- SMFHacks.com; Global Headers and Footers
+		if ($layer == 'main' && (empty($context['uninstalling']) && (!isset($_GET['package']) || !stripos($_GET['package'], 'Global-Headers-and-Footers'))))
+		{
+			global $sourcedir;
+			require_once($sourcedir . '/smfhacks_source/global-hf.php');
+			retrieveGlobalHFContent('_below');
+		}
+		// End SMFHacks.com; Global Headers and Footers --//
+		loadSubTemplate($layer . '_below', true);
+	}
+]]></add>
+		</operation>
+	</file>
+</modification>

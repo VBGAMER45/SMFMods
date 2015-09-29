@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:ThumbnailTopic</id>
+<version>2.0</version>
+
+<file name="$sourcedir/MessageIndex.php">
+	<operation>
+		<search position="before"><![CDATA[// Grab the appropriate topic information...
+	if (!$pre_query || !empty($topic_ids))]]></search>
+	<add><![CDATA[
+	
+	// Thumbnail Topic Mod
+	if (isset($modSettings['photo_boards']))
+		$modSettings['photo_boards'] = explode(',', $modSettings['photo_boards']);
+	else
+		$modSettings['photo_boards'] = array($board);
+	
+	// Used to decide if we thumbnails are shown on this topic listing page
+	$context['show_thumbnails'] = false;
+	
+	// End Thumbnail Topic Mod
+
+]]></add>
+	</operation>
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[ORDER BY ' . ($pre_query ? 'FIND_IN_SET(t.id_topic, {string:find_set_topics})' : (!empty($modSettings['enableStickyTopics']) ? 'is_sticky' . ($fake_ascending ? '' : ' DESC') . ', ' : '') . $_REQUEST['sort'] . ($ascending ? '' : ' DESC')) . ']]></search>
+	<add><![CDATA[GROUP BY t.id_topic
+			ORDER BY ' . ($pre_query ? 'FIND_IN_SET(t.id_topic, {string:find_set_topics})' : (!empty($modSettings['enableStickyTopics']) ? 'is_sticky' . ($fake_ascending ? '' : ' DESC') . ', ' : '') . $_REQUEST['sort'] . ($ascending ? '' : ' DESC')) . '
+			 ]]></add>
+	</operation>
+
+	
+	<operation>
+		<search position="before"><![CDATA[SUBSTRING(mf.body, 1, 385) AS first_body, ml.smileys_enabled AS last_smileys, mf.smileys_enabled AS first_smileys]]></search>
+	<add><![CDATA[, IFNULL(big.id_attach, 0) AS big_id, big.filename AS big_filename, big.width AS big_width, big.height AS big_height,
+				IFNULL(thn.id_attach, 0) AS thn_id, thn.filename AS thn_filename, thn.width AS thn_width, thn.height AS thn_height,t.id_board]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[LEFT JOIN {db_prefix}members AS meml ON (meml.id_member = ml.id_member)
+				LEFT JOIN {db_prefix}members AS memf ON (memf.id_member = mf.id_member)]]></search>
+	<add><![CDATA[
+				LEFT JOIN {db_prefix}attachments AS big ON (big.id_msg = mf.id_msg AND big.attachment_type = 0)
+				LEFT JOIN {db_prefix}attachments AS thn ON (thn.id_attach = big.id_thumb)
+				LEFT JOIN {db_prefix}members AS meml ON (meml.id_member = ml.id_member)
+				LEFT JOIN {db_prefix}members AS memf ON (memf.id_member = mf.id_member)
+				
+				]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// Begin 'printing' the message index for current board.
+		while ($row = $smcFunc['db_fetch_assoc']($result))
+		{
+			if ($row['id_poll'] > 0 && $modSettings['pollMode'] == '0')
+				continue;]]></search>
+	<add><![CDATA[
+			// Thumbnail Topic 
+			if ($row['thn_id'] != 0)
+			{
+				$image = array(
+					'id' => $row['thn_id'],
+					'url' => $scripturl . '?action=dlattach;topic=' . $row['id_topic'] . '.0;attach=' . $row['thn_id'] . ';image',
+					'link' => $scripturl . '?action=dlattach;topic=' . $row['id_topic'] . '.0;attach=' . $row['big_id'] . ';image',
+					'filename' => $row['thn_filename'],
+					'width' => $row['thn_width'],
+					'height' => $row['thn_height']
+				);
+
+				$context['show_thumbnails'] = true;
+			}
+			elseif ($row['big_id'] != 0 && $row['big_width'] > 0 && $row['big_height'] > 0)
+			{
+				$image = array(
+					'id' => $row['big_id'],
+					'url' => $scripturl . '?action=dlattach;topic=' . $row['id_topic'] . '.0;attach=' . $row['big_id'] . ';image',
+					'link' => $scripturl . '?action=dlattach;topic=' . $row['id_topic'] . '.0;attach=' . $row['big_id'] . ';image',
+					'filename' => $row['big_filename'],
+					'width' => $row['big_width'],
+					'height' => $row['big_height']
+				);
+
+				$context['show_thumbnails'] = true;
+			}
+			else
+				$image = array();
+				
+				
+			if (!in_array($row['id_board'],$modSettings['photo_boards']))
+			{
+				$context['show_thumbnails'] = false;	
+			}
+
+			if (isset($context['topics'][$row['id_topic']]))
+			{
+				$context['topics'][$row['id_topic']]['image'][] = $image;
+				continue;
+			}
+			
+			// End Thumbnail Topic Mod
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// 'Print' the topic info.
+			$context['topics'][$row['id_topic']] = array(
+				'id' => $row['id_topic'],]]></search>
+	<add><![CDATA[
+				'image' => array($image),]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$themedir/MessageIndex.template.php">
+	<operation>
+		<search position="replace"><![CDATA[<th scope="col" class="smalltext first_th" width="8%" colspan="2">&nbsp;</th>]]></search>
+	<add><![CDATA[<th scope="col" class="smalltext first_th" width="8%" colspan="', $context['show_thumbnails'] ? 3 : 2, '">&nbsp;</th>]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[<td class="icon2 ', $color_class, '">
+								<img src="', $topic['first_post']['icon_url'], '" alt="" />
+							</td>]]></search>
+	<add><![CDATA[<td class="icon2 ', $color_class, '">
+								<img src="', $topic['first_post']['icon_url'], '" alt="" />
+							</td>';
+				// Thumbnail Topic Mod
+				if ($context['show_thumbnails'])
+				{
+					echo '<td class="windowbg2" valign="middle" align="center">';
+
+						$imagefound = false;
+
+						foreach ($topic['image'] as $image)
+						{
+							if ($imagefound == true)
+								break;
+
+							if (isset($image['id']))
+							{
+
+								echo '<a href="', $topic['first_post']['href'], '"><img src="', $image['url'], '" width="', $image['width'], '" height="', $image['height'], '" alt="" /></a>';
+								$imagefound = true;
+							}
+						}
+
+					echo '</td>';
+				}
+				
+				// End Thumbnail Topic Mod
+				
+echo '
+]]></add>
+	</operation>
+
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="replace"><![CDATA[$context = array();]]></search>
+		<add><![CDATA[$context = array();
+$context['photo_boards'] = isset($modSettings['photo_boards']) ? explode(',', $modSettings['photo_boards']) : array();]]></add>
+	</operation>
+</file>
+<file name="$themedir/ManageBoards.template.php">
+	<operation>
+		<search position="replace"><![CDATA[<div id="count_posts_div">]]></search>
+		<add><![CDATA[<div id="thumbnails_div">
+						<dl class="settings">
+							<dt>
+								<strong>', $txt['mboards_thumbnails'], ':</strong><br />
+								<span class="smalltext">', $txt['mboards_thumbnails_desc'], '</span><br />
+							</dt>
+							<dd>
+								<input type="checkbox" name="thumbnail" ', $context['board']['thumbnail'] ? ' checked="checked"' : '', ' class="input_check" />
+							</dd>
+						</dl>
+					</div>';
+
+	echo '
+					<div id="count_posts_div">]]></add>
+	</operation>
+</file>
+<file name="$languagedir/ManageBoards.english.php">
+	<operation>
+		<search position="replace"><![CDATA[// Version: 2.0; ManageBoards]]></search>
+		<add><![CDATA[// Version: 2.0; ManageBoards
+		
+// Thumbnail Topic Mod
+$txt['mboards_thumbnails'] = 'Thumbnails';
+$txt['mboards_thumbnails_desc'] = 'Display an thumbnail attachment that is attached to the first post of a topic';
+// END Thumbnail Topic Mod]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManageBoards.php">
+	<operation>
+		<search position="replace"><![CDATA['no_children' => true,]]></search>
+		<add><![CDATA['no_children' => true,
+			'thumbnail' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[$context['board']['is_recycle'] = !empty($modSettings['recycle_enable']) && !empty($modSettings['recycle_board']) && $modSettings['recycle_board'] == $context['board']['id'];]]></search>
+		<add><![CDATA[$context['board']['is_recycle'] = !empty($modSettings['recycle_enable']) && !empty($modSettings['recycle_board']) && $modSettings['recycle_board'] == $context['board']['id'];
+		$context['board']['thumbnail'] = in_array($context['board']['id'], $context['photo_boards']);]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[// Create a new board...]]></search>
+		<add><![CDATA[// Thumbnail Topic Mod: Update the database setting for "photo_boards"
+		$photo_board = isset($_POST['thumbnail']);
+		if ($photo_board && !in_array($_POST['boardid'], $context['photo_boards']))
+			$context['photo_boards'][] = $_POST['boardid'];
+		else if (!$photo_board && in_array($_POST['boardid'], $context['photo_boards']))
+		{
+			foreach ($context['photo_boards'] as $id => $board)
+			{
+				if ($_POST['boardid'] == $board)
+					unset($context['photo_boards'][$id]);
+			}
+		}
+		updateSettings( array( 'photo_boards' => implode(',', $context['photo_boards']) ) );
+
+		// Create a new board...]]></add>
+	</operation>
+</file>
+</modification>

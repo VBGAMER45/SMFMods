@@ -1,0 +1,13 @@
+Version 1.2
+!Use https for api connection
+
+Version 1.1
+!Fixed to work with new twitter api
+
+
+Version 0.60
+Change the authorization logic should fixe some errors
+added supprt for hash tags witht the publisher
+added support for auto login 
+fixed issue with guest acesss dissabled
+fixed error Undefined index: tw_enpub

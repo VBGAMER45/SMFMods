@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFLinks</id>
+<version>2.5.3</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Links Text Strings
+$txt['smflinks_menu'] = 'Links';
+$txt['smflinks_admin'] = 'Links Configuration';
+$txt['smflinks_linkssettings'] = 'Links Settings';
+$txt['smflinks_managecats'] =  'Manage Categories';
+$txt['smflinks_catpermlist'] = 'Category Permission List';
+$txt['smflinks_approvelinks'] = 'Approve Links';
+
+
+
+$txt['permissiongroup_smflinks'] = 'SMF Links';
+$txt['permissionname_view_smflinks'] = 'View Links Page';
+$txt['permissionhelp_view_smflinks'] = 'Sets if the user can view the links page.';
+$txt['cannot_view_smflinks'] = 'You can not view the links page.';
+$txt['permissionname_add_links'] = 'Add Links';
+$txt['permissionhelp_add_links'] = 'If the user is allowed to submit links';
+$txt['cannot_add_links'] = 'You can not add links.';
+$txt['permissionname_edit_links'] = 'Edit Links';
+$txt['permissionhelp_edit_links'] = 'If the user is allowed to edit links';
+$txt['cannot_edit_links'] = 'You can not edit links.';
+$txt['permissionname_delete_links'] = 'Delete Links';
+$txt['permissionhelp_delete_links'] = 'If the user is allowed to delete links';
+$txt['cannot_delete_links'] = 'You can not delete links.';
+$txt['permissionname_approve_links'] = 'Approve Links';
+$txt['permissionhelp_approve_links'] = 'If the user is allowed to approve links';
+$txt['cannot_approve_links'] = 'You can not approve links.';
+$txt['permissionname_links_auto_approve'] = 'Links Auto Approved';
+$txt['permissionhelp_links_auto_approve'] = 'If the users links are auto approved when submitted.';
+$txt['permissionname_rate_links'] = 'Rate Links';
+$txt['permissionhelp_rate_links'] = 'If the user is allowed to rate links';
+$txt['cannot_rate_links'] = 'You are not allowed to rate links.';
+$txt['permissionname_links_manage_cat'] = 'Manage Categories';
+$txt['permissionhelp_links_manage_cat'] = 'User can add/remove/edit/reorder categories';
+$txt['cannot_links_manage_cat'] = 'You are not allowed to manage categories.';
+
+$txt['permissionname_delete_links_own'] = 'Own Link';
+$txt['permissionname_delete_links_any'] = 'Any Link';
+$txt['permissionname_edit_links_own'] = 'Own Link';
+$txt['permissionname_edit_links_any'] = 'Any Link';
+//END SMF Links Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Links Text Strings
+$txt['smflinks_menu'] = 'Links';
+$txt['smflinks_admin'] = 'Links Configuration';
+$txt['smflinks_linkssettings'] = 'Links Settings';
+$txt['smflinks_managecats'] =  'Manage Categories';
+$txt['smflinks_catpermlist'] = 'Category Permission List';
+$txt['smflinks_approvelinks'] = 'Approve Links';
+
+
+
+$txt['permissiongroup_smflinks'] = 'SMF Links';
+$txt['permissionname_view_smflinks'] = 'View Links Page';
+$txt['permissionhelp_view_smflinks'] = 'Sets if the user can view the links page.';
+$txt['cannot_view_smflinks'] = 'You can not view the links page.';
+$txt['permissionname_add_links'] = 'Add Links';
+$txt['permissionhelp_add_links'] = 'If the user is allowed to submit links';
+$txt['cannot_add_links'] = 'You can not add links.';
+$txt['permissionname_edit_links'] = 'Edit Links';
+$txt['permissionhelp_edit_links'] = 'If the user is allowed to edit links';
+$txt['cannot_edit_links'] = 'You can not edit links.';
+$txt['permissionname_delete_links'] = 'Delete Links';
+$txt['permissionhelp_delete_links'] = 'If the user is allowed to delete links';
+$txt['cannot_delete_links'] = 'You can not delete links.';
+$txt['permissionname_approve_links'] = 'Approve Links';
+$txt['permissionhelp_approve_links'] = 'If the user is allowed to approve links';
+$txt['cannot_approve_links'] = 'You can not approve links.';
+$txt['permissionname_links_auto_approve'] = 'Links Auto Approved';
+$txt['permissionhelp_links_auto_approve'] = 'If the users links are auto approved when submitted.';
+$txt['permissionname_rate_links'] = 'Rate Links';
+$txt['permissionhelp_rate_links'] = 'If the user is allowed to rate links';
+$txt['cannot_rate_links'] = 'You are not allowed to rate links.';
+$txt['permissionname_links_manage_cat'] = 'Manage Categories';
+$txt['permissionhelp_links_manage_cat'] = 'User can add/remove/edit/reorder categories';
+$txt['cannot_links_manage_cat'] = 'You are not allowed to manage categories.';
+
+$txt['permissionname_delete_links_own'] = 'Own Link';
+$txt['permissionname_delete_links_any'] = 'Any Link';
+$txt['permissionname_edit_links_own'] = 'Own Link';
+$txt['permissionname_edit_links_any'] = 'Any Link';
+//END SMF Links Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Links
+$txt['whoall_links'] = 'Viewing the <a href="' . $scripturl . '?action=links">' . $txt['smflinks_menu'] . '</a>';
+//END SMF Links Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['jsmodify' => array('Post.php', 'JavaScriptModify'),]]></search>
+		<add><![CDATA[
+		'links' => array('Links.php', 'LinksMain'),]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[	$groupLevels['global']['standard'] = array_merge($groupLevels['global']['restrict'], array(]]></search>
+		<add><![CDATA[
+		'view_smflinks',
+		'add_links',
+		'edit_links',
+		'delete_links',
+		'links_manage_cat',
+		'approve_links',
+		'links_auto_approve',
+		'rate_links',]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(]]></search>
+		<add><![CDATA[
+			'view_smflinks' => array(false, 'smflinks', 'smflinks'),
+			'add_links' => array(false, 'smflinks', 'smflinks'),
+			'edit_links' => array(true, 'smflinks', 'smflinks', 'links_manage_cat'),
+			'delete_links' => array(true, 'smflinks', 'smflinks', 'links_manage_cat'),
+			'links_manage_cat' => array(false, 'smflinks', 'smflinks'),
+			'approve_links' => array(false, 'smflinks', 'smflinks'),
+			'links_auto_approve' => array(false, 'smflinks', 'smflinks'),
+			'rate_links' => array(false, 'smflinks', 'smflinks'),]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="after"><![CDATA[				'current_theme' => array(
+					'label' => $txt['theme_current_settings'],]]></search>
+		<add><![CDATA[
+				'links' => array(
+					'label' => $txt['smflinks_admin'],
+					'file' => 'Links2.php',
+					'function' => 'LinksMain',
+					'custom_url' => $scripturl . '?action=admin;area=links;sa=admin;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'subsections' => array(
+						'admin' => array($txt['smflinks_linkssettings']),
+						'admincat' => array($txt['smflinks_managecats']]),
+						'alist' => array($txt['smflinks_approvelinks']),
+						'adminperm' => array($txt['smflinks_catpermlist']),
+						
+						
+					),
+				),
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_smflinks'] = allowedTo('view_smflinks');
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['mlist' => array(
+				'title' => $txt['members_title'],
+				'href' => $scripturl . '?action=mlist',
+				'show' => $context['allow_memberlist'],
+				'sub_buttons' => array(
+					'mlist_view' => array(
+						'title' => $txt['mlist_menu_view'],
+						'href' => $scripturl . '?action=mlist',
+						'show' => true,
+					),
+					'mlist_search' => array(
+						'title' => $txt['mlist_search'],
+						'href' => $scripturl . '?action=mlist;sa=search',
+						'show' => true,
+					),
+				),
+			),]]></search>
+		<add><![CDATA[			// [Links button]
+			'links' => array(
+				'title' => $txt['smflinks_menu'],
+				'href' => $scripturl . '?action=links',
+				'show' => $context['allow_view_smflinks'],
+				'icon' => '',
+			),
+]]></add>
+	</operation>
+	
+</file>
+
+
+
+
+</modification>

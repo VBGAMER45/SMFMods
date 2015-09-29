@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Runic:MSNRemove</id>
+	<version>1.0</version>
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="replace"><![CDATA[								', $message['member']['icq']['link'], '
+								', $message['member']['msn']['link'], ']]></search>
+			<add><![CDATA[								', $message['member']['icq']['link'], ']]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Help.template.php">
+		<operation>
+			<search position="replace"><![CDATA[										</tr>
+										<tr>
+											<td><b>MSN:</b></td>
+											<td></td>
+										</tr>
+										<tr>]]></search>
+			<add><![CDATA[										</tr>
+										<tr>]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Memberlist.template.php">
+		<operation>
+			<search position="replace"><![CDATA[			<td class="windowbg2">', $member['yim']['link'], '</td>
+			<td class="windowbg2">', $member['msn']['link'], '</td>]]></search>
+			<add><![CDATA[			<td class="windowbg2">', $member['yim']['link'], '</td>]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/PersonalMessage.template.php">
+		<operation>
+			<search position="replace"><![CDATA[									', $message['member']['icq']['link'], '
+									', $message['member']['msn']['link'], ']]></search>
+			<add><![CDATA[									', $message['member']['icq']['link'], ']]></add>
+		</operation>
+	</file>
+		<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="replace"><![CDATA[</tr><tr>
+					<td><b>', $txt['MSN'], ': </b></td>
+					<td>', $context['member']['msn']['link_text'], '</td>
+				</tr>]></search>
+			<add><![CDATA[</tr>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[				<td align="center">', $txt['MSN'], '</td>
+				<td></td>]]></search>
+			<add><![CDATA[				<td></td>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[				<td align="center">', $buddy['msn']['link'], '</td>
+				<td align="center">]]></search>
+			<add><![CDATA[				<td align="center">]]></add>
+		</operation>
+				<operation>
+			<search position="replace"><![CDATA[<tr>
+								<td width="40%"><b>', $txt['MSN'], ': </b><div class="smalltext">', $txt['smf237'], '.</div></td>
+								<td><input type="text" name="MSN" size="24" value="', $context['member']['msn']['name'], '" /></td>
+							</tr><tr>]]></search>
+			<add><![CDATA[<tr>]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Who.template.php">
+		<operation>
+			<search position="replace"><![CDATA[' ', $member['msn']['link'], ' ']]></search>
+			<add><![CDATA[' ', '', ' ']]></add>
+		</operation>
+	</file>
+</modification>

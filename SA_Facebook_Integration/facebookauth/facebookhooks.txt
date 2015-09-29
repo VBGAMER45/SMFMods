@@ -1,0 +1,101 @@
+[hr]
+[center][color=red][size=14pt][b]Important![/b][/size][/color][br]
+[color=green][b]To use these hooks outside of smf you will need to set in smf to false [the last argument in the array]
+and include the facebookhooks.php file and decalre the class[/b][/color][/center][br]
+[center][color=red][b]EXAMPLE[/b][/color][/center]
+[code]include('C:\server\htdocs\sites\test\Sources\Facebook\FacebookHooks.php');
+$fb_hook_object = new SAFacebookhooks;
+$fb_hook_object->call_facebook_hook('show_facebook_login',array(false));
+[/code][br][br]
+[hr]
+[color=red] [b]Hook - facebook login[/b][/color]
+[color=green][b]The Login Button shows a login button.[/b][/color]
+		[list] [li][b]in smf true or false[/b][/li]  [/list]
+
+		[code]global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_login',array(true));[/code]
+                [hr]
+[color=red] [b]Hook - facebook comments[/b][/color]
+[color=green][b]The Comments plugin lets users comment on any piece of content on your site.[/b][/color]
+		[list][li][b]url [/b][/li]
+		[li][b]comments perpage[/b][/li]
+		[li][b]width[/b][/li]
+		[li][b]theme light or dark[/b][/li]
+                 [li][b]in smf true or false[/b][/li]  [/list]
+
+		[code] global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_comments',array('www.test.com','10','750','light',true));[/code]
+                [hr]
+[color=red][b]Hook - facebook like button[/b][/color]
+[color=green][b]The Like button lets users share pages from your site back to their Facebook profile with one click.[/b][/color]
+		[list][li][b]url [/b][/li]
+		[li][b]verb like or recomend[/b][/li]
+		[li][b]send true or false[/b][/li]
+		[li][b]layout standard or button_count[/b][/li]
+		 [li][b]colour light or dark[/b][/li]
+		[li][b]faces true or false[/b][/li]
+                 [li][b]in smf true or false[/b][/li] 
+                [/list]
+
+		[code]global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_like_button',array('www.test.com','like','true','standard','light','true',true));[/code]
+		 [hr]
+[color=red][b] Hook - facebook send[/b][/color]
+[color=green][b]The Send Button allows your users to easily send your content to their friends.[/b][/color]
+               [list][li][b]url[/b][/li] [li][b]in smf true or false[/b]  [/list]
+
+		 [code]global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_send',array('http://www.test.com',true));[/code]
+		 [hr]
+[color=red][b]Hook - facebook live[/b][/color]
+[color=green][b]The Live Stream plugin lets your users share activity and comments in real-time as they interact during a live event.[/b][/color]
+		[list][li][b]width[/b][/li]
+		[li][b]height[/b][/li]
+		[li][b]unique id[/b][/li]
+                 [li][b]in smf true or false[/b][/li]  [/list][list]
+		 [/list]
+
+[code]global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_live',array('500','500','gg_&dfgn',true));[/code]
+		 [hr]
+[color=red][b]Hook - facebook activity[/b][/color]
+[color=green][b]The Activity Feed plugin shows users what their friends are doing on your site through likes and comments.[/b][/color]
+		[list][li][b]url[/b][/li]
+		[li][b]width[/b][/li]
+		[li][b]height[/b][/li]
+		 [li][b]colour light or dark[/b][/li]
+		[li][b]header true or false[/b][/li]
+                 [li][b]in smf true or false[/b][/li]  [/list] [list]
+		 [/list]
+
+[code]global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_activity',array('test.com','500','500','light','true',true));[/code]
+		 [hr]
+[color=red][b]Hook - facebook like box[/b][/color]
+[color=green][b]The Like Box enables users to like your Facebook Page and view its stream directly from your website.[/b][/color]
+		[list] [li][b]your application page url[/b][/li]
+		[li][b]header true or false[/b][/li]
+		[li][b]faces true or false[/b][/li]
+		[li][b]colour light or dark[/b][/li]
+		[li][b]stream true or false[/b][/li]
+                 [li][b]in smf true or false[/b][/li]  [/list]
+		
+ [code]global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_likebox',array('yourfacebookappurl.com','500','light','true','true','true',true));[/code]
+		 [hr]
+[color=red][b] Hook - facebook freiend pile[/b][/color]
+[color=green][b]The Facepile plugin displays the Facebook profile pictures of users who have liked your page or have signed up for your site.[/b][/color]
+		[list] [li][b]width[/b][/li]
+		[li][b]rows[/b][/li]
+                 [li][b]in smf true or false[/b][/li]  [/list]
+		
+[code] global $fb_hook_object;
+if(class_exists('SAFacebookhooks'))
+    $fb_hook_object->call_facebook_hook('show_facebook_friendpile',array('258','4',true));[/code]

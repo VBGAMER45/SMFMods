@@ -1,0 +1,249 @@
+# French translation for prettyurls
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the prettyurls package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: prettyurls\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-06-19 15:28+1000\n"
+"PO-Revision-Date: 2009-06-19 08:27+0000\n"
+"Last-Translator: shaitan <shaitan@passion-xbmc.org>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-06-22 04:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Base/PrettyUrls/pretty_chrome_install_title
+msgid "Installing Pretty URLs"
+msgstr ""
+
+#: Base/PrettyUrls/pretty_install_success
+msgid ""
+"Thank you for using <b>Pretty URLs</b>! The installation was a success!"
+msgstr ""
+
+#: Base/PrettyUrls/pretty_install_continue
+msgid ""
+"Please continue to the admin page, where you can enable URL rewriting."
+msgstr ""
+
+#: Base/PrettyUrls/pretty_chrome_title
+msgid "Pretty URLs Administration"
+msgstr "Administration de Pretty URLs"
+
+#: Base/PrettyUrls/pretty_chrome_menu_news
+msgid "News"
+msgstr "Nouvelles"
+
+#: Base/PrettyUrls/pretty_chrome_menu_settings
+msgid "Settings"
+msgstr "Paramètres"
+
+#: Base/PrettyUrls/pretty_chrome_menu_maintenance
+msgid "Maintenance"
+msgstr "Maintenance"
+
+#: Base/PrettyUrls/pretty_chrome_caption_news
+msgid "The latest news and information live from the project website"
+msgstr "Dernières nouvelles et informations en direct du site du Projet"
+
+#: Base/PrettyUrls/pretty_chrome_page_title_news
+msgid "Pretty URLs News & Info"
+msgstr "Pretty URLs Nouvelles et Informations"
+
+#: Base/PrettyUrls/pretty_chrome_title_news
+msgid "News & Info"
+msgstr "Nouvelles et Informations"
+
+#: Base/PrettyUrls/pretty_current_version
+msgid "Current version"
+msgstr "Version courante"
+
+#: Base/PrettyUrls/pretty_download
+msgid "Download"
+msgstr "Télécharger"
+
+#: Base/PrettyUrls/pretty_latest_version
+msgid "Latest version"
+msgstr "Dernière version"
+
+#: Base/PrettyUrls/pretty_upgrade
+msgid "Upgrade now!"
+msgstr "Mettre à jour maintenant!"
+
+#: Base/PrettyUrls/pretty_version
+msgid "Version info"
+msgstr "Version information"
+
+#: Base/PrettyUrls/pretty_cant_write_htaccess
+msgid ""
+"Cannot overwrite existing .htaccess file. Please change its write "
+"permissions."
+msgstr ""
+
+#: Base/PrettyUrls/pretty_chrome_caption_settings
+msgid "Various settings"
+msgstr "Différents paramètres"
+
+#: Base/PrettyUrls/pretty_chrome_page_title_settings
+msgid "Pretty URLs Settings"
+msgstr "Paramètres de Pretty URLs"
+
+#: Base/PrettyUrls/pretty_core_settings
+msgid "Core settings"
+msgstr "Paramètres du Core"
+
+#: Base/PrettyUrls/pretty_enable
+msgid "Enable URL rewriting"
+msgstr "Activer la réécriture d'URL"
+
+#: Base/PrettyUrls/pretty_filters
+msgid "URL rewriting filters"
+msgstr "Filtres de réécriture d'URL"
+
+#: Base/PrettyUrls/pretty_save
+msgid "Save changes"
+msgstr "Sauvegarder les changements"
+
+#: Base/PrettyUrls/pretty_chrome_caption_tests
+msgid ""
+"Before enabling URL rewriting, please check that these rewritten links work."
+msgstr ""
+
+#: Base/PrettyUrls/pretty_chrome_caption_maintenance
+msgid "Run some maintenance tasks"
+msgstr "Effectuer diverses tâches de maintenance"
+
+#: Base/PrettyUrls/pretty_chrome_page_title_maintenance
+msgid "Pretty URLs Maintenance"
+msgstr "Maintenance de Pretty URLs"
+
+#: Base/PrettyUrls/pretty_run_maintenance
+msgid "Run maintenance tasks"
+msgstr "Lancer les tâches de maintenance"
+
+#: Base/PrettyUrls/pretty_chrome_caption_filters
+msgid ""
+"A tool to edit the filters array. The array is formatted here in the <a "
+"href=\"http://www.json.org/\">JSON</a> format. Be careful, the JSON parser "
+"is rather strict."
+msgstr ""
+"Un outil pour éditer les tables de filtres. La table est formatée ici avec "
+"le format <a href=\"http://www.json.org/\">JSON.</a>  Prenez garde, le "
+"Parser JSON est extrêmement strict."
+
+#: Base/PrettyUrls/pretty_chrome_page_title_filters
+msgid "Pretty URLs Filters Tool"
+msgstr "Outil pour les filtres de Pretty URLs"
+
+#: Base/PrettyUrls/pretty_chrome_title_filters
+msgid "Filters Tool"
+msgstr "Outil pour Filtres"
+
+#: Base/PrettyUrls/pretty_no_json
+msgid ""
+"The PHP JSON extension is required for this tool. Consider upgrading to PHP "
+"5.2."
+msgstr ""
+"Les extensions PHP JSON  sont requises pour cet outil. Envisagez la mise à "
+"jour PHP 5.2."
+
+#: Base/Modifications/pretty_admin_menu
+msgid "Pretty URLs"
+msgstr ""
+
+#: Base/Modifications/pretty_add_url
+msgid "Add"
+msgstr ""
+
+#: Base/Modifications/pretty_add_url_description
+msgid ""
+"Add a URL. Note that what you enter here will be processed as only certain "
+"characters are allowed."
+msgstr ""
+
+#: Base/Modifications/pretty_board_url_title
+msgid "Pretty URLs for: "
+msgstr ""
+
+#: Base/Modifications/pretty_deleted_board
+msgid "Deleted board #"
+msgstr ""
+
+#: Base/Modifications/pretty_duplicate_link
+msgid "delete it first."
+msgstr ""
+
+#: Base/Modifications/pretty_duplicate_warning
+msgid ""
+"That URL is already in use by another board. It will be available if you "
+msgstr ""
+
+#: Base/Modifications/pretty_make_primary
+msgid "Make primary"
+msgstr ""
+
+#: Base/Modifications/pretty_no_primary_warning
+msgid "Warning, no primary URL!"
+msgstr ""
+
+#: Base/Modifications/pretty_numerical
+msgid ""
+"Sorry, but as that URL is either a number or the same as a forum action the "
+"board ID had to be added as a suffix."
+msgstr ""
+
+#: Base/Modifications/pretty_primary_url
+msgid "Primary"
+msgstr ""
+
+#: Base/readme/install
+msgid ""
+"[b][url=http://custom.simplemachines.org/mods/index.php?mod=636]Pretty "
+"URLs[/url][/b] is a URL management package for Simple Machine Forums (SMF).\n"
+"\n"
+"It is simple, powerful, extensible and free. Most of all, it is pretty! Its "
+"main purpose is to rewrite the important SMF URLs, like these:\n"
+"[list]\n"
+"[li][nobbc]http://domain.com/board/topic/[/nobbc][/li]\n"
+"[li][nobbc]http://domain.com/profile/user/[/nobbc][/li]\n"
+"[li][nobbc]http://domain.com/unreadreplies/[/nobbc][/li]\n"
+"[/list]\n"
+"Pretty URLs will work with SMF 1.1 and 2.0. It requires an Apache webserver "
+"with support for mod_rewrite and .htaccess files.\n"
+"\n"
+"[url=http://code.google.com/p/prettyurls/]Project home page[/url]\n"
+"\n"
+"[b][url=http://code.google.com/p/prettyurls/wiki/Overview]Overview and "
+"installation info[/url][/b]\n"
+"\n"
+"Need help? "
+"[b][url=http://code.google.com/p/prettyurls/wiki/TroubleShooting]Check the "
+"trouble shooting page first![/url][/b]\n"
+"\n"
+"Pretty URLs is released under a "
+"[url=http://prettyurls.googlecode.com/svn/trunk/LICENCE]new BSD "
+"licence[/url]\n"
+"Copyright (c) 2006-2009 "
+"[url=http://prettyurls.googlecode.com/svn/trunk/CONTRIBUTORS]The Pretty URLs "
+"Contributors[/url]"
+msgstr ""
+
+#: Base/readme/uninstall
+msgid ""
+"Thank you for using [b]Pretty URLs[/b]!\n"
+"\n"
+"If you don't intend to reinstall this mod, you should consider using the "
+"Reverter package, which will redirect your pretty URLs back to the normal "
+"SMF URLs. This should be considered essential if your forum has been indexed "
+"by search engines, or if your pages have been linked to from other websites. "
+"You can download the Reverter package from the "
+"[url=http://code.google.com/p/prettyurls]Pretty URLs project home "
+"page[/url].\n"
+"[b]Note:[/b] to install the Reverter package do not remove the database "
+"settings, tables and .htaccess file."
+msgstr ""

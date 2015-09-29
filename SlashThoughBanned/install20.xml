@@ -1,0 +1,332 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Runic:Slash_Through_Banned</id>
+	<version>3.0</version>
+	
+	<file name="$sourcedir/Subs-BoardIndex.php">
+		<operation>
+			<search position="before"><![CDATA[			m.subject, m.id_topic, IFNULL(mem.real_name, m.poster_name) AS real_name,
+]]></search>
+			<add><![CDATA[			IFNULL(mem.is_activated, 0) AS is_activated,
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[	// Run through the categories and boards (or only boards)....
+	while ($row_board = $smcFunc['db_fetch_assoc']($result_boards))
+	{]]></search>
+			<add><![CDATA[
+		if($row_board['is_activated'] > 10)
+			$row_board['real_name'] = '<s>' . $row_board['real_name'] . '</s>';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/MessageIndex.php">
+		<operation>
+			<search position="replace"><![CDATA[lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online,]]></search>
+			<add><![CDATA[lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online, mem.is_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{]]></search>
+			<add><![CDATA[
+			if((int) $row['is_activated'] > 10)
+				$row['real_name'] = '<s>' . $row['real_name'] . '</s>';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[IFNULL(meml.real_name, ml.poster_name) AS last_display_name,]]></search>
+			<add><![CDATA[IFNULL(meml.real_name, ml.poster_name) AS last_display_name, IFNULL(meml.is_activated, 0) AS last_mem_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[IFNULL(memf.real_name, mf.poster_name) AS first_display_name,]]></search>
+			<add><![CDATA[IFNULL(memf.real_name, mf.poster_name) AS first_display_name, IFNULL(memf.is_activated, 0) AS first_mem_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[		// Begin 'printing' the message index for current board.
+		while ($row = $smcFunc['db_fetch_assoc']($result))
+		{]]></search>
+			<add><![CDATA[
+			if($row['first_mem_activated'] > 10)
+				$row['first_display_name'] = '<s>' . $row['first_display_name'] . '</s>';
+			
+			if($row['last_mem_activated'] > 10)
+				$row['last_display_name'] = '<s>' . $row['last_display_name'] . '</s>';
+			]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="replace"><![CDATA[lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online,]]></search>
+			<add><![CDATA[lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online, mem.is_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			if (empty($row['id_member']))
+				continue;]]></search>
+			<add><![CDATA[
+			if ($row['is_activated'] > 10)
+				$row['real_name'] = '<s>' . $row['real_name'] . '</s>';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[cal.id_member, mem.real_name]]></search>
+			<add><![CDATA[cal.id_member, mem.real_name, mem.is_approved]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			// Prepare the dates for being formatted.]]></search>
+			<add><![CDATA[
+			if ($row['is_activated'] > 10)
+				$row['real_name'] = '<s>' . $row['real_name'] . '</s>';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[IFNULL(mem.real_name, p.poster_name) AS poster_name]]></search>
+			<add><![CDATA[IFNULL(mem.real_name, p.poster_name) AS poster_name, IFNULL(mem.is_activated, 0) AS is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$pollinfo = $smcFunc['db_fetch_assoc']($request);]]></search>
+			<add><![CDATA[
+		if($pollinfo['is_activated'] > 10)
+			$pollinfo['poster_name'] = '<s>' . $pollinfo['poster_name'] . '</s>';]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="replace"><![CDATA[mem.id_group';]]></search>
+			<add><![CDATA[mem.id_group, mem.is_activated';]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[			$user_profile[$row['id_member']] = $row;]]></search>
+			<add><![CDATA[			if($row['is_activated'] > 10)
+				$row['real_name'] = '<s>' . $row['real_name'] . '</s>';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs-Recent.php">
+		<operation>
+			<search position="replace"><![CDATA[IFNULL(mem.real_name, m.poster_name) AS poster_name]]></search>
+			<add><![CDATA[IFNULL(mem.real_name, m.poster_name) AS poster_name, IFNULL(mem.is_activated, 0) AS is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		// Build the array.
+		$posts[] = array(]]></search>
+			<add><![CDATA[		if($row['is_activated'] > 10)
+			$row['poster_name'] = '<s>' . $row['poster_name'] . '</s>';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Printpage.php">
+		<operation>
+			<search position="replace"><![CDATA[m.poster_time, IFNULL(mem.real_name, m.poster_name) AS poster_name]]></search>
+			<add><![CDATA[m.poster_time, IFNULL(mem.real_name, m.poster_name) AS poster_name, IFNULL(mem.is_activated, 0) AS is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Lets "output" all that info.]]></search>
+			<add><![CDATA[
+	if($row['is_activated'] > 10)
+		$row['poster_name'] = '<s>' . $row['poster_name'] . '</s>';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[body, IFNULL(mem.real_name, poster_name) AS poster_name]]></search>
+			<add><![CDATA[body, IFNULL(mem.real_name, poster_name) AS poster_name, IFNULL(mem.is_activated, 0) AS is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		// Censor the subject and message.]]></search>
+			<add><![CDATA[		if($row['is_activated'] > 10)
+			$row['poster_name'] = '<s>' . $row['poster_name'] . '</s>';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Stats.php">
+		<operation>
+			<search position="replace"><![CDATA[id_member, real_name]]></search>
+			<add><![CDATA[id_member, is_activated, real_name]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		$context['top_posters'][] = array(]]></search>
+			<add><![CDATA[		if($row_members['is_activated'] > 10)
+			$row_members['real_name'] = '<s>' . $row_members['real_name'] . '</s>';
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[id_member, real_name]]></search>
+			<add><![CDATA[id_member, is_activated, real_name]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		$context['top_starters'][] = array(]]></search>
+			<add><![CDATA[		if($row_members['is_activated'] > 10)
+			$row_members['real_name'] = '<s>' . $row_members['real_name'] . '</s>';
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[id_member, real_name]]></search>
+			<add><![CDATA[id_member, is_activated, real_name]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		$context['top_time_online'][] = array(]]></search>
+			<add><![CDATA[		if($row_members['is_activated'] > 10)
+			$row_members['real_name'] = '<s>' . $row_members['real_name'] . '</s>';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Search.php">
+		<operation>
+			<search position="before"><![CDATA[ c.id_cat,]]></search>
+			<add><![CDATA[ first_mem.is_activated AS first_activated, last_mem.is_activated AS last_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[censorText($message['last_subject']);]]></search>
+			<add><![CDATA[
+	if($message['first_activated'] > 10)
+		$message['first_member_name'] = '<s>' . $message['first_member_name'] . '</s>';
+		
+	if($message['last_activated'] > 10)
+		$message['last_member_name'] = '<s>' . $message['last_member_name'] . '</s>';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="replace"><![CDATA['page_title' => sprintf($txt['profile_of_username'], $memberContext[$memID]['name']),]]></search>
+			<add><![CDATA['page_title' => sprintf($txt['profile_of_username'], str_replace(array('<s>', '</s>'), array('', ''), $memberContext[$memID]['name'])),]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[$context['page_title'] = $txt['showPosts'] . ' - ' . $user_profile[$memID]['real_name'];]]></search>
+			<add><![CDATA[$context['page_title'] = $txt['showPosts'] . ' - ' . str_replace(array('<s>', '</s>'), array('', ''), $user_profile[$memID]['real_name']);]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[$context['page_title'] = $txt['statPanel_showStats'] . ' ' . $user_profile[$memID]['real_name'];]]></search>
+			<add><![CDATA[$context['page_title'] = $txt['statPanel_showStats'] . ' ' . str_replace(array('<s>', '</s>'), array('', ''), $user_profile[$memID]['real_name']);]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[$context['page_title'] = $txt['trackUser'] . ' - ' . $subActions[$context['tracking_area']][1] . ' - ' . $user_profile[$memID]['real_name'];]]></search>
+			<add><![CDATA[$context['page_title'] = $txt['trackUser'] . ' - ' . $subActions[$context['tracking_area']][1] . ' - ' . str_replace(array('<s>', '</s>'), array('', ''), $user_profile[$memID]['real_name']);]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Profile-Modify.php">
+		<operation>
+			<search position="after"><![CDATA[	// Free up some memory.]]></search>
+			<add><![CDATA[	if(isset($context['profile_fields']['real_name']))
+		$context['profile_fields']['real_name'] = str_replace(array('<s>', '</s>'), array('', ''), $context['profile_fields']['real_name']);
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="before"><![CDATA[ m.smileys_enabled, m.id_msg]]></search>
+			<add><![CDATA[, mem.is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['poster' => $row['poster_name'],]]></search>
+			<add><![CDATA['poster' => $row['is_activated'] > 10 ? '<s>' . $row['poster_name'] . '</s>' : $row['poster_name'],]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/PersonalMessage.php">
+		<operation>
+			<search position="before"><![CDATA[SELECT pmr.id_pm, mem_to.id_member AS id_member_to]]></search>
+			<add><![CDATA[, mem_to.is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[' . $row['to_name'] . ']]></search>
+			<add><![CDATA[' . ($row['is_activated'] > 10 ? '<s>' . $row['to_name'] . '</s>' : $row['to_name']) . ']]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[IFNULL(mem.real_name, pm.from_name) AS from_name,]]></search>
+			<add><![CDATA[ mem.is_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[SELECT pm.id_pm, pm.subject, pm.id_member_from, pm.body, pm.msgtime, pm.from_name]]></search>
+			<add><![CDATA[SELECT pm.id_pm,' . ($context['sort_by'] == 'name' ? ' mem.is_activated,' : '') . ' pm.subject, pm.id_member_from, pm.body, pm.msgtime, pm.from_name]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['name' => $subject['from_name'],]]></search>
+			<add><![CDATA['name' => $subject['is_activated'] ? '<s>' . $subject['from_name'] . '</s>' : $subject['from_name'],]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['link' => $subject['not_guest'] ? '<a href="' . $scripturl . '?action=profile;u=' . $subject['id_member_from'] . '">' . $subject['from_name'] . '</a>' : $subject['from_name'],]]></search>
+			<add><![CDATA['link' => $subject['not_guest'] ? '<a href="' . $scripturl . '?action=profile;u=' . $subject['id_member_from'] . '">' . ($subject['is_activated'] ? '<s>' . $subject['from_name'] . '</s>' : $subject['from_name']) . '</a>' : $subject['from_name'],]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	pmr.id_pm, mem_to.id_member AS id_member_to, mem_to.real_name AS to_name,]]></search>
+			<add><![CDATA[	pmr.id_pm, mem_to.id_member AS id_member_to, mem_to.real_name AS to_name, mem_to.is_activated,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[' . $row['to_name'] . ']]></search>
+			<add><![CDATA[' . ($row['is_activated'] > 10 ? '<s>' . $row['to_name'] . '</s>' : $row['to_name']) . ']]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[SELECT mem.id_member, mem.real_name]]></search>
+			<add><![CDATA[, mem.is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['name' => $row['real_name'],]]></search>
+			<add><![CDATA['name' => ($row['is_activated'] > 10 ? '<s>' . $row['to_name'] . '</s>' : $row['to_name']),]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[SELECT id_member, real_name]]></search>
+			<add><![CDATA[SELECT id_member, is_activated, real_name]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['name' => $row['real_name'],]]></search>
+			<add><![CDATA['name' => ($row['is_activated'] > 10 ? '<s>' . $row['real_name'] . '</s>' : $row['real_name']),]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[SELECT id_member, real_name]]></search>
+			<add><![CDATA[SELECT id_member, is_activated, real_name]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['name' => $row['real_name'],]]></search>
+			<add><![CDATA['name' => ($row['is_activated'] > 10 ? '<s>' . $row['real_name'] . '</s>' : $row['real_name']),]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[pm.id_pm, CASE WHEN]]></search>
+			<add><![CDATA[pm.id_pm, IFNULL(mem.is_activated, 0) AS is_activated, CASE WHEN]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['name' => $row_quoted['real_name'],]]></search>
+			<add><![CDATA['name' => ($row_quoted['is_activated'] > 10 ? '<s>' . $row_quoted['real_name'] . '</s>' : $row_quoted['real_name']),]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['link' => !empty($row_quoted['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_quoted['id_member'] . '">' . $row_quoted['real_name'] . '</a>' : $row_quoted['real_name'],]]></search>
+			<add><![CDATA['link' => !empty($row_quoted['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_quoted['id_member'] . '">' . ($row_quoted['is_activated'] > 10 ? '<s>' . $row_quoted['real_name'] . '</s>' : $row_quoted['real_name']) . '</a>' : $row_quoted['real_name'],]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[pm.id_pm, CASE WHEN]]></search>
+			<add><![CDATA[pm.id_pm, IFNULL(mem.is_activated, 0) AS is_activated, CASE WHEN]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['name' => $row_quoted['real_name'],]]></search>
+			<add><![CDATA['name' => ($row_quoted['is_activated'] > 10 ? '<s>' . $row_quoted['real_name'] . '</s>' : $row_quoted['real_name']),]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA['link' => !empty($row_quoted['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_quoted['id_member'] . '">' . $row_quoted['real_name'] . '</a>' : $row_quoted['real_name'],]]></search>
+			<add><![CDATA['link' => !empty($row_quoted['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_quoted['id_member'] . '">' . ($row_quoted['is_activated'] > 10 ? '<s>' . $row_quoted['real_name'] . '</s>' : $row_quoted['real_name']) . '</a>' : $row_quoted['real_name'],]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[IFNULL(m.real_name, pm.from_name) AS sender_name]]></search>
+			<add><![CDATA[, m.is_activated]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[mem_to.real_name AS to_name, pmr.bcc
+]]></search>
+			<add><![CDATA[mem_to.real_name AS to_name, pmr.bcc, mem_to.is_activated
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[' . $row['to_name'] . ']]></search>
+			<add><![CDATA[' . ($row['is_activated'] > 10 ? '<s>' . $row['to_name'] . '</s>' : $row['to_name']) . ']]></add>
+		</operation>
+	</file>
+</modification>

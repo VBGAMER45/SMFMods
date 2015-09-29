@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:SMFArchive</id>
+	<name>SMF Archive</name>
+	<type>modification</type>
+	<version>2.0</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<readme>readme.txt</readme>
+		<require-file name="archive.php" destination="$boarddir" />
+		<require-file name="archive.css" destination="$boarddir" />
+	</install>
+	
+	<install for="1.0 - 1.0.99">
+		<readme>readme.txt</readme>
+		<require-file name="archive.php" destination="$boarddir" />
+		<require-file name="archive.css" destination="$boarddir" />
+	</install>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4,2.0 RC5">
+		<readme>readme.txt</readme>
+		<require-file name="archive2.php" destination="$boarddir" />
+		<require-file name="archive.css" destination="$boarddir" />
+	</install>
+	
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<remove-file name="$boarddir/archive.php" />
+		<remove-file name="$boarddir/archive.css" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<uninstall for="1.0 - 1.0.99">
+			<remove-file name="$boarddir/archive.php" />
+			<remove-file name="$boarddir/archive.css" />
+			<code>UnInstall.php</code>
+	</uninstall>
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4,2.0 RC5">
+			<remove-file name="$boarddir/archive2.php" />
+			<remove-file name="$boarddir/archive.css" />
+			<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	
+
+</package-info>

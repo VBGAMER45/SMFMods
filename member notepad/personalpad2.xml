@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:MemberNotepad</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Member Notepad Text Strings
+$txt['mempad_title'] = 'Personal Notes';
+$txt['mempad_save'] = 'Save Notes';
+$txt['mempad_error'] = 'You are not allowed to edit this user\'s notepad.';
+
+//END Member Notepad Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Member Notepad Text Strings
+$txt['mempad_title'] = 'Personal Notes';
+$txt['mempad_save'] = 'Save Notes';
+$txt['mempad_error'] = 'You are not allowed to edit this user\'s notepad.';
+
+//END Member Notepad Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['restoretopic' => array('RemoveTopic.php', 'RestoreTopic'),]]></search>
+		<add><![CDATA[
+		'savepad' => array('PersonalPad2.php', 'SavePad'),]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+		<search position="before"><![CDATA[// Show the users signature.]]></search>
+	<add><![CDATA[
+	
+	
+	// Member Notepad
+	global $scripturl;
+	
+	if ($context['show_pad'])
+	echo '
+			<dl class="noborder">
+					<dt>' . $txt['mempad_title'] . '</dt>
+					<dd>
+						<form method="post" action="', $scripturl, '?action=savepad">
+						  <textarea rows="5" name="txtnotes" cols="50">', $context['pad_notes'], '</textarea><br />
+						  <input type="hidden" name="id" value="', $context['member']['id'], '" />
+						  <input type="submit" value="', $txt['mempad_save'], '" name="cmdnotes" />
+						</form>
+						<br />
+						
+					</dd>
+			</dl>';
+			
+	// End Member Notepad
+	
+	
+]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/Profile-View.php">
+	<operation>
+		<search position="before"><![CDATA[// Set up the stuff and load the user.]]></search>
+	<add><![CDATA[
+	// Member Notepad
+	global $user_info;
+	if (allowedTo('admin_forum') || $memID == $user_info['id'])
+	{
+		$pad_notes = '';
+		
+		$result = $smcFunc['db_query']('', "SELECT value FROM {db_prefix}themes
+		 WHERE variable = 'notes' AND ID_MEMBER = $memID LIMIT 1");
+		if ($smcFunc['db_num_rows']($result) != 0)
+		{
+			$row =  $smcFunc['db_fetch_assoc']($result);
+			$pad_notes = $row['value'];
+		}
+		
+		$smcFunc['db_free_result']($result);
+		
+		$context['pad_notes'] = $pad_notes;
+		$context['show_pad'] = true;
+	}
+	else 
+	{
+		$context['show_pad'] = false;
+	}
+	
+	// End Member NotePad
+]]></add>
+	</operation>
+
+</file>
+</modification>

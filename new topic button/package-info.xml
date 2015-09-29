@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:NewTopicButton</id>
+	<name>New Topic Button</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">topic.xml</modification>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<modification type="file" reverse="true">topic.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	<install for="1.0 - 1.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">topic107.xml</modification>
+	</install>
+
+	<uninstall for="1.0 - 1.0.99">
+		<modification type="file" reverse="true">topic107.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+
+	
+	<install for="2.0 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">topic2rc2.xml</modification>
+	</install>
+
+	<uninstall for="2.0 RC2">
+		<modification type="file" reverse="true">topic2rc2.xml</modification>	
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 RC3">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">topic2rc3.xml</modification>
+	</install>
+	
+	<uninstall for="2.0 RC3">
+			<modification type="file" reverse="true">topic2rc3.xml</modification>	
+			<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.0 - 2.0.99,2.0 RC4,2.0 RC5">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">topic2rc4.xml</modification>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99,2.0 RC4,2.0 RC5">
+			<modification type="file" reverse="true">topic2rc4.xml</modification>	
+			<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

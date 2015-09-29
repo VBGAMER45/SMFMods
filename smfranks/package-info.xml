@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:SMFRanks</id>
+	<name>SMF Ranks</name>
+	<type>modification</type>
+	<version>1.1</version>
+
+	<install for="1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">smfranks.xml</modification>
+		<require-dir name="ranks" destination="$boarddir" />
+	</install>
+
+	<uninstall for="1.1 RC2">
+		<modification type="file" reverse="true">smfranks.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="1.1 - 1.1.99,1.1 RC3">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">smfranks11.xml</modification>
+		<require-dir name="ranks" destination="$boarddir" />
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3">
+		<modification type="file" reverse="true">smfranks11.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.0 RC2, 2.0 RC3">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">smfranks2.xml</modification>
+			<require-dir name="ranks" destination="$boarddir" />
+	</install>
+	
+	<uninstall for="2.0 RC2, 2.0 RC3">
+			<modification type="file" reverse="true">smfranks2.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.0 - 2.0.99,2.0 RC4,2.0 RC5">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">smfranks2rc4.xml</modification>
+			<require-dir name="ranks" destination="$boarddir" />
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99,2.0 RC4,2.0 RC5">
+			<modification type="file" reverse="true">smfranks2rc4.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+
+</package-info>

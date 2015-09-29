@@ -1,0 +1,4 @@
+3.0
+!No longer counts enotify calls as hits/improves performance. Thanks to Sorunome
+!Fixed some jquery conflicts with some other jquery mods Thanks to Sorunome
+!Only updates occur when the windows has focus  Thanks to Sorunome

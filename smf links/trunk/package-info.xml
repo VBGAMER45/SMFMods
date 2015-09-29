@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFLinks</id>
+<name>SMF Links</name>
+<type>modification</type>
+<version>2.5.3</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
+		<redirect url="?action=links;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">links.xml</modification>
+		<require-file name="Links.php" destination="$sourcedir" />
+		<require-file name="Links.template.php" destination="$themedir" />
+		<require-file name="Links.english.php" destination="$themedir/languages" />
+		<require-file name="Links.english-utf8.php" destination="$themedir/languages" />
+		<code>linksql.php</code>
+	</install>
+	<upgrade for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=links;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Links.php" destination="$sourcedir" />
+		<require-file name="Links.template.php" destination="$themedir" />
+		<require-file name="Links.english.php" destination="$themedir/languages" />
+		<require-file name="Links.english-utf8.php" destination="$themedir/languages" />
+		<code>linksql.php</code>
+	</upgrade>
+	<uninstall for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
+		<modification type="file" reverse="true">links.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+		<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<modification type="file">links2.xml</modification>
+			<redirect url="?action=admin;area=links;sa=admin">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<require-file name="Links2.php" destination="$sourcedir" />
+			<require-file name="Links2.template.php" destination="$themedir" />
+			<require-file name="Links.english.php" destination="$themedir/languages" />
+			<require-file name="Links.english-utf8.php" destination="$themedir/languages" />
+			<code>linksql2.php</code>
+		</install>
+		<upgrade for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<redirect url="?action=admin;area=links;sa=admin">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<require-file name="Links2.php" destination="$sourcedir" />
+			<require-file name="Links2.template.php" destination="$themedir" />
+			<require-file name="Links.english.php" destination="$themedir/languages" />
+			<require-file name="Links.english-utf8.php" destination="$themedir/languages" />
+			<code>linksql2.php</code>
+		</upgrade>
+		<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<modification type="file" reverse="true">links2.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+	
+</package-info>

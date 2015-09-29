@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:RegBar</id>
+	<name>Reg Bar</name>
+	<type>modification</type>
+	<version>1.0.2</version>
+
+	<install for="1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">regbar.xml</modification>
+		<require-file name="warning.gif" destination="$themedir" />
+		<require-file name="warning.gif" destination="$boarddir" />
+		<require-file name="regbar.css" destination="$themedir" />
+	</install>
+
+	<uninstall for="1.1 RC2">
+		<modification type="file" reverse="true">regbar.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	<install for="1.1 RC3">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">regbarrc3.xml</modification>
+		<require-file name="warning.gif" destination="$themedir" />
+		<require-file name="warning.gif" destination="$boarddir" />
+		<require-file name="regbar.css" destination="$themedir" />
+	</install>
+
+	<uninstall for="1.1 RC3">
+		<modification type="file" reverse="true">regbarrc3.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	<install for="1.1 - 1.1.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">regbar11.xml</modification>
+		<require-file name="warning.gif" destination="$themedir" />
+		<require-file name="warning.gif" destination="$boarddir" />
+		<require-file name="regbar.css" destination="$themedir" />
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">regbar11.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="1.0 - 1.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">regbar107.xml</modification>
+		<require-file name="warning.gif" destination="$themedir" />
+		<require-file name="warning.gif" destination="$boarddir" />
+		<require-file name="regbar.css" destination="$themedir" />
+	</install>
+
+	<uninstall for="1.0 - 1.0.99">
+		<modification type="file" reverse="true">regbar107.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">regbar20.xml</modification>
+		<require-file name="warning.gif" destination="$themedir" />
+		<require-file name="warning.gif" destination="$boarddir" />
+		<require-file name="warning.gif" destination="$imagesdir" />
+		<require-file name="regbar2.css" destination="$themedir/css/" />
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">regbar20.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+		<install for="2.0 RC2">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">regbar2rc2.xml</modification>
+			<require-file name="warning.gif" destination="$themedir" />
+			<require-file name="warning.gif" destination="$boarddir" />
+			<require-file name="warning.gif" destination="$imagesdir" />
+			<require-file name="regbar2.css" destination="$themedir/css/" />
+		</install>
+	
+		<uninstall for="2.0 RC2">
+			<modification type="file" reverse="true">regbar2rc2.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+		<install for="2.0 RC3">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">regbar2rc3.xml</modification>
+			<require-file name="warning.gif" destination="$themedir" />
+			<require-file name="warning.gif" destination="$boarddir" />
+			<require-file name="warning.gif" destination="$imagesdir" />
+			<require-file name="regbar2.css" destination="$themedir/css/" />
+		</install>
+	
+		<uninstall for="2.0 RC3">
+			<modification type="file" reverse="true">regbar2rc3.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+
+</package-info>

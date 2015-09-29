@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>SA Facebook</name>
+	<id>wdm2005:FBConnect</id>
+	<type>modification</type>
+	<version>3.0</version>  
+	
+	<install for="1.1.*, 2.0 RC2, 2.0 RC3, 2.0 RC4">
+	<readme lang="english" parsebbc="true" type="inline">[color=red][size=14pt]SA Facebook Integrate 2.0 is [b][i]not compatible[/i][/b] with your version of SMF, it requires SMF 2.0 RC5 or later.[/size][/color]</readme>
+	</install>
+	
+	<install for="2.0 RC5, 2.0 - 2.0.99">
+	<code>install.php</code>
+	<redirect url="?action=admin;area=facebook">redirect.txt</redirect>
+	<readme lang="english" parsebbc="true" type="file">readme.txt</readme>
+	<require-dir name="Facebook" destination="$sourcedir" />
+	<require-file name="Facebook.template.php" destination="$themedir" />
+	<require-file name="FacebookAdmin.template.php" destination="$themedir" />
+	<require-file name="images/facebook.png" destination="$imagesdir" />
+	<require-dir name="facebookauth" destination="$boarddir" />
+	
+	<require-file name="lang/Facebook.english.php" destination="$languagedir" />
+	<require-file name="lang/Facebook.english-utf8.php" destination="$languagedir" />
+	
+	 <modification format="xml" type="file">install.xml</modification>
+    </install>
+	
+	<uninstall for="2.0 RC5, 2.0 - 2.0.99">
+	<code>remove_hooks.php</code>
+	<modification type="file" reverse="true">install.xml</modification>
+	<remove-dir name="$boarddir/facebookauth" />
+	<remove-dir name="$sourcedir/Facebook" />
+	<remove-file name="$themedir/Facebook.template.php" />
+	<remove-file name="$themedir/FacebookAdmin.template.php" />
+	<remove-file name="$languagedir/Facebook.english.php" />
+	<remove-file name="$languagedir/Facebook.english-utf8.php" />
+	<code>UnInstall.php</code>
+	</uninstall>
+</package-info>
+

@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification">
+	<id>el:prettyurls-reverter</id>
+	<version>0.9</version>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="replace"><![CDATA[
+// Clean the request variables, add slashes, etc.
+cleanRequest();
+$context = array();
+]]></search>
+			<add><![CDATA[
+// Unserialize the array of pretty board URLs
+$context = array('pretty' => array());
+// Clean the request variables, add slashes, etc.
+cleanRequest();
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$boarddir/SSI.php">
+		<operation>
+			<search position="after"><![CDATA[
+// Clean the request variables.
+]]></search>
+			<add><![CDATA[
+// Unserialize the array of pretty board URLs
+$context = array('pretty' => array());
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Load the proper template and/or sub template.
+]]></search>
+			<add><![CDATA[
+	//	301 redirects
+	if (!isset($context['pretty']['oldschoolquery']))
+	{
+		$filterData = unserialize($modSettings['pretty_filters']);
+		if ($filterData['topics']['enabled'])
+		{
+			$url = 'topic=' . $topic . '.' . (isset($_REQUEST['start']) ? $_REQUEST['start'] : '0') . (isset($_REQUEST['prev_next']) ? ';prev_next=' . $_REQUEST['prev_next'] : '') . (isset($_REQUEST['topicseen']) ? ';topicseen' : '') . (isset($_REQUEST['all']) ? ';all' : '') . (isset($_REQUEST['viewResults']) ? ';viewResults' : '');
+			header('HTTP/1.1 301 Moved Permanently');
+			redirectexit($url, false);
+		}
+	}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/MessageIndex.php">
+		<operation>
+			<search position="after"><![CDATA[
+	if (WIRELESS)
+]]></search>
+			<add><![CDATA[
+	//	301 redirects
+	if (!isset($context['pretty']['oldschoolquery']))
+	{
+		$filterData = unserialize($modSettings['pretty_filters']);
+		if ($filterData['boards']['enabled'])
+		{
+			$url = 'board=' . $board . '.' . (isset($_REQUEST['start']) ? $_REQUEST['start'] : '0') . (isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '');
+			header('HTTP/1.1 301 Moved Permanently');
+			redirectexit($url, false);
+		}
+	}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[
+function cleanRequest()
+{
+	global $board, $topic, $boardurl, $scripturl, $modSettings;
+]]></search>
+			<add><![CDATA[
+function cleanRequest()
+{
+	global $board, $topic, $boardurl, $scripturl, $modSettings, $context, $db_prefix;
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		// Now make absolutely sure it's a number.
+		$board = (int) $_REQUEST['board'];
+]]></search>
+			<add><![CDATA[
+		// Now make absolutely sure it's a number.
+		// Check for pretty board URLs too, we'll want to redirect these
+		if (is_numeric($_REQUEST['board']))
+		{
+			$board = (int) $_REQUEST['board'];
+			if (!isset($_GET['pretty']))
+				$context['pretty']['oldschoolquery'] = true;
+		} else {
+			$_REQUEST['board'] = str_replace(array('&#039;', '\\'), array("\x12", ''), $_REQUEST['board']);
+			$pretty_board_lookup = unserialize($modSettings['pretty_board_lookup']);
+			$board = (int) isset($pretty_board_lookup[$_REQUEST['board']]) ? $pretty_board_lookup[$_REQUEST['board']] : 0;
+		}
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		$topic = (int) $_REQUEST['topic'];
+]]></search>
+			<add><![CDATA[
+		// Check for pretty topic URLs, we'll want to redirect these
+		if (is_numeric($_REQUEST['topic']))
+		{
+			$topic = (int) $_REQUEST['topic'];
+			if (!isset($_GET['pretty']))
+				$context['pretty']['oldschoolquery'] = true;
+		} else {
+			$_REQUEST['topic'] = str_replace(array('&#039;', '\\'), array("\x12", ''), $_REQUEST['topic']);
+			//	Are we feeling lucky?
+			$query = db_query("
+				SELECT ID_TOPIC
+				FROM {$db_prefix}pretty_topic_urls
+				WHERE pretty_url = '$_REQUEST[topic]'
+				LIMIT 1", __FILE__, __LINE__);
+			//	No? No topic?!
+			if (mysql_num_rows($query) == 0)
+			{
+				$topic = 0;
+			} else {
+				while ($row = mysql_fetch_assoc($query))
+					$topic = (int) $row['ID_TOPIC'];
+			}
+			mysql_free_result($query);
+		}
+]]></add>
+		</operation>
+	</file>
+
+</modification>

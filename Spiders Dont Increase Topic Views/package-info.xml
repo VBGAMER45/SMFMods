@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Spiders Don't Increase Topic Views</name>
+	<id>karlbenson:SpidersNoTopicViewIncrease</id>
+	<type>modification</type>
+	<version>1.1.1</version>
+
+	<install for="2.0 - 2.99.99, 2.0 RC2, 2.0 RC3, 2.0 RC4">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>install-rc12.xml</modification>
+	</install>
+	
+	<uninstall for="2.0 - 2.99.99, 2.0 RC2, 2.0 RC3, 2.0 RC4">
+		<modification reverse="true">install-rc12.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+	<install for="1.1 - 1.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>install-11x.xml</modification>
+	</install>
+	
+	<uninstall for="1.1 - 1.99.99">
+		<modification reverse="true">install-11x.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

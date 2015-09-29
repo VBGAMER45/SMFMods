@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:WelcomeTopic</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Welcome Topic Text Strings
+$txt['welcome_admin'] = 'Welcome Configuration';
+// End Welcome Topic Mod Text Strings
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Welcome Topic Text Strings
+$txt['welcome_admin'] = 'Welcome Configuration';
+// End Welcome Topic Mod Text Strings
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[
+		'welcome' => array('WelcomeTopic2.php', 'WelcomeTopic'),]]></add>
+	</operation>
+</file>
+
+
+
+
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="after"><![CDATA[				'current_theme' => array(
+					'label' => $txt['theme_current_settings'],]]></search>
+		<add><![CDATA[
+				'welcome' => array(
+					'label' => $txt['welcome_admin'],
+					'file' => 'WelcomeTopic2.php',
+					'function' => 'WelcomeTopic',
+					'custom_url' => $scripturl . '?action=admin;area=welcome;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'subsections' => array(
+						'welcome' => array($txt['welcome_admin']),
+					),
+				),
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Register.php">
+	<operation>
+		<search position="before"><![CDATA[// Let the integration know that they've been activated!
+	if (isset($modSettings['integrate_activate']) && is_callable($modSettings['integrate_activate']))
+		call_user_func(strpos($modSettings['integrate_activate'], '::') === false ? $modSettings['integrate_activate'] : explode('::', $modSettings['integrate_activate']), $row['member_name']);]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	global $sourcedir;
+	require_once($sourcedir . '/WelcomeTopic2.php');
+				
+	DoWelcomePost($row['member_name']);
+	
+	
+	// End Welcome Topic Mod
+	]]></add>
+	</operation>
+<operation>
+		<search position="before"><![CDATA[setLoginCookie(60 * $modSettings['cookieTime'], $memberID, sha1(sha1(strtolower($regOptions['username']) . $regOptions['password']) . $regOptions['register_vars']['password_salt']));]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	global $sourcedir;
+	require_once($sourcedir . '/WelcomeTopic2.php');
+			
+	DoWelcomePost($regOptions['username']);
+	
+	// End Welcome Topic Mod
+	]]></add>
+	</operation>
+</file>	
+<file name="$sourcedir/ManageMembers.php">
+<operation>
+		<search position="before"><![CDATA[// Do we have to let the integration code know about the activations?
+		if (isset($modSettings['integrate_activate']) && is_callable($modSettings['integrate_activate']))
+		{
+			foreach ($member_info as $member)
+				call_user_func(strpos($modSettings['integrate_activate'], '::') === false ? $modSettings['integrate_activate'] : explode('::', $modSettings['integrate_activate']), $member['username']);
+		}]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+
+
+	global $sourcedir;
+	require_once($sourcedir . '/WelcomeTopic2.php');
+	
+	foreach ($member_info as $member)	
+		DoWelcomePost($member['username']);
+
+
+	// End Welcome Topic Mod]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile-Actions.php">
+	<operation>
+		<search position="before"><![CDATA[// Actually update this member now, as it guarantees the unapproved count can't get corrupted.
+		updateMemberData($context['id_member'], array('is_activated' => $user_profile[$memID]['is_activated'] >= 10 ? 11 : 1, 'validation_code' => ''));]]></search>
+	<add><![CDATA[
+// Welcome Topic Mod
+	
+
+	global $sourcedir;
+	require_once($sourcedir . '/WelcomeTopic2.php');
+	
+	DoWelcomePost('',$memID);
+
+	// End Welcome Topic Mod
+	]]></add>
+	</operation>
+</file>
+</modification>

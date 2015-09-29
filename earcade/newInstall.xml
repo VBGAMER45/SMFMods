@@ -1,0 +1,633 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- 
+E Arcade
+based on the original SMFArcade mod by Nico - http://www.smfarcade.info/ 
+-->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>vbgamer45:Arcade</id>
+	<version>3.0</version>
+    
+    <file name="$boarddir/index.php">
+        <operation>
+            <search position="before"><![CDATA[		return 'KickGuest';
+	}
+]]></search>
+            <add><![CDATA[		// Check for arcade actions
+		// IBPArcade v2.x.x Games support
+	elseif (isset($_REQUEST['act']) && strtolower($_REQUEST['act']) == 'arcade')
+	{
+		$_REQUEST['action'] = 'arcade';
+		$_REQUEST['gametype'] = 2;
+		
+		if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'newscore')
+			$_REQUEST['sa'] = 'submit';
+			
+		require_once($sourcedir . '/Arcade.php');
+		return 'Arcade';   
+	}
+	// IBPArcade v3.x.x Games support
+	elseif (isset($_REQUEST['autocom']) && $_REQUEST['autocom'] == 'arcade')
+	{
+		$_REQUEST['action'] = 'arcade';
+		$_REQUEST['gametype'] = 3; 
+		
+		if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'savescore')
+			$_REQUEST['sa'] = 'submit';
+			
+		elseif (isset($_REQUEST['do']) && $_REQUEST['do'] = 'verifyscore')
+			$_REQUEST['sa'] = 'ibpverify';
+		
+		require_once($sourcedir . '/Arcade.php');
+		return 'Arcade';   
+	}
+	elseif (isset($_POST['sessdo']))
+	{
+		$_REQUEST['action'] = 'arcade';
+
+		if (isset($_POST['sessdo']) && $_POST['sessdo'] == 'burn')
+		{
+			$_REQUEST['sa'] = 'submit';
+			$_REQUEST['gametype'] = 4; 
+		}
+		
+		else
+		$_REQUEST['sa'] = 'v3verify';
+				
+		require_once($sourcedir . '/Arcade.php');
+		return 'Arcade';   
+	}
+	elseif (isset($_REQUEST['play']))
+	{
+		$_REQUEST['game'] = $_REQUEST['play'];
+		unset($_REQUEST['play']);
+		$_REQUEST['sa'] = 'play';
+		
+		require_once($sourcedir . '/Arcade.php');
+		return 'Arcade';			
+	}
+	elseif (isset($_REQUEST['highscore']))
+	{
+		$_REQUEST['game'] = $_REQUEST['highscore'];
+		unset($_REQUEST['highscore']);
+		$_REQUEST['sa'] = 'highscore';
+		
+		require_once($sourcedir . '/Arcade.php');
+		return 'Arcade';
+	}
+	elseif (isset($_REQUEST['game']) && !isset($_REQUEST['action']))
+	{
+		require_once($sourcedir . '/Arcade.php');
+		return 'Arcade';
+	}
+	]]></add>
+        </operation>
+        
+        <operation>
+            <search position="before"><![CDATA[		'announce' => array('Post.php', 'AnnounceTopic'),
+]]></search>
+            <add><![CDATA[		'arcade' => array('Arcade.php','Arcade'),
+            ]]></add>
+        </operation>
+    </file>
+    
+    <file name="$sourcedir/ManagePermissions.php">
+        <operation>
+            <search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(
+		]]></search>
+        
+            <add><![CDATA[			'arcade_view' => array(false, 'arcade', 'arcade'),
+			'arcade_play' => array(false, 'arcade', 'arcade'),
+			'arcade_submit' => array(false, 'arcade', 'arcade'),
+			'arcade_comment' => array(false, 'arcade', 'arcade'),
+			'arcade_comment_own' => array(false, 'arcade', 'arcade'),
+			'arcade_comment_any' => array(false, 'arcade', 'arcade'),
+			'arcade_rate' => array(false, 'arcade', 'arcade'),
+			'arcade_favorite' => array(false, 'arcade', 'arcade'),
+			'arcade_playtour' => array(false, 'arcade', 'arcade'),
+			'arcade_createtour' => array(false, 'arcade', 'arcade'),
+			'arcade_admin' => array(false, 'arcade', 'arcade'),
+      ]]></add>
+        </operation>
+        
+        <operation>
+        	<search position="before"><![CDATA[	$context['non_guest_permissions'] = array(]]></search>
+        	<add><![CDATA[
+		'arcade_rate',
+		'arcade_favorite',
+		'arcade_admin',
+		'arcade_comment',
+		'arcade_comment_own',
+		'arcade_comment_any',
+		'arcade_playtour',
+		'arcade_createtour',]]>
+			</add>
+        </operation>
+    </file>
+   
+    <file name="$sourcedir/Subs.php">
+        
+        <operation>
+            <search position="before"><![CDATA[			'search' => array(
+				'title' => $txt['search'],
+				'href' => $scripturl . '?action=search',
+				'show' => $context['allow_search'],
+				'sub_buttons' => array(
+				),
+			),
+			]]></search>
+   <add><![CDATA[			'arcade' => array(
+				'title' => $txt['arcade'],
+				'href' => $scripturl . '?action=arcade',
+				'show' => true,
+				'sub_buttons' => array(
+				),
+			),
+			]]></add>   
+        </operation> 
+    </file>
+ 
+    <file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="after"><![CDATA[		'maintenance' => array(
+			'title' => $txt['admin_maintenance'],
+]]></search>
+			<add><![CDATA[			'arcade' => array(
+			'title' => $txt['arcade'],
+			'permission' => array('arcade_admin'),
+			'areas' => array(
+				'managearcade' => array(
+					'label' => $txt['arcade_admin'],
+					'permission' => 'arcade_admin',
+					'file' => 'ManageArcade.php',
+					'function' => 'ArcadeSettings',
+					'permission' => 'arcade_admin',
+						'subsections' => array(
+						'show' => array($txt['arcade_admin'], 'arcade_admin'),
+						'edit' => array($txt['arcade_settings'], 'arcade_admin'),
+						'listgames' => array($txt['arcade_games'], 'arcade_admin'),
+						'editcats' => array($txt['arcade_categories'], 'arcade_admin'),					
+						'files' => array($txt['arcade_install_game'], 'arcade_admin'),					
+						'autofiles' => array($txt['arcade_auto_game'], 'arcade_admin'),
+						'arc_maintenance' => array($txt['arcade_maintenance'], 'arcade_admin'),
+					),
+				),				
+			),
+		),
+]]></add>
+        </operation>
+    </file>
+ 
+    <file name="$languagedir/Modifications.english.php">
+        
+        <operation>
+            <search position="end" />
+            <add><![CDATA[// Start Arcade ---------------------------------------------------------
+$txt['arcade'] = 'Arcade';
+$txt['arcade_disabled'] = 'Arcade is currently disabled by admin';
+$txt['arcade_admin'] = 'Arcade Admin';   
+$txt['arcade_manage_games'] = 'Games';
+$txt['arcade_categories'] = 'Categories'; 
+$txt['arcade_settings'] = 'Settings';
+$txt['arcade_games'] = 'Games';
+$txt['arcade_install_game'] = 'Install';
+$txt['arcade_auto_game']='Autoinstall';
+$txt['arcade_maintenance']='Arcade Maintenance';
+ 
+// Permission names and help
+$txt['permissiongroup_arcade'] = 'Arcade';
+$txt['permissiongroup_simple_arcade'] = 'Arcade';
+$txt['permissionname_arcade_view'] = 'View Arcade';
+$txt['permissionhelp_arcade_view'] = 'May access Arcade and use basic features like search and view highscores';
+$txt['permissionname_arcade_play'] = 'Play on Arcade';
+$txt['permissionhelp_arcade_play'] = 'Allows member to play on arcade, in games which he/she has rights to';
+$txt['permissionname_arcade_submit'] = 'Save scores'; 
+$txt['permissionhelp_arcade_submit'] = 'Allows users to save their scores.';
+$txt['permissionname_arcade_comment'] = 'Allow to comment/edit comment'; 
+$txt['permissionhelp_arcade_comment'] = 'Allows user to edit comments, own or any';
+$txt['permissionname_arcade_comment_any'] = 'Any';
+$txt['permissionname_arcade_comment_own'] = 'Own';
+$txt['permissionname_arcade_rate'] = 'Rate games'; 
+$txt['permissionhelp_arcade_rate'] = 'Allows users to rate games.';
+$txt['permissionname_arcade_favorite'] = 'Use Favorites feature'; 
+$txt['permissionhelp_arcade_favorite'] = 'Allows member to favorite and unfavorite games';
+$txt['permissionname_arcade_playtour'] = 'Can play in tournaments'; 
+$txt['permissionhelp_arcade_playtour'] = 'Allows member to play in tournaments';
+$txt['permissionname_arcade_createtour'] = 'Can create tournaments'; 
+$txt['permissionhelp_arcade_createtour'] = 'Allows member to create new tournaments';
+$txt['permissionname_arcade_admin'] = 'Administrate arcade';
+$txt['permissionhelp_arcade_admin'] = 'Arcade Administrator can Install/Edit/Delete game, Delete scores and edit settings for arcade';
+
+// Errors if they can't do something
+$txt['cannot_arcade_view'] = 'You are not allowed to access arcade.';
+$txt['cannot_arcade_play'] = 'You are not allowed to play games!';
+$txt['cannot_arcade_submit'] = 'You are not allowed to save scores.';
+$txt['cannot_arcade_comment_own'] = 'You are not allowed to leave comments';
+$txt['cannot_arcade_rate'] = 'You are not allowed to rate games';
+$txt['cannot_arcade_favorite'] = 'You are not allowed to favorite games';
+$txt['cannot_arcade_playtour'] = 'You are not allowed play in tournaments';
+$txt['cannot_arcade_createtour'] = 'You are not allowed to create new tournaments';
+ 
+// Arcade Help
+$txt['arcade_max_scores_help'] = 'Maximum scores that will be stored per member. (0 means unlimited)';
+$txt['arcade_membergroups_help'] = 'These groups will be allowed to play and view highscores. Others will not see this game, only used if permission mode will use game permissions.';
+$txt['arcade_admin_auto_install_text']='This installer is for games that come with a php file that contains the games settings.
+Usually these games are for IPB Arcades, Visit <a href="http://www.ibpdownloads.com/">Ibpdownloads.com</a> for more info and game downloads.<br /><br />
+To install SMF games you can get the .php files from my site <a href="http://www.smfarcade.com">SMF Arcade</a>
+You <b>WILL need these php files for this to work with smf arcade games</b>.<br /><br />
+To use the installer, upload the .swf .gif (or 1.gif) and .php files to /tempGames (if the game has a gamedata folder upload it to /tempGames/gamedata/), Pick a category and click install (below).<br /><br />
+Games from <a href="http://www.ibpdownloads.com/">Ibpdownloads.com</a> come in a .tar file, the autoinstaller can now handle these without extracting them first<br />
+<br />Upload the .tar to /tempGames, or use the uploader below. Pick a category and click install (below).<br /><br />
+If you want the games in different categories you need to sort them out and upload one category at a time.<br />
+You can install as few or as many games at one time as you like.<br /><br />
+Games will be listed as installed or failed.<br />Installed games are installed, obviously. Failed games are not! <br />
+Games can fail for various reasons, missing .swf or gif, file or folder permissions, it won\'t say why! 
+<br /><b>You </b>need to work out why yourself !!! Here\'s a clue >> permissions!!!<br /><br />
+On a successful  install the swf and gif will be moved to /Games and the .php will be deleted<br />
+.tar games are extracted, moved and the .tar is deleted<br /><br />
+Failed games will remain in /tempGames.<br /><br />'; 
+
+// Who's online
+$txt['who_arcade_active'] = 'Active Users';
+$txt['who_arcade'] = '<img src="%s" title="Viewing Arcade Index" align="middle" alt="ico" border="0" width="20" height="20" />';
+$txt['who_arcade_play'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s" align="middle" alt="ico" width="20" height="20" title="Playing %s"/></a>';
+$txt['who_arcade_play_tour'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s" align="middle" alt="ico" width="20" height="20" title="Playing %s in a Tournament"/></a>';
+$txt['who_arcade_highscore'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s" align="middle" alt="ico" width="20" height="20" title="Viewing Highscores for %s"/></a>';
+$txt['who_arcade_f'] = '<img src="%s" title="Viewing Arcade Index" alt="ico" border="0" width="20" height="20" /> Viewing Arcade index';
+$txt['who_arcade_play_f'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s"  alt="ico" width="20" height="20" title="Playing %s"/></a> Playing %3$s in the Arcade';
+$txt['who_arcade_highscore_f'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s"  alt="ico" width="20" height="20" title="Viewing Highscores for %s"/></a> Viewing highscores of %3$s in the Arcade';
+$txt['who_arcade_play_tour_f'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s"  alt="ico" width="20" height="20" title="Playing %s in a Tournament"/></a> Playing %3$s in a tournament';
+
+// End Arcade ---------------------------------------------------------
+
+]]></add>
+        </operation> 
+    </file>
+    
+    
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+ 	<operation error="ignore">
+             <search position="end" />
+             <add><![CDATA[// Start Arcade ---------------------------------------------------------
+ $txt['arcade'] = 'Arcade';
+ $txt['arcade_disabled'] = 'Arcade is currently disabled by admin';
+ $txt['arcade_admin'] = 'Arcade Admin';   
+ $txt['arcade_manage_games'] = 'Games';
+ $txt['arcade_categories'] = 'Categories'; 
+ $txt['arcade_settings'] = 'Settings';
+ $txt['arcade_games'] = 'Games';
+ $txt['arcade_install_game'] = 'Install';
+ $txt['arcade_auto_game']='Autoinstall';
+ $txt['arcade_maintenance']='Arcade Maintenance';
+  
+ // Permission names and help
+ $txt['permissiongroup_arcade'] = 'Arcade';
+ $txt['permissiongroup_simple_arcade'] = 'Arcade';
+ $txt['permissionname_arcade_view'] = 'View Arcade';
+ $txt['permissionhelp_arcade_view'] = 'May access Arcade and use basic features like search and view highscores';
+ $txt['permissionname_arcade_play'] = 'Play on Arcade';
+ $txt['permissionhelp_arcade_play'] = 'Allows member to play on arcade, in games which he/she has rights to';
+ $txt['permissionname_arcade_submit'] = 'Save scores'; 
+ $txt['permissionhelp_arcade_submit'] = 'Allows users to save their scores.';
+ $txt['permissionname_arcade_comment'] = 'Allow to comment/edit comment'; 
+ $txt['permissionhelp_arcade_comment'] = 'Allows user to edit comments, own or any';
+ $txt['permissionname_arcade_comment_any'] = 'Any';
+ $txt['permissionname_arcade_comment_own'] = 'Own';
+ $txt['permissionname_arcade_rate'] = 'Rate games'; 
+ $txt['permissionhelp_arcade_rate'] = 'Allows users to rate games.';
+ $txt['permissionname_arcade_favorite'] = 'Use Favorites feature'; 
+ $txt['permissionhelp_arcade_favorite'] = 'Allows member to favorite and unfavorite games';
+ $txt['permissionname_arcade_playtour'] = 'Can play in tournaments'; 
+ $txt['permissionhelp_arcade_playtour'] = 'Allows member to play in tournaments';
+ $txt['permissionname_arcade_createtour'] = 'Can create tournaments'; 
+ $txt['permissionhelp_arcade_createtour'] = 'Allows member to create new tournaments';
+ $txt['permissionname_arcade_admin'] = 'Administrate arcade';
+ $txt['permissionhelp_arcade_admin'] = 'Arcade Administrator can Install/Edit/Delete game, Delete scores and edit settings for arcade';
+ 
+ // Errors if they can't do something
+ $txt['cannot_arcade_view'] = 'You are not allowed to access arcade.';
+ $txt['cannot_arcade_play'] = 'You are not allowed to play games!';
+ $txt['cannot_arcade_submit'] = 'You are not allowed to save scores.';
+ $txt['cannot_arcade_comment_own'] = 'You are not allowed to leave comments';
+ $txt['cannot_arcade_rate'] = 'You are not allowed to rate games';
+ $txt['cannot_arcade_favorite'] = 'You are not allowed to favorite games';
+ $txt['cannot_arcade_playtour'] = 'You are not allowed play in tournaments';
+ $txt['cannot_arcade_createtour'] = 'You are not allowed to create new tournaments';
+  
+ // Arcade Help
+ $txt['arcade_max_scores_help'] = 'Maximum scores that will be stored per member. (0 means unlimited)';
+ $txt['arcade_membergroups_help'] = 'These groups will be allowed to play and view highscores. Others will not see this game, only used if permission mode will use game permissions.';
+ $txt['arcade_admin_auto_install_text']='This installer is for games that come with a php file that contains the games settings.
+ Usually these games are for IPB Arcades, Visit <a href="http://www.ibpdownloads.com/">Ibpdownloads.com</a> for more info and game downloads.<br /><br />
+ To install SMF games you can get the .php files from my site <a href="http://www.smfarcade.com">SMF Arcade</a>
+ You <b>WILL need these php files for this to work with smf arcade games</b>.<br /><br />
+ To use the installer, upload the .swf .gif (or 1.gif) and .php files to /tempGames (if the game has a gamedata folder upload it to /tempGames/gamedata/), Pick a category and click install (below).<br /><br />
+ Games from <a href="http://www.ibpdownloads.com/">Ibpdownloads.com</a> come in a .tar file, the autoinstaller can now handle these without extracting them first<br />
+ <br />Upload the .tar to /tempGames, or use the uploader below. Pick a category and click install (below).<br /><br />
+ If you want the games in different categories you need to sort them out and upload one category at a time.<br />
+ You can install as few or as many games at one time as you like.<br /><br />
+ Games will be listed as installed or failed.<br />Installed games are installed, obviously. Failed games are not! <br />
+ Games can fail for various reasons, missing .swf or gif, file or folder permissions, it won\'t say why! 
+ <br /><b>You </b>need to work out why yourself !!! Here\'s a clue >> permissions!!!<br /><br />
+ On a successful  install the swf and gif will be moved to /Games and the .php will be deleted<br />
+ .tar games are extracted, moved and the .tar is deleted<br /><br />
+ Failed games will remain in /tempGames.<br /><br />'; 
+ 
+ // Who's online
+ $txt['who_arcade_active'] = 'Active Users';
+ $txt['who_arcade'] = '<img src="%s" title="Viewing Arcade Index" align="middle" alt="ico" border="0" width="20" height="20" />';
+ $txt['who_arcade_play'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s" align="middle" alt="ico" width="20" height="20" title="Playing %s"/></a>';
+ $txt['who_arcade_play_tour'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s" align="middle" alt="ico" width="20" height="20" title="Playing %s in a Tournament"/></a>';
+ $txt['who_arcade_highscore'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s" align="middle" alt="ico" width="20" height="20" title="Viewing Highscores for %s"/></a>';
+ $txt['who_arcade_f'] = '<img src="%s" title="Viewing Arcade Index" alt="ico" border="0" width="20" height="20" /> Viewing Arcade index';
+ $txt['who_arcade_play_f'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s"  alt="ico" width="20" height="20" title="Playing %s"/></a> Playing %3$s in the Arcade';
+ $txt['who_arcade_highscore_f'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s"  alt="ico" width="20" height="20" title="Viewing Highscores for %s"/></a> Viewing highscores of %3$s in the Arcade';
+ $txt['who_arcade_play_tour_f'] = '<a href="' . $scripturl . '?action=arcade;sa=play;game=%d"><img border="0" src="%s"  alt="ico" width="20" height="20" title="Playing %s in a Tournament"/></a> Playing %3$s in a tournament';
+ 
+ // End Arcade ---------------------------------------------------------
+ 
+ ]]></add>
+         </operation> 
+    </file>
+ 
+<file name="$themedir/Profile.template.php">
+		<operation>
+	<search position="end" />
+<add><![CDATA[
+function profile_stats()
+{
+
+	global $context, $settings, $arcSettings,$txt;
+
+echo '
+<table width="85%" border="0" cellpadding="0" cellspacing="0" align="center">
+  <tr class="titlebg">
+    <td colspan="6" height="26"><img src="'. $settings['images_url']. '/icons/profile_sm.gif" alt="" align="top" />&nbsp;' . $txt['arcade_champions_stats'] . '</td>
+  </tr>
+  <tr>
+    <td class="windowbg" width="20" rowspan="2" valign="middle" style="padding: 5px 5px 5px 5px;"><img src="'. $settings['images_url']. '/stats_info.gif" width="20" height="20" alt="" /></td>
+    <td class="windowbg2" width="20%" height="30" align="center" style="padding: 5px 5px 5px 5px;"><img src="'. $settings['images_url']. '/arc_icons/cup_g.gif" border="0" alt="cup" />&nbsp;' . $txt['arcade_champions_th'] . '<br />'.$context['arcade']['champ_stats']['gold'].'</td>
+    <td class="windowbg2" width="20%" height="30" align="center" style="padding: 5px 5px 5px 5px;"><img src="'. $settings['images_url']. '/arc_icons/cup_s.gif" border="0" alt="cup" />&nbsp;' . $txt['arcade_champions_th'] . '<br />'.$context['arcade']['champ_stats']['silver'].'</td>
+    <td class="windowbg2" width="20%" height="30" align="center" style="padding: 5px 5px 5px 5px;"><img src="'. $settings['images_url']. '/arc_icons/cup_b.gif" border="0" alt="cup" />&nbsp;' . $txt['arcade_champions_th'] . '<br />'.$context['arcade']['champ_stats']['bronze'].'</td>
+    <td class="windowbg2" width="20%" height="30" align="center" style="padding: 5px 5px 5px 5px;"><img src="'. $settings['images_url']. '/arc_icons/play.gif" width="14" height="14" alt="play" />&nbsp;' . $txt['arcade_champions_tgp'] . '<br />'.$context['arcade']['champ_stats']['total_plays'].'</td>
+    <td class="windowbg2" width="20%" height="30" align="center" style="padding: 5px 5px 5px 5px;"><img src="'. $settings['images_url']. '/arc_icons/tick.gif" width="14" height="14" alt="time" />&nbsp;' . $txt['arcade_champions_tsp'] . '<br />'.$context['arcade']['champ_stats']['timeplayed'].'</td>
+  </tr>
+  <tr>
+    <td valign="top"colspan="5"><table width="100%" border="0" cellpadding="5" cellspacing="1">
+        <tr class="titlebg">
+        <td height="23" width="10"></td>
+          <td height="23">'.$txt['arcade_game'].'</td>
+          <td>'.$txt['arcade_score'].'</td>
+          <td>'.$txt['arcade_plays'].'</td>
+          <td>'.$txt['arcade_champions_cf'].'</td>
+        </tr>
+        ';
+							foreach($context['arcade']['champ_pro_gold']as $tmpx)
+								{
+								    echo '
+							<tr class="windowbg2" cellspacing="1">
+							<td height="30">
+									<img src="'. $settings['images_url']. '/arc_icons/cup_g.gif" border="0" alt="cup" /></td>
+								<td height="30">
+									<a href="'.$tmpx['linkurl'].'"><img border="0" src="'. $tmpx['thumbnail']. '" alt="test" width="20" height="20"></a>&nbsp;'.$tmpx['game_name'].'&nbsp;
+								</td>
+								<td>'.round($tmpx['score'],2).'</td>
+								<td>'.$tmpx['my_plays'].'</td>
+								<td>'.$tmpx['time'].'</td>
+							</tr>';
+
+								}
+                                
+								foreach($context['arcade']['champ_pro_silver']as $tmpx)
+								{
+								    echo '
+							<tr class="windowbg2" cellspacing="1">
+							<td height="30">
+									<img src="'. $settings['images_url']. '/arc_icons/cup_s.gif" border="0" alt="cup" /></td>
+								<td height="30">
+									<a href="'.$tmpx['linkurl'].'"><img border="0" src="'. $tmpx['thumbnail']. '" alt="test" width="20" height="20"></a>&nbsp;'.$tmpx['game_name'].'&nbsp;
+								</td>
+								<td>'.round($tmpx['score'],2).'</td>
+								<td>'.$tmpx['my_plays'].'</td>
+								<td>'.$tmpx['time'].'</td>
+							</tr>';
+
+								}
+                                
+								foreach($context['arcade']['champ_pro_bronze']as $tmpx)
+								{
+								    echo '
+							<tr class="windowbg2" cellspacing="1">
+							<td height="30">
+									<img src="'. $settings['images_url']. '/arc_icons/cup_b.gif" border="0" alt="cup" /></td>
+								<td height="30">
+									<a href="'.$tmpx['linkurl'].'"><img border="0" src="'. $tmpx['thumbnail']. '" alt="test" width="20" height="20"></a>&nbsp;'.$tmpx['game_name'].'&nbsp;
+								</td>
+								<td>'.round($tmpx['score'],2).'</td>
+								<td>'.$tmpx['my_plays'].'</td>
+								<td>'.$tmpx['time'].'</td>
+							</tr>';
+
+								}
+								echo'
+      </table></td>
+  </tr>
+</table>';
+
+}
+]]></search>
+</operation>
+
+	<operation>
+   <search position="replace"><![CDATA[<span class="botslice"><span></span></span>
+				</div>
+			</div>
+		</div>';
+
+	echo '
+	</div>
+	<br class="clear" />';]]></search>
+
+    <add><![CDATA[<span class="botslice"><span></span></span>
+				</div>
+			</div>
+		</div>';
+
+	profile_stats();
+echo '
+	</div>
+	<br class="clear" />';
+]]></add>
+ </operation>
+		<operation>
+			<search position="before"><![CDATA[<dt>
+										<label for="popup_messages">', $txt['popup_messages'], '</label>
+								</dt>
+								<dd>
+										<input type="hidden" name="default_options[popup_messages]" value="0" />
+										<input type="checkbox" name="default_options[popup_messages]" id="popup_messages" value="1"', !empty($context['member']['options']['popup_messages']) ? ' checked="checked"' : '', ' class="input_check" />
+								</dd>]]></search>
+			<add><![CDATA[
+									<dt>
+										<label for="popup_messages"> ', $txt['arcade_messages'], '</label>
+								</dt>
+								<dd>
+										<input type="hidden" name="default_options[arcade_messages]" value="0" />
+										<input type="checkbox" name="default_options[arcade_messages]" id="arcade_messages" value="1"', !empty($context['member']['options']['arcade_messages']) ? ' checked="checked"' : '', ' class="input_check" />
+								</dd>]]></add>
+		</operation>
+               
+
+               
+        </file>
+        
+ 	<file name="$languagedir/Profile.english.php">
+		<operation>
+	<search position="end" />
+<add><![CDATA[
+$txt['arcade_messages'] = 'Send a PM when your highscore is beaten?';]]></add>
+		</operation>
+	</file>
+	
+	        <file name="$themedir/Display.template.php">
+
+                <operation>
+                        <search position="replace"><![CDATA[global $context, $settings, $options, $txt, $scripturl, $modSettings;]]></search>
+
+                        <add><![CDATA[
+	global $context, $settings, $options, $txt, $scripturl, $sourcedir, $modSettings;
+
+	require_once($sourcedir.'/ArcadeSigsStats_v2.php');
+]]></add>
+                </operation>
+                <operation>
+                        <search position="after"><![CDATA[// Done with the information about the poster... on to the post itself.]]></search>
+
+                        <add><![CDATA[
+
+		arcade_champs_post_profile($message);
+
+]]></add>
+                </operation>
+                <operation>
+                        <search position="before"><![CDATA[<div class="signature" id="msg_', $message['id'], '_signature">', $message['member']['signature'], '</div>';]]></search>
+
+                        <add><![CDATA[	
+		arcade_champs_sig($message);]]></add>
+                </operation>                
+        </file>
+        <file name="$sourcedir/Display.php">
+                <operation>
+                        <search position="after"><![CDATA[// The central part of the board - topic display.]]></search>
+                        <add><![CDATA[
+require_once($sourcedir.'/ArcadeSigsStats_v2.php');
+]]></add>
+                </operation>                
+                
+                <operation>
+                        <search position="before"><![CDATA[$attachments = array();]]></search>
+                        <add><![CDATA[
+//---start champs in sig ---
+	build_champ_sigs($posters);
+//----end champs in sig ----
+]]></add>
+                </operation>
+        </file>
+        
+        <file name="$sourcedir/Profile-View.php">
+                <operation>
+                        <search position="before"><![CDATA[	global $txt, $scripturl, $context, $user_profile, $user_info, $modSettings, $smcFunc;]]></search>
+                        <add><![CDATA[ global $sourcedir, $txt, $scripturl, $context, $user_profile, $user_info, $modSettings, $smcFunc;
+	require_once($sourcedir.'/ArcadeSigsStats_v2.php');]]></add>
+                </operation>                
+                
+                <operation>
+                        <search position="before"><![CDATA[ksort($context['posts_by_time']);]]></search>
+                        <add><![CDATA[
+	build_champ_profile($memID);
+]]></add>
+                </operation>
+        </file>       
+<file name="$sourcedir/Who.php">
+	<operation>
+   <search position="replace"><![CDATA[global $txt, $user_info, $modSettings, $smcFunc, $context;]]></search>
+	<add><![CDATA[global $txt, $user_info, $modSettings, $smcFunc, $context, $boardurl, $settings;
+]]></add>
+                </operation>
+		<operation>
+			<search position="after"><![CDATA[		// Probably an error or some goon?]]></search>
+			<add><![CDATA[		elseif ($actions['action'] == 'arcade')
+		{
+			$icon =  $settings['images_url'].'/arc_icons/icon.jpg';
+			if(isset($context['arcade']['who'])&& $context['arcade']['who'] == true)
+			{
+			
+			if (!isset($actions['sa']) || $actions['sa'] == 'list')
+				// Viewing index
+				$data[$k] = sprintf($txt['who_arcade'], $icon);
+			elseif ($actions['sa'] == 'play' && isset($actions['game']))
+				// Playing game
+				$game_ids[(int) $actions['game']][$k] = $txt['who_arcade_play'];
+			elseif ($actions['sa'] == 'tour' && isset($actions['gid']))
+				// Playing game
+				$game_ids[(int) $actions['gid']][$k] = $txt['who_arcade_play_tour'];
+			elseif ($actions['sa'] == 'highscore' && isset($actions['game']))
+				// Viewing highscores of game
+				$game_ids[(int) $actions['game']][$k] = $txt['who_arcade_highscore'];
+			else
+				// Something else, let's say it's index
+			$data[$k] = sprintf($txt['who_arcade'], $icon);
+			}
+			else
+			{
+			if (!isset($actions['sa']) || $actions['sa'] == 'list')
+				// Viewing index
+				$data[$k] = sprintf($txt['who_arcade_f'], $icon);
+			elseif ($actions['sa'] == 'play' && isset($actions['game']))
+				// Playing game
+				$game_ids[(int) $actions['game']][$k] = $txt['who_arcade_play_f'];
+			elseif ($actions['sa'] == 'tour' && isset($actions['gid']))
+				// Playing game
+				$game_ids[(int) $actions['gid']][$k] = $txt['who_arcade_play_tour_f'];
+			elseif ($actions['sa'] == 'highscore' && isset($actions['game']))
+				// Viewing highscores of game
+				$game_ids[(int) $actions['game']][$k] = $txt['who_arcade_highscore_f'];
+			else
+				// Something else, let's say it's index
+			$data[$k] = sprintf($txt['who_arcade'], $icon);
+				
+			}
+		}
+]]></add>
+        </operation>
+        
+		<operation>
+			<search position="after"><![CDATA[	// Load member names for the profile.]]></search>
+			<add><![CDATA[		if (!empty($game_ids) && allowedTo('arcade_play'))
+	{
+		$result = $smcFunc['db_query']('', '
+			SELECT id_game, game_name, game_directory, thumbnail
+			FROM {db_prefix}arcade_games
+			WHERE id_game IN ('. implode(', ', array_keys($game_ids)) . ')
+			LIMIT '. count($game_ids).'',
+			array(
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($result))
+		{
+			foreach ($game_ids[$row['id_game']] as $k => $session_text)
+			{
+				$gameico = !$row['game_directory'] ?	$boardurl.'/Games/'.$row['thumbnail'] : $boardurl.'/Games/'.$row['game_directory']."/".$row['thumbnail'];
+	
+				$data[$k] = sprintf($session_text, $row['id_game'],$gameico, $row['game_name']);
+			}				
+		}
+	 $smcFunc['db_free_result']($result);
+	}
+]]></add>
+		</operation>        
+    </file>
+</modification>

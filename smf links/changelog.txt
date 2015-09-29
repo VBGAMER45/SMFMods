@@ -1,0 +1,76 @@
+3.0.4
+!Fixed some database issues with SMF 2.0.x
+
+3.0.3
+!Fixed undefined error in SMF 2.0 on certain cases of add link
+!Added alt tags for images on subcategory display
+
+3.0.2
+!Fixed a couple undefined errors in SMF 1.1.x
+
+3.0.1a
+!Fixed bug with add category SMF 2.0.x
+
+3.0
++Alternate table row styles in different sections of the admin area to make it easier to read
++Updated html markup style to improve display for SMF 2.0
+
+2.5.3
+!Fixed superglobal variables now have substance checks and fallbacks.
+!Fixed a lot of invalid XHTML was cleaned up.
+!Fixed 2.0 queries not utilize proper sanitation and variable insertion.
+
+2.5.1
++Better support for utf8 data for links/categories
+!Fixed bug with deleting categories
+!Fixed catpermission bug smf 2.0
+!Fixed session check in save settings
+
+2.5
+!Better checking/validation checking for categories and links that exist.
++Added checksession functions to forms for the links system
+
+2.4
+!Fixed options column to only show if they have permssion to manage a link in the result returned.
+
+2.3.2
++Added counting of unlimited depth subcategories link totals
+
+2.3.1
+!Fixed link tree to work with subcategories
+
+2.2.1
+!Fixed issue with MySQL 5.5 since it no longer supports the Type for create tables uses Engine instead
+
+2.1.3
+!Fixed Editor issue in SMF 2.0 for categories/links
+
+2.1
++Moved queries out of the templates
+
+2.0.1
+!Fixed bbc editor in SMF 2.0 not working in IE6/IE7
+!Fixed bug with & in urls not being stored correctly
+!Fixed changing category order up/down with subcategories
+
+2.0
+!Fixed bugs with install for SMF 1.1.X
+!Fixed missing permission text for SMF 2.0
+
+1.8.2
+!Fixed issue with when visiting a link undefined function.
+!Fixed missing text string for error on missing category title
+
+1.7.1
++Added edit_own, edit_any, delete_own and delete_any permissions.
+
+1.7
++New Updated Interface
+
+1.6.7
+!Fixed a bug with reordering categories
+
+1.6.6
++Added subcategories under the main galleries on board index.
+!Fixed a bug which allowed a category to be it's own parent
+!Fixed some formating on the link listing page

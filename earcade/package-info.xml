@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- 
+E Arcade
+based on the original SMFArcade mod by Nico - http://www.smfarcade.info/ 
+-->
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:Arcade</id>
+	<name>E-Arcade</name>
+	<version>3.0</version>
+	<type>modification</type>
+	<install for="2.0 - 2.0.99">
+	<readme>install.txt</readme>
+		<modification format="xml" type="file">newInstall.xml</modification>
+		
+		<!-- These files go in Sources directory -->
+		<require-file name="Sources/Arcade.php" destination="$sourcedir" />
+		<require-file name="Sources/ArcadeList.php" destination="$sourcedir" />
+		<require-file name="Sources/ArcadePlay.php" destination="$sourcedir" />  
+		<require-file name="Sources/ArcadeStats.php" destination="$sourcedir" />
+		<require-file name="Sources/ManageArcade.php" destination="$sourcedir" />
+		<require-file name="Sources/Subs-Arcade.php" destination="$sourcedir" /> 
+		<require-file name="Sources/ArcadeBlocks.php" destination="$sourcedir" />
+		<require-file name="Sources/ArcadeSigsStats_v2.php" destination="$sourcedir" />
+		<require-file name="Sources/ArcadeTar.php" destination="$sourcedir" />
+		<require-file name="Sources/ArcadeTour.php" destination="$sourcedir" /> 			
+		<!-- These files go in Default Theme directory -->	
+		<require-file name="Themes/default/arcade.js" destination="$themedir/scripts" />
+		<require-file name="Themes/default/swfobject.js" destination="$themedir/scripts" />
+		<require-file name="Themes/default/Arcade.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ManageArcade.template.php" destination="$themedir" />
+		<require-file name="Themes/default/languages/Arcade.english.php" destination="$languagedir" /> 
+		<require-file name="Themes/default/languages/ArcadeAdmin.english.php" destination="$languagedir" /> 
+		<!-- These files go in Main directory -->  
+		<require-file name="newscore.php" destination="$boarddir" />
+		<require-file name="arcade.php" destination="$boarddir" />		
+		<!-- These directories go in Main directory -->  
+		<require-dir name="getid3" destination="$boarddir" />		
+		<!-- These directories go in themes images directory --> 
+		<require-dir name="Themes/default/images/arc_icons" destination="$imagesdir" />	
+		<!-- Create Games directory -->
+		<require-dir name="Games" destination="$boarddir" />			
+		<!-- Create tempGames directory -->
+		<create-dir name="tempGames" destination="$boarddir" />		
+		<!-- Create arcade directory -->
+		<create-dir name="arcade" destination="$boarddir" />		
+		<!-- Create Gamedata directorys -->
+		<create-dir name="gamedata" destination="$boarddir/arcade" />
+		<create-dir name="gamedata" destination="$boarddir/tempGames" />		
+		<!-- This will show link to installer -->
+		<database>ArcadeDbInstall.php</database>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<!-- Remove code modifications -->
+		<modification format="xml" type="file" reverse="true">newInstall.xml</modification>		
+		<!-- Remove these files from Sources -->
+		<remove-file name="$sourcedir/Arcade.php" />
+		<remove-file name="$sourcedir/ArcadeList.php" />
+		<remove-file name="$sourcedir/ArcadePlay.php" />  
+		<remove-file name="$sourcedir/ArcadeStats.php" />
+		<remove-file name="$sourcedir/Subs-Arcade.php" /> 
+		<remove-file name="$sourcedir/ManageArcade.php" />
+		<remove-file name="$sourcedir/ArcadeBlocks.php" /> 
+		<remove-file name="$sourcedir/ArcadeSigsStats_v2.php" />
+		<remove-file name="$sourcedir/ArcadeTar.php" />
+		<remove-file name="$sourcedir/ArcadeTour.php" />		
+		<!-- Remove these files from Theme directory -->	
+		<remove-file name="$themedir/scripts/arcade.js" />
+		<remove-file name="$themedir/scripts/swfobject.js" /> 
+		<remove-file name="$themedir/Arcade.template.php" />
+		<remove-file name="$themedir/ManageAracde.template.php" />
+		<remove-file name="$languagedir/Arcade.english.php" /> 
+		<remove-file name="$languagedir/ArcadeAdmin.english.php" /> 	   
+		<!-- Remove these files from main directroy -->  
+		<remove-file name="$boarddir/newscore.php" />
+		<remove-file name="$boarddir/arcade.php" />		
+		<!-- Remove these directories from main directory -->  
+		<remove-dir name="$boarddir/tempGames" />
+		<remove-dir name="$boarddir/getid3" />
+		<!-- uncomment the lines below and upload uninstall.php to forum root to uninstall all games and database entries -->
+		<!-- <remove-dir name="$boarddir/Games" /> -->
+		<!-- <remove-dir name="$boarddir/arcade" /> -->
+		<!-- <remove-dir name="Themes/default/images/arc_icons" /> -->
+		<!-- <code>uninstall.php</code> -->
+	</uninstall>
+</package-info>

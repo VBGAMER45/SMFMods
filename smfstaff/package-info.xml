@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:SMFStaff</id>
+	<name>SMF Staff Page</name>
+	<type>modification</type>
+	<version>1.7</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<redirect url="?action=staff;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">staff.xml</modification>
+		<require-file name="Staff.php" destination="$sourcedir" />
+		<require-file name="Staff.template.php" destination="$themedir" />
+		<require-file name="Staff.english.php" destination="$themedir/languages" />
+		<require-file name="Staff.english-utf8.php" destination="$themedir/languages" />
+		<code>staffsql.php</code>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<modification type="file" reverse="true">staff.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	<install for="1.0 - 1.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">SMF107/staff7.xml</modification>
+		<require-file name="SMF107/Staff.php" destination="$sourcedir" />
+		<require-file name="SMF107/Staff.template.php" destination="$themedir" />
+		<require-file name="SMF107/staff.gif" destination="$themedir/images/english" />
+	</install>
+
+	<uninstall for="1.0 - 1.0.99">
+		<modification type="file" reverse="true">SMF107/staff7.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
+		<redirect url="?action=admin;area=staff;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">staff2.xml</modification>
+		<require-file name="Staff2.php" destination="$sourcedir" />
+		<require-file name="Staff2.template.php" destination="$themedir" />
+		<require-file name="Staff.english.php" destination="$themedir/languages" />
+		<require-file name="Staff.english-utf8.php" destination="$themedir/languages" />
+		<code>staffsql2.php</code>
+	
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
+		<modification type="file" reverse="true">staff2.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+</package-info>

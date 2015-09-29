@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SigPost/id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Sig Post Strings
+$txt['show_sig'] = 'Show Signature';
+$txt['sig_topic'] = 'Show Signature Checked?';
+//END Sig Post Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Post.template.php">
+	<operation>
+		<search position="before"><![CDATA[<tr>
+														<td class="smalltext"><label for="check_back"><input type="checkbox" name="goback" id="check_back"' . ($context['back_to_topic'] || !empty($options['return_to_post']) ? ' checked="checked"' : '') . ' value="1" class="check" /> ' . $txt['back_to_topic'] . '</label></td>
+														<td class="smalltext">', $context['can_sticky'] ? '<input type="hidden" name="sticky" value="0" /><label for="check_sticky"><input type="checkbox" name="sticky" id="check_sticky"' . ($context['sticky'] ? ' checked="checked"' : '') . ' value="1" class="check" /> ' . $txt['sticky_after2'] . '</label>' : '', '</td>
+													</tr>]]></search>
+		<add><![CDATA[
+		<tr>
+														<td class="smalltext" colspan="2"><label for="check_sig"><input type="checkbox" name="showsig" id="check_sig"' . (!empty($modSettings['sig_topic']) ? ' checked="checked"' : '') . ' value="1" class="check" /> ' . $txt['show_sig'] . '</label></td>
+													</tr>
+													]]></add>
+	</operation>
+
+</file>
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="replace"><![CDATA[// Show the member's signature?
+		if (!empty($message['member']['signature']) && empty($options['show_no_signatures']))]]></search>
+		<add><![CDATA[
+// Show the member's signature?
+		if (!empty($message['member']['signature']) && empty($options['show_no_signatures']) && $message['showSIG'] == 1)
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[<textarea cols="75" rows="7" style="width: 95%; height: 100px;" name="message" tabindex="1"></textarea><br />]]></search>
+		<add><![CDATA[
+		<label for="check_sig"><input type="checkbox" name="showsig" id="check_sig"' . (!empty($modSettings['sig_topic']) ? ' checked="checked"' : '') . ' value="1" class="check" /> ' . $txt['show_sig'] . '</label><br />
+]]></add>
+	</operation>
+
+
+</file>
+<file name="$sourcedir/Post.php">
+	<operation>
+		<search position="before"><![CDATA['smileys_enabled' => !isset($_POST['ns']),]]></search>
+		<add><![CDATA[
+'sig_enabled' => isset($_POST['showsig']) ? 1 : 0,
+]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/Subs-Post.php">
+	<operation>
+		<search position="before"><![CDATA[$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);]]></search>
+		<add><![CDATA[
+$msgOptions['sig_enabled'] = empty($msgOptions['sig_enabled']) ? 0 : (int) $msgOptions['sig_enabled'];
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[// Insert the post.
+	db_query("
+		INSERT INTO {$db_prefix}messages
+			(ID_BOARD, ID_TOPIC, ID_MEMBER, subject, body, posterName, posterEmail, posterTime,
+			posterIP, smileysEnabled, modifiedName, icon)
+		VALUES ($topicOptions[board], $topicOptions[id], $posterOptions[id], SUBSTRING('$msgOptions[subject]', 1, 255), SUBSTRING('$msgOptions[body]', 1, 65534), SUBSTRING('$posterOptions[name]', 1, 255), SUBSTRING('$posterOptions[email]', 1, 255), " . time() . ",
+			SUBSTRING('$posterOptions[ip]', 1, 255), " . ($msgOptions['smileys_enabled'] ? '1' : '0') . ", '', SUBSTRING('$msgOptions[icon]', 1, 16))", __FILE__, __LINE__);]]></search>
+		<add><![CDATA[
+// Insert the post.
+	db_query("
+		INSERT INTO {$db_prefix}messages
+			(ID_BOARD, ID_TOPIC, ID_MEMBER, showSIG, subject, body, posterName, posterEmail, posterTime,
+			posterIP, smileysEnabled, modifiedName, icon)
+		VALUES ($topicOptions[board], $topicOptions[id], $posterOptions[id], $msgOptions[sig_enabled], SUBSTRING('$msgOptions[subject]', 1, 255), SUBSTRING('$msgOptions[body]', 1, 65534), SUBSTRING('$posterOptions[name]', 1, 255), SUBSTRING('$posterOptions[email]', 1, 255), " . time() . ",
+			SUBSTRING('$posterOptions[ip]', 1, 255), " . ($msgOptions['smileys_enabled'] ? '1' : '0') . ", '', SUBSTRING('$msgOptions[icon]', 1, 16))", __FILE__, __LINE__);
+]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="before"><![CDATA[$messages_request = db_query("
+			SELECT
+				ID_MSG, icon, subject,]]></search>
+		<add><![CDATA[ showSIG,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['counter' => $counter,]]></search>
+		<add><![CDATA[
+		'showSIG' => $message['showSIG'],
+		]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/ModSettings.php">
+	<operation>
+		<search position="before"><![CDATA[array('check', 'who_enabled'),]]></search>
+		<add><![CDATA[
+		//Sig Option mod	
+		array('check', 'sig_topic'),]]></add>
+	</operation>
+</file>
+</modification>

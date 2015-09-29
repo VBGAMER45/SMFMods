@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:globalhf</id>
+	<name>Global Headers Footers</name>
+	<type>modification</type>
+	<version>2.0</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">globalhf.xml</modification>
+		<require-file name="globalhf.php" destination="$sourcedir" />
+		<require-file name="globalhf.template.php" destination="$themedir" />
+		<require-file name="smfheader.txt" destination="$boarddir" />
+		<require-file name="smffooter.txt" destination="$boarddir" />
+		
+
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<modification type="file" reverse="true">globalhf.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">globalhf2.xml</modification>
+			<require-file name="globalhf2.php" destination="$sourcedir" />
+			<require-file name="globalhf2.template.php" destination="$themedir" />
+			<require-file name="smfheader.txt" destination="$boarddir" />
+			<require-file name="smffooter.txt" destination="$boarddir" />
+			<redirect url="?action=admin;area=globalhf" />
+	
+		</install>
+	
+		<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<modification type="file" reverse="true">globalhf2.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

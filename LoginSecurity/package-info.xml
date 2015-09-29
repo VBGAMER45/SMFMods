@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:LoginSecurity</id>
+	<name>Login Security</name>
+	<type>modification</type>
+	<version>1.0.3</version>
+
+	<install for="1.1 - 1.1.99">
+		<redirect url="?action=featuresettings;sa=loginsecurity">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">LoginSecurity.xml</modification>
+		<require-file name="Subs-LoginSecurity.php" destination="$sourcedir" />>
+		<code>LoginSecuritysql.php</code>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">LoginSecurity.xml</modification>
+		<remove-file name="$sourcedir/Subs-LoginSecurity.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+
+	
+
+	<install for="2.0 RC2,2.0 RC3">
+		<redirect url="?action=admin;area=featuresettings;sa=loginsecurity">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">LoginSecurity2rc2.xml</modification>
+		<require-file name="Subs-LoginSecurity2.php" destination="$sourcedir" />>
+		<code>LoginSecuritysql2.php</code>
+	</install>
+	
+	<uninstall for="2.0 RC2,2.0 RC3">
+		<modification type="file" reverse="true">LoginSecurity2rc2.xml</modification>
+		<remove-file name="$sourcedir/Subs-LoginSecurity2.php" />
+		<code>UnInstall.php</code>
+		
+	</uninstall>
+	
+	
+	
+	<install for="2.0 RC4,2.0 RC5">
+		<redirect url="?action=admin;area=featuresettings;sa=loginsecurity">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">LoginSecurity2rc4.xml</modification>
+		<require-file name="Subs-LoginSecurity2.php" destination="$sourcedir" />>
+		<code>LoginSecuritysql2.php</code>
+	</install>
+	
+	<uninstall for="2.0 RC4,2.0 RC5">
+		<modification type="file" reverse="true">LoginSecurity2rc4.xml</modification>
+		<remove-file name="$sourcedir/Subs-LoginSecurity2.php" />
+		<code>UnInstall.php</code>
+		
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99">
+		<redirect url="?action=admin;area=featuresettings;sa=loginsecurity">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">LoginSecurity2fin.xml</modification>
+		<require-file name="Subs-LoginSecurity2.php" destination="$sourcedir" />>
+		<code>LoginSecuritysql2.php</code>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">LoginSecurity2fin.xml</modification>
+		<remove-file name="$sourcedir/Subs-LoginSecurity2.php" />
+		<code>UnInstall.php</code>
+		
+	</uninstall>
+</package-info>

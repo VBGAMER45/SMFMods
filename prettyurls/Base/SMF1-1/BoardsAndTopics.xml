@@ -1,0 +1,312 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification">
+	<id>el:prettyurls</id>
+	<version>1.0</version>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	// Load the proper template and/or sub template.
+]]></search>
+			<add><![CDATA[
+	//	301 redirects
+	if ((isset($context['pretty']['oldschoolquery']) || $context['pretty']['query_string']['board'] != $context['pretty']['board_urls'][$board]) && $modSettings['pretty_enable_filters'])
+	{
+		$filterData = unserialize($modSettings['pretty_filters']);
+		if ($filterData['topics']['enabled'])
+		{
+			$url = 'topic=' . $topic . '.' . (isset($_REQUEST['start']) ? $_REQUEST['start'] : '0') . (isset($_REQUEST['prev_next']) ? ';prev_next=' . $_REQUEST['prev_next'] : '') . (isset($_REQUEST['topicseen']) ? ';topicseen' : '') . (isset($_REQUEST['all']) ? ';all' : '') . (isset($_REQUEST['viewResults']) ? ';viewResults' : '');
+			header('HTTP/1.1 301 Moved Permanently');
+			redirectexit($url, false);
+		}
+	}
+
+	// Load the proper template and/or sub template.
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageBoards.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'settings' => array('EditBoardSettings', 'admin_forum'),
+]]></search>
+			<add><![CDATA[
+		'pretty' => array('PrettyBoardUrls', 'admin_forum'),
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+//	Interface to manage a board's Pretty URLs
+function PrettyBoardUrls()
+{
+	global $boards, $context, $db_prefix, $modSettings, $scripturl, $sourcedir, $txt;
+
+	//	Start by getting a list of the boards, and see if we're editing a deleted board or not
+	require_once($sourcedir . '/Subs-Boards.php');
+	getBoardTree();
+	$board_id = (int) $_REQUEST['boardid'];
+	$context['pretty']['board_title'] = $txt['pretty_board_url_title'] . (isset($boards[$board_id]) ? $boards[$board_id]['name'] : $txt['pretty_deleted_board'] . $board_id);
+
+	//	Get all the pretty URLs for this board
+	$pretty_board_urls = unserialize($modSettings['pretty_board_urls']);
+	$pretty_board_lookup = unserialize($modSettings['pretty_board_lookup']);
+
+	//	Are we missing a primary URL?
+	if (!isset($pretty_board_urls[$board_id]) && isset($boards[$board_id]))
+		$context['pretty']['warning'] = $txt['pretty_no_primary_warning'];
+
+	//	Deleting a URL?
+	if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'delete')
+	{
+		foreach ($pretty_board_urls as $id => $url)
+			if ($url == $_REQUEST['url'])
+				unset($pretty_board_urls[$id]);
+		foreach ($pretty_board_lookup as $url => $id)
+			if ($url == $_REQUEST['url'])
+				unset($pretty_board_lookup[$url]);
+
+		//	Update the database of course
+		updateSettings(array(
+			'pretty_board_lookup' => addslashes(serialize($pretty_board_lookup)),
+			'pretty_board_urls' => addslashes(serialize($pretty_board_urls)),
+		));
+
+		//	Clear the URLs cache
+		db_query("TRUNCATE TABLE {$db_prefix}pretty_urls_cache", __FILE__, __LINE__);
+
+		redirectexit('action=manageboards;sa=pretty;boardid=' . $board_id);
+	}
+	//	Changing the primary URL?
+	if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'primary')
+		if (isset($pretty_board_lookup[$_REQUEST['url']]) && $pretty_board_lookup[$_REQUEST['url']] == $board_id)
+		{
+			$pretty_board_urls[$board_id] = $_REQUEST['url'];
+			updateSettings(array('pretty_board_urls' => addslashes(serialize($pretty_board_urls))));
+			db_query("TRUNCATE TABLE {$db_prefix}pretty_urls_cache", __FILE__, __LINE__);
+			redirectexit('action=manageboards;sa=pretty;boardid=' . $board_id);
+		}
+	//	Adding a URL?
+	if (isset($_REQUEST['add']) && $_REQUEST['add'] != '')
+	{
+		require_once($sourcedir . '/Subs-PrettyUrls.php');
+
+		$pretty_text = pretty_generate_url($_REQUEST['add']);
+		//	Numerical or URLs the same as actions aren't allowed!
+		if (is_numeric($pretty_text) || in_array($pretty_text, $context['pretty']['action_array']))
+		{
+			//	Add suffix '-board_id' to the pretty url
+			$_SESSION['pretty']['warning'] = $txt['pretty_numerical'];
+			$pretty_text .= ($pretty_text != '' ? '-' : 'b') . $board_id;
+		}
+
+		//	Duplicate URL?
+		if (isset($pretty_board_lookup[$pretty_text]))
+			$context['pretty']['warning'] = $txt['pretty_duplicate_warning'] . '<a href="' . $scripturl . '?action=manageboards;sa=pretty;boardid=' . $pretty_board_lookup[$pretty_text] . '">' . $txt['pretty_duplicate_link'] . '</a>';
+		else
+		{
+			//	No it's unique, so we can update the database
+			$pretty_board_lookup[$pretty_text] = $board_id;
+			updateSettings(array('pretty_board_lookup' => addslashes(serialize($pretty_board_lookup))));
+			db_query("TRUNCATE TABLE {$db_prefix}pretty_urls_cache", __FILE__, __LINE__);
+			redirectexit('action=manageboards;sa=pretty;boardid=' . $board_id);
+		}
+	}
+
+	//	Prepare the list of board URLs
+	$context['pretty']['this_board'] = array();
+	foreach ($pretty_board_lookup as $url => $id)
+		if ($id == $board_id)
+			$context['pretty']['this_board'][] = array(
+				'primary' => !isset($context['pretty']['no_primary_warning']) && $url == $pretty_board_urls[$board_id],
+				'url' => $url,
+			);
+
+	//	Load the right template
+	loadTemplate('ManageBoards');
+	if (loadLanguage('PrettyUrls') == false)
+		loadLanguage('PrettyUrls', 'english');
+	$context['sub_template'] = 'pretty_board_url';
+	$context['page_title'] = $context['pretty']['board_title'];
+	if (isset($_SESSION['pretty']['warning']))
+	{
+		$context['pretty']['warning'] = $_SESSION['pretty']['warning'];
+		unset($_SESSION['pretty']['warning']);
+	}
+}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/MessageIndex.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	if (WIRELESS)
+]]></search>
+			<add><![CDATA[
+	//	301 redirects
+	if ((isset($context['pretty']['oldschoolquery']) || $context['pretty']['query_string']['board'] != $context['pretty']['board_urls'][$board]) && $modSettings['pretty_enable_filters'])
+	{
+		$filterData = unserialize($modSettings['pretty_filters']);
+		if ($filterData['boards']['enabled'])
+		{
+			$url = 'board=' . $board . '.' . (isset($_REQUEST['start']) ? $_REQUEST['start'] : '0') . (isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '');
+			header('HTTP/1.1 301 Moved Permanently');
+			redirectexit($url, false);
+		}
+	}
+
+	if (WIRELESS)
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[
+function cleanRequest()
+{
+	global $board, $topic, $boardurl, $scripturl, $modSettings;
+]]></search>
+			<add><![CDATA[
+function cleanRequest()
+{
+	global $board, $topic, $boardurl, $scripturl, $modSettings, $context, $db_prefix;
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		// Now make absolutely sure it's a number.
+		$board = (int) $_REQUEST['board'];
+]]></search>
+			<add><![CDATA[
+		// Now make absolutely sure it's a number.
+		// Check for pretty board URLs too, and possibly redirect if oldschool queries were used.
+		$_REQUEST['board'] = str_replace(array('&#039;', '\\'), array("\x12", ''), $_REQUEST['board']);
+		$context['pretty']['query_string']['board'] = $_REQUEST['board'];
+		if (is_numeric($_REQUEST['board']))
+		{
+			$board = (int) $_REQUEST['board'];
+			if (!isset($_REQUEST['pretty']))
+				$context['pretty']['oldschoolquery'] = true;
+		} else {
+			$pretty_board_lookup = unserialize($modSettings['pretty_board_lookup']);
+			$board = (int) isset($pretty_board_lookup[$_REQUEST['board']]) ? $pretty_board_lookup[$_REQUEST['board']] : 0;
+
+			//	Fix $_REQUEST for silly mods that don't check $board
+			$_REQUEST['board'] = $board;
+		}
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		$topic = (int) $_REQUEST['topic'];
+]]></search>
+			<add><![CDATA[
+		// Check for pretty topic URLs, and possibly redirect if oldschool queries were used.
+		$context['pretty']['query_string']['topic'] = $_REQUEST['topic'];
+		if (is_numeric($_REQUEST['topic']))
+		{
+			$topic = (int) $_REQUEST['topic'];
+			if (!isset($_REQUEST['pretty']))
+				$context['pretty']['oldschoolquery'] = true;
+		} else {
+			$_REQUEST['topic'] = str_replace(array('&#039;', '\\'), array("\x12", ''), $_REQUEST['topic']);
+			//	Are we feeling lucky?
+			$query = db_query("
+				SELECT ID_TOPIC
+				FROM {$db_prefix}pretty_topic_urls
+				WHERE pretty_url = '$_REQUEST[topic]'
+				LIMIT 1", __FILE__, __LINE__);
+			//	No? No topic?!
+			if (mysql_num_rows($query) == 0)
+			{
+				$topic = 0;
+			} else {
+				while ($row = mysql_fetch_assoc($query))
+					$topic = (int) $row['ID_TOPIC'];
+			}
+			mysql_free_result($query);
+
+			//	Fix $_REQUEST for silly mods that don't check $topic
+			$_REQUEST['topic'] = $topic;
+
+			//	That query should be counted separately
+			$context['pretty']['db_count']++;
+		}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Boards.php">
+		<operation>
+			<search position="replace"><![CDATA[
+function modifyBoard($board_id, &$boardOptions)
+{
+	global $sourcedir, $cat_tree, $boards, $boardList, $modSettings, $db_prefix;
+]]></search>
+			<add><![CDATA[
+function modifyBoard($board_id, &$boardOptions)
+{
+	global $sourcedir, $cat_tree, $boards, $boardList, $modSettings, $db_prefix, $context;
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+	if (isset($boardOptions['move_to']))
+		reorderBoards();
+]]></search>
+			<add><![CDATA[
+	if (isset($boardOptions['move_to']))
+		reorderBoards();
+
+//	Update the pretty board URLs
+	if (isset($boardOptions['pretty_url']))
+	{
+		require_once($sourcedir . '/Subs-PrettyUrls.php');
+
+		//	Get the current board URLs
+		$pretty_board_lookup = unserialize($modSettings['pretty_board_lookup']);
+		//	Generate a new one
+		$pretty_url = pretty_generate_url($boardOptions['pretty_url']);
+
+		//	Can't be empty, can't be a number and can't be the same as another
+		if ($pretty_url == '' || is_numeric($pretty_url) || (isset($pretty_board_lookup[$pretty_url]) && $pretty_board_lookup[$pretty_url] != $board_id))
+			//	Add suffix '-board_id' to the pretty url
+			$pretty_url .= ($pretty_url != '' ? '-' : 'b') . $board_id;
+
+		//	Save to the database
+		$context['pretty']['board_urls'][$board_id] = $pretty_url;
+		$pretty_board_lookup[$pretty_url] = $board_id;
+		updateSettings(array(
+			'pretty_board_lookup' => addslashes(serialize($pretty_board_lookup)),
+			'pretty_board_urls' => addslashes(serialize($context['pretty']['board_urls'])),
+		));
+
+		//	Count that query!
+		$context['pretty']['db_count']++;
+	}
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+	// Change the board according to the given specifications.
+]]></search>
+			<add><![CDATA[
+	if (!isset($boardOptions['pretty_url']))
+		$boardOptions['pretty_url'] = $boardOptions['board_name'];
+
+	// Change the board according to the given specifications.
+]]></add>
+		</operation>
+	</file>
+
+</modification>

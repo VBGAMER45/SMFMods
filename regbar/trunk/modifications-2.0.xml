@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:RegBar</id>
+	<version>1.0.3</version>
+	<homepage>http://www.smfhacks.com/</homepage>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA[
+	$context['insert_after_template'] = '';
+]]></search>
+			<add><![CDATA[
+	//-- SMFHacks.com; Regbar Warning
+	if ($user_info['is_guest'] && !in_array($context['current_action'], array('coppa', 'login', 'login2', 'register', 'register2', 'reminder', 'activate', 'smstats', 'mailq', 'verificationcode', 'openidreturn', '.xml', 'printpage')))
+	{
+		require_once($sourcedir . '/smfhacks_source/regbar-warning.php');
+		RegbarWarning();
+	}
+	// End SMFHacks.com; Regbar Warning --//
+]]></add>
+		</operation>
+	</file>
+</modification>

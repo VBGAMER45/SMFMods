@@ -1,0 +1,300 @@
+# Turkish translation for prettyurls
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the prettyurls package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: prettyurls\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-06-19 15:28+1000\n"
+"PO-Revision-Date: 2009-06-21 03:14+0000\n"
+"Last-Translator: Özgür <Unknown>\n"
+"Language-Team: Turkish <tr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-06-22 04:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Base/PrettyUrls/pretty_chrome_install_title
+msgid "Installing Pretty URLs"
+msgstr "Şeker Linkler Kurulumu"
+
+#: Base/PrettyUrls/pretty_install_success
+msgid ""
+"Thank you for using <b>Pretty URLs</b>! The installation was a success!"
+msgstr ""
+"<b>Şeker Linkler</b>i kullandığınız için teşekkürler! Kurulum başarıyla "
+"tamamlandı!"
+
+#: Base/PrettyUrls/pretty_install_continue
+msgid ""
+"Please continue to the admin page, where you can enable URL rewriting."
+msgstr "Yönetim paneline geri dönerek Şeker Linkleri aktif edebilirsiniz."
+
+#: Base/PrettyUrls/pretty_chrome_title
+msgid "Pretty URLs Administration"
+msgstr "Şeker Linkler Yönetim"
+
+#: Base/PrettyUrls/pretty_chrome_menu_news
+msgid "News"
+msgstr "Haberler"
+
+#: Base/PrettyUrls/pretty_chrome_menu_settings
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: Base/PrettyUrls/pretty_chrome_menu_maintenance
+msgid "Maintenance"
+msgstr "Bakım"
+
+#: Base/PrettyUrls/pretty_chrome_caption_news
+msgid "The latest news and information live from the project website"
+msgstr "Proje websitesinden bilgiler ve son gelişmeler"
+
+#: Base/PrettyUrls/pretty_chrome_page_title_news
+msgid "Pretty URLs News & Info"
+msgstr "Şeker Linkler Haber & Bilgi"
+
+#: Base/PrettyUrls/pretty_chrome_title_news
+msgid "News & Info"
+msgstr "Haber & Bilgi"
+
+#: Base/PrettyUrls/pretty_current_version
+msgid "Current version"
+msgstr "Kullanılan Sürüm"
+
+#: Base/PrettyUrls/pretty_download
+msgid "Download"
+msgstr "İndir"
+
+#: Base/PrettyUrls/pretty_latest_version
+msgid "Latest version"
+msgstr "Güncel Versiyon"
+
+#: Base/PrettyUrls/pretty_upgrade
+msgid "Upgrade now!"
+msgstr "Şimdi yükselt!"
+
+#: Base/PrettyUrls/pretty_version
+msgid "Version info"
+msgstr "Sürüm bilgisi"
+
+#: Base/PrettyUrls/pretty_cant_write_htaccess
+msgid ""
+"Cannot overwrite existing .htaccess file. Please change its write "
+"permissions."
+msgstr ""
+"Şu anki .htaccess dosyası değiştirilemiyor. Lütfen yazma izinlerini "
+"değiştirin."
+
+#: Base/PrettyUrls/pretty_chrome_caption_settings
+msgid "Various settings"
+msgstr "Bazı Ayarlar"
+
+#: Base/PrettyUrls/pretty_chrome_page_title_settings
+msgid "Pretty URLs Settings"
+msgstr "Şeker Linkler Ayarlar"
+
+#: Base/PrettyUrls/pretty_core_settings
+msgid "Core settings"
+msgstr "Ana ayarlar"
+
+#: Base/PrettyUrls/pretty_enable
+msgid "Enable URL rewriting"
+msgstr "Url değişimini aç"
+
+#: Base/PrettyUrls/pretty_filters
+msgid "URL rewriting filters"
+msgstr "URL Değişim Filtreleri"
+
+#: Base/PrettyUrls/pretty_save
+msgid "Save changes"
+msgstr "Değişiklikleri Kaydet"
+
+#: Base/PrettyUrls/pretty_chrome_caption_tests
+msgid ""
+"Before enabling URL rewriting, please check that these rewritten links work."
+msgstr ""
+"URL değişimini açmadan önce, lütfen değişimin çalışıp çalışmadığını kontrol "
+"edin."
+
+#: Base/PrettyUrls/pretty_chrome_caption_maintenance
+msgid "Run some maintenance tasks"
+msgstr "Bazı bakım görevlerini çalıştır"
+
+#: Base/PrettyUrls/pretty_chrome_page_title_maintenance
+msgid "Pretty URLs Maintenance"
+msgstr "Şeker Linkler Bakım"
+
+#: Base/PrettyUrls/pretty_run_maintenance
+msgid "Run maintenance tasks"
+msgstr "Bakım görevlerini çalıştır"
+
+#: Base/PrettyUrls/pretty_chrome_caption_filters
+msgid ""
+"A tool to edit the filters array. The array is formatted here in the <a "
+"href=\"http://www.json.org/\">JSON</a> format. Be careful, the JSON parser "
+"is rather strict."
+msgstr ""
+"Filtre dizilerini düzenlemeye yarayan bir araç. Buradaki araç <a "
+"href=\"http://www.json.org/\">JSON</a> formatındadır. Dikkat edin, JSON "
+"çözümleyici çok sıkıdır."
+
+#: Base/PrettyUrls/pretty_chrome_page_title_filters
+msgid "Pretty URLs Filters Tool"
+msgstr "Şeker Linkler Filtre Aracı"
+
+#: Base/PrettyUrls/pretty_chrome_title_filters
+msgid "Filters Tool"
+msgstr "Filtre Aracı"
+
+#: Base/PrettyUrls/pretty_no_json
+msgid ""
+"The PHP JSON extension is required for this tool. Consider upgrading to PHP "
+"5.2."
+msgstr ""
+"PHP'nin JSON eklentisi bu araç için gereklidir. PHP 5.2 sürümüne güncelleyin."
+
+#: Base/Modifications/pretty_admin_menu
+msgid "Pretty URLs"
+msgstr "Şeker Linkler"
+
+#: Base/Modifications/pretty_add_url
+msgid "Add"
+msgstr "Ekle"
+
+#: Base/Modifications/pretty_add_url_description
+msgid ""
+"Add a URL. Note that what you enter here will be processed as only certain "
+"characters are allowed."
+msgstr ""
+"URL Ekleyin. Buraya gireceğiniz karakterlerden sadece bazılarına izin "
+"verildiğini unutmayın."
+
+#: Base/Modifications/pretty_board_url_title
+msgid "Pretty URLs for: "
+msgstr "Şunlar için Şeker Linkler : "
+
+#: Base/Modifications/pretty_deleted_board
+msgid "Deleted board #"
+msgstr "Silinen bölüm #"
+
+#: Base/Modifications/pretty_duplicate_link
+msgid "delete it first."
+msgstr "ilkini silin."
+
+#: Base/Modifications/pretty_duplicate_warning
+msgid ""
+"That URL is already in use by another board. It will be available if you "
+msgstr "Bu URL başka bir bölüm tarafından kullanıyor. Kullanabilmek için "
+
+#: Base/Modifications/pretty_make_primary
+msgid "Make primary"
+msgstr "Birincil yap"
+
+#: Base/Modifications/pretty_no_primary_warning
+msgid "Warning, no primary URL!"
+msgstr "Dikkat, birincil URL yok!"
+
+#: Base/Modifications/pretty_numerical
+msgid ""
+"Sorry, but as that URL is either a number or the same as a forum action the "
+"board ID had to be added as a suffix."
+msgstr ""
+"Üzgünüm, ama bu URLnin sonunda bir rakam olması gerekiyor, bu aynı isimle "
+"bulunan bölümleri birbirinden ayırmak için kullanıyor, aynı isimli iki forum "
+"actionı gibi."
+
+#: Base/Modifications/pretty_primary_url
+msgid "Primary"
+msgstr "Birincil"
+
+#: Base/readme/install
+msgid ""
+"[b][url=http://custom.simplemachines.org/mods/index.php?mod=636]Pretty "
+"URLs[/url][/b] is a URL management package for Simple Machine Forums (SMF).\n"
+"\n"
+"It is simple, powerful, extensible and free. Most of all, it is pretty! Its "
+"main purpose is to rewrite the important SMF URLs, like these:\n"
+"[list]\n"
+"[li][nobbc]http://domain.com/board/topic/[/nobbc][/li]\n"
+"[li][nobbc]http://domain.com/profile/user/[/nobbc][/li]\n"
+"[li][nobbc]http://domain.com/unreadreplies/[/nobbc][/li]\n"
+"[/list]\n"
+"Pretty URLs will work with SMF 1.1 and 2.0. It requires an Apache webserver "
+"with support for mod_rewrite and .htaccess files.\n"
+"\n"
+"[url=http://code.google.com/p/prettyurls/]Project home page[/url]\n"
+"\n"
+"[b][url=http://code.google.com/p/prettyurls/wiki/Overview]Overview and "
+"installation info[/url][/b]\n"
+"\n"
+"Need help? "
+"[b][url=http://code.google.com/p/prettyurls/wiki/TroubleShooting]Check the "
+"trouble shooting page first![/url][/b]\n"
+"\n"
+"Pretty URLs is released under a "
+"[url=http://prettyurls.googlecode.com/svn/trunk/LICENCE]new BSD "
+"licence[/url]\n"
+"Copyright (c) 2006-2009 "
+"[url=http://prettyurls.googlecode.com/svn/trunk/CONTRIBUTORS]The Pretty URLs "
+"Contributors[/url]"
+msgstr ""
+"[b][url=http://custom.simplemachines.org/mods/index.php?mod=636]Pretty "
+"URLs[/url][/b] Simple Machine Forums (SMF) sistemleri için URL yönetimi "
+"sağlayan bir eklentidir.\n"
+"\n"
+"Basit, güçlü, geliştirilebilir ve ücretsiz! Tamamı çok kolay ve gerçekten "
+"şirin! Temel amacı önemli SMF URLlerini yeniden düzenlemektir. Örneğin:\n"
+"[list]\n"
+"[li][nobbc]http://siteniz.com/bölüm-ismi/konu/[/nobbc][/li]\n"
+"[li][nobbc]http://siteniz.com/profile/kullanıcı-adı/[/nobbc][/li]\n"
+"[li][nobbc]http://siteniz.com/unreadreplies/[/nobbc][/li]\n"
+"[/list]\n"
+"\n"
+"Şeker Linker SMF 1.1 ve 2.0 ile uyumludur. Doğru çalışabilmesi için "
+"mod_rewrite yüklü olan ve .htaccess dosyasını destekleyen bir Apache sunucu "
+"gerektirir.\n"
+"\n"
+"[url=http://code.google.com/p/prettyurls/]Proje Anasayfası[/url]\n"
+"\n"
+"[b][url=http://code.google.com/p/prettyurls/wiki/Overview]Genel Bakış ve "
+"Kurulum Bilgileri[/url][/b]\n"
+"\n"
+"Yardıma mı ihtiyacınız var? "
+"[b][url=http://code.google.com/p/prettyurls/wiki/TroubleShooting]Öncelikle "
+"hata çözme sayfasını inceleyin![/url][/b]\n"
+"\n"
+"Pretty URLs [url=http://prettyurls.googlecode.com/svn/trunk/LICENCE]yeni BSD "
+"lisansı[/url] altında yayınlanmaktadır\n"
+"Copyright (c) 2006-2009 "
+"[url=http://prettyurls.googlecode.com/svn/trunk/CONTRIBUTORS]Pretty URLs "
+"Ekibi[/url]"
+
+#: Base/readme/uninstall
+msgid ""
+"Thank you for using [b]Pretty URLs[/b]!\n"
+"\n"
+"If you don't intend to reinstall this mod, you should consider using the "
+"Reverter package, which will redirect your pretty URLs back to the normal "
+"SMF URLs. This should be considered essential if your forum has been indexed "
+"by search engines, or if your pages have been linked to from other websites. "
+"You can download the Reverter package from the "
+"[url=http://code.google.com/p/prettyurls]Pretty URLs project home "
+"page[/url].\n"
+"[b]Note:[/b] to install the Reverter package do not remove the database "
+"settings, tables and .htaccess file."
+msgstr ""
+"[b]Şeker Linkler[/b]i kullandığınız için teşekkürler!\n"
+"\n"
+"Herhangi bir şekilde paketi kaldırdığınızda, Reverter paketini kurmalısınız. "
+"Bu paket Şeker Linklere çevrilmiş eski URLlerden gelen ziyaretçilerinizi "
+"normal SMF URLlerine yönlendirecek. Tabiki bu paketi kurmanız arama "
+"motorları ve sizin linklerinizi sitelerden gelen ziyaretçilerinizin doğru "
+"yere yönlenmelerini sağlayacak. Reverter paketini "
+"[url=http://code.google.com/p/prettyurls]Şeker Linkler proje "
+"anasayfası[/url]ndan indirebilirsiniz.\n"
+"[b]Not:[/b] Reverter paketini kurmadan önce veritabanı tablolarını ve "
+".htaccess dosyanızı [b]silmemelisiniz[/b]"

@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:LoginSecurity</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Login Security Text Strings
+$txt['ls_login_security'] = 'Login Security';
+$txt['ls_invalid_ip'] = 'Login failed. This account is protected by ip address. If you are the owner of this account you can reset this by creating a <a href="%link">secure login link</a> sent to your email address.';
+$txt['ls_account_locked'] = 'Account Locked due to failed logins. This account has been locked until %min. If you are the owner of this account you can reset this by creating a <a href="%link">secure login link</a> sent to your email address.';
+$txt['ls_secure_email_subject'] = 'Secure Login Link';
+$txt['ls_secure_email_body'] = 'Hello %name,
+A secure login link has been requested for your account. 
+If you requested this link please follow the link below to login into your account.
+
+%link
+
+This link expires in %min minutes.
+
+Requesters IP address: %ip';
+
+$txt['ls_matched_members'] = 'Matched forum members with same ip address:';
+
+$txt['ls_failed_email_subject'] = 'Failed Login Attempt';
+$txt['ls_failed_email_body'] = 'Hello %name,
+We have detected a failed login attempt on your account.
+
+%membermatches
+
+IP address of the failed login attempt: %ip
+';
+
+// Settings
+$txt['ls_securehash_expire_minutes'] = 'Secure Login Link Expire time in minutes';
+$txt['ls_allowed_login_attempts'] = 'Number of allowed login attempts';
+$txt['ls_allowed_login_attempts_mins'] = 'Login attempt check time range in minutes';
+$txt['ls_login_retry_minutes'] = 'Account locked retry minutes';
+$txt['ls_allow_ip_security'] = 'Allow users to protect their account by ip address';
+$txt['ls_send_mail_failed_login'] = 'Send email on failed login attempt';
+
+$txt['ls_current_ip_address'] = 'Current IP Address: ';
+$txt['ls_ip_address_protection'] = 'IP Address Account Protection';
+$txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by seperating them with a comma';
+
+// END  Login Security Text Strings	
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/LogInOut.php">
+	<operation>
+		<search position="replace"><![CDATA[// Figure out the password using SMF's encryption - if what they typed is right.]]></search>
+	<add><![CDATA[
+	// Login Security Mod
+	require_once($sourcedir . '/Subs-LoginSecurity.php');
+	
+	// Check if they can access it via this ip
+	CheckAllowedIP($user_settings['ID_MEMBER']);
+	
+	// Check if the account is locked out
+	CheckIfAccountIsLocked($user_settings['ID_MEMBER']);
+	
+	// End Login Security Mod
+	
+	// Been guessing a lot, haven't we?
+	if (isset($_SESSION['failed_login']) && $_SESSION['failed_login'] >= $modSettings['failed_login_threshold'] * 3)
+		fatal_lang_error('login_threshold_fail');
+	
+	// Figure out the password using SMF's encryption - if what they typed is right.]]></add>
+	</operation>
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[// They've messed up again - keep a count to see if they need a hand.]]></search>
+	<add><![CDATA[
+	// Login Security Mod
+	require_once($sourcedir . '/Subs-LoginSecurity.php');
+	
+	// They failed login....
+	AddLoginFailure($user_settings['ID_MEMBER']);
+	
+	// End Login Security Mod
+	
+	// They've messed up again - keep a count to see if they need a hand.]]></add>
+	</operation>
+	
+	<operation>
+	<search position="replace"><![CDATA[// Load cookie authentication stuff.]]></search>
+		<add><![CDATA[
+	// Login Security Mod
+	
+	if (isset($_REQUEST['sa']))
+	{
+		if ($_REQUEST['sa'] == 'securelink')
+		{
+			require_once($sourcedir . '/Subs-LoginSecurity.php');
+
+			// Send security login link
+			SendSecureLink();
+		}
+	}
+
+	// End Login Security Mod
+		
+	// Load cookie authentication stuff.]]></add>
+	</operation>
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[// Set the login URL - will be used when the login process is done.]]></search>
+		<add><![CDATA[
+		// Login Security Mod
+		if (isset($_REQUEST['securelogin']))
+		{
+			$_SESSION['secureloginhash'] = $_REQUEST['securelogin'];
+		}
+		
+		// End Login Security Mod
+		
+		// Set the login URL - will be used when the login process is done.]]></add>
+	</operation>
+	
+	
+	<operation>
+			<search position="replace"><![CDATA[// Been guessing a lot, haven't we?
+	if (isset($_SESSION['failed_login']) && $_SESSION['failed_login'] >= $modSettings['failed_login_threshold'] * 3)
+		fatal_lang_error('login_threshold_fail');]]></search>
+			<add><![CDATA[
+			// Failed Login threshold Moved By Login Security]]></add>
+	</operation>
+	
+	
+</file>
+
+
+<file name="$sourcedir/ModSettings.php">
+
+	<operation>
+		<search position="replace"><![CDATA['layout' => array(
+				'title' => $txt['mods_cat_layout'],
+				'href' => $scripturl . '?action=featuresettings;sa=layout;sesc=' . $context['session_id'],
+			),]]></search>
+		<add><![CDATA['layout' => array(
+				'title' => $txt['mods_cat_layout'],
+				'href' => $scripturl . '?action=featuresettings;sa=layout;sesc=' . $context['session_id'],
+			),
+			'loginsecurity' => array(
+				'title' => $txt['ls_login_security'],
+				'href' => $scripturl . '?action=featuresettings;sa=loginsecurity;sesc=' . $context['session_id'],
+			),]]></add>
+	</operation>
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[$context['sub_template'] = 'show_settings';
+
+	$subActions = array(
+		'basic' => 'ModifyBasicSettings',
+		'layout' => 'ModifyLayoutSettings',]]></search>
+		<add><![CDATA[$context['sub_template'] = 'show_settings';
+
+	$subActions = array(
+		'basic' => 'ModifyBasicSettings',
+		'layout' => 'ModifyLayoutSettings',
+		'loginsecurity' => 'ModifyLoginSecuritySettings',]]></add>
+	</operation>
+	
+	<operation>
+		<search position="replace"><![CDATA[require_once($sourcedir . '/ManageServer.php');
+
+	$subActions = array(
+		'basic' => 'ModifyBasicSettings',
+		'layout' => 'ModifyLayoutSettings',]]></search>
+		<add><![CDATA[require_once($sourcedir . '/ManageServer.php');
+
+	$subActions = array(
+		'basic' => 'ModifyBasicSettings',
+		'layout' => 'ModifyLayoutSettings',
+		'loginsecurity' => 'ModifyLoginSecuritySettings',]]></add>
+	</operation>
+	
+
+	<operation>
+		<search position="replace"><![CDATA[function ModifyKarmaSettings()]]></search>
+		<add><![CDATA[
+		
+function ModifyLoginSecuritySettings()
+{
+	global $txt, $scripturl, $context, $settings, $sc;
+
+	$config_vars = array(
+			
+			array('int', 'ls_allowed_login_attempts'),
+			array('int', 'ls_allowed_login_attempts_mins'),
+			array('int', 'ls_login_retry_minutes'),
+			array('check', 'ls_send_mail_failed_login'),
+			array('check', 'ls_allow_ip_security'),
+			array('int', 'ls_securehash_expire_minutes'),
+		
+	);
+
+	// Saving?
+	if (isset($_GET['save']))
+	{
+		saveDBSettings($config_vars);
+		redirectexit('action=featuresettings;sa=loginsecurity');
+	}
+
+	$context['post_url'] = $scripturl . '?action=featuresettings2;save;sa=loginsecurity';
+	$context['settings_title'] = $txt['ls_login_security'];
+
+	prepareDBSettingContext($config_vars);
+}
+				
+function ModifyKarmaSettings()]]></add>
+	</operation>
+	
+	
+</file>
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+		<search position="replace"><![CDATA[// Allow the administrator to change the date they registered on and their post count.]]></search>
+		<add><![CDATA[
+		
+		// Login Security Mod
+		if ($modSettings['ls_allow_ip_security'])
+		{
+			global $user_info;
+			
+			echo '<tr>
+				<td><b>', $txt['ls_ip_address_protection'], ':</b></td>
+				<td>'
+				,$txt['ls_current_ip_address'],$user_info['ip'],'<br />
+				<br />
+				<input type="text" name="allowedips" size="30" value="', $context['member']['allowedips'], '" />
+				<br /><span class="smalltext">',$txt['ls_ip_address_protection_note'],'</span>
+				</td>
+			</tr>';
+		}
+		
+		// End Login Security
+		
+// Allow the administrator to change the date they registered on and their post count.]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// All the subactions that require a user password in order to validate.
+	$context['require_password'] = in_array($context['menu_item_selected'], array('account'));
+
+	$context['member'] = array(
+		'id' => $memID,]]></search>
+		<add><![CDATA[
+		
+		// Login Security
+		$allowedips = '';
+		if ($modSettings['ls_allow_ip_security'])
+		{
+			global $db_prefix;
+			$dbresult = db_query("
+			SELECT 
+				allowedips 
+			FROM {$db_prefix}login_security
+			WHERE ID_MEMBER = " . $memID, __FILE__, __LINE__);
+			$numRows = mysql_num_rows($dbresult);
+			// We are not going to do anything since they don't have any settings defined
+			if ($numRows != 0)
+			{
+				
+				$ipRow = mysql_fetch_assoc($dbresult);
+				$allowedips = $ipRow['allowedips'];
+			}
+			mysql_free_result($dbresult);
+			
+		}
+		
+		
+		// End Login Security
+		
+		
+		
+		// All the subactions that require a user password in order to validate.
+	$context['require_password'] = in_array($context['menu_item_selected'], array('account'));
+
+	$context['member'] = array(
+		'id' => $memID,
+		'allowedips' => $allowedips,]]></add>
+	</operation>
+	
+	<operation>
+		<search position="replace"><![CDATA[// Arrays of all the changes - makes things easier.]]></search>
+		<add><![CDATA[
+		
+		// Login Security
+		$allowedips = '';
+		if ($modSettings['ls_allow_ip_security'])
+		{
+			global $sourcedir;
+			require_once($sourcedir . '/Subs-LoginSecurity.php');
+			UpdateAllowedIPs($memID, $_REQUEST['allowedips']);
+		}
+		
+		
+		// End Login Security
+		
+		
+		// Arrays of all the changes - makes things easier.]]></add>
+	</operation>
+	
+	
+</file>
+
+</modification>

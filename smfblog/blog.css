@@ -1,0 +1,58 @@
+/* Styles for SMFBlog */
+/* Listing for blog on index. Contains link to blog, and its description */
+.blog_listing
+{
+
+}
+
+/* Blog's link in the listing */
+.blog_link
+{
+
+}
+
+/* Blog's description */
+.blog_desc
+{
+
+}
+
+/* A post, on the blog's index*/
+.blog_post
+{
+	margin: 2ex 0;
+	border: 1px solid #999999;
+	padding: 10px;
+}
+
+/* Heading of a blog post */
+.blog_post_heading
+{
+	font-weight: bold;
+}
+
+/* The actual post itself */
+.blog_post_body
+{
+	padding: 2ex 0;
+}
+
+/* A reply to a blog post */
+.blog_reply
+{
+	margin: 2ex 0;
+	border: 1px solid #999999;
+	padding: 10px;
+}
+
+/* Heading of a reply */
+.blog_reply_heading
+{
+	font-weight: bold;
+}
+
+/* The actual reply itself */
+.blog_reply_body
+{
+	padding: 2ex 0;
+}

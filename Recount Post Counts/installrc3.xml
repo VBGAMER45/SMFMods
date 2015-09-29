@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:RecountMemberPosts</id>
+	<version>1.0</version>
+
+	<file name="$sourcedir/ManageMaintenance.php">
+		<operation>
+			<search position="before"><![CDATA[				'recount' => 'AdminBoardRecount',]]></search>
+			<add><![CDATA[
+				'recountposts' => 'RecountMemberPosts',]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[// Perform a detailed version check.  A very good thing ;).]]></search>
+			<add><![CDATA[// Recount member post counts
+function RecountMemberPosts()
+{
+	global $txt, $context, $scripturl, $modSettings, $sourcedir;
+	global $time_start, $smcFunc;
+	
+	isAllowedTo('admin_forum');
+	checkSession('request');
+	
+	// Set up to the context.
+	$context['page_title'] =  $txt['not_done_title'];
+	$context['continue_countdown'] = '3';
+	$context['continue_post_data'] = '';
+	$context['continue_get_data'] = '';
+	$context['sub_template'] = 'not_done';
+	$context['start'] = $_REQUEST['start'];
+	$context['start_time'] =  time();
+
+	// Try for as much time as possible.
+	@set_time_limit(600);
+
+	// Determine the total members with posts.
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(DISTINCT m.id_member)
+		FROM {db_prefix}messages AS m
+		LEFT JOIN {db_prefix}boards AS b
+			ON m.id_board = b.id_board
+		WHERE m.id_member != 0
+			AND b.count_posts = 0');
+	list($totalmembers) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	// Initialize the variables.
+	$increment = 100;
+	if (empty($_REQUEST['start']))
+		$_REQUEST['start'] = 0;
+
+	// Grab the first set of members to verify.
+	$request = $smcFunc['db_query']('', '
+		SELECT m.id_member, COUNT(m.id_member) AS posts
+		FROM {db_prefix}messages AS m
+		LEFT JOIN {db_prefix}boards AS b
+			ON m.id_board = b.id_board
+		WHERE m.id_member != 0
+			AND b.count_posts = 0
+		GROUP BY m.id_member
+		LIMIT {int:start}, {int:max}',
+
+		array(
+			'start' => $_REQUEST['start'],
+			'max' => $increment,
+		));
+
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		// Update the post count.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}members
+			SET posts = {int:posts}
+			WHERE id_member = {int:id_member}',
+			array(
+				'posts' => $row['posts'],
+				'id_member' => $row['id_member']
+		));
+	}
+	$smcFunc['db_free_result']($request);
+
+	$_REQUEST['start'] += $increment;
+
+	// Continue?
+	if($_REQUEST['start'] < $totalmembers)
+	{
+		$context['continue_get_data'] = '?action=admin;area=maintain;sa=routine;activity=recountposts;start=' . $_REQUEST['start'] . ';' . $context['session_var'] . '=' . $context['session_id'];
+		$context['continue_percent'] = round(100 * $_REQUEST['start'] / $totalmembers);
+
+		return;
+	}
+
+	redirectexit('action=admin;area=maintain;done');
+}
+
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/ManageMaintenance.template.php">
+		<operation>
+			<search position="after"><![CDATA[<div class="cat_bar">
+			<h3 class="catbg">', $txt['maintain_logs'], '</h3>
+		</div>]]></search>
+			<add><![CDATA[<div class="cat_bar">
+			<h3 class="catbg">', $txt['maintain_recount_posts'] , '</h3>
+		</div>
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+				<div class="content">
+					<form action="', $scripturl, '?action=admin;area=maintain;sa=routine;activity=recountposts" method="post" accept-charset="', $context['character_set'], '">
+						<p>', $txt['maintain_recount_posts_info'], '</p>
+						<span><input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" /></span>
+						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+					</form>
+				</div>
+			<span class="botslice"><span></span></span>
+		</div>
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManageMaintenance.english.php">
+		<operation>
+			<search position="after"><![CDATA[$txt['maintain_errors']]]></search>
+			<add><![CDATA[$txt['maintain_recount_posts'] = 'Recount all member post counts';
+$txt['maintain_recount_posts_info'] = 'Should the total post count of any member be altered, and you wish to set it back to its true value, run this task. It will recount the actual post count for all members.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/ManageMaintenance.english-utf8.php" error="skip">
+		<operation>
+			<search position="after"><![CDATA[$txt['maintain_errors']]]></search>
+			<add><![CDATA[$txt['maintain_recount_posts'] = 'Recount all member post counts';
+$txt['maintain_recount_posts_info'] = 'Should the total post count of any member be altered, and you wish to set it back to its true value, run this task. It will recount the actual post count for all members.';]]></add>
+		</operation>
+	</file>
+
+</modification>

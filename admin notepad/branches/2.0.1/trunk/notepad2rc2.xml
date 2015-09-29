@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:AdminNotepad</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Admin Notepad Text Strings
+$txt['notepad_title'] = 'Admin Notepad';
+$txt['notepad_des'] = 'Place to leave notes to your fellow admins on your forum.';
+$txt['notepad_save'] = 'Save Notes';
+
+
+//END Admin Notepad Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Admin Notepad Text Strings
+$txt['notepad_title'] = 'Admin Notepad';
+$txt['notepad_des'] = 'Place to leave notes to your fellow admins on your forum.';
+$txt['notepad_save'] = 'Save Notes';
+
+
+//END Admin Notepad Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['notifyboard' => array('Notify.php', 'BoardNotify'),]]></search>
+		<add><![CDATA[
+		'notesave' => array('Notepad2.php', 'SaveNote'),]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/Admin.template.php">
+	<operation>
+		<search position="after"><![CDATA[// Is there an update available?]]></search>
+	<add><![CDATA[
+	
+	if (allowedTo('admin_forum'))
+	echo '
+	<div class="windowbg2">
+					<h3 class="catbg"><span class="left"></span>
+						',$txt['notepad_title'],'
+					</h3>
+					<div class="windowbg">
+						<div class="content">
+						',$txt['notepad_des'],'<br />
+												<form method="post" action="',$scripturl, '?action=notesave">
+												  <textarea rows="7" name="txtnotes" cols="88">', @$modSettings['adminnotes'], '</textarea><br />
+												  <input type="submit" value="',$txt['notepad_save'], '" name="cmdnotes" />
+						</form>
+						</div>
+					</div>
+			</div>';
+	
+
+]]></add>
+	</operation>
+
+</file>
+</modification>

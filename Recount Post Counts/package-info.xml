@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Recount Member Posts</name>
+	<id>vbgamer45:RecountMemberPosts</id>
+	<version>1.1</version>
+	<type>modification</type>
+	<install for="2.0 RC2">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file" format="xml">install.xml</modification>
+	</install>
+
+	<uninstall for="2.0 RC2">
+		<modification type="file" format="xml" reverse="true">install.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC3">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file" format="xml">installrc3.xml</modification>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99, 2.0 RC3">
+		<modification type="file" format="xml" reverse="true">installrc3.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:NewTopicButton</id>
+<version>1.0</version>
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="before"><![CDATA['reply' => array('test' => 'can_reply', 'text' => 'reply', 'image' => 'reply.gif', 'lang' => true, 'url' => $scripturl . '?action=post;topic=' . $context['current_topic'] . '.' . $context['start'] . ';num_replies=' . $context['num_replies'],'active' => true),]]></search>
+		
+		<add><![CDATA[
+		'new_topic' => array((allowedTo('post_new')) ? 1 : 'test' => 'nothinglol', 'text' => 'new_topic', 'image' => 'new_topic.gif', 'lang' => true, 'url' => $scripturl . '?action=post;board=' . $context['current_board'] . '.0'),]]></add>
+	</operation>
+</file>
+</modification>

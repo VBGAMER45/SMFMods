@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:WelcomeTopic</id>
+	<name>Welcome Topic Mod</name>
+	<type>modification</type>
+	<version>2.2</version>
+
+	<install for="1.1 - 1.1.99">
+		<redirect url="?action=welcome">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">WelcomeTopic.xml</modification>
+		<require-file name="WelcomeTopic.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql.php</code>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">WelcomeTopic.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+
+
+
+	<install for="2.0 RC2">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">WelcomeTopic2.xml</modification>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql2.php</code>
+	</install>
+	<upgrade for="2.0 RC2">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">WelcomeTopic2.xml</modification>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql2.php</code>
+	</upgrade>
+	<uninstall for="2.0 RC2">
+		<modification type="file" reverse="true">WelcomeTopic2.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.0 RC3">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">WelcomeTopic2rc3.xml</modification>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql2.php</code>
+	</install>
+	<upgrade for="2.0 RC3">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql2.php</code>
+	</upgrade>
+	<uninstall for="2.0 RC3">
+		<modification type="file" reverse="true">WelcomeTopic2rc3.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	
+	
+	<install for="2.0 - 2.0.99, 2.0 RC4,2.0 RC5">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">WelcomeTopic2rc4.xml</modification>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql2.php</code>
+	</install>
+	<upgrade for="2.0 - 2.0.99, 2.0 RC4,2.0 RC5">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<code>WelcomeTopicsql2.php</code>
+	</upgrade>
+	<uninstall for="2.0 - 2.0.99, 2.0 RC4,2.0 RC5">
+		<modification type="file" reverse="true">WelcomeTopic2rc4.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+</package-info>

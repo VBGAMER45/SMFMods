@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:RegBar</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Regbar Text Strings
+$txt['regbar_text'] = 'It appears you have not registered with our community. To register please click here ...';
+//END Regbar Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Regbar Text Strings
+$txt['regbar_text'] = 'It appears you have not registered with our community. To register please click here ...';
+//END Regbar Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[echo '
+</head>
+<body>';]]></search>
+		<add><![CDATA[
+		if($context['user']['is_guest'] && $context['current_action'] != 'register')
+			echo '<div id="infobar"><p><a href="' . $scripturl . '?action=register">' . $txt['regbar_text'] . '</a></p></div>';
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[echo '
+	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index', $context['theme_variant'], '.css?rc2" />
+	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/css/print.css?rc2" media="print" />';
+]]></search>
+	<add><![CDATA[echo '
+	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/index', $context['theme_variant'], '.css?rc2" />
+	<link rel="stylesheet" type="text/css" href="', $settings['default_theme_url'], '/css/print.css?rc2" media="print" />';
+
+	// RegBar Warning
+	echo '
+	<link rel="stylesheet" type="text/css" href="', $settings['theme_url'], '/css/regbar2.css?b4" />';]]></add>
+	</operation>
+</file>
+</modification>

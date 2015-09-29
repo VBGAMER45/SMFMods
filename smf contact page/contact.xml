@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:ContactPage</id>
+<version>1.1</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Contact Page Text Strings
+$txt['smfcontact_contact'] = 'Contact';
+$txt['permissionname_view_contact'] = 'View Contact Page';
+$txt['permissionhelp_view_contact'] = 'Allows members to view contact page and send email.';
+$txt['cannot_view_contact'] = 'You can not view the contact page.';
+$txt['smfcontact_name'] = 'Your Name:';
+$txt['smfcontact_subject'] = 'Subject';
+$txt['smfcontact_body'] = 'Message';
+$txt['smfcontact_emailaddress'] = 'Email Address';
+$txt['smfcontact_sendemail'] = 'Send e-mail';
+$txt['smfcontact_messagesent'] = 'Your message has been sent!';
+$txt['smfcontact_messagesent_click'] = 'Your message has been sent! Click ';
+$txt['smfcontact_messagesent_return'] = 'here</a> to return to the board.';
+$txt['smfcontact_errname'] = 'You need to enter your name.';
+$txt['smfcontact_errsubject'] = 'You need to enter a subject.';
+$txt['smfcontact_errmessage'] = 'You need to enter a message.';
+$txt['smfcontact_erremail'] = 'You need to enter your email address.';
+$txt['smfcontact_titlesent'] = ' - Message sent.';
+$txt['smfcontact_form'] = 'Contact Page Form for ';
+$txt['smfcontact_formname'] = "Name: ";
+$txt['smfcontact_formemail'] = "Email: ";
+$txt['smfcontact_ip'] = "IP: ";
+$txt['smfcontact_formmessage'] =  "Message: \n";
+$txt['smfcontactpage_email'] = 'SMF Contact Page Email: ';
+// END Contact Page Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Contact Page Text Strings
+$txt['smfcontact_contact'] = 'Contact';
+$txt['permissionname_view_contact'] = 'View Contact Page';
+$txt['permissionhelp_view_contact'] = 'Allows members to view contact page and send email.';
+$txt['cannot_view_contact'] = 'You can not view the contact page.';
+$txt['smfcontact_name'] = 'Your Name:';
+$txt['smfcontact_subject'] = 'Subject';
+$txt['smfcontact_body'] = 'Message';
+$txt['smfcontact_emailaddress'] = 'Email Address';
+$txt['smfcontact_sendemail'] = 'Send e-mail';
+$txt['smfcontact_messagesent'] = 'Your message has been sent!';
+$txt['smfcontact_messagesent_click'] = 'Your message has been sent! Click ';
+$txt['smfcontact_messagesent_return'] = 'here</a> to return to the board.';
+$txt['smfcontact_errname'] = 'You need to enter your name.';
+$txt['smfcontact_errsubject'] = 'You need to enter a subject.';
+$txt['smfcontact_errmessage'] = 'You need to enter a message.';
+$txt['smfcontact_erremail'] = 'You need to enter your email address.';
+$txt['smfcontact_titlesent'] = ' - Message sent.';
+$txt['smfcontact_form'] = 'Contact Page Form for ';
+$txt['smfcontact_formname'] = "Name: ";
+$txt['smfcontact_formemail'] = "Email: ";
+$txt['smfcontact_ip'] = "IP: ";
+$txt['smfcontact_formmessage'] =  "Message: \n";
+$txt['smfcontactpage_email'] = 'SMF Contact Page Email: ';
+
+// END Contact Page Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'coppa' => array('Register.php', 'CoppaForm'),]]></search>
+		<add><![CDATA[
+		'contact' => array('Contact.php', 'Contact'),]]></add>
+	</operation>
+</file>
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[$current_action = 'admin';
+	if (in_array($context['current_action'], array(]]></search>
+		<add><![CDATA['contact',]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// the [member] list button
+	if ($context['allow_memberlist'])
+		echo ($current_action == 'mlist' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'mlist' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=mlist">' , $txt[331] , '</a>
+				</td>' , $current_action == 'mlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+]]></search>
+		<add><![CDATA[
+	// the [contact] button
+	if ($context['allow_view_contact'])
+		echo ($current_action == 'contact' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'contact' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=contact">' , $txt['smfcontact_contact']  , '</a>
+				</td>' , $current_action == 'contact' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="after"><![CDATA['karma_edit' => false,]]></search>
+		<add><![CDATA[
+		'view_contact' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA['who_view',]]></search>
+		<add><![CDATA[
+		'view_contact',]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_contact'] = allowedTo('view_contact');
+		]]></add>
+	</operation>
+</file>
+
+	<file name="$sourcedir/ModSettings.php">
+		<operation>
+			<search position="before"><![CDATA[			// Reporting of personal messages?
+			array('check', 'enableReportPM'),
+]]></search>
+			<add><![CDATA[
+		'',
+			// SMFHacks.com Contact Page
+			array('text', 'smfcontactpage_email'),
+]]></add>
+		</operation>
+	</file>
+
+</modification>

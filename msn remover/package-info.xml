@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+    <name>MSN Remove</name>
+    <id>Runic:MSNRemove</id>
+	<version>1.1</version>
+	<type>modification</type>
+			<install for="1.1 - 1.1.99">
+                <modification>sources1.xml</modification>
+				<modification>themes1.xml</modification>
+				<modification>languages1.xml</modification>
+        </install>
+        <uninstall for="1.1 - 1.1.99">
+				<modification reverse="true">sources1.xml</modification>
+				<modification reverse="true">themes1.xml</modification>
+				<modification reverse="true">languages1.xml</modification>
+				<code>UnInstall.php</code>
+		</uninstall>
+		
+		<install for="2.0 - 2.0.99">
+                <modification>sources.xml</modification>
+				<modification>themes.xml</modification>
+				<modification>languages.xml</modification>
+        </install>
+        <uninstall for="2.0 - 2.0.99">
+				<modification reverse="true">sources.xml</modification>
+				<modification reverse="true">themes.xml</modification>
+				<modification reverse="true">languages.xml</modification>
+				<code>UnInstall.php</code>
+		</uninstall>
+</package-info>

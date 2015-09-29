@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>runic:ChangeAllSubjects</id>
+	<version>1.2</version>
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['changeallsubject'] = 'Change all subjects';
+$txt['permissionname_change_all_subjects'] = 'Change all subjects';
+$txt['permissionhelp_change_all_subjects'] = 'Allows the member to set the subject of a topic with all its replies by edditing the subject of the topic post.';
+$txt['permissionname_change_all_subjects_own'] = 'Own topic';
+$txt['permissionname_change_all_subjects_any'] = 'Any topic';
+$txt['subjectcopy'] = 'Change All Subjects Mod &copy; <a href="http://www.smfhacks.com" target="_blank">SMFHacks.com</a>';
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['changeallsubject'] = 'Change all subjects';
+$txt['permissionname_change_all_subjects'] = 'Change all subjects';
+$txt['permissionhelp_change_all_subjects'] = 'Allows the member to set the subject of a topic with all its replies by edditing the subject of the topic post.';
+$txt['permissionname_change_all_subjects_own'] = 'Own topic';
+$txt['permissionname_change_all_subjects_any'] = 'Any topic';
+$txt['subjectcopy'] = 'Change All Subjects Mod &copy; <a href="http://www.smfhacks.com" target="_blank">SMFHacks.com</a>';
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english_british.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['changeallsubject'] = 'Change all subjects';
+$txt['permissionname_change_all_subjects'] = 'Change all subjects';
+$txt['permissionhelp_change_all_subjects'] = 'Allows the member to set the subject of a topic with all its replies by edditing the subject of the topic post.';
+$txt['permissionname_change_all_subjects_own'] = 'Own topic';
+$txt['permissionname_change_all_subjects_any'] = 'Any topic';
+$txt['subjectcopy'] = 'Change All Subjects Mod &copy; <a href="http://www.smfhacks.com" target="_blank">SMFHacks.com</a>';
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english_british-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['changeallsubject'] = 'Change all subjects';
+$txt['permissionname_change_all_subjects'] = 'Change all subjects';
+$txt['permissionhelp_change_all_subjects'] = 'Allows the member to set the subject of a topic with all its replies by edditing the subject of the topic post.';
+$txt['permissionname_change_all_subjects_own'] = 'Own topic';
+$txt['permissionname_change_all_subjects_any'] = 'Any topic';
+$txt['subjectcopy'] = 'Change All Subjects Mod &copy; <a href="http://www.smfhacks.com" target="_blank">SMFHacks.com</a>';
+]]></add>
+		</operation>
+	</file>
+</modification>

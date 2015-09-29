@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<name>Spiders Don't Increase Topic Views</name>
+	<id>karlbenson:SpidersNoTopicViewIncrease</id>
+	<version>1.1</version>
+	<homepage>http://dev.smfchat.com</homepage>
+	
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after"><![CDATA[// The central part of the board - topic display.
+function Display()]]></search>
+	<add><![CDATA[
+// DETECT SPIDERS
+function detect_spider() {
+	// LIST OF SPIDERS
+	$known_spiders = array(
+			'WISENutbot', 		'MSNBot', 			'MSN spider',			'W3C Validator',
+			'Googlebot-Image',	'Googlebot',		'Mediapartners-Google',	'Openbot',
+			'Yahoo! Slurp',		'FAST-WebCrawler',	'Wget',					'Ask Jeeves', 
+			'Speedy Spider',	'SurveyBot',		'IBM_Planetwide',		'OmniExplorer_Bot/6.68',
+			'ia_archiver',		'FAST-WebCrawler',	'Inktomi Slurp',		'Feedfetcher-Google',
+			'FeedBurner/1.0',	'appie',			'ping.blo.gs/2.0',		'http://www.relevantnoise.com',
+			'omgilibot/0.3',	'GigaBot',			'NewsGatorOnline/2.0',	'Jakarta Commons-HttpClient/3.0.1',
+			'Jakarta Commons-HttpClient/3.0-rc2',
+	);
+
+	foreach($known_spiders AS $agent) {
+		if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), strtolower($agent)) !== false) {
+			return true;
+		}
+	}
+	unset($known_spiders);
+	return false;
+}
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}topics
+			SET num_views = num_views + 1
+			WHERE id_topic = {int:current_topic}',
+			array(
+				'current_topic' => $topic,
+			)
+		);
+]]></search>
+			<add><![CDATA[
+		// ONLY INCREASE NUMBER OF TOPIC VIEWS IF NOT A SPIDER	
+		$is_spider = detect_spider();	
+		if(!$is_spider) {
+			$smcFunc['db_query']('', '
+			UPDATE {db_prefix}topics
+			SET num_views = num_views + 1
+			WHERE id_topic = {int:current_topic}',
+			array(
+				'current_topic' => $topic,
+			)
+		);
+		}
+]]></add>
+		</operation>
+	</file>
+	
+</modification>

@@ -1,0 +1,17 @@
+# To use this, rename this file to .htaccess. If you already have a .htaccess
+# file, copy and paste this entire file to the end of it.
+
+RewriteEngine on
+# If you're having trouble with the pretty URLs (they aren't working), try 
+# uncommenting the following RewriteBase line (remove the # from it), and change
+# /forum/ to your forum's correct URI.
+#RewriteBase /forum/
+
+# Main blog listing
+RewriteRule ^blog/$ index.php?action=blog
+# Viewing a blog
+RewriteRule ^blog/([A-Za-z0-9\-_]+)/$ index.php?action=blog&sa=view_blog&name=$1
+# A specific page of the blog
+RewriteRule ^blog/([A-Za-z0-9\-_]+)/([0-9]+).html$ index.php?action=blog&sa=view_blog&name=$1&start=$2
+# A post in the blog
+RewriteRule ^blog/([A-Za-z0-9\-_]+)/post-([0-9]+).html$ index.php?action=blog&sa=view_post&id=$2&blog_name=$1 [QSA]

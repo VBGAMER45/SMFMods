@@ -1,0 +1,51 @@
+E-Arcade
+An arcade system to your SMF forum
+
+For more info and instructions visit http://www.smfarcade.com
+
+-------------------------------------------------------------------------------------------------
+
+This Arcade mod is released under GNU GENERAL PUBLIC LICENSE
+and is based on the original GPL code for SMFArcade by Niko Pahajoki - http://www.smfarcade.info/ 
+
+E-Arcade - adds an arcade system to your SMF forum
+Copyright (C) 2014  vbgamer45 - www.smfhacks.com
+Copyright (C) 2007  Eric Lawson - www.ericsworld.eu
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
+
+See ArcadeLicense.txt for more license details.
+--------------------------------------------------------------------------------------------------
+
+The file ArcadeTar.php is subject to version 3.0 of the PHP license (included in the file)
+
+--------------------------------------------------------------------------------------------------
+
+To manually install....
+ 
+Unzip and upload all the files/folders in the package keeping the folder structure the same as in the package..
+e.g. Files in the \Sources folder go to <your forum>\Sources
+Files not in folders go to <your forum> folder.
+
+Create the new folders....
+<your forum>\Games
+<your forum>\cache
+<your forum>\arcade
+<your forum>\arcade\gamedata
+<your forum>\tempGames
+<your forum>\tempGames\gamedata
+
+browse to <your forum>\installArcade.php to run the database installer.
+

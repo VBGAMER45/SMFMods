@@ -1,0 +1,41 @@
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>jaybachatero:country_flags</id>
+	<version>1.0.3</version>
+
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Country Flag mod
+$txt['country_flag_label'] = 'Country';
+$txt['country_flag_error_required'] = 'You must select a country!';
+$txt['country_flag_ask'] = 'Allow member to select country:';
+$txt['country_flag_disabled'] = 'Never (Disabled)';
+$txt['country_flag_profile'] = 'On Profile only';
+$txt['country_flag_both'] = 'On both Profile and Registration';
+$txt['country_flag_required'] = 'Require member to select a country?';
+$txt['country_flag_show'] = 'Show country name and flag on posts as well as profile?';
+$txt['country_flag'] = 'Country';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Country Flag mod
+$txt['country_flag_label'] = 'Country';
+$txt['country_flag_error_required'] = 'You must select a country!';
+$txt['country_flag_ask'] = 'Allow member to select country:';
+$txt['country_flag_disabled'] = 'Never (Disabled)';
+$txt['country_flag_profile'] = 'On Profile only';
+$txt['country_flag_both'] = 'On both Profile and Registration';
+$txt['country_flag_required'] = 'Require member to select a country?';
+$txt['country_flag_show'] = 'Show country and flag on posts as well as profile?';
+$txt['country_flag'] = 'Country';
+]]></add>
+		</operation>
+	</file>
+
+</modification>

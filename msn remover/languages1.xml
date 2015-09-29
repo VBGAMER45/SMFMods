@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Runic:MSNRemove</id>
+	<version>1.0</version>
+	<file name="$languagedir/index.english.php">
+		<operation>
+			<search position="replace"><![CDATA[$txt['MSN'] = 'MSN';
+
+$txt['settings'] = 'Settings';]]></search>
+			<add><![CDATA[$txt['settings'] = 'Settings';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/Profile.english.php">
+		<operation>
+			<search position="replace"><![CDATA[$txt['smf237'] = 'Your MSN messenger email address';
+$txt['smf241'] = 'Current Password';]]></search>
+			<add><![CDATA[$txt['smf241'] = 'Current Password';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/index.english_british.php" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[$txt['MSN'] = 'MSN';
+
+$txt['settings'] = 'Settings';]]></search>
+			<add><![CDATA[$txt['settings'] = 'Settings';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/Profile.english.php_british" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[$txt['smf237'] = 'Your MSN messenger email address';
+$txt['smf241'] = 'Current Password';]]></search>
+			<add><![CDATA[$txt['smf241'] = 'Current Password';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/index.english.php-utf8" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[$txt['MSN'] = 'MSN';
+
+$txt['settings'] = 'Settings';]]></search>
+			<add><![CDATA[$txt['settings'] = 'Settings';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/Profile.english.php-utf8" error="skip">
+		<operation>
+			<operation>
+			<search position="replace"><![CDATA[$txt['smf237'] = 'Your MSN messenger email address';
+$txt['smf241'] = 'Current Password';]]></search>
+			<add><![CDATA[$txt['smf241'] = 'Current Password';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/index.english_british.php-utf8" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[$txt['MSN'] = 'MSN';
+
+$txt['settings'] = 'Settings';]]></search>
+			<add><![CDATA[$txt['settings'] = 'Settings';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/Profile.english.php_british-utf8" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[$txt['smf237'] = 'Your MSN messenger email address';
+$txt['smf241'] = 'Current Password';]]></search>
+			<add><![CDATA[$txt['smf241'] = 'Current Password';]]></add>
+		</operation>
+	</file>
+</modification>

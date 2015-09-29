@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFStaff</id>
+<version>1.6</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin SMF Staff Page Text Strings
+$txt['smfstaff_stafflist'] = 'Staff List';
+$txt['smfstaff_admin'] = 'Staff Configuration';
+
+$txt['permissionname_view_stafflist'] = 'View Staff List';
+$txt['permissionhelp_view_stafflist'] = 'Staff List shows all members on your Staff. You can change which member groups are shown by going to Layout and Options and look for SMF Staff filter. This permission allows you to toggle who can view the staff list.';
+$txt['cannot_view_stafflist'] = 'You can not view the staff list.';
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin SMF Staff Page Text Strings
+$txt['smfstaff_stafflist'] = 'Staff List';
+$txt['smfstaff_admin'] = 'Staff Configuration';
+
+$txt['permissionname_view_stafflist'] = 'View Staff List';
+$txt['permissionhelp_view_stafflist'] = 'Staff List shows all members on your Staff. You can change which member groups are shown by going to Layout and Options and look for SMF Staff filter. This permission allows you to toggle who can view the staff list.';
+$txt['cannot_view_stafflist'] = 'You can not view the staff list.';
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin SMF Staff Page Text Strings
+$txt['whoall_staff'] = 'Viewing the <a href="' . $scripturl . '?action=staff">Staff</a> Page';
+// END SMF Staff Page Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[		'staff' => array('Staff2.php', 'Staff'),]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="after"><![CDATA[				'current_theme' => array(
+					'label' => $txt['theme_current_settings'],]]></search>
+		<add><![CDATA[
+				'staff' => array(
+					'label' => $txt['smfstaff_admin'],
+					'file' => 'Staff2.php',
+					'function' => 'Staff',
+					'custom_url' => $scripturl . '?action=admin;area=staff;sa=admin;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'subsections' => array(
+						'adminset' => array($txt['smfstaff_admin']),
+					),
+				),
+]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_stafflist'] = allowedTo('view_stafflist');
+		]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA['mlist' => array(]]></search>
+		<add><![CDATA[			
+		// [Staff] button
+			'staff' => array(
+				'title' => $txt['smfstaff_stafflist'],
+				'href' => $scripturl . '?action=staff',
+				'show' => $context['allow_view_stafflist'],
+				'icon' => '',
+			),
+]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[	$groupLevels['global']['standard'] = array_merge($groupLevels['global']['restrict'], array(]]></search>
+		<add><![CDATA[
+		'view_stafflist',]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(]]></search>
+		<add><![CDATA[
+			'view_stafflist' => array(false, 'general', 'view_basic_info'),]]></add>
+	</operation>
+</file>
+</modification>

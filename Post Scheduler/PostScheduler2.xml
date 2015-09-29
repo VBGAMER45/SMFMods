@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:PostScheduler</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="end" />
+		<add><![CDATA[
+// Begin Post Scheduler Text Strings
+$txt['postscheduler_admin'] = 'Post Scheduler';
+
+// END Post Scheduler		
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="end" />
+		<add><![CDATA[
+// Begin Post Scheduler Text Strings
+$txt['postscheduler_admin'] = 'Post Scheduler';
+
+// END Post Scheduler			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/ManageScheduledTasks.english.php">
+	<operation error="ignore">
+		<search position="end" />
+		<add><![CDATA[
+// Begin Post Scheduler Text Strings
+$txt['scheduled_task_update_scheduleposts'] = 'Check for Scheduled Posts';
+$txt['scheduled_task_desc_update_scheduleposts'] = 'Posts any posts that are waiting to be posting from the Post Scheduler';
+
+// END Post Scheduler	
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[loadPermissions();]]></search>
+		<add><![CDATA[
+		// Post Scheduler run fake cron job
+		if (!empty($modSettings['post_fakecron']))
+		{
+			if (empty($modSettings['post_lastcron']) || $modSettings['post_lastcron'] > time())
+			{
+				require_once($sourcedir . '/PostScheduler2.php');
+				CheckPostScheduler();
+			}
+		}
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[
+		'postscheduler' => array('PostScheduler2.php', 'PostSchedulerMain'),]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="after"><![CDATA['current_theme' => array(
+					'label' => $txt['theme_current_settings'],]]></search>
+	<add><![CDATA[
+	'postscheduler' => array(
+						'label' => $txt['postscheduler_admin'],
+						'file' => 'PostScheduler2.php',
+						'function' => 'PostSchedulerMain',
+						'custom_url' => $scripturl . '?action=admin;area=postscheduler;sesc=' . $sc,
+						'icon' => 'server.gif',
+						'subsections' => array(),
+			),
+	
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ScheduledTasks.php">
+	<operation error="ignore">
+			<search position="after"><![CDATA[
+?>]]></search>
+	<add><![CDATA[
+	
+function scheduled_update_scheduleposts()
+{
+	global $smcFunc, $sourcedir;
+	require_once($sourcedir . '/PostScheduler2.php');
+	CheckPostScheduler();
+	// Return for the log...
+	return true;
+}
+	
+]]></add>
+	</operation>
+</file>
+</modification>

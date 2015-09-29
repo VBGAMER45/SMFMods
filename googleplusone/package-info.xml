@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:GooglePlusOne</id>
+	<name>Google +1 Topics</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">googleplusone.xml</modification>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
+		<modification type="file" reverse="true">googleplusone.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">googleplusone2.xml</modification>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">googleplusone2.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+</package-info>

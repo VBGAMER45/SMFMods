@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>runic:ChangeAllSubjects</id>
+	<version>1.2</version>
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="before"><![CDATA[approve_this_post'] . '</label></li>' : '', ']]></search>
+			<add><![CDATA[
+							', $context['can_changeallsubjects'] ? '<li><label for="check_changeallsubject"><input type="checkbox" name="changeallsubject" id="check_changeallsubject" class="input_check" /> ' . $txt['changeallsubject'] . '</label></li>' : '', ']]></add>
+		</operation>
+	</file>
+		<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="replace" whitespace="loose"><![CDATA[		'mods' => array(]]></search>
+			<add><![CDATA[		'mods' => array( $txt['subjectcopy'],]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="before"><![CDATA[$context['locked'] = !empty($locked) || !empty($_REQUEST['lock']);]]></search>
+			<add><![CDATA[
+
+	$context['is_new_topic'] = empty($topic);
+	$context['is_first_post'] = $context['is_new_topic'] || (isset($_REQUEST['msg']) && $_REQUEST['msg'] == $id_first_msg);
+
+	$context['can_changeallsubjects'] = isset($id_member_poster) && $id_member_poster == $user_info['id'] ? allowedTo(array('change_all_subjects_own', 'change_all_subjects_any')) : allowedTo('change_all_subjects_any');
+	$context['can_changeallsubjects'] = $context['can_changeallsubjects'] && $context['is_first_post'];
+
+]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="after"><![CDATA[// Change the post.
+	$smcFunc['db_query']('', ']]></search>
+			<add><![CDATA[	//Change all subjects if wanted and subject set.
+	if (!empty($_POST['changeallsubject']) && isset($msgOptions['subject']))
+	{
+		global $language, $txt;
+		// Get a response prefix (like 'Re:') in the default forum language.
+		if (!isset($context['response_prefix']) && !($context['response_prefix'] = cache_get_data('response_prefix')))
+		{
+			if ($language === $user_info['language'])
+				$context['response_prefix'] = $txt['response_prefix'];
+			else
+			{
+				loadLanguage('index', $language, false);
+				$context['response_prefix'] = $txt['response_prefix'];
+				loadLanguage('index');
+			}
+
+			cache_put_data('response_prefix', $context['response_prefix'], 600);
+		}
+
+		// Add the prefix and do it.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}messages
+			SET subject = {text:new_subject}
+			WHERE id_topic = {int:id_topic}',
+			array(
+				'id_topic' => $topicOptions['id'],
+				'new_subject' => $context['response_prefix'] . $msgOptions['subject'],
+			)
+		);
+	}
+
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[global $user_info, $modSettings, $smcFunc, $context]]></search>
+			<add><![CDATA[, $txt, $language]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA['modify_replies' => array(false, 'topic', 'moderate'),]]></search>
+			<add><![CDATA[//
+			'change_all_subjects' => array(true, 'topic', 'moderate'),
+		]]></add>
+		</operation>
+	</file>
+</modification>

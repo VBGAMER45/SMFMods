@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:QuickRegister</id>
+<version>1.0</version>
+
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="after><![CDATA[// The main content should go here.]]></search>
+		<add><![CDATA[
+		if ($context['user']['is_guest'])
+{
+loadLanguage('Login');
+echo '
+		<div class="tborder">
+<div class="catbg2">Quick Register</div>
+<div class="windowbg" align="center">
+<form action="', $scripturl, '?action=register2" method="post" name="creator" id="creator">
+
+' . $txt[98] . '&nbsp;<input type="text" name="user" size="30" maxlength="25" />
+' . $txt[69] . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="email" size="30" /><br />
+' . $txt[82] . '&nbsp;&nbsp;&nbsp;<input type="password" name="passwrd1" size="30" />
+' . $txt[81] . '&nbsp;<input type="password" name="passwrd2" size="30" /><br />
+
+<input type="checkbox" name="regagree" class="check" />I agree to Registration Agreement
+
+<div align="center">
+<input type="submit" name="regSubmit" value="', $txt[97], '" />
+</div>
+</form>
+</div>
+</div>';
+}]]></add>
+
+	</operation>
+</file>
+
+</modification>

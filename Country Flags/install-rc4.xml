@@ -1,0 +1,492 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>jaybachatero:country_flags</id>
+	<version>1.1</version>
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="after"><![CDATA[		'gender' => array(]]></search>
+			<add><![CDATA[		'country_flag' => $profile['country_flag'],
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[			mem.birthdate, mem.member_ip, mem.member_ip2, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login,]]></search>
+			<add><![CDATA[			mem.birthdate, mem.member_ip, mem.member_ip2, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login, mem.country_flag,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[			mem.openid_uri, mem.birthdate, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login, mem.karma_good,]]></search>
+			<add><![CDATA[			mem.openid_uri, mem.birthdate, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login, mem.karma_good, mem.country_flag,]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[		// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+		// Show flags
+		array('select', 'country_flag_ask', array($txt['country_flag_disabled'], $txt['country_flag_profile'], $txt['country_flag_both'])),
+		array('check', 'country_flag_required'),
+		array('check', 'country_flag_show'),
+	'',
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+function CountryFlag()
+{
+	$flags = array(
+		'0' => 'Select Country',
+		'af' => 'Afghanistan',							'al' => 'Albania',								'dz' => 'Algeria',
+		'as' => 'American Samoa',						'ad' => 'Andorra',								'ao' => 'Angola',
+		'ai' => 'Anguilla',								'aq' => 'Antarctica',							'ag' => 'Antigua and Barbuda',
+		'ar' => 'Argentina',							'am' => 'Armenia',								'aw' => 'Aruba',
+		'au' => 'Australia',							'at' => 'Austria',								'az' => 'Azerbaijan',
+		'bs' => 'Bahamas',								'bh' => 'Bahrain',								'bd' => 'Bangladesh',
+		'bb' => 'Barbados',								'by' => 'Belarus',								'be' => 'Belgium',
+		'bz' => 'Belize',								'bj' => 'Benin',								'bm' => 'Bermuda',
+		'bt' => 'Bhutan',								'bo' => 'Bolivia',								'ba' => 'Bosnia and Herzegovina',
+		'bw' => 'Botswana',								'bv' => 'Bouvet Island',						'br' => 'Brazil',
+		'io' => 'British Indian Ocean Territory',		'bn' => 'Brunei Darussalam',					'bg' => 'Bulgaria',
+		'bf' => 'Burkina Faso',							'bi' => 'Burundi',								'kh' => 'Cambodia',
+		'cm' => 'Cameroon',								'ca' => 'Canada',								'cv' => 'Cape Verde',
+		'ky' => 'Cayman Islands',						'cf' => 'Central African Republic',				'td' => 'Chad',
+		'cl' => 'Chile',								'cn' => 'China',								'cx' => 'Christmas Island',
+		'cc' => 'Cocos (Keeling) Islands',				'co' => 'Colombia',								'km' => 'Comoros',
+		'cg' => 'Congo, Republic of the',				'cd' => 'Congo, The Democratic Republic of the',
+		'ck' => 'Cook Islands',							'cr' => 'Costa Rica',							'ci' => 'Côte d\'Ivoire',
+		'hr' => 'Croatia',								'cu' => 'Cuba',									'cy' => 'Cyprus',
+		'cz' => 'Czech Republic',						'dk' => 'Denmark',								'dj' => 'Djibouti',
+		'dm' => 'Dominica',								'do' => 'Dominican Republic',					'ec' => 'Ecuador',
+		'eg' => 'Egypt',								'sv' => 'El Salvador',							'england' => 'England',
+		'gq' => 'Equatorial Guinea',					'er' => 'Eritrea',								'ee' => 'Estonia',
+		'et' => 'Ethiopia',								'fk' => 'Falkland Islands (Islas Malvinas)',	'fo' => 'Faroe Islands',
+		'fj' => 'Fiji',									'fi' => 'Finland',								'fr' => 'France',
+		'gf' => 'French Guiana',						'pf' => 'French Polynesia',						'tf' => 'French Southern Territories',
+		'ga' => 'Gabon',								'gm' => 'Gambia',								'ge' => 'Georgia',
+		'de' => 'Germany',								'gh' => 'Ghana',								'gi' => 'Gibraltar',
+		'gr' => 'Greece',								'gl' => 'Greenland',							'gd' => 'Grenada',
+		'gp' => 'Guadeloupe',							'gu' => 'Guam',									'gt' => 'Guatemala',
+		'gn' => 'Guinea',								'gw' => 'Guinea-Bissau',						'gy' => 'Guyana',
+		'ht' => 'Haiti',								'hm' => 'Heard Island and McDonald Islands',	'va' => 'Vatican City State',
+		'hn' => 'Honduras',								'hk' => 'Hong Kong',							'hu' => 'Hungary',
+		'is' => 'Iceland',								'in' => 'India',								'id' => 'Indonesia',
+		'ir' => 'Iran, Islamic Republic of',			'iq' => 'Iraq',									'ie' => 'Ireland, Republic of',
+		'il' => 'Israel',								'it' => 'Italy',								'jm' => 'Jamaica',
+		'jp' => 'Japan',								'jo' => 'Jordan',								'kz' => 'Kazakhstan',
+		'ke' => 'Kenya',								'ki' => 'Kiribati',								'kp' => 'Korea, Democratic People\'s Republic of',
+		'kr' => 'Korea, Republic of',					'kw' => 'Kuwait',								'kg' => 'Kyrgyzstan',
+		'la' => 'Lao People\'s Democratic Republic',	'lv' => 'Latvia',								'lb' => 'Lebanon',
+		'ls' => 'Lesotho',								'lr' => 'Liberia',								'ly' => 'Libyan Arab Jamahiriya',
+		'li' => 'Liechtenstein',						'lt' => 'Lithuania',							'lu' => 'Luxembourg',
+		'mo' => 'Macao',								'mk' => 'Macedonia, The Former Yugoslav Republic of',
+		'mg' => 'Madagascar',							'mw' => 'Malawi',								'my' => 'Malaysia',
+		'mv' => 'Maldives',								'ml' => 'Mali',									'mt' => 'Malta',
+		'mh' => 'Marshall Islands',						'mq' => 'Martinique',							'mr' => 'Mauritania',
+		'mu' => 'Mauritius',							'yt' => 'Mayotte',								'mx' => 'Mexico',
+		'fm' => 'Micronesia, Federated States of',		'md' => 'Moldova, Republic of',					'mc' => 'Monaco',
+		'mon' => 'Montenegro',							'mn' => 'Mongolia',								'ms' => 'Montserrat',
+		'ma' => 'Morocco',								'mz' => 'Mozambique',							'mm' => 'Myanmar',
+		'na' => 'Namibia',								'nr' => 'Nauru',								'np' => 'Nepal',
+		'nl' => 'Netherlands',							'an' => 'Netherlands Antilles',					'nc' => 'New Caledonia',
+		'nz' => 'New Zealand',							'ni' => 'Nicaragua',							'ne' => 'Niger',
+		'ng' => 'Nigeria',								'nu' => 'Niue',									'nf' => 'Norfolk Island',
+		'mp' => 'Northern Mariana Islands',				'no' => 'Norway',								'om' => 'Oman',
+		'pk' => 'Pakistan',								'pw' => 'Palau',								'ps' => 'Palestinian Territory, Occupied',
+		'pa' => 'Panama',								'pg' => 'Papua New Guinea',						'py' => 'Paraguay',
+		'pe' => 'Peru',									'ph' => 'Philippines',							'pn' => 'Pitcairn',
+		'pl' => 'Poland',								'pt' => 'Portugal',								'pr' => 'Puerto Rico',
+		'qa' => 'Qatar',								're' => 'Reunion',								'ro' => 'Romania',
+		'ru' => 'Russian Federation',					'rw' => 'Rwanda',								'sh' => 'Saint Helena',
+		'kn' => 'Saint Kitts and Nevis',				'lc' => 'Saint Lucia',							'pm' => 'Saint Pierre and Miquelon',
+		'vc' => 'Saint Vincent and the Grenadines',		'ws' => 'Samoa',								'sm' => 'San Marino',
+		'st' => 'Sao Tome and Principe',				'sa' => 'Saudi Arabia',							'scotland' => 'Scotland',
+		'sn' => 'Senegal',								'cs' => 'Serbia',								'sc' => 'Seychelles',
+		'sl' => 'Sierra Leone',							'sg' => 'Singapore',							'sk' => 'Slovakia',
+		'si' => 'Slovenia',								'sb' => 'Solomon Islands',						'so' => 'Somalia',
+		'za' => 'South Africa',							'gs' => 'South Georgia and the South Sandwich Islan',
+		'es' => 'Spain',								'lk' => 'Sri Lanka',							'sd' => 'Sudan',
+		'sr' => 'Suriname',								'sj' => 'Svalbard and Jan Mayen',				'sz' => 'Swaziland',
+		'se' => 'Sweden',								'ch' => 'Switzerland',							'sy' => 'Syrian Arab Republic',
+		'tw' => 'Taiwan',								'tj' => 'Tajikistan',							'tz' => 'Tanzania, United Republic of',
+		'th' => 'Thailand',								'tl' => 'Timor-Leste',							'tg' => 'Togo',
+		'tk' => 'Tokelau',								'to' => 'Tonga',								'tt' => 'Trinidad and Tobago',
+		'tn' => 'Tunisia',								'tr' => 'Turkey',								'tm' => 'Turkmenistan',
+		'tc' => 'Turks and Caicos Islands',				'tv' => 'Tuvalu',								'ug' => 'Uganda',
+		'ua' => 'Ukraine',								'ae' => 'United Arab Emirates',					'gb' => 'United Kingdom',
+		'us' => 'United States',						'um' => 'United States Minor Outlying Islands',	'uy' => 'Uruguay',
+		'uz' => 'Uzbekistan',							'vu' => 'Vanuatu',								've' => 'Venezuela',
+		'vn' => 'Viet Nam',								'vg' => 'Virgin Islands, British',				'vi' => 'Virgin Islands, U.S.',
+		'wales' => 'Wales',								'wf' => 'Wallis and Futuna',					'eh' => 'Western Sahara',
+		'ye' => 'Yemen',								'zm' => 'Zambia',								'zw' => 'Zimbabwe',
+	);
+	return $flags;
+}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Get all the messages...]]></search>
+			<add><![CDATA[
+	// Call the function that has all the flag info
+	$flags = CountryFlag();
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[
+			// Is karma display enabled?  Total or +/-?]]></search>
+			<add><![CDATA[
+			// Show the country they hail from!
+			if (!empty($modSettings['country_flag_ask']) && !empty($modSettings['country_flag_show']) && !empty($message['member']['country_flag']))
+				echo '
+								<li class="gender"><strong>', $txt['country_flag'], ':</strong> ', $flags[$message['member']['country_flag']], '  <img src="', $settings['images_url'], '/flags/', $message['member']['country_flag'], '.png" alt="', $message['member']['country_flag'], '" /></li>';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[		// We add a little hack to be sure we never get more than one hr in a row!
+		if ($lastItem == 'hr' && $field['type'] == 'hr')
+			continue;
+
+]]></search>
+			<add><![CDATA[		// Only display the country flag option if the feature is enabled
+		if ($key == 'country_flag' && empty($modSettings['country_flag_ask']))
+			continue;
+
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[			// Always fun - select boxes!
+			elseif ($field['type'] == 'select')
+			{
+				echo '
+							<select name="', $key, '" id="', $key, '">';
+
+				if (isset($field['options']))
+				{
+					// Is this some code to generate the options?
+					if (!is_array($field['options']))
+						$field['options'] = eval($field['options']);
+					// Assuming we now have some!
+					if (is_array($field['options']))
+						foreach ($field['options'] as $value => $name)
+							echo '
+								<option value="', $value, '" ', $value == $field['value'] ? 'selected="selected"' : '', '>', $name, '</option>';
+				}
+
+				echo '
+							</select>';
+			}
+]]></search>
+			<add><![CDATA[			// Always fun - select boxes!
+			elseif ($field['type'] == 'select')
+			{
+			if ($key == 'country_flag')
+			{
+				echo '
+						<script type="text/javascript" language="JavaScript">
+						function show_country_flags()
+						{
+							document.images.flags.src = document.forms.creator.country_flag.options[document.forms.creator.country_flag.selectedIndex].value != \'\' ? \'' . $settings['images_url'] . '/flags/\' + document.forms.creator.country_flag.options[document.forms.creator.country_flag.selectedIndex].value + \'.png\' : \'' . $settings['images_url'] . '/flags/blank.gif\';
+						}
+						</script>
+						<select name="', $key, '" id="', $key, '" onchange="show_country_flags()">';
+
+					foreach ($field['options'] as $value => $name)
+						echo '
+							<option value="', $value, '" ', isset($context['member']['country_flag']) &&  $context['member']['country_flag'] == $value ? 'selected="selected"' : '', '>', $name, '</option>';
+
+					echo '
+						</select>
+						<img id="flags" src="', $settings['images_url'], '/', isset($context['member']['country_flag']) && !empty($context['member']['country_flag']) ? 'flags/' . $context['member']['country_flag'] . '.png': 'blank.gif', '" width="25" height="15" alt="" align="top" />';   
+			}
+			else
+			{
+				echo '
+							<select name="', $key, '" id="', $key, '">';
+
+            if (isset($field['options']))
+            {
+               // Is this some code to generate the options?
+               if (!is_array($field['options']))
+                  $field['options'] = eval($field['options']);
+               // Assuming we now have some!
+               if (is_array($field['options']))
+                  foreach ($field['options'] as $value => $name)
+                     echo '
+                        <option value="', $value, '" ', $value == $field['value'] ? 'selected="selected"' : '', '>', $name, '</option>';
+            }
+
+				echo '
+							</select>';
+			}
+			}
+]]></add>
+	</operation>
+	<operation>
+			<search position="after"><![CDATA[
+	if (!isset($context['disabled_fields']['location']) && !empty($context['member']['location']))
+		echo '
+					<dt>', $txt['location'], ':</dt>
+					<dd>', $context['member']['location'], '</dd>';]]></search>
+			<add><![CDATA[
+	// Show the country they hail from!
+	if (!empty($modSettings['country_flag_ask']) && !empty($context['member']['country_flag']))
+	{
+		// Call the function that has all the flag info
+		$flags = CountryFlag();
+
+		echo '
+					<dt>', $txt['country_flag'], ':</dt>
+					<dd>', $flags[$context['member']['country_flag']], '  ', '<img src="', $settings['images_url'], '/flags/', $context['member']['country_flag'], '.png" alt="', $context['member']['country_flag'], '" /> ', '</dd>';
+	}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile-Modify.php">
+		<operation>
+			<search position="after"><![CDATA[		'date_registered' => array(]]></search>
+			<add><![CDATA[		'country_flag' => array(
+			'type' => 'select',
+			'options' => CountryFlag(),
+			'label' => $txt['country_flag'],
+		),
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[			'bday1', 'location', 'gender', 'hr',]]></search>
+			<add><![CDATA[			'bday1', 'location', 'country_flag', 'gender', 'hr',]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile.php">
+		<operation>
+			<search position="after"><![CDATA[
+		// Change the IP address in the database.
+]]></search>
+			<add><![CDATA[
+		// Check if it's required to select a country.
+		if ($current_area == 'forumprofile')
+		{
+			if (!empty($modSettings['country_flag_required']) && empty($_POST['country_flag']))
+				fatal_lang_error('country_flag_error_required', false);
+		}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="replace"><![CDATA[			</div>';
+
+	// If we have either of these, show the extra group.
+	if (!empty($context['profile_fields']) || !empty($context['custom_fields']))
+	{
+		echo '
+			<div class="title_bar">
+				<h4 class="titlebg">', $txt['additional_information'], '</h4>
+			</div>
+			<div class="windowbg2">
+				<span class="topslice"><span></span></span>
+				<fieldset class="content">
+					<dl class="register_form" id="custom_group">';
+	}
+]]></search>
+			<add><![CDATA[			</div>';
+
+	// If we have either of these, show the extra group OR if flags is set for registration show it.
+	if ((!empty($context['profile_fields']) || !empty($context['custom_fields'])) || (!empty($modSettings['country_flag_ask']) && $modSettings['country_flag_ask'] == 2))
+	{
+		echo '
+			<div class="title_bar">
+				<h4 class="titlebg">', $txt['additional_information'], '</h4>
+			</div>
+			<div class="windowbg2">
+				<span class="topslice"><span></span></span>
+				<fieldset class="content">
+					<dl class="register_form" id="custom_group">';
+
+		if (!empty($modSettings['country_flag_ask']) && $modSettings['country_flag_ask'] == 2)
+		{
+			// Call the function that has all the flag info
+			$flags = CountryFlag();
+
+		echo '
+					<script language="JavaScript" type="text/javascript">
+						function showflags()
+						{
+							document.images.flags.src = document.forms.registration.country.options[document.forms.registration.country.selectedIndex].value != \'\' ? \'' . $settings['default_theme_url'] . '/images/flags/\' + document.forms.registration.country.options[document.forms.registration.country.selectedIndex].value + \'.png\' : \'' . $settings['default_theme_url'] . '/images/flags/blank.gif\';
+						}
+					</script>
+					<dl class="register_form" id="country_flag">
+						<dt><strong>', $txt['country_flag'], ':</strong></dt>
+						<dd>
+							<select name="country" onchange="showflags()">';
+
+					// Loop and show the drop down.
+					foreach ($flags as $key => $name)
+						echo '
+								<option value="', $key, '">', $name, '</option>';
+
+		echo '
+							</select>
+							<img id="flags" src="', $settings['default_theme_url'], '/images/blank.gif" alt="" width="25" height="15" align="top" />
+						</dd>
+					</dl>';
+		}
+	}
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+	// If we have either of these, close the list like a proper gent.
+	if (!empty($context['profile_fields']) || !empty($context['custom_fields']))
+]]></search>
+			<add><![CDATA[
+	// If we have either of these OR if flags is set for registration, close the list like a proper gent.
+	if ((!empty($context['profile_fields']) || !empty($context['custom_fields'])) || (!empty($modSettings['country_flag_ask']) && $modSettings['country_flag_ask'] == 2))
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Things we don't do for people who have already confirmed their OpenID allegances via register.]]></search>
+			<add><![CDATA[
+	// Convert the $_POST['country'] to $_POST['default_options']['country']
+	if (isset($_POST['country']))
+	{
+		$_POST['default_options']['country'] = $_POST['country'];
+		$_POST['options']['country'] = $_POST['country'];
+
+		// Check if it's required to select a country
+		if (!empty($modSettings['country_flag_required']) && empty($_POST['default_options']['country']))
+			fatal_lang_error('country_flag_error_required', false);
+
+		$_POST['country_flag'] = $_POST['country'];
+	}
+]]></add>
+</operation>
+		<operation>
+			<search position="after"><![CDATA[
+	// If COPPA has been selected then things get complicated, setup the template.]]></search>
+			<add><![CDATA[
+	//  Country Flag Mod smfhacks.com
+	if (isset($_POST['country']))
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}members
+		SET country_flag = {string:country}
+		WHERE id_member = {int:memid}',
+		array(
+			'country' => $_POST['country'],
+			'memid' => $memberID,
+		)
+	);
+	// End Country Flag Mod smfhacks.com
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Memberlist.php">
+		<operation>
+			<search position="before"><![CDATA[		'posts' => array(
+			'label' => $txt['posts'],
+			'width' => '115',
+			'colspan' => '2',
+			'default_sort_rev' => true,
+		)
+	);
+]]></search>
+			<add><![CDATA[
+	// Country Flags
+	if (!empty($modSettings['country_flag_ask']))
+	{
+		$cc_country = array(
+			'country' => array(
+				'label' => $txt['country_flag_label']
+			),
+			'posts' => array(
+				'label' => $txt['posts'],
+				'width' => '115',
+				'colspan' => '2',
+				'default_sort_rev' => true
+			)
+		);
+		array_splice($context['columns'],-1,1,$cc_country);
+	}
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[		'posts' => array(
+			'down' => 'mem.posts DESC',
+			'up' => 'mem.posts ASC'
+		)
+	);
+]]></search>
+			<add><![CDATA[
+	// Country Flags
+	if (!empty($modSettings['country_flag_ask']))
+	{
+		$sm_country = array(
+			'country' => array(
+				'down' => 'mem.country_flag DESC, mem.real_name ASC',
+				'up' => 'LENGTH(mem.country_flag) > 0 DESC, mem.country_flag = 0 ASC, mem.country_flag ASC, mem.real_name ASC'
+			),
+			'posts' => array(
+				'down' => 'mem.posts DESC',
+				'up' => 'mem.posts ASC'
+			)
+		);
+		array_splice($sort_methods,-1,1,$sm_country);
+	}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Memberlist.template.php">
+		<operation>
+			<search position="replace"><![CDATA[function template_main()
+{
+    global $context, $settings, $options, $scripturl, $txt;]]></search>
+			<add><![CDATA[function template_main()
+{
+    global $context, $settings, $options, $scripturl, $txt, $modSettings;]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[
+		if (!isset($context['disabled_fields']['posts']))]]></search>
+			<add><![CDATA[
+		// Country Flags
+		if (!empty($modSettings['country_flag_ask']))
+		{
+			if (!empty($member['country_flag']))
+				echo '
+					<td class="windowbg lefttext">', $flags[$member['country_flag']], '  ', '<img src="', $settings['images_url'], '/flags/', $member['country_flag'], '.png" alt="', $member['country_flag'], '" /> ', '</td>';
+			else
+				echo '
+					<td class="windowbg lefttext"></td>';
+		}
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[
+	// Assuming there are members loop through each one displaying their data.]]></search>
+			<add><![CDATA[
+	// Call the function that has all the country flag info
+	$flags = CountryFlag();
+]]></add>
+		</operation>
+	</file>
+
+</modification>

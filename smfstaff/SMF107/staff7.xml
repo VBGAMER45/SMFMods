@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFStaff</id>
+<version>1.2</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Staff Page Text Strings
+$txt['smfstaff_stafflist'] = 'Staff List';
+$txt['smfstaff_local'] = 'Local Moderators';
+$txt['permissionname_view_stafflist'] = 'View Staff List';
+$txt['permissionhelp_view_stafflist'] = 'Staff List shows all members on your Staff. You can change which member groups are shown by going to Layout and Options and look for SMF Staff filter. This permission allows you to toggle who can view the staff list.';
+$txt['cannot_view_stafflist'] = 'You can not view the staff list.';
+$txt['staff_filter'] = 'SMF Staff - Filter groups on staff page. <br />(seperate each group name by a <b>comma</b>.)';
+
+//END SMF Staff Page Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Staff Page Text Strings
+$txt['whoall_staff'] = 'Viewing the <a href="' . $scripturl . '?action=staff">Staff</a> Page';
+//END SMF Staff Page Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[		'staff' => array('Staff.php', 'Staff'),]]></add>
+	</operation>
+</file>
+<file name="Themes/default/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[	// The [calendar]!
+	if ($context['allow_calendar'])
+		echo '
+				<a href="', $scripturl, '?action=calendar">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/calendar.gif" alt="' . $txt['calendar24'] . '" style="margin: 2px 0;" border="0" />' : $txt['calendar24']), '</a>', $context['menu_separator'];]]></search>
+		<add><![CDATA[
+	// the [staff list] button
+	if ($context['allow_view_stafflist'])
+		echo '
+				<a href="', $scripturl, '?action=staff">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/staff.gif" alt="' . $txt['smfstaff_stafflist'] . '" style="margin: 2px 0;" border="0" />' : $txt['smfstaff_stafflist']), '</a>', $context['menu_separator'];
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="after"><![CDATA['karma_edit' => false,]]></search>
+		<add><![CDATA[
+		'view_stafflist' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA['who_view',]]></search>
+		<add><![CDATA[
+		'view_stafflist',]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_stafflist'] = allowedTo('view_stafflist');
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ModSettings.php">
+	<operation>
+		<search position="before"><![CDATA[array('check', 'who_enabled'),]]></search>
+		<add><![CDATA[
+		//SMF Staff Mod	
+		array('rule'),
+		array('text', 'staff_filter'),]]></add>
+	</operation>
+</file>
+</modification>

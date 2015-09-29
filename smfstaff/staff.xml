@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFStaff</id>
+<version>1.5</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Staff Page Text Strings
+$txt['smfstaff_stafflist'] = 'Staff List';
+$txt['smfstaff_admin'] = 'Staff Configuration';
+
+$txt['permissionname_view_stafflist'] = 'View Staff List';
+$txt['permissionhelp_view_stafflist'] = 'Staff List shows all members on your Staff. You can change which member groups are shown by going to Layout and Options and look for SMF Staff filter. This permission allows you to toggle who can view the staff list.';
+$txt['cannot_view_stafflist'] = 'You can not view the staff list.';
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin SMF Staff Page Text Strings
+$txt['whoall_staff'] = 'Viewing the <a href="' . $scripturl . '?action=staff">Staff</a> Page';
+// END SMF Staff Page Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'sticky' => array('LockTopic.php', 'Sticky'),]]></search>
+		<add><![CDATA[		'staff' => array('Staff.php', 'Staff'),]]></add>
+	</operation>
+</file>
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[$current_action = 'admin';
+	if (in_array($context['current_action'], array(]]></search>
+		<add><![CDATA['staff',]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// the [member] list button
+	if ($context['allow_memberlist'])
+		echo ($current_action == 'mlist' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'mlist' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=mlist">' , $txt[331] , '</a>
+				</td>' , $current_action == 'mlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+]]></search>
+		<add><![CDATA[
+	// the [staff list] button
+	if ($context['allow_view_stafflist'])
+		echo ($current_action == 'staff' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'staff' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=staff">' , $txt['smfstaff_stafflist']  , '</a>
+				</td>' , $current_action == 'staff' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="after"><![CDATA['karma_edit' => false,]]></search>
+		<add><![CDATA[
+		'view_stafflist' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA['who_view',]]></search>
+		<add><![CDATA[
+		'view_stafflist',]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'staff_settings' => '<a href="' . $scripturl . '?action=staff;sa=admin;sesc=' . $sc . '">' . $txt['smfstaff_admin'] . '</a>',
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_stafflist'] = allowedTo('view_stafflist');
+		]]></add>
+	</operation>
+</file>
+</modification>

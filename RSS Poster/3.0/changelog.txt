@@ -1,0 +1,56 @@
+4.2.1 
++Added setting to either use the feed description or the content tag
+
+4.2
++Added option to run a feed now to pull in the latest updates from the RSS Feed Poster Admin area.
++Added the next time the feed will update
++Feed title now clickable
++Adding to exisitng topic support made easier.
+
+4.1
+!Fixed a bug not getting the latest RSS feed thanks to marcozambi
+
+4.0.2
+!Fixed bug with editing feed in SMF 2.0.x
+!Added support for json feeds to import into same topic id
+
+4.0
++New option to post a feed to an existing topic
++Added option to auto embed images from feeds using img tags
+
+3.0.4
+!Fixed countposts for SMF 1.1.x thanks to emanuele
+
+3.0.3
+!Fixed html characters posted in SMF 2.0 thanks to Sinistercat
+!Do not increase post counts in boards that do not count posts
+
+
+3.0.1
++Enable/disable multiple feeds from the main feed listing display dropdown
+!Feeds are now imported in order they are in the xml file Oldest to Newest
+!Fixed extra footer text shown in non html posts in SMF 2.0
+
+3.0
++Now records how many posts a feed has made
++Added message icon setting to a feed bot
++Added footer append setting to a feed bot
++Added support for ATOM based feeds
++Added source link to the end of the feed
++Updated the feed list layout. Now has checkboxes to delete feed and alternate style rows
+!Fixed special characters that were instered into posts for older php versions
+
+2.2
+!Fixed next time check for Feeds
+!Made sure updateime on feed is changed when feeds are updated
+!Better feed loop processing
+
+2.1 
+Big Thanks to LP for this release for bug fixes and scheduled tasks support
+!Fixed two bugs with feeds not being posted if run by cron job. IP Address was required and mark_read needed to be false in order to work correctly
++Added task to scheduled task area for SMF 2.0
+
+1.1
++Added option to mark a feed as being read so it does not display in the unread posts.
++Added option to choose feed download method. Default is ALL but can be set to fopen,fsockopen,and curl
+!Fake cron jobs only check once a minute

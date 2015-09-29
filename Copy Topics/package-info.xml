@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Copy Topics</name>
+	<id>karlbenson:copytopics</id>
+	<type>modification</type>
+	<version>1.6</version>
+
+	<!--// Install for SMF 1.1.x versions only //-->
+	<install for="1.1 - 1.1.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>11x/install.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="11x/CopyTopic.php" destination="$sourcedir" />
+		<require-file name="11x/CopyTopic.template.php" destination="$themedir" />
+		<require-file name="images/admin_copy.gif" destination="$themedir/images/buttons" />
+		<require-file name="images/quick_copy.gif" destination="$themedir/images/icons" />
+	</install>
+	
+	<!--// Uninstall for SMF 1.1.x versions only //-->
+	<uninstall for="1.1 - 1.1.99">
+		<modification reverse="true">11x/install.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$sourcedir/CopyTopic.php" />
+		<remove-file name="$themedir/CopyTopic.template.php" />
+		<remove-file name="$themedir/images/buttons/admin_copy.gif" />
+		<remove-file name="$themedir/images/icons/quick_copy.gif" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<!--// Install for SMF 2.0 RC1 (and above) versions only //-->
+	<install for="2.0 RC1 - 2.0 RC1.2">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>RC1/install.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="RC1/CopyTopic.php" destination="$sourcedir" />
+		<require-file name="RC1/CopyTopic.template.php" destination="$themedir" />
+		<require-file name="images/admin_copy.gif" destination="$imagesdir/buttons" />
+		<require-file name="images/quick_copy.gif" destination="$imagesdir/icons" />
+	</install>
+	
+	<!--// Uninstall for SMF 2.0 RC1 (and above) versions only //-->
+	<uninstall for="2.0 RC1 - 2.0 RC1.2">
+		<modification reverse="true">RC1/install.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$sourcedir/CopyTopic.php" />
+		<remove-file name="$themedir/CopyTopic.template.php" />
+		<remove-file name="$imagesdir/buttons/admin_copy.gif" />
+		<remove-file name="$imagesdir/icons/quick_copy.gif" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<!--// Install for SMF 2.0 RC2 version only //-->
+	<install for="2.0 RC2, 2.0 RC3">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>RC2/install.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="RC2/CopyTopic.php" destination="$sourcedir" />
+		<require-file name="RC2/CopyTopic.template.php" destination="$themedir" />
+		<require-file name="images/admin_copy.gif" destination="$imagesdir/buttons" />
+		<require-file name="images/quick_copy.gif" destination="$imagesdir/icons" />
+	</install>
+	
+	<!--// Uninstall for SMF 2.0 RC2 version only //-->
+	<uninstall for="2.0 RC2, 2.0 RC3">
+		<modification reverse="true">RC2/install.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$sourcedir/CopyTopic.php" />
+		<remove-file name="$themedir/CopyTopic.template.php" />
+		<remove-file name="$imagesdir/buttons/admin_copy.gif" />
+		<remove-file name="$imagesdir/icons/quick_copy.gif" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99,2.0 RC4, 2.0 RC5">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>RC2/installrc4.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="RC2/CopyTopic.php" destination="$sourcedir" />
+		<require-file name="RC2/CopyTopic.template.php" destination="$themedir" />
+		<require-file name="images/admin_copy.gif" destination="$imagesdir/buttons" />
+		<require-file name="images/quick_copy.gif" destination="$imagesdir/icons" />
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99,2.0 RC4, 2.0 RC5">
+		<modification reverse="true">RC2/installrc4.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$sourcedir/CopyTopic.php" />
+		<remove-file name="$themedir/CopyTopic.template.php" />
+		<remove-file name="$imagesdir/buttons/admin_copy.gif" />
+		<remove-file name="$imagesdir/icons/quick_copy.gif" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+</package-info>

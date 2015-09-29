@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:NewTopicButton</id>
+<version>1.0</version>
+
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="before"><![CDATA[<a name="bot"></a><b>', $txt[139], ':</b> ', $context['page_index'], ($modSettings['topbottomEnable'] ? $context['menu_separator'] . '<a href="#top">' . ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/go_up.gif" alt="' . $txt['topbottom4'] . '" border="0" align="top" />' : $txt['topbottom4']) . '</a>' : ''), '
+					</td>
+					<td align="right" style="font-size: smaller;">';
+
+	$buttonArray = array();
+	if ($context['can_reply'])
+		$buttonArray[] = '<a href="' . $scripturl . '?action=post;topic=' . $context['current_topic'] . '.' . $context['start'] . ';num_replies=' . $context['num_replies'] . '">' . ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/reply.gif" alt="' . $txt[146] . '" border="0" />' : $txt[146]) . '</a>';]]></search>
+		<add><![CDATA[
+	// Are they allowed to post new topics?
+	if (allowedTo('post_new'))
+		$buttonArray[] = '<a href="' . $scripturl . '?action=post;board=' . $context['current_board'] . '.0">' . ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new_topic.gif" alt="' . $txt[33] . '" border="0" />' : $txt[33]) . '</a>';
+		]]></add>
+	</operation>
+</file>
+</modification>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Runic:MSNRemove</id>
+	<version>1.0</version>
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="replace"><![CDATA[										', !empty($message['member']['icq']['link']) ? '<li>' . $message['member']['icq']['link'] . '</li>' : '', '
+										', !empty($message['member']['msn']['link']) ? '<li>' . $message['member']['msn']['link'] . '</li>' : '', ']]></search>
+			<add><![CDATA[										', !empty($message['member']['icq']['link']) ? '<li>' . $message['member']['icq']['link'] . '</li>' : '', ']]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Memberlist.template.php">
+		<operation>
+			<search position="replace"><![CDATA[		// MSN?
+		if (!isset($context['disabled_fields']['msn']))
+			echo '
+					<td class="windowbg2">', $member['msn']['link'], '</td>';
+
+		// Group and date.]]></search>
+			<add><![CDATA[		// Group and date.]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/PersonalMessage.template.php">
+		<operation>
+			<search position="replace"><![CDATA[						<li>' . $message['member']['icq']['link'] . '</li>' : '', !isset($context['disabled_fields']['msn']) && !empty($message['member']['msn']['link']) ? '
+						<li>' . $message['member']['msn']['link'] . '</li>' : ']]></search>
+			<add><![CDATA[						<li>' . $message['member']['icq']['link'] . '</li>' : ']]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="replace"><![CDATA[				', !isset($context['disabled_fields']['icq']) && !empty($context['member']['icq']['link']) ? '<li>' . $context['member']['icq']['link'] . '</li>' : '', '
+				', !isset($context['disabled_fields']['msn']) && !empty($context['member']['msn']['link']) ? '<li>' . $context['member']['msn']['link'] . '</li>' : '', ']]></search>
+			<add><![CDATA[				', !isset($context['disabled_fields']['icq']) && !empty($context['member']['icq']['link']) ? '<li>' . $context['member']['icq']['link'] . '</li>' : '', ']]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[				<th scope="col">', $txt['msn'], '</th>
+				<th class="last_th" scope="col"></th>]]></search>
+			<add><![CDATA[				<th class="last_th" scope="col"></th>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[				<td align="center">', $buddy['yim']['link'], '</td>
+				<td align="center">', $buddy['msn']['link'], '</td>]]></search>
+			<add><![CDATA[				<td align="center">', $buddy['yim']['link'], '</td>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[				<th scope="col">', $txt['msn'], '</th>
+				<th class="last_th" scope="col"></th>]]></search>
+			<add><![CDATA[				<th class="last_th" scope="col"></th>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[				<td align="center">', $member['msn']['link'], '</td>
+				]]></search>
+			<add><![CDATA[<!--MSN Remover-->]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Who.template.php">
+		<operation>
+			<search position="replace"><![CDATA[' ', isset($context['disabled_fields']['msn']) ? '' : $member['msn']['link'], ' ']]></search>
+			<add><![CDATA[' ', isset($context['disabled_fields']['msn']) ? '' :  : '', ' ' ]]></add>
+		</operation>
+	</file>
+</modification>

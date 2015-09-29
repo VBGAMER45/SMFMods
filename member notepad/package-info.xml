@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:MemberNotepad</id>
+	<name>Member Notepad</name>
+	<type>modification</type>
+	<version>1.0.1</version>
+
+	<install for="1.1 - 1.1.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">personalpad.xml</modification>
+		<require-file name="PersonalPad.php" destination="$sourcedir" />
+
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">personalpad.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">personalpad2.xml</modification>
+		<require-file name="PersonalPad2.php" destination="$sourcedir" />
+	
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">personalpad2.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+
+
+</package-info>

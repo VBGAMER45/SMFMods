@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>wdm2005:KB</id>
+	<version>RC1 R19</version>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="after"><![CDATA[		// Action and board are both empty... BoardIndex!]]></search>
+			<add><![CDATA[
+		if (!empty($modSettings['kb_knowledge_only']) && $modSettings['kb_enabled'])
+		{
+			require_once($sourcedir . '/KB/KBMain.php');
+		    return 'KB';
+		}
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		// Fall through to the board index then...
+		require_once($sourcedir . '/BoardIndex.php');
+		return 'BoardIndex';]]></search>
+			<add><![CDATA[
+		if (!empty($modSettings['kb_knowledge_only']) && $modSettings['kb_enabled'])
+		{
+			require_once($sourcedir . '/KB/KBMain.php');
+		    return 'KB';
+		}
+
+]]></add>
+		</operation>
+	</file>
+</modification>

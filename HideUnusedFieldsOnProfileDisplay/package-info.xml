@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:HideProfileDisplay</id>
+	<name>Hide Unused Profile Display Fields</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+
+	<install for="1.1 - 1.1.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">hideprofile.xml</modification>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">hideprofile.xml</modification>
+	</uninstall>
+
+</package-info>
