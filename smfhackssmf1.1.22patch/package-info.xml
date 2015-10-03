@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>smf:smf-1.1.22</id>
+	<name>SMFHacks Unoffical 1.1.22 Update</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="1.1 - 1.1.99">
+		<readme type="inline">
+			This patch file will provide important security fixes to your SMF 1.1.x forum.
+		</readme>
+		<modification type="file" format="xml">smf_1-1_patch.xml</modification>
+	</install>
+	<uninstall for="1.1 - 1.1.99,">
+		<readme type="inline">
+			This will uninstall the security fixes of your SMF 1.1.x forum. This is generally NOT a good idea.
+		</readme>
+		<modification type="file" reverse="true" format="xml">smf_1-1_patch.xml</modification>
+	</uninstall>
+</package-info>
