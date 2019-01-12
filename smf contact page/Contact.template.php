@@ -69,6 +69,23 @@ function template_main()
 		
 				if (isset($modSettings['recaptcha_enabled']) && $modSettings['recaptcha_enabled'])
 			{
+				
+	
+
+											echo ' <tr>
+						<td colspan="2" align="top" class="windowbg2">
+						
+						          <div class="g-recaptcha" data-sitekey="', $modSettings['recaptcha_public_key'], '"></div>
+								            <script type="text/javascript"
+								                    src="https://www.google.com/recaptcha/api.js?hl=en">
+								            </script></td></tr>
+								';
+
+
+	
+				
+				
+				/*
 				echo '<tr>
 						<td colspan="2" align="top" class="windowbg2">
 				<script type="text/javascript">
@@ -77,11 +94,11 @@ function template_main()
 				};
 				</script>
 				<script type="text/javascript"
-					src="http://api.recaptcha.net/challenge?k=', $modSettings['recaptcha_public_key'], '">
+					src="https://api.recaptcha.net/challenge?k=', $modSettings['recaptcha_public_key'], '">
 				 </script>
 
 				 <noscript>
-					<iframe src="http://api.recaptcha.net/noscript?k=', $modSettings['recaptcha_public_key'], '"
+					<iframe src="https://api.recaptcha.net/noscript?k=', $modSettings['recaptcha_public_key'], '"
 						height="300" width="500" frameborder="0"></iframe><br />
 					<textarea name="recaptcha_challenge_field" rows="3" cols="40">
 					</textarea>
@@ -89,6 +106,8 @@ function template_main()
 						value="manual_challenge" />
 				 </noscript>
 				 </td></tr>';
+				 
+				 */
 			}
 			else 
 			{
@@ -134,7 +153,7 @@ echo '
 ';
 
 	// Copyright required unless copyright removal ordered at smfhacks.com
-	echo '<br /><div align="center"><a href="http://www.smfhacks.com" target="blank">Contact Page</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></div>';
+	echo '<br /><div align="center"><a href="https://www.smfhacks.com" target="blank">Contact Page</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></div>';
 }
 
 function template_send()

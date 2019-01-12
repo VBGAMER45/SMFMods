@@ -25,10 +25,14 @@ function template_main_trader()
 
 echo '
 <div class="tborder">
+
+    <div class="cat_bar">
+		<h3 class="catbg centertext">
+			', $txt['smftrader_feedbacktitle'], '
+		</h3>
+	</div>
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
-	<tr class="titlebg">
-		<td height="26">' . $txt['smftrader_feedbacktitle'] . ' - ' . $context['tradername']  . '</td>
-	</tr>
+
 	<tr>
 		<td class="windowbg">
 			<table border="0" cellspacing="0" cellpadding="2" width="100%">
@@ -121,8 +125,12 @@ echo '
 						echo '<td>', $row['comment_short'], '</td>';
 					}
 					else 
+					{
+						if (!empty($row['title']))
+							 $row['comment_short'] = '<strong>' . $row['title'] . '</strong><br />' .  $row['comment_short'];
+						
 						echo '<td><a href="' .  (empty($row['ID_LISTING']) ?  $row['topicurl']  : $scripturl . '?action=classifieds;sa=view;id=' . $row['ID_LISTING'])  . '">' . $row['comment_short'] . '</a></td>';
-
+					}
 					
 				}
 				
@@ -145,9 +153,9 @@ echo '
 				}
 				
 				if (!empty($row['real_name']))
-					echo '<td>'. $mtype . '&nbsp;<a href="' . $scripturl . '?action=profile;u=' . $row['FeedBackMEMBER_ID'] . '">' . $row['real_name'] . '</a></td>';
+					echo '<td><strong>'. $mtype . '</strong>&nbsp;<a href="' . $scripturl . '?action=profile;u=' . $row['FeedBackMEMBER_ID'] . '">' . $row['real_name'] . '</a></td>';
 				else 
-					echo '<td>'. $mtype . '&nbsp;' . $txt['smftrader_guest'] . '</td>';
+					echo '<td><strong>'. $mtype . '</strong>&nbsp;' . $txt['smftrader_guest'] . '</td>';
 				
 				echo '<td><a href="' . $scripturl . '?action=trader;sa=detail;feedid=' . $row['feedbackid'] . '">',$txt['smftrader_viewdetail'],'</a></td>';
 				echo '<td>', timeformat($row['saledate']), '</td>';
@@ -190,13 +198,15 @@ TraderSystemCopyright();
 
 function template_submit()
 {
-	global $txt,  $context, $scripturl, $modSettings;
+	global $txt, $smcFunc, $context, $scripturl, $modSettings;
 echo '
 <div class="tborder">
+    <div class="cat_bar">
+		<h3 class="catbg centertext">
+			', $txt['smftrader_submittitle'] . ' - ' . $context['tradername'], '
+		</h3>
+	</div>
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
-	<tr class="titlebg">
-		<td height="26" align="center">' . $txt['smftrader_submittitle'] . ' - ' . $context['tradername']  . '</td>
-	</tr>
 	<tr>
 		<td class="windowbg">
 			<form action="' . $scripturl . '?action=trader;sa=submit2" method="post">
@@ -240,7 +250,7 @@ if (IsClassifiedsInstalled() == true)
 					';
 					
 					foreach($context['class_listings_trader'] as $row)
-						echo '<option value="' . $row['ID_LISTING'] . '">' . htmlspecialchars($row['title'],ENT_QUOTES) . ' - ' . $row['real_name'] . '</option>';
+						echo '<option value="' . $row['ID_LISTING'] . '">' . $smcFunc['htmlspecialchars']($row['title'],ENT_QUOTES) . ' - ' . $row['real_name'] . '</option>';
 	
 	
 					echo '
@@ -293,10 +303,13 @@ function template_report()
 
 echo '
 <div class="tborder">
+    <div class="cat_bar">
+		<h3 class="catbg centertext">
+			', $txt['smftrader_reporttitle'], '
+		</h3>
+	</div>
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
-	<tr class="titlebg">
-		<td height="26" align="center">' . $txt['smftrader_reporttitle'] . '</td>
-	</tr>
+
 	<tr>
 		<td class="windowbg">
 			<form action="' . $scripturl . '?action=trader;sa=report2" method="post">
@@ -327,16 +340,42 @@ function template_detail()
 {
 	global $txt, $context, $scripturl;
 
-
+		
+				
 echo '
 <div class="tborder">
+    <div class="cat_bar">
+		<h3 class="catbg centertext">
+			', $txt['smftrader_title'],' - ',$txt['smftrader_detailedfeedback'], '
+		</h3>
+	</div>
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
-	<tr class="titlebg">
-		<td height="26" align="center">',$txt['smftrader_title'],' - ',$txt['smftrader_detailedfeedback'],'</td>
-	</tr>
+
 	<tr>
 		<td class="windowbg">
 			<table border="0" cellspacing="0" cellpadding="0" width="100%">
+				';
+		
+	
+				if (!empty($context['trading_detail']['ID_LISTING']))
+				{
+					echo '<tr>';
+					echo '<td>' . $txt['smftrader_classifieds_listing'] . '</td>';
+					echo '<td><a href="' . $scripturl . '?action=classifieds;sa=view;id=' . $context['trading_detail']['ID_LISTING']  . '">' . $context['trading_detail']['title'] . '</a></td>';
+					
+					echo '</tr>
+					
+					<tr>
+					<td colspan="2" align="center"><hr />
+					</td>
+					</tr>';
+					
+				}
+				
+				
+				
+				echo '
+			
 				<tr>
 					<td width="25%" valign="top">',$txt['smftrader_detailedcomment'],'</td>
 					<td align="left">' . parse_bbc($context['trading_detail']['comment_long']) . '<br />',$txt['smftrader_commentby'],'<a href="',$scripturl, '?action=profile;u=', $context['trading_detail']['FeedBackMEMBER_ID'],'">',$context['trading_detail']['real_name'],  '</a><br /></td>
@@ -403,11 +442,14 @@ function template_settings()
 
 
 echo '
+<div class="tborder">
+    <div class="cat_bar">
+		<h3 class="catbg">
+			', $txt['smftrader_title']  . ' ' . $txt['smftrader_text_settings'], '
+		</h3>
+	</div>
+	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
-	<table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="titlebg">
-			<td>' . $txt['smftrader_title']  . ' ' . $txt['smftrader_text_settings'] . '</td>
-		</tr>
 		<tr class="windowbg">
 			<td>
 			<b>' . $txt['smftrader_text_settings'] . '</b><br />

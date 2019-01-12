@@ -82,10 +82,11 @@ function template_main()
 				',$txt['feedposter_rssdownloadmethod'],'
 				<select name="rss_feedmethod">
 					<option value="', $modSettings['rss_feedmethod'] ,'" selected="selected">', $modSettings['rss_feedmethod'] ,'</option>
+					<option value="curl">curl</option>
 					<option value="All">All</option>
 					<option value="fopen">fopen</option>
 					<option value="fsockopen">fsockopen</option>
-					<option value="curl">curl</option>
+					
 				</select><br />
 				<input type="submit" value="', $txt['feedposter_savesettings'], '" />
 				</form>

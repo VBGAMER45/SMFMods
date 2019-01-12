@@ -13,7 +13,7 @@ $txt['smftags_menu'] = 'Tags';
 $txt['smftags_admin'] = 'Tags Configuration';
 
 $txt['smftags_addtag'] = '[Add Tag]';
-$txt['smftags_seperate'] = 'Seperate each tag by a comma';
+$txt['smftags_seperate'] = 'Separate each tag by a comma';
 
 $txt['smftags_topic'] = 'Tags: ';
 $txt['permissiongroup_smftags'] = 'SMF Tags';
@@ -39,7 +39,7 @@ $txt['smftags_menu'] = 'Tags';
 $txt['smftags_admin'] = 'Tags Configuration';
 
 $txt['smftags_addtag'] = '[Add Tag]';
-$txt['smftags_seperate'] = 'Seperate each tag by a comma';
+$txt['smftags_seperate'] = 'Separate each tag by a comma';
 
 $txt['smftags_topic'] = 'Tags: ';
 $txt['permissiongroup_smftags'] = 'SMF Tags';

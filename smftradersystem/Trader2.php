@@ -156,7 +156,7 @@ function TraderMainView()
 
 	$dbresult = $smcFunc['db_query']('', "
 	SELECT
-			f.saletype, f.feedbackid, f.FeedBackMEMBER_ID,  f.topicurl,
+			f.saletype, f.feedbackid, f.FeedBackMEMBER_ID, f.topicurl,
 			f.comment_short, f.salevalue, f.saledate, m.real_name  $selectClassifiedsSQL
 	FROM ({db_prefix}feedback AS f)
 	LEFT JOIN {db_prefix}members AS m ON (f.FeedBackMEMBER_ID = m.ID_MEMBER) 
@@ -215,35 +215,49 @@ function Submit()
 	if (IsClassifiedsInstalled() == true)
 	{
 
+
 		// Gets any listed that is completed with bids
 		// WHERE the LIST OWNER = CURRENT VIEWER AND BIDDER = PROFILEID
 		$context['class_listings_trader'] = array();
 
 		$request = $smcFunc['db_query']('', "
 		SELECT
-			l.title, l.ID_LISTING, m.real_name, m.ID_MEMBER, f.feedbackid 
+			l.title, l.ID_LISTING, m.real_name, m.ID_MEMBER, f.feedbackid, f.FeedBackMEMBER_ID  
 		FROM ({db_prefix}class_listing as l, {db_prefix}class_bids  as b)
 			LEFT JOIN {db_prefix}members as m ON (m.ID_MEMBER = b.ID_MEMBER)
-			LEFT JOIN {db_prefix}feedback as f ON (l.ID_LISTING = f.ID_LISTING AND f.feedbackid  = " . $user_info['id'] . ") 
+			LEFT JOIN {db_prefix}feedback as f ON (l.ID_LISTING = f.ID_LISTING AND  f.FeedBackMEMBER_ID   = " . $user_info['id'] . ") 
 		WHERE b.ID_LISTING = l.ID_LISTING AND b.bid_accepted = 1 AND l.listingstatus = 2 AND l.ID_MEMBER = " . $user_info['id'] . " AND b.ID_MEMBER = $memid ");
+		
+		
+
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
+			
+
+				
 			if (empty($row['feedbackid']))
 				$context['class_listings_trader'][] = $row;
+	
 		}
 		$smcFunc['db_free_result']($request);
 
 		// Gets any listed that is completed with bids
 		// WHERE the LIST OWNER =  PROFILEID  AND BIDDER = CURRENT VIEWER
+		
+		
+	
 		$request = $smcFunc['db_query']('', "
 		SELECT
-			l.title, l.ID_LISTING, m.real_name, m.ID_MEMBER, f.feedbackid 
+			l.title, l.ID_LISTING, m.real_name, m.ID_MEMBER, f.feedbackid, f.FeedBackMEMBER_ID  
 		FROM ({db_prefix}class_listing as l, {db_prefix}class_bids  as b)
 			LEFT JOIN {db_prefix}members as m ON (m.ID_MEMBER = l.ID_MEMBER) 
-			LEFT JOIN {db_prefix}feedback as f ON (l.ID_LISTING = f.ID_LISTING AND f.feedbackid = " . $user_info['id'] . ") 
+			LEFT JOIN {db_prefix}feedback as f ON (l.ID_LISTING = f.ID_LISTING AND f.FeedBackMEMBER_ID  = " . $user_info['id'] . ") 
 		WHERE b.ID_LISTING = l.ID_LISTING AND b.bid_accepted = 1 AND l.listingstatus = 2 AND l.ID_MEMBER =  $memid AND b.ID_MEMBER = " . $user_info['id']);
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
+			
+
+			
 			if (empty($row['feedbackid']))
 				$context['class_listings_trader'][] = $row;
 		}
@@ -272,16 +286,16 @@ function Submit2()
 		fatal_error($txt['smftrader_errfeedbackself'] ,false);
 
 	// Check if comment posted
-	$shortcomment = htmlspecialchars(substr($_REQUEST['shortcomment'], 0, 100),ENT_QUOTES);
+	$shortcomment = $smcFunc['htmlspecialchars'](substr($_REQUEST['shortcomment'], 0, 100),ENT_QUOTES);
 
 	if ($shortcomment == '')
 		fatal_error($txt['smftrader_errshortcoment'],false);
 
 	$ID_LISTING = 0;
-	$topicurl = htmlspecialchars($_REQUEST['topicurl'],ENT_QUOTES);
+	$topicurl = $smcFunc['htmlspecialchars']($_REQUEST['topicurl'],ENT_QUOTES);
 	$salevalue = (int) $_REQUEST['salevalue'];
 	$saletype = (int) $_REQUEST['saletype'];
-	$longcomment = htmlspecialchars($_REQUEST['longcomment'],ENT_QUOTES);
+	$longcomment = $smcFunc['htmlspecialchars']($_REQUEST['longcomment'],ENT_QUOTES);
 	switch($saletype)
 	{
 		case 0:
@@ -340,6 +354,24 @@ function Submit2()
 
 			if ($listStatus == true)
 				$ID_LISTING  = $listID;
+				
+				
+				
+
+			// Make sure you can't rate a listing twice.
+			if (!empty( $ID_LISTING))
+			{
+				$request = $smcFunc['db_query']('', "
+				SELECT
+					COUNT(*) as total 
+				FROM {db_prefix}feedback 
+				WHERE ID_LISTING = $ID_LISTING AND FeedBackMEMBER_ID = " . $user_info['id']);
+				$classrow = $smcFunc['db_fetch_assoc']($request);
+				
+				if ($classrow['total'] > 0)
+					fatal_error($txt['smftrader_err_no_classifieds_listing'],false);
+					
+			}
 
 
 		}
@@ -400,7 +432,7 @@ function Report2()
 
 	is_not_guest();
 
-	@$comment = htmlspecialchars($_REQUEST['comment'],ENT_QUOTES);
+	@$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
 
 	if ($comment == '')
 		fatal_error($txt['smftrader_errnocomment'], false);
@@ -461,15 +493,30 @@ function ViewDetail()
 	$context['feedid'] = $feedid;
 
 
+
+	$leftJoinClassifieds = '';
+	$selectClassifiedsSQL = '';
+
+	if (IsClassifiedsInstalled() == true)
+	{
+		$selectClassifiedsSQL =', l.ID_LISTING, l.title ';
+		$leftJoinClassifieds = ' LEFT JOIN {db_prefix}class_listing as l ON (l.ID_LISTING = f.ID_LISTING) ';
+	}
+
+
 	$result = "
 	SELECT
 	f.saletype, f.feedbackid, f.ID_MEMBER, f.FeedBackMEMBER_ID, f.topicurl,
-	f.comment_long, f.salevalue, f.saledate, m.real_name
-	FROM {db_prefix}feedback AS f,{db_prefix}members AS m
+	f.comment_long, f.salevalue, f.saledate, m.real_name $selectClassifiedsSQL
+	FROM ({db_prefix}feedback AS f,{db_prefix}members AS m)
+	$leftJoinClassifieds 
 	WHERE f.feedbackid = " . $context['feedid'] . " AND f.FeedBackMEMBER_ID = m.ID_MEMBER";
 
 	$dbresult = $smcFunc['db_query']('', $result);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+	
+
+	
 	$smcFunc['db_free_result']($dbresult);
 
 	$context['trading_detail'] = $row;
@@ -537,7 +584,7 @@ function AdminSettings()
 			'description' => '',
 			'tabs' => array(
 				'admin' => array(
-					'description' => '',
+					'description' => $txt['smftrader_settings_admin_desc'],
 				),
 
 

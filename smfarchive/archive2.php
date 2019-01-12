@@ -35,8 +35,7 @@ $maxposts = 15;
 //Get the topic ID
 @$topic = (int) $_GET['topic'];
 
-mysql_select_db($db_name, $db_connection);
-
+$smcFunc['db_select_db']($db_name, $db_connection);
 
 if (empty($board) && empty($topic))
 {

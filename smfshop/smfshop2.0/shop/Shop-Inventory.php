@@ -213,6 +213,8 @@ elseif ($_GET['do'] == 'inv3')
 
 	// Require the item engine ...
 	require($sourcedir . '/shop/item_engine.php');
+
+	$row['module'] = strtolower(preg_replace('/[^a-z A-Z0-9]/','',$row['module']));
 	// ... and the actual item.
 	require($sourcedir . '/shop/items/' . $row['module'] . '.php');
 

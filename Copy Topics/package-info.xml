@@ -4,7 +4,7 @@
 	<name>Copy Topics</name>
 	<id>karlbenson:copytopics</id>
 	<type>modification</type>
-	<version>1.6</version>
+	<version>1.7.1</version>
 
 	<!--// Install for SMF 1.1.x versions only //-->
 	<install for="1.1 - 1.1.99">

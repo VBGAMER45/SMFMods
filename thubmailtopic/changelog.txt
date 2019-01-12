@@ -1,3 +1,6 @@
+Version 3.0.1
+!Fixed bug SMF 2.0.x not saving new board thumbnail topic settings
+
 Version 3.0
 +Added support for img tags inside the first forum post for SMF 2.0 thanks to br360
 Setting to control height width found under Modification Settings. Use zero in both values to disable it.

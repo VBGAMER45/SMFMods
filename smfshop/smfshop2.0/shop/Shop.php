@@ -253,7 +253,7 @@ function Shop()
 		// Add the header to the message (xx users own the item xx)
 		// TODO: Fix the ugly code!
 		$context['shop_buy_message'] = '
-						<b>' . sprintf($txt['shop_users_own_item'], (int) mysql_num_rows($result), $row['name']) . '</b>
+						<b>' . sprintf($txt['shop_users_own_item'], (int) $smcFunc['db_num_rows']($result), $row['name']) . '</b>
 						<ul>';
 									 
 		// Loop through results

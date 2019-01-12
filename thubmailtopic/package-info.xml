@@ -5,7 +5,7 @@
 	<id>vbgamer45:ThumbnailTopic</id>
 	<name>Thumbnail Topic Mod</name>
 	<type>modification</type>
-	<version>3.0</version>
+	<version>3.0.1</version>
 
 	<install for="1.1 - 1.1.99">
 		<readme>ReadMe.txt</readme>

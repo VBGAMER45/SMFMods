@@ -4,14 +4,14 @@
  *
  * @file ./smfhacks_templates/global-hf.template.php
  * @author SMFHacks <http://www.smfhacks.com/>
- * @copyright SMFHacks.com Team, 2012
+ * @copyright SMFHacks.com Team, 2018
  *
  * @version 2.0.1
  */
 
 function template_global_hf_admin()
 {
-	global $context, $settings, $scripturl, $txt, $global_hf, $modSettings;
+	global $context, $settings, $scripturl, $txt, $global_hf, $modSettings, $smcFunc;
 	if (isset($_GET['success']) && $_GET['success'] == 'saved')
 	{
 		echo '
@@ -38,7 +38,7 @@ function template_global_hf_admin()
 							<div class="smalltext">', $txt['global_hf']['head_content_desc'], '</div>
 						</div>
 						<div class="floatright" style="width: 70%;">
-							<textarea id="global_head" name="global_head" class="global_hf_textarea" cols="" rows="">', $global_hf['head'], '</textarea>
+							<textarea id="global_head" name="global_head" class="global_hf_textarea" cols="" rows="">', $smcFunc['htmlspecialchars']($global_hf['head']), '</textarea>
 						</div>
 						<br class="clear" />
 						<hr />
@@ -49,7 +49,7 @@ function template_global_hf_admin()
 							<div class="smalltext">', $txt['global_hf']['header_content_desc'], '.</div>
 						</div>
 						<div class="floatright" style="width: 70%;">
-							<textarea id="global_header" name="global_header" class="global_hf_textarea" cols="" rows="">', $global_hf['header'], '</textarea>
+							<textarea id="global_header" name="global_header" class="global_hf_textarea" cols="" rows="">', $smcFunc['htmlspecialchars']($global_hf['header']), '</textarea>
 							<div class="smalltext">', $txt['global_hf']['html_allowed'], '</div>
 						</div>
 						<br class="clear" />
@@ -76,7 +76,7 @@ function template_global_hf_admin()
 							<div class="smalltext">', $txt['global_hf']['footer_content_desc'], '</div>
 						</div>
 						<div class="floatright" style="width: 70%;">
-							<textarea id="global_footer" name="global_footer" class="global_hf_textarea" cols="" rows="">', $global_hf['footer'], '</textarea>
+							<textarea id="global_footer" name="global_footer" class="global_hf_textarea" cols="" rows="">', $smcFunc['htmlspecialchars']($global_hf['footer']), '</textarea>
 							<div class="smalltext">', $txt['global_hf']['html_allowed'], '</div>
 						</div>
 						<br class="clear" />

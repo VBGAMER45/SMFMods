@@ -73,4 +73,8 @@ $txt['smftrader_err_classifieds_listing'] = 'You must select a Classifieds listi
 
 $txt['smftrader_err_no_classifieds_listing'] = 'You do not have any completed listings waiting to be rated';
 
+$txt['smftrader_topicurl_optional'] = ' (Optional)';
+
+$txt['smftrader_settings_admin_desc'] = 'Settings and options for the Trader Ratings System';
+
 ?>

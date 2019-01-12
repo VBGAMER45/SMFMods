@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>jaybachatero:country_flags</id>
 	<name>Country Flags</name>
-	<version>2.2</version>
+	<version>3.0</version>
 	<type>modification</type>
 
 	<install for="1.1 - 1.1.99">
@@ -40,14 +40,14 @@
 	<install for="2.0 - 2.0.99,2.0 RC4,2.0 RC5">
 		<database>install.php</database>
 		<modification type="file" format="xml">install-rc4.xml</modification>
-		<modification type="file" format="xml">languages.xml/modification>
+		<modification type="file" format="xml">languages.xml</modification>
 		<require-dir name="flags" destination="$imagesdir" />
 	</install>
 	
 	<uninstall for="2.0 - 2.0.99,2.0 RC4,2.0 RC5">
 		<database>install.php</database>
-		<modification type="file" format="xml">install-rc4.xml</modification>
-		<modification type="file" format="xml">languages.xml</modification>
+		<modification type="file" format="xml" reverse="true">install-rc4.xml</modification>
+		<modification type="file" format="xml" reverse="true">languages.xml</modification>
 		<remove-dir name="$imagesdir/flags" />
 		<code>UnInstall.php</code>
 	</uninstall>

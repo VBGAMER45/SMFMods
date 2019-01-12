@@ -8,7 +8,7 @@
 * =============================================================================== *
 * Software Version:           SMFShop 3.1 (Build 14)                              *
 * Software by:                DanSoft Australia (http://www.dansoftaustralia.net/)*
-* Copyright 2009 by:          vbgamer45 (http://www.smfhacks.com)                 *
+* Copyright 2009-2015 by:          vbgamer45 (http://www.smfhacks.com)            *
 * Copyright 2005-2007 by:     DanSoft Australia (http://www.dansoftaustralia.net/)*
 * Support, News, Updates at:  http://www.dansoftaustralia.net/                    *
 *                                                                                 *
@@ -64,13 +64,13 @@ elseif($_GET['do'] == 'sendmoney2')
 	isAllowedTo('shop_sendmoney');
 	spamProtection('login');
 	// Make sure amount is numeric
-	$amount = (float) $_POST['amount'];
+	$amount = (int) $_POST['amount'];
 
 	// Trying to give more than they have
 	if ($context['user']['money'] < $amount)
 		$context['shop_buy_message'] = $txt['shop_dont_have_much'];
 	// Trying to *give* a negative amount? Nice try...
-	elseif ($amount < 0) 
+	elseif ($amount < 1) 
 		$context['shop_buy_message'] = $txt['shop_give_negative'];
 	// Giving 0 credits...? What's the point?
 	elseif ($amount == 0)
@@ -148,7 +148,15 @@ elseif($_GET['do'] == 'sendmoney2')
 			// Now, send!
 			sendpm($pmto, $subject, $message, 0, $pmfrom);
 			
-			// Tell the user that their request was successful
+			// Start SMF Shop log mod
+			global $boarddir;
+			$filename  = $boarddir . "/shoplog.txt";
+			$data = "[" . date("g:ia m/d/Y")."] " . $context['user']['name']. " ---> $moneyTo |  " . formatMoney($amount) . " currency" . "\n";
+			file_put_contents($filename,$data,FILE_APPEND); 
+			// end SMF Shop Log Mod
+			
+			
+			// Tell the user that their request was succe ssful
 			//$context['shop_buy_message'] = sprintf($txt['shop_successfull_send'], formatMoney($amount), $context['user']['name']);
 			$context['shop_buy_message'] = sprintf($txt['shop_successfull_send'], formatMoney($amount), $moneyTo);
 			

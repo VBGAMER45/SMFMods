@@ -108,10 +108,10 @@
 		<search position="before"><![CDATA[$context['can_merge'] ? '
 							<option value="merge">' . $txt['quick_mod_merge'] . '</option>' : '',]]></search>
 		<add><![CDATA[$context['can_copy'] ? '
-							<option value="copy">' . $$txt['quick_mod_copy']  . '</option>' : '',]]></add>
+							<option value="copy">' . $txt['quick_mod_copy']  . '</option>' : '',]]></add>
 	</operation>
 	<operation>
-		<search position="replace"><![CDATA[if ($context['can_move'])]></search>
+		<search position="replace"><![CDATA[if ($context['can_move'])]]></search>
 		<add><![CDATA[if ($context['can_move'] || $context['can_copy'])]]></add>
 	</operation>
 </file>

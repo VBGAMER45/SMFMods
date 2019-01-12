@@ -22,7 +22,7 @@ chrome.liveNews = function()
 }
 
 //	Check the latest version
-chrome.currentVersion = '1.0RC';
+chrome.currentVersion = '2.0';
 
 chrome.checkVersion = function()
 {
@@ -40,7 +40,7 @@ chrome.checkVersion = function()
 				partial += ' <a href="' + chrome.pmUrl + chrome.upgradeUrl + '">' + chrome.upgradeTxt + '</a>';
 			//	Or else put up a link to the download page
 			else
-				partial += ' <a href="http://code.google.com/p/prettyurls/downloads/list">' + chrome.downloadTxt + '</a>';
+				partial += ' <a href="https://custom.simplemachines.org/mods/index.php?mod=636" target="_blank">' + chrome.downloadTxt + '</a>';
 		}
 
 		chromeLatest.innerHTML = partial;

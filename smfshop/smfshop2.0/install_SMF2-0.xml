@@ -62,6 +62,27 @@
 		// End SMFShop MOD New Version
 ]]></add>
 		</operation>
+		
+			<operation>
+			<search position="replace"><![CDATA['cur_topic_approved' => empty($topic) || $row['approved'],]]></search>
+			<add><![CDATA[
+				'cur_topic_approved' => empty($topic) || $row['approved'],
+		// Begin SMFShop MOD New Version
+				'countMoney' => $row['countMoney'],
+				'shop_pertopic' => $row['shop_pertopic'],
+				'shop_perpost' => $row['shop_perpost'],
+				'shop_bonuses' => $row['shop_bonuses'],
+		// End SMFShop MOD New Version
+]]></add>
+		</operation>	
+		
+		
+		<operation>
+			<search position="replace"><![CDATA[b.id_parent, c.name AS cname,]]></search>
+			<add><![CDATA[b.id_parent, c.name AS cname,b.countMoney, b.shop_pertopic, b.shop_perpost,b.shop_bonuses,]]></add>
+		</operation>	
+		
+		
 	</file>
 
 	<file name="$sourcedir/ManagePermissions.php">
@@ -125,34 +146,42 @@
 		else
 			$points = !empty($board_info['shop_perpost']) ? $board_info['shop_perpost'] : $modSettings['shopPointsPerPost'];
 
-		// Are bonuses allowed in this board?
-		// Strip out all BBCode
-		$plaintext = preg_replace('[\[(.*?)\]]', ' ', $_POST['message']);
-		// Convert all newlines into spaces
-		$plaintext = str_replace(array('<br />', "\r", "\n"), ' ', $plaintext);
-		// Convert multiple successive spaces into a single space
-		$plaintext = preg_replace('/\s+/', ' ', $plaintext);
-	
-		// The bonus for each word...
-		$points += ($modSettings['shopPointsPerWord'] * str_word_count($plaintext));
-		// ...and bonus for each letter
-		$points += ($modSettings['shopPointsPerChar'] * strlen($plaintext));
-	
-		// Is there a limit set, and are we over it?
-		if (isset($modSettings['shopPointsLimit']) && $modSettings['shopPointsLimit'] != 0 && $points > $modSettings['shopPointsLimit'])
-			// If so, set the number of points to the limit
-			$points = $modSettings['shopPointsLimit'];
+
+		if ($board_info['shop_bonuses'])
+		{
+			// Are bonuses allowed in this board?
+			// Strip out all BBCode
+			$plaintext = preg_replace('[\[(.*?)\]]', ' ', $_POST['message']);
+			// Convert all newlines into spaces
+			$plaintext = str_replace(array('<br />', "\r", "\n"), ' ', $plaintext);
+			// Convert multiple successive spaces into a single space
+			$plaintext = preg_replace('/\s+/', ' ', $plaintext);
+
+			// The bonus for each word...
+			$points += ($modSettings['shopPointsPerWord'] * str_word_count($plaintext));
+			// ...and bonus for each letter
+			$points += ($modSettings['shopPointsPerChar'] * strlen($plaintext));
+
+			// Is there a limit set, and are we over it?
+			if (isset($modSettings['shopPointsLimit']) && $modSettings['shopPointsLimit'] != 0 && $points > $modSettings['shopPointsLimit'])
+				// If so, set the number of points to the limit
+				$points = $modSettings['shopPointsLimit'];
+		}
 		
 		// Give the user their points
-		$result_shop = $smcFunc['db_query']('', "
-			UPDATE {db_prefix}members
-			SET money = money + {float:points}
-			WHERE id_member = {int:id}
-			LIMIT 1",
-			array(
-				'points' => $points,
-				'id' => $user_info['id'],
-			));
+		if (!empty($board_info['countMoney']))
+		{
+			$result_shop = $smcFunc['db_query']('', "
+				UPDATE {db_prefix}members
+				SET money = money + {int:points}
+				WHERE id_member = {int:id}
+				LIMIT 1",
+				array(
+					'points' => $points,
+					'id' => $user_info['id'],
+				));
+			
+		}	
 		cache_put_data('user_settings-' . $user_info['id'], null, 60);
 		// End SMFShop code
 ]]></add>
@@ -189,6 +218,8 @@
 				updateMemberData($rowMembers['id_member'], array('posts' => 'posts - ' . $rowMembers['posts']));
 				
 				global $smcFunc, $modSettings;
+				if(!empty($boardInfo['countMoney']))
+				{
 				$smcFunc['db_query']('', '
 					UPDATE {db_prefix}members
 					SET money = IF(money >= {int:amount}, money - {int:amount}, 0)
@@ -198,6 +229,7 @@
 						'amount' => $shop,
 						'member' => $rowMembers['id_member'],
 					));
+				}	
 				cache_put_data('user_settings-' . $rowMembers['id_member'], null, 60);
 			}
 			// End SMFShop code
@@ -225,7 +257,8 @@
 				else
 					$shop = $modSettings['shopPointsPerTopic'];
 
-	
+	if(!empty($boardInfo['countMoney']))
+	{
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}members
 		SET money = IF(money >= {int:amount}, money - {int:amount}, 0)
@@ -235,6 +268,8 @@
 			'amount' => $shop,
 			'member' => $row['id_member'],
 		));
+	}	
+		
 	cache_put_data('user_settings-' . $row['id_member'], null, 60);
 	// End SMFShop code
 ]]></add>
@@ -381,7 +416,7 @@
 								<input type="checkbox" name="override_theme"', $context['board']['override_theme'] ? ' checked="checked"' : '', ' class="input_check" />
 							</dd>
 						</dl>
-					</div>]></search>
+					</div>]]></search>
 			<add><![CDATA[';
 	// Begin SMFShop code
 	loadLanguage('Shop');
@@ -433,6 +468,94 @@
 ]]></add>
 		</operation>
 	</file>
+	
+	
+	<file name="$sourcedir/Subs-Boards.php">
+		<operation>
+			<search position="replace"><![CDATA[// Should the board theme override the user preferred theme?]]></search>
+			<add><![CDATA[
+	// Begin SMFShop code
+	// Should posts in this board give gredits?
+	if (isset($boardOptions['countMoney']))
+		$boardUpdates[] = 'countMoney = ' . ($boardOptions['countMoney'] ? '1' : '0');
+	// Custom credits per post/topic
+	if (isset($boardOptions['shop_pertopic']))
+		$boardUpdates[] = 'shop_pertopic = ' . (int) $boardOptions['shop_pertopic'];
+	if (isset($boardOptions['shop_perpost']))
+		$boardUpdates[] = 'shop_perpost = ' . (int) $boardOptions['shop_perpost'];
+
+	// Any bonuses here?
+	if (isset($boardOptions['shop_bonuses']))
+		$boardUpdates[] = 'shop_bonuses = ' . ($boardOptions['shop_bonuses'] ? '1' : '0');
+	// End SMFShop code
+	
+// Should the board theme override the user preferred theme?
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+		'override_theme' => false,]]></search>
+			<add><![CDATA[
+		// Begin SMFShop code
+		'countMoney' => 1,
+		'shop_pertopic' => 0,
+		'shop_perpost' => 0,
+		'shop_bonuses' => 1,
+		// End SMFShop code
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[c.can_collapse]]></search>
+			<add><![CDATA[,
+			b.countMoney, b.shop_pertopic, b.shop_perpost, b.shop_bonuses]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+				'override_theme' => $row['override_theme'],]]></search>
+			<add><![CDATA[
+				// Begin SMFShop code
+				'countMoney' => $row['countMoney'],
+				'shop_pertopic' => $row['shop_pertopic'],
+				'shop_perpost' => $row['shop_perpost'],
+				'shop_bonuses' => $row['shop_bonuses'],
+				// End SMFShop code
+]]></add>
+		</operation>
+    </file>
+	
+    <file name="$sourcedir/ManageBoards.php">
+        <operation>
+            <search position="before"><![CDATA[
+			'override_theme' => 0,
+]]></search>
+           <add><![CDATA[
+			// Begin SMFShop code
+			'countMoney' => 1,
+			'shop_pertopic' => 0,
+			'shop_perpost' => 0,
+			'shop_bonuses' => 1,
+			// End SMFShop code
+]]></add>
+        </operation>
+		<operation>
+			<search position="after"><![CDATA[
+		// Checkboxes....
+]]></search>
+			<add><![CDATA[
+		// Begin SMFShop code
+		// Are we counting credits in this board?
+		// TODO: Rename this? It's kept as countMoney for backwards compatibility...
+		$boardOptions['countMoney'] = isset($_POST['countMoney']) ? 1 : 0;
+		// How many credits do we get per post/topic?
+		$boardOptions['shop_pertopic'] = !empty($_POST['shop_pertopic']) ? (float) $_POST['shop_pertopic'] : 0;
+		$boardOptions['shop_perpost'] = !empty($_POST['shop_perpost']) ? (float) $_POST['shop_perpost'] : 0;
+		// Bonuses in this board?
+		$boardOptions['shop_bonuses'] = isset($_POST['shop_bonuses']) ? 1 : 0;
+		// End SMFShop code
+]]></add>
+        </operation>
+	</file>
+	
 	<file name="$languagedir/Modifications.english.php">
 		<operation>
 			<search position="after"><![CDATA[?>]]></search>

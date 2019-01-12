@@ -12,6 +12,7 @@ function refferalsMain()
 	$subActions = array(
 		'settings' => 'refferalsSettings',
 		'settings2' => 'refferalsSettings2',
+		'whorefer' => 'refferalsWhoRefer',
         'copyright' => 'Referrals_CopyrightRemoval',
 	);
 
@@ -25,6 +26,35 @@ function refferalsMain()
 	else
 		RefferalsLinkClick();
 }
+
+function refferalsWhoRefer()
+{
+	global $context, $txt, $db_prefix;
+	
+	$id = (int) $_REQUEST['u'];
+	
+	if (empty($id))
+		fatal_error($txt['ref_err_nomembid'],false);
+		
+	
+	$result = db_query("
+			SELECT
+				m.ID_MEMBER, m.realName,m.dateRegistered, mg.onlineColor, mg.groupName
+			FROM {$db_prefix}members as m	
+				left join {$db_prefix}membergroups as mg ON (m.ID_GROUP = mg.ID_GROUP) 
+			WHERE m.referred_by = $id", __FILE__, __LINE__);
+			
+	$context['ref_members'] = array();		
+	while($refferalRow = mysql_fetch_assoc($result))
+	{
+		$context['ref_members'][] = $refferalRow;	
+	}
+	
+	$context['sub_template'] = 'ref_memlist';
+	$context['page_title'] = $txt['ref_txt_referredmembers'];
+	
+}
+
 
 function ProcessRefferalLink()
 {

@@ -80,7 +80,7 @@ $smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('smflin
 $dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}links_cat");
 $ID_PARENT = 1;
 $image = 1;
-while ($row = mysql_fetch_row($dbresult))
+while ($row = $smcFunc['db_fetch_row']($dbresult))
 {
 	if($row[0] == 'ID_PARENT')
 		$ID_PARENT = 0;
@@ -89,7 +89,7 @@ while ($row = mysql_fetch_row($dbresult))
 
 
 }
-mysql_free_result($dbresult);
+$smcFunc['db_free_result']($dbresult);
 
 if($ID_PARENT)
 	$smcFunc['db_query']('', "ALTER TABLE {db_prefix}links_cat ADD ID_PARENT mediumint(8) unsigned NOT NULL default '0'");
@@ -100,7 +100,7 @@ if($image)
 $dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}links");
 $alexa = 1;
 $pagerank = 1;
-while ($row = mysql_fetch_row($dbresult))
+while ($row = $smcFunc['db_fetch_row']($dbresult))
 {
 	if($row[0] == 'alexa')
 		$alexa = 0;
@@ -109,7 +109,7 @@ while ($row = mysql_fetch_row($dbresult))
 
 
 }
-mysql_free_result($dbresult);
+$smcFunc['db_free_result']($dbresult);
 
 if($alexa)
 	$smcFunc['db_query']('', "ALTER TABLE {db_prefix}links ADD alexa int(10) unsigned NOT NULL default '0'");

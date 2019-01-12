@@ -3,7 +3,7 @@
 RSS Feed Poster
 Version 4.2
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -51,8 +51,18 @@ function verify_rss_url($url)
 		if($failed == true)
 		{
 			$url_array = parse_url($url);
+			
+			
+			$sslhost = '';
+			$port = 80;
+			
+			if ($url_array['scheme'] = 'https')
+			{
+				$sslhost = 'ssl://';
+				$port = 443;
+			}
 	
-			$fp = @fsockopen($url_array['host'], 80, $errno, $errstr, 30);
+			$fp = @fsockopen($sslhost . $url_array['host'], $port, $errno, $errstr, 30);
 			if (!$fp)
 			{
 	
@@ -104,6 +114,7 @@ function verify_rss_url($url)
 				// set URL and other appropriate options
 				curl_setopt($ch, CURLOPT_URL, $url);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	
 				// grab URL, and return output
 				$output = curl_exec($ch);
@@ -308,6 +319,17 @@ function UpdateRSSFeedBots()
                                                 $msg_body=str_replace($links[$j],'[img]'.$links[$j].'[/img]',$msg_body);
                                             }
                                         }
+                                        
+ 										$m= preg_match_all('!https://[a-z0-9\-\.\/]+\.(?:jpe?g|png|gif)!Ui' , $msg_body , $matches);
+                                        
+                                        if ($m) {
+                                            $links=$matches[0];
+                                            for ($j=0;$j<$m;$j++) {
+                                                $msg_body=str_replace($links[$j],'[img]'.$links[$j].'[/img]',$msg_body);
+                                            }
+                                        }
+                                        
+                                        
                                     }    
 									
 									$msg_body = trim($msg_body);
@@ -327,7 +349,7 @@ function UpdateRSSFeedBots()
 								                                    
                                     if ($modSettings['rss_embedimages'])
                                     {
-                                        $m= preg_match_all('!http://[a-z0-9\-\.\/]+\.(?:jpe?g|png|gif)!Ui' , $msg_body , $matches);
+                                        $m = preg_match_all('!http://[a-z0-9\-\.\/]+\.(?:jpe?g|png|gif)!Ui' , $msg_body , $matches);
                                         
                                         if ($m) {
                                             $links=$matches[0];
@@ -335,6 +357,18 @@ function UpdateRSSFeedBots()
                                                 $msg_body=str_replace($links[$j],'[img]'.$links[$j].'[/img]',$msg_body);
                                             }
                                         }
+                                        
+										$m = preg_match_all('!https://[a-z0-9\-\.\/]+\.(?:jpe?g|png|gif)!Ui' , $msg_body , $matches);
+                                        
+                                        if ($m) {
+                                            $links=$matches[0];
+                                            for ($j=0;$j<$m;$j++) {
+                                                $msg_body=str_replace($links[$j],'[img]'.$links[$j].'[/img]',$msg_body);
+                                            }
+                                        }
+                                        
+                                        
+                                        
                                     }    
                                     
                                     
@@ -461,7 +495,19 @@ function GetRSSData($url)
 
 	if ($modSettings['rss_feedmethod'] == 'All' || $modSettings['rss_feedmethod'] == 'fsockopen')
 	{
-		$fp = fsockopen($url_array['host'], 80, $errno, $errstr, 30);
+		
+		
+			$sslhost = '';
+			$port = 80;
+			
+			if ($url_array['scheme'] = 'https')
+			{
+				$sslhost = 'ssl://';
+				$port = 443;
+			}
+		
+		
+		$fp = fsockopen($sslhost . $url_array['host'], $port, $errno, $errstr, 30);
 		if (!$fp)
 		{
 	
@@ -507,7 +553,7 @@ function GetRSSData($url)
 			// set URL and other appropriate options
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			// grab URL, and return output
 			$output = curl_exec($ch);
 	

@@ -54,21 +54,21 @@ pre_installCheck();
         array(
 		  'tw_app_enabled' => 0,
 		  'tw_admin_mem_groupe' => 0,
-		  'tw_app_log_img' => 'http://si0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png',
+		  'tw_app_log_img' => 'http://www.smfhacks.com/images/sign-in-with-twitter-l.png',
 		  'tw_app_log_url' => '',
 		)
-    );	
-	
+    );
+
 	db_add_col('members','twitname','varchar',255);
     db_add_col('members','twitid','int','10');
     db_add_col('members','twitrn','varchar',255);
-	
+
 	doprofiletwitter();
-	
+
 	db_add_col('boards','tweet_enable','int','10');
 	db_add_col('boards','tweet_pubenable','int','10');
-	
-	
+
+
 function pre_installCheck(){
 
     if (version_compare(PHP_VERSION, '5.2.0', '<'))
@@ -77,7 +77,7 @@ function pre_installCheck(){
 
 function db_add_col($table, $col, $type, $size) {
 	global $smcFunc;
-	
+
 	$smcFunc['db_add_column']('{db_prefix}'.$table,
        array(
 	      'name' => $col,
@@ -89,32 +89,32 @@ function db_add_col($table, $col, $type, $size) {
 }
 function doprofiletwitter(){
      	global $smcFunc;
-		
+
 	 $smcFunc['db_insert']('ignore',
             '{db_prefix}custom_fields',
         array(
           'col_name' => 'string',
-		  'field_name' => 'string', 
+		  'field_name' => 'string',
 		  'field_desc' => 'string',
-		  'field_type' => 'string', 
+		  'field_type' => 'string',
 		  'field_length' => 'int',
-		  'field_options' => 'string', 
+		  'field_options' => 'string',
 		  'mask'  => 'string',
-		  'show_reg'  => 'int', 
+		  'show_reg'  => 'int',
 		  'show_display'  => 'int',
-		  'show_profile'  => 'string', 
+		  'show_profile'  => 'string',
 		  'private'  => 'int',
-		  'active'  => 'int', 
+		  'active'  => 'int',
 		  'bbc'  => 'int',
-		  'can_search'  => 'int', 
+		  'can_search'  => 'int',
 		  'default_value'  => 'string',
-		  'enclose'  => 'string', 
+		  'enclose'  => 'string',
 		  'placement'  => 'int'
         ),
         array(
           'twit_pro','Twitter username',
 		  'Twitter Profile','text',255,'',
-		  'nohtml',0,1,'forumProfile',0,1,1,0,'','<a href="http://twitter.com/{INPUT}"target="_blank"><img class="section" src="{DEFAULT_IMAGES_URL}/twitter.png" alt="{INPUT}" width="18" height="18" />',1
+		  'nohtml',0,1,'forumProfile',0,1,1,0,'','<a href="https://twitter.com/{INPUT}"target="_blank"><img class="section" src="{DEFAULT_IMAGES_URL}/twitter.png" alt="{INPUT}" width="18" height="18" />',1
         ),
         array()
 	);

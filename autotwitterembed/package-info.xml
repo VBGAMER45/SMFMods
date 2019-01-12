@@ -4,17 +4,17 @@
 	<id>vbgamer45:autotwitterembed</id>
 	<name>Auto Twitter Embed</name>
 	<type>modification</type>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	
 
-	<install for="2.0 - 2.0.99">
+	<install for="2.0 - 2.0.99,2.1 Beta 3">
 		<readme>ReadMe.txt</readme>
 		<modification type="file">autotwitter.xml</modification>
 		<require-file name="tweet-cache.php" destination="$boarddir" />
 		<database>install.php</database>
 	</install>
 	
-	<uninstall for="2.0 - 2.0.99">
+	<uninstall for="2.0 - 2.0.99,2.1 Beta 3">
 		<remove-file name="$boarddir/tweet-cache.php" />
 		<modification type="file" reverse="true">autotwitter.xml</modification>
 	</uninstall>

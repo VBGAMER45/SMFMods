@@ -51,8 +51,7 @@ function template_main()
 										<td class="windowbg2" valign="top" style="height: 18ex;" align="center">
 											<b>', $txt['shop_version_info_header'], ':</b><br />
 											', $txt['shop_version_number'], ': <span id="yourShopVersion">', $shopVersion['version'], '</span> (Build <span id="yourShopBuild">', $shopVersion['build'], ')</span><br />
-											', $txt['shop_database_version'], ': ', $modSettings['shopVersion'], ' (Build ', $modSettings['shopBuild'], ')<br />
-											', $txt['shop_version_reldate'], ': ', $shopVersion['date'], '<br /><br />';
+		';
 
 	if ($shopVersion['develVersion'] == true)
 		echo '
@@ -206,7 +205,7 @@ Make money off links that users add on your forum posts! For any merchant that i
 
 	if ($shopVersion['develVersion'] == false)
 		echo '
-				<script language="JavaScript" type="text/javascript" src="http://www.smfhacks.com/versions/shop-version.js?build=' . $shopVersion['build'] . '"></script>';
+				<script language="JavaScript" type="text/javascript" src="https://www.smfhacks.com/versions/shop-version.js?build=' . $shopVersion['build'] . '"></script>';
 	else
 		echo '
 				<script language="JavaScript" type="text/javascript">

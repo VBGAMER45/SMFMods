@@ -38,7 +38,7 @@ $txt['autotwitter_blankid'] = 'Tweet error (blank ID)';
 	// Auto Embed Twitter
 	global $boardurl;
 	$context['html_headers'] .=  '
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 

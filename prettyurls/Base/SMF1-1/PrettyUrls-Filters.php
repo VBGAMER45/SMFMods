@@ -15,7 +15,7 @@ function pretty_rewrite_buffer($buffer)
 		$buffer = pretty_rewrite_buffer_fromcache($buffer);
 		return $buffer;
 	}
-	
+
 	//	Remove the script tags now
 	$context['pretty']['scriptID'] = 0;
 	$context['pretty']['scripts'] = array();
@@ -39,13 +39,14 @@ function pretty_rewrite_buffer($buffer)
 
 			// Replace $boardurl with something a little shorter
 			$url_id = str_replace($boardurl, '`B', $match);
-			
+
 			if (substr($url_id,0,7) == 'mailto:')
 				continue;
 			if (substr($url_id,0,10) == 'javascript')
 				continue;
-			
-			
+
+			if (substr($url_id,0,11) == 'android-app')
+				continue;
 
 			$urls_query[] = '\'' . addslashes($url_id) . '\'';
 			$uncached_urls[$url_id] = array(
@@ -125,9 +126,9 @@ function pretty_rewrite_buffer_fromcache($buffer)
 
 	// Function by nend
 	// http://www.simplemachines.org/community/index.php?topic=146969.msg3277889#msg3277889
-	
 
-	
+
+
 	//	Remove the script tags now
 	$context['pretty']['scriptID'] = 0;
 	$context['pretty']['scripts'] = array();
@@ -155,6 +156,9 @@ function pretty_rewrite_buffer_fromcache($buffer)
 			if (substr($url_id,0,7) == 'mailto:')
 				continue;
 			if (substr($url_id,0,10) == 'javascript')
+				continue;
+
+			if (substr($url_id,0,11) == 'android-app')
 				continue;
 
 			$urls_query[] = $url_id;
@@ -281,7 +285,7 @@ function pretty_scripts_restore($match)
 function pretty_urls_actions_filter($urls)
 {
 	global $boardurl, $context, $modSettings, $scripturl;
-	
+
 	$skip_actions = array();
 	if (isset($modSettings['pretty_skipactions']))
 		$skip_actions = explode(",",$modSettings['pretty_skipactions']);
@@ -296,7 +300,7 @@ function pretty_urls_actions_filter($urls)
 				if (!empty($skip_actions))
 					if (in_array($matches[2],$skip_actions))
 						continue;
-				
+
 				if (in_array($matches[2], $context['pretty']['action_array']))
 					$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
 			}
@@ -329,6 +333,12 @@ function pretty_urls_topic_filter($urls)
 				$query_data[] = $urls[$url_id]['topic_id'];
 			}
 	}
+
+	// Most database systems have not set UTF-8 as their default input charset.
+	global $db_character_set;
+	if (isset($db_character_set) && preg_match('~^\w+$~', $db_character_set) === 1)
+		db_query("
+			SET NAMES $db_character_set", __FILE__, __LINE__);
 
 	//	Query the database with these topic IDs
 	if (count($query_data) != 0)

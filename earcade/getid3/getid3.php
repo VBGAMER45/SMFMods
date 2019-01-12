@@ -192,7 +192,6 @@ class getID3
 		// Disable magic_quotes_runtime, if neccesary
 		$old_magic_quotes_runtime = get_magic_quotes_runtime(); // store current setting of magic_quotes_runtime
 		if ($old_magic_quotes_runtime) {
-			set_magic_quotes_runtime(0);                        // turn off magic_quotes_runtime
 			if (get_magic_quotes_runtime()) {
 				return $this->error('Could not disable magic_quotes_runtime - getID3() cannot work properly with this setting enabled');
 			}
@@ -389,8 +388,6 @@ class getID3
 		// remove undesired keys
 		$this->CleanUp();
 
-		// restore magic_quotes_runtime setting
-		set_magic_quotes_runtime($old_magic_quotes_runtime);
 
 		// return info array
 		return $this->info;

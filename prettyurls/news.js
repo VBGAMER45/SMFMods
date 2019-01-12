@@ -3,6 +3,7 @@
 var chrome = chrome || {};
 
 chrome.news = [
+	{date: '11 July, 2018', text: 'Pretty URLs SEO Pro 2.0 is released! PrettyUrls SEO Pro helps improve search engine ranking by employing various tweaks and improvements. <a href="https://www.smfhacks.com/prettyurls-seo-pro.php" target="_blank">Click here for more information</a>  '},
 	{date: '31 Sept, 2013', text: 'Pretty URLs 1.1 is released!'},
 	{date: '19 Feb, 2012', text: 'Pretty URLs 1.0 is released!'},
 	{date: '5 Jan, 2011', text: 'Pretty URLs 1.0RC5 is released!'},
@@ -16,6 +17,6 @@ chrome.news = [
 	{date: '12 Nov, 2008', text: 'Pretty URLs 0.9 released'}
 ];
 
-chrome.latestVersion = '1.1';
+chrome.latestVersion = '1.1.6';
 chrome.upgradeFrom = '';
 chrome.upgradeUrl = '';

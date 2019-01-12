@@ -68,7 +68,7 @@ function pretty_news()
 		upgradeTxt: "' . $txt['pretty_upgrade'] . '"
 	};</script>
 	<script type="text/javascript" src="' . $settings['default_theme_url'] . '/pretty/chrome.js"></script>
-	<script type="text/javascript" src="http://prettyurls.googlecode.com/svn/trunk/news.js"></script>';
+	<script type="text/javascript" src="https://createaforum.com/prettyurlsnews.js"></script>';
 
 	$context['page_title'] = $txt['pretty_chrome_page_title_news'];
 	$context['sub_template'] = 'pretty_news';
@@ -110,7 +110,7 @@ function pretty_manage_settings()
 		$enabled = !empty($modSettings['pretty_enable_filters']);
 		pretty_update_filters();
 		$modSettings['pretty_enable_filters'] = $enabled;
-		
+
 		$_POST['pretty_skipactions'] = strtolower($_POST['pretty_skipactions']);
 		$_POST['pretty_skipactions'] = trim($_POST['pretty_skipactions']);
 		updateSettings(
@@ -121,8 +121,8 @@ function pretty_manage_settings()
 		// If you want to turn rewriting on you must test that it will work first!
 		if (!$enabled && $_POST['pretty_enable'])
 			redirectexit('action=admin;area=pretty;sa=test');
-			
-		
+
+
 		// Update the enabled setting
 		updateSettings(
 		array(

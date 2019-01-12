@@ -36,7 +36,7 @@
 	<operation>
 		<search position="before"><![CDATA[SUBSTRING(mf.body, 1, 385) AS first_body, ml.smileys_enabled AS last_smileys, mf.smileys_enabled AS first_smileys]]></search>
 	<add><![CDATA[, IFNULL(big.id_attach, 0) AS big_id, big.filename AS big_filename, big.width AS big_width, big.height AS big_height,
-				IFNULL(thn.id_attach, 0) AS thn_id, thn.filename AS thn_filename, thn.width AS thn_width, thn.height AS thn_height]]></add>
+				IFNULL(thn.id_attach, 0) AS thn_id, thn.filename AS thn_filename, thn.width AS thn_width, thn.height AS thn_height, t.id_board ]]></add>
 	</operation>
 	<operation>
 		<search position="replace"><![CDATA[LEFT JOIN {db_prefix}members AS meml ON (meml.id_member = ml.id_member)
@@ -85,6 +85,12 @@
 			}
 			else
 				$image = array();
+				
+				
+			if (!in_array($row['id_board'],$modSettings['photo_boards']))
+			{
+				$context['show_thumbnails'] = false;	
+			}	
 
 			if (isset($context['topics'][$row['id_topic']]))
 			{

@@ -1,3 +1,8 @@
+1.0 
+!Fixed undefined twit_USettings bug
+
+
+0.4
 changed to oauth2 authentication
 mod now works with standard google accounts aswell as plus accounts
 added support for auto register

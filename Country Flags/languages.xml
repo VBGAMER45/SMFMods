@@ -7,14 +7,15 @@
 			<search position="end" />
 			<add><![CDATA[
 // Country Flag mod
-$txt['country_flag_label'] = 'Country';
-$txt['country_flag_error_required'] = 'You must select a country!';
-$txt['country_flag_ask'] = 'Allow member to select country:';
-$txt['country_flag_disabled'] = 'Never (Disabled)';
-$txt['country_flag_profile'] = 'On Profile only';
-$txt['country_flag_both'] = 'On both Profile and Registration';
-$txt['country_flag_required'] = 'Require member to select a country?';
-$txt['country_flag_show'] = 'Show country name and flag on posts as well as profile?';
+$txt['country_flag_label'] = 'Please select your country';
+$txt['country_flag_error_required'] = 'You must select the country that you visit us from';
+$txt['country_flag_ask'] = 'Ask for country flag on';
+$txt['country_flag_disabled'] = 'Don\'t show (Disabled)';
+$txt['country_flag_profile'] = 'Profile';
+$txt['country_flag_registration'] = 'Registration';
+$txt['country_flag_both'] = 'Both';
+$txt['country_flag_required'] = 'Require a member to select a location?';
+$txt['country_flag_show'] = 'Show flags on Display page (Where posts are shown).';
 $txt['country_flag'] = 'Country';
 ]]></add>
 		</operation>
@@ -25,14 +26,15 @@ $txt['country_flag'] = 'Country';
 			<search position="end" />
 			<add><![CDATA[
 // Country Flag mod
-$txt['country_flag_label'] = 'Country';
-$txt['country_flag_error_required'] = 'You must select a country!';
-$txt['country_flag_ask'] = 'Allow member to select country:';
-$txt['country_flag_disabled'] = 'Never (Disabled)';
-$txt['country_flag_profile'] = 'On Profile only';
-$txt['country_flag_both'] = 'On both Profile and Registration';
-$txt['country_flag_required'] = 'Require member to select a country?';
-$txt['country_flag_show'] = 'Show country and flag on posts as well as profile?';
+$txt['country_flag_label'] = 'Please select your country';
+$txt['country_flag_error_required'] = 'You must select the country that you visit us from';
+$txt['country_flag_ask'] = 'Ask for country flag on';
+$txt['country_flag_disabled'] = 'Don\'t show (Disabled)';
+$txt['country_flag_profile'] = 'Profile';
+$txt['country_flag_registration'] = 'Registration';
+$txt['country_flag_both'] = 'Both';
+$txt['country_flag_required'] = 'Require a member to select a location?';
+$txt['country_flag_show'] = 'Show flags on Display page (Where posts are shown).';
 $txt['country_flag'] = 'Country';
 ]]></add>
 		</operation>

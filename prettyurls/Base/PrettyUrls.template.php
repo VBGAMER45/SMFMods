@@ -30,6 +30,8 @@ function template_pretty_chrome_above()
 		if (isset($context['pretty']['chrome']['notice']))
 			echo '
 		<p id="chrome_notice">', $context['pretty']['chrome']['notice'], '</p>';
+		
+		echo '<b>Need More SEO and features check out <a href="https://www.smfhacks.com/prettyurls-seo-pro.php" target="_blank">Pretty Urls SEO Pro</a></b>';
 	}
 }
 
@@ -75,6 +77,12 @@ function template_pretty_settings()
 				<label for="pretty_enable">', $txt['pretty_enable'], '</label>
 				<input type="hidden" name="pretty_enable" value="0" />
 				<input type="checkbox" name="pretty_enable" id="pretty_enable"', ($context['pretty']['settings']['enable'] ? ' checked="checked"' : ''), ' />
+				
+				<br />
+				<label for="pretty_root_url">', $txt['pretty_root_url'], '</label>
+				<input type="text" name="pretty_root_url" id="pretty_root_url" value="', (isset($modSettings['pretty_root_url']) ? $modSettings['pretty_root_url'] : ''), '" size="50" />
+	
+
 				<br />
 				<label for="pretty_skipactions">', $txt['pretty_skipactions'], '</label>
 				<input type="text" name="pretty_skipactions" id="pretty_skipactions" value="', (isset($modSettings['pretty_skipactions']) ? $modSettings['pretty_skipactions'] : ''), '" />

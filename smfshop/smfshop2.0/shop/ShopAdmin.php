@@ -268,6 +268,11 @@ function ShopItemsAdd()
 	{
 		// Include the item engine (defaults and stuff)
 		include($sourcedir . '/shop/item_engine.php');
+
+
+		// Clean item...
+		$_POST['item'] = strtolower(preg_replace('/[^a-z A-Z0-9]/','',$_POST['item']));
+
 		// Include the actual item
 		require($sourcedir . '/shop/items/' . $_POST['item'] . '.php');
 		// Create an instance of the item
@@ -444,6 +449,7 @@ function ShopItemsEdit()
 		// Include the item engine (defaults and stuff)
 		include($sourcedir . '/shop/item_engine.php');
 		// Include the actual item
+		$row['module'] = strtolower(preg_replace('/[^a-z A-Z0-9]/','',$row['module']));
 		require($sourcedir . '/shop/items/' . $row['module'] . '.php');
 		// Create an instance of the item (it's used below)
 		eval('$tempItem = new item_' . $row['module'] . ';');

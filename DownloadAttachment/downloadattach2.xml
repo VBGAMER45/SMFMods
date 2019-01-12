@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:DownloadAttachment</id>
+<version>1.0</version>
+<file name="$languagedir/ManagePermissions.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Download Attachment
+$txt['permissionname_view_attachments'] = 'Download attachments';
+$txt['permissionhelp_view_attachments'] = 'Attachments are files that are attached to posted messages. This feature can be enabled and configured in \'Attachments and avatars\'. Since attachments are not directly accessed, you can protect them from being downloaded by users that don\'t have this permission.';
+
+$txt['permissionname_view_attachments2'] = 'View attachments';
+$txt['permissionhelp_view_attachments2'] = 'Allows user to view attachments in posting display. They can only download. If they have the download attachment permission.';
+
+
+// END Download Attachment		
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/ManagePermissions.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Download Attachment
+$txt['permissionname_view_attachments'] = 'Download attachments';
+$txt['permissionhelp_view_attachments'] = 'Attachments are files that are attached to posted messages. This feature can be enabled and configured in \'Attachments and avatars\'. Since attachments are not directly accessed, you can protect them from being downloaded by users that don\'t have this permission.';
+
+$txt['permissionname_view_attachments2'] = 'View attachments';
+$txt['permissionhelp_view_attachments2'] = 'Allows user to view attachments in posting display. They can only download. If they have the download attachment permission.';
+
+
+// END Download Attachment			
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="replace"><![CDATA[if (!empty($modSettings['attachmentEnable']) && allowedTo('view_attachments'))]]></search>
+			<add><![CDATA[if (!empty($modSettings['attachmentEnable']) && (allowedTo('view_attachments') || allowedTo('view_attachments2')))]]></add>
+		</operation>
+	</file>
+	
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="replace"><![CDATA['remove_own',
+		'view_attachments',]]></search>
+		<add><![CDATA[
+		'remove_own',
+		'view_attachments',
+		'view_attachments2',]]></add>
+	</operation>
+
+	<operation>
+		<search position="replace"><![CDATA['view_attachments' => array(false, 'attachment', 'participate'),]]></search>
+		<add><![CDATA['view_attachments' => array(false, 'attachment', 'participate'),
+		'view_attachments2' => array(false, 'attachment', 'participate'),]]></add>
+	</operation>
+</file>
+
+
+</modification>

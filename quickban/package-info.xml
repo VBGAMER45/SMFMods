@@ -5,7 +5,7 @@
 	<id>vbgamer45:quickban</id>
 	<name>Quick Ban on Account Delete</name>
 	<type>modification</type>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC3">
 		<modification type="file">quickban.xml</modification>

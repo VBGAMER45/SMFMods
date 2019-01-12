@@ -22,8 +22,8 @@ echo '
     <td width="72%"  class="windowbg2"><input type="text" name="from" size="64" /></td>
   </tr>
   <tr>
-    <td width="28%"" class="windowbg2"><b>',$txt['smfcontact_subject'],'</b></td>
-    <td width="72%"" class="windowbg2"><input type="text" name="subject" size="64" /></td>
+    <td width="28%" class="windowbg2"><b>',$txt['smfcontact_subject'],'</b></td>
+    <td width="72%" class="windowbg2"><input type="text" name="subject" size="64" /></td>
   </tr>
   <tr>
     <td width="28%"  valign="top" class="windowbg2"><b>',$txt['smfcontact_body'],'</b></td>
@@ -49,8 +49,8 @@ echo '
 	
 echo '
   <tr>
-    <td width="28%"" class="windowbg2"><span class="gen"><b>',$txt['smfcontact_emailaddress'],'</b></span></td>
-    <td width="72%"" class="windowbg2"><input type="text" name="email" size="64" /></td>
+    <td width="28%" class="windowbg2"><span class="gen"><b>',$txt['smfcontact_emailaddress'],'</b></span></td>
+    <td width="72%" class="windowbg2"><input type="text" name="email" size="64" /></td>
   </tr>
   <tr>
     <td width="28%" colspan="2" align="center" class="windowbg2">
@@ -62,7 +62,7 @@ echo '
 ';
 
 	// Copyright link requird unless removal purchase is made
-	echo '<br /><div align="center"><span class="smalltext">Powered by <a href="http://www.smfhacks.com" target="blank">Contact Page</a></span></div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered by <a href="https://www.smfhacks.com" target="blank">Contact Page</a></span></div>';
 }
 
 function template_send()
@@ -84,6 +84,6 @@ echo '
 </div>';
 
 	// Copyright link requird unless removal purchase is made
-	echo '<br /><div align="center"><span class="smalltext">Powered by <a href="http://www.smfhacks.com" target="blank">Contact Page</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span> </div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered by <a href="https://www.smfhacks.com" target="blank">Contact Page</a> by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span> </div>';
 }
 ?>

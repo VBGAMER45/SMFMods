@@ -30,6 +30,9 @@ $txt['pretty_core_settings'] = 'Core settings';
 $txt['pretty_enable'] = 'Enable URL rewriting';
 $txt['pretty_filters'] = 'URL rewriting filters';
 $txt['pretty_save'] = 'Save changes';
+
+$txt['pretty_root_url'] = 'Pretty Urls Root: ';
+
 $txt['pretty_skipactions'] = 'Skip Actions List: ';
 $txt['pretty_skipactions_note'] = 'Enter any actions seperated by a comma to skip url rewriting';
 $txt['pretty_bufferusecache'] = 'Use caching instead of database table for PrettyUrls';

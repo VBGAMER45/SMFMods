@@ -1,11 +1,19 @@
+2.0
++Improved SMF 2.0 style in some areas of the trader system.
++Listing is now shown on the detail page if you have SMF Classifieds installed.
++Listing Title now shown above short comment if you have SMF Classifieds installed.
++Buyer/Seller now in bold on trader feedback listing page
+!Better support for UTF8 characters SMF 2.0
+!Fixed an issue with sometimes allowing the same SMF Classifieds listing to be allowed to be rated twice.
+
 1.7
 !Fixed undefined errors in settings area for SMF 2.0.x
 !Fixed icon for trader system in admin area for SMF 2.0
 
 1.6
-!Do not show listings in submit feedback if already rated the listing - SMF Classifieds intergration
+!Do not show listings in submit feedback if already rated the listing - SMF Classifieds integration
 !Do not show the submit feedback link for yourself
-!Do not ask for short topic url if classifieds option says you require to select a listing  - SMF Classifieds intergration
+!Do not ask for short topic url if classifieds option says you require to select a listing  - SMF Classifieds integration
 
 1.5
 !Fix bug not showing reviews if a member deleted their account
@@ -18,7 +26,7 @@
 !Fixed pm error SMF 2.0 with timeOffset
 
 1.4
-+Better intergration with SMF Classifieds
++Better integration with SMF Classifieds
 
 1.3.1
 !Removed Queries from the templates
@@ -36,7 +44,7 @@
 
 Version 1.1
 +Moved language strings to a language files
-+Added trader rating approval sytem. Admins can now approve ratings
++Added trader rating approval system. Admins can now approve ratings
 +Will send a PM to a user when a rating is added to their profile when it is approved.
 
 

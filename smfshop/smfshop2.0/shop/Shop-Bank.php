@@ -33,7 +33,7 @@
 // If the file isn't called by SMF, it's bad!
 if (!defined('SMF'))
 	die('Hacking attempt...');
-	
+
 // The shop action (for the template)
 $context['shop_do'] = 'bank';
 
@@ -48,7 +48,7 @@ isAllowedTo('shop_bank');
 
 // If we're in the main page of the bank
 if ($_GET['do'] == 'bank')
-{	
+{
 	// Set the page title
 	$context['page_title'] = $txt['shop'] . ' - ' . $txt['shop_bank'];
 	// Load the 'bank' sub template
@@ -59,8 +59,8 @@ elseif($_GET['do'] == 'bank2')
 {
 
 	// Make sure the amount of money is numeric
-	$_POST['amount'] = (float) $_POST['amount'];
-		
+	$_POST['amount'] = (int) $_POST['amount'];
+
 	// If they're depositing some money
 	if ($_POST['type'] == 'deposit')
 	{
@@ -100,7 +100,7 @@ elseif($_GET['do'] == 'bank2')
 					));
 			$row = $smcFunc['db_fetch_assoc']($result);
 			$smcFunc['db_free_result']($result);
-			
+
 			// Format the amounts
 			$money = formatMoney($row['money']);
 			$moneyBank = formatMoney($row['moneyBank']);
@@ -115,7 +115,7 @@ elseif($_GET['do'] == 'bank2')
 	elseif ($_POST['type'] == 'withdraw')
 	{
 		// Make sure amount is numeric
-		$_POST['amount'] = (float) $_POST['amount'];
+		$_POST['amount'] = (int) $_POST['amount'];
 
 		// If user is trying to withdraw more money than they have
 		if ($_POST['amount'] + $modSettings['shopFeeWithdraw'] > $context['user']['moneyBank'])
@@ -132,7 +132,7 @@ elseif($_GET['do'] == 'bank2')
 			// Remove amount from member's bank money, and add to money in pockey
 			$smcFunc['db_query']('', "
 				UPDATE {db_prefix}members
-				SET moneyBank = moneyBank - ( {float:amount} + {float:fee}), 
+				SET moneyBank = moneyBank - ( {float:amount} + {float:fee}),
 					money = money + {float:amount}
 				WHERE id_member = {int:id}
 				LIMIT 1",
@@ -141,7 +141,7 @@ elseif($_GET['do'] == 'bank2')
 					'fee' => $modSettings['shopFeeWithdraw'],
 					'id' => $context['user']['id'],
 				));
-			cache_put_data('user_settings-' . $context['user']['id'], null, 60);					
+			cache_put_data('user_settings-' . $context['user']['id'], null, 60);
 			// Get current money amounts (pocket and bank)
 			$result = $smcFunc['db_query']('', "
 				SELECT money, moneyBank
@@ -153,7 +153,7 @@ elseif($_GET['do'] == 'bank2')
 				));
 			$row = $smcFunc['db_fetch_assoc']($result);
 			$smcFunc['db_free_result']($result);
-			
+
 			// Format the amounts
 			$money = formatMoney($row['money']);
 			$moneyBank = formatMoney($row['moneyBank']);
@@ -167,7 +167,7 @@ elseif($_GET['do'] == 'bank2')
 	{
 	   fatal_error('ERROR: The type passed was not valid!');
 	}
-	
+
 	// Set the page title
 	$context['page_title'] = $txt['shop'] . ' - ' . $txt['shop_bank'];
 	// Use the 'message' template

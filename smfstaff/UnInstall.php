@@ -14,14 +14,14 @@ echo '<iframe src ="http://www.smfhacks.com/uninstall.php?modname=' . $modName .
   <p>Your browser does not support iframes.</p>
 </iframe>
 <br />
-Other modifications of interest<br>
-
-<a href="http://www.ezportal.com" target="_blank">EzPortal</a><br />
-<a href="http://www.smfhacks.com/smf-gallery-pro.php" target="_blank">SMF Gallery Pro</a><br />
-<a href="http://www.smfhacks.com/smf-store.php" target="_blank">SMF Store</a><br />
-<a href="http://www.smfhacks.com/smf-classifieds.php" target="_blank">SMF Classifieds</a><br />
-<a href="http://www.smfhacks.com/newsletter-pro.php" target="_blank">Newsletter Pro</a><br />
-<a href="http://www.smfhacks.com/download-system-pro.php">Downloads System Pro</a> - A complete downloads system for SMF. With credits, paypal intergration and more!<br />
+<b>Other Helpful Mods to make your forum stand out</b><br />
+<a href="http://www.smfhacks.com/smf-gallery-pro.php" target="_blank">SMF Gallery Pro</a> - A fully featured gallery for SMF<br />
+<a href="http://www.smfhacks.com/smf-store.php" target="_blank">SMF Store</a> - eCommerce Store system using PayPal<br />
+<a href="http://www.smfhacks.com/smf-classifieds.php" target="_blank">SMF Classifieds</a> - Auction/Listing system for SMF<br />
+<a href="http://www.smfhacks.com/ad-seller-pro.php" target="_blank">Ad Seller Pro</a> - Make more money from your forum with ads<br />
+<a href="http://www.smfhacks.com/download-system-pro.php" target="_blank">Downloads System Pro</a> - charge people for downloads<br />
+<a href="http://www.smfhacks.com/awesomepostratings.php" target="_blank">Awesome Post Ratings</a> - gain more interaction from your visitors<br />
+<a href="http://www.smfhacks.com/newsletter-pro.php" target="_blank">Newsletter Pro</a> - send html emails with open, click and unsubscribe tracking.<br />
 
 <br /><br />';
 

@@ -49,6 +49,47 @@ function template_ref_settings()
 
 }
 
+
+function template_ref_memlist()
+{
+	global $txt, $scripturl, $context;
+	
+		echo '
+<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
+<tr class="catbg">
+<td colspan="3">',  $txt['ref_txt_referredmembers'], '</td>
+</tr>
+		<tr class="catbg">';
+
+				echo  '<td>', $txt['ref_txt_member_name'], '</td>';
+				echo '<td>', $txt['ref_txt_member_group'], '</td>';
+				echo '<td>', $txt['date_registered'], '</td>';
+		
+			echo '</tr>
+		';
+		
+		$styleName = 'windowbg';
+		
+		foreach($context['ref_members'] as $row)
+		{
+			echo '<tr class="' . $styleName . '">';
+			echo '<td><a href="' . $scripturl . '?action=profile;u='  . $row['ID_MEMBER'] . '"' . (!empty($row['onlineColor']) ? ' style="color: ' . $row['onlineColor'] . ';" ' :'' ) . '>', $row['real_name'] ,'</a></td>';
+			echo '<td>', $row['groupName'] ,'</td>';
+			echo '<td>', timeformat($row['dateRegistered']), '</td>';
+			echo '</tr>';
+			
+			if ($styleName == 'windowbg')
+				$styleName = 'windowbg2';
+			else
+				$styleName = 'windowbg';
+				
+		}	
+
+		echo '</table>';
+	
+}
+
+
 function template_refcopyright()
 {
 	global $txt, $scripturl, $context, $boardurl, $modSettings;

@@ -4,7 +4,7 @@
 <id>vbgamer45:SMFLinks</id>
 <name>SMF Links</name>
 <type>modification</type>
-<version>3.0.5</version>
+<version>3.0.6</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
 		<redirect url="?action=links;sa=admin">redirect.txt</redirect>

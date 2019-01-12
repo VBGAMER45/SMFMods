@@ -304,6 +304,19 @@ $txt['topic_thumb_height'] = 'Thumbnail Topic Height';
 
 		// Create a new board...]]></add>
 	</operation>
+	<operation>
+		<search position="replace"><![CDATA[createBoard($boardOptions);]]></search>
+		<add><![CDATA[
+		// Thumbnail topic
+		$newBoardID = createBoard($boardOptions);
+			if ($photo_board && !in_array($newBoardID, $context['photo_boards']))
+			$context['photo_boards'][] = $newBoardID;
+		updateSettings( array( 'photo_boards' => implode(',', $context['photo_boards']) ) );
+		
+		]]></add>
+	</operation>
+	
+	
 </file>
 <file name="$sourcedir/ManageSettings.php">
 	<operation>

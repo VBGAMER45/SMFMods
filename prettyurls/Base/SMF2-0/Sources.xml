@@ -189,7 +189,7 @@ function ob_sessrewrite($buffer)
 		$timeDiff = $newTime - (float) $matches[1];
 		$queriesDiff = $db_count + $context['pretty']['db_count'] - (int) $matches[2];
 		//	Remove the link if you like, I won't enforce it like others do
-		$newLoadTime = '<span class="smalltext">' . $txt['page_created'] . $newTime . $txt['seconds_with'] . $db_count . $txt['queries'] . ' (<a href="http://code.google.com/p/prettyurls/">Pretty URLs</a> adds ' . $timeDiff . 's, ' . $queriesDiff . 'q)</span>';
+		$newLoadTime = '<span class="smalltext">' . $txt['page_created'] . $newTime . $txt['seconds_with'] . $db_count . $txt['queries'] . ' (<a href="https://www.smfhacks.com/prettyurls-seo-pro.php">Pretty URLs</a> adds ' . $timeDiff . 's, ' . $queriesDiff . 'q)</span>';
 		$buffer = str_replace($matches[0], $newLoadTime, $buffer);
 	}
 ]]></add>

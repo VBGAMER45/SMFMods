@@ -23,7 +23,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 if (!defined('SMF'))
-	die('Hacking attempt...');	
+	die('Hacking attempt...');
 
 function Twittera(){
     global $txt, $sourcedir, $context;
@@ -31,11 +31,11 @@ function Twittera(){
 	require_once($sourcedir . '/ManageServer.php');
 	loadTemplate('TwitterAdmin');
     allowedTo('admin_forum');
-    
+
 	$context['page_title'] = $txt['twittmaina'];
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['twittmaina'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['twittmaina'];
-	
+
 	$subActions = array(
 	   'twitter' => 'twitadmin',
 	   'twittlog' => 'twitlogs',
@@ -44,14 +44,14 @@ function Twittera(){
 	);
 
 	$_REQUEST['sa'] = isset($_REQUEST['sa']) && isset($subActions[$_REQUEST['sa']]) ? $_REQUEST['sa'] : 'twitter';
-	$subActions[$_REQUEST['sa']]();	
+	$subActions[$_REQUEST['sa']]();
 }
 
 function twit_about(){
-    
+
 	global $settings, $txt, $context;
     $context['sub_template'] = 'twit_about';
-	
+
 	 $context['tw_credits'] = array(
 		    'SA' => array(
 			    'name' => 'Wayne Mankertz',
@@ -90,26 +90,26 @@ function twit_about(){
 			    'position' => 'Thanks to the SMFHacks.com community who cared about the project and spent time to help me find bugs!',
 		    ),
 	    );
-	
+
 	    if (function_exists('curl_init')) {
 	        $context['sayesno'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_on.png" width="26" height="26" title="" alt=""/> '.$txt['tw_sinfo1'].'';
 	    }
 	    else{
 	        $context['sayesno'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_off.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo2'].'';
 	    }
-		
+
 	    if (function_exists('json_decode')) {
 	       $context['sayesnojson'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_on.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo3'].'';
 	    }
 	    else{
 	       $context['sayesnojson'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_off.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo4'].'';
 	    }
-	
+
 	    if (!defined('PHP_VERSION_ID')) {
            $version = explode('.', PHP_VERSION);
            define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
         }
-		
+
         if(PHP_VERSION_ID < 50000){
            $version = explode('.', PHP_VERSION);
            $context['saphpver'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_off.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo5'].' '.phpversion();
@@ -119,9 +119,9 @@ function twit_about(){
 	        $context['saphpver'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_on.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo6'].' '.phpversion();
 
 	    }
-	
+
 	    $context['safe_mode'] = ini_get('safe_mode');
-	
+
 	    if($context['safe_mode']){
 	        $context['safe_mode_go'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_on.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo7'].'';
 	    }
@@ -129,39 +129,39 @@ function twit_about(){
 	        $context['safe_mode_go'] = '<img src="' . $settings['default_images_url'] . '/admin/switch_off.png" width="26" height="26" title="" alt="" /> '.$txt['tw_sinfo8'].'';
 	    }
 }
-function twit_tweet() 
+function twit_tweet()
 {
 global $scripturl, $smcFunc, $context;
-	
+
 	$context['sub_template'] = 'twit_boards';
 	$context['settings_title'] = '';
 	$context['post_url'] = $scripturl . '?action=admin;area=twitter;sa=boards;save';
-			
+
 	if (isset($_GET['save']))
 	{
 	checkSession();
 	    $board_post = array('boardstweet','boardspub');
 	    $board_feild = array('tweet_enable','tweet_pubenable');
-	    
+
 		for ($i=0;$i<=1;$i++){
 	        $board_ids = array_map('intval', !empty($_POST[$board_post[$i]]) ? $_POST[$board_post[$i]] : array());
-	
+
 			$smcFunc['db_query']('', '
 				UPDATE {db_prefix}boards
-				SET 
+				SET
 				{raw:board_feild} = IF(FIND_IN_SET(id_board, {string:board_ids}), 1, 0)',
 				array(
 					'board_ids' => join(',', $board_ids),
 					'board_feild' => $board_feild[$i],
 				)
-				
+
 	        );
-		}	
+		}
 	    redirectexit('action=admin;area=twitter;sa=boards');
 	}
-			
+
 	$req = $smcFunc['db_query']('', '
-			SELECT 
+			SELECT
 				b.id_board, b.id_cat, b.board_order, b.name AS board_name, b.tweet_enable, b.tweet_pubenable,
 				c.cat_order, c.name AS cat_name
 			FROM {db_prefix}boards b
@@ -172,11 +172,11 @@ global $scripturl, $smcFunc, $context;
 				'blank' => '',
 			)
 	  );
-			
+
 	 $cats = array();
-	 
+
 	 $context['twit_boards'] = array();
-	 
+
 	 while ($row = $smcFunc['db_fetch_assoc']($req))
 	 {
 			if (!in_array($row['id_cat'], $cats))
@@ -190,14 +190,14 @@ global $scripturl, $smcFunc, $context;
 		    }
 	 $context['twit_boards'][] = $row;
 	 }
-		
+
 }
 
 function twitadmin(){
  global $txt, $scripturl, $context;
 
 	$context['sub_template'] = 'show_settings';
-	
+
 	$config_vars = array(
 	    array('check', 'tw_app_enabled'),
 		'',
@@ -223,8 +223,8 @@ function twitadmin(){
 		array('check', 'tw_app_shorturl'),
 		array('text', 'tw_app_bituname'),
 		array('text', 'tw_app_bitkey'),
-	);	
-	
+	);
+
 	if (isset($_GET['save']))
 	{
 		checkSession();
@@ -233,16 +233,16 @@ function twitadmin(){
 	}
 	$context['post_url'] = $scripturl .'?action=admin;area=twitter;save';
 	$context['settings_title'] = $txt['twittmaina'];
-	prepareDBSettingContext($config_vars);		
+	prepareDBSettingContext($config_vars);
 
 }
 
 function twitlogs(){
         global $sourcedir, $smcFunc, $scripturl, $txt, $context;
-    
+
 	    $context['sub_template'] = 'twitlog';
 	    $context['settings_title'] = $txt['tw_app_logs'];
-	
+
 	    $list_options = array(
 		    'id' => 'twit_list',
 		    'title' => $txt['tw_app_logs'],
@@ -256,7 +256,7 @@ function twitlogs(){
 			   $request = $smcFunc[\'db_query\'](\'\', \'
 			        SELECT m.id_member,  m.real_name, m.date_registered, mg.online_color, m.twitid, m.twitname
                     FROM {db_prefix}members AS m
-                    LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN m.id_group = {int:reg_mem_group} 
+                    LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN m.id_group = {int:reg_mem_group}
 			        THEN m.id_post_group ELSE m.id_group END)
                     WHERE twitid != {string:one} AND twitid != {string:zero} AND twitname != {string:zero} AND twitname != {string:zero}
 			        ORDER BY {raw:sort}
@@ -270,7 +270,7 @@ function twitlogs(){
                        \'reg_mem_group\' => 0,
                     )
 				);
-				
+
 				$fbu = array();
 				while ($row = $smcFunc[\'db_fetch_assoc\']($request))
 					$fbu[] = $row;
@@ -323,7 +323,7 @@ function twitlogs(){
 				'data' => array(
 					'function' => create_function('$row', '
 						return \'@\'.$row[\'twitname\'].\'\';
-						
+
 					'),
 					'style' => 'width: 8%; text-align: center;',
 				),
@@ -346,7 +346,7 @@ function twitlogs(){
 					'reverse' => 'twitid DESC',
 				),
 			),
-			
+
 			'time' => array(
 				'header' => array(
 					'value' => $txt['twittlog2'],
@@ -369,7 +369,7 @@ function twitlogs(){
 					'function' => create_function('$row', '
 						global $context, $txt, $scripturl;
 
-						return \'<a href="http://twitter.com/#!/\'.$row[\'twitname\'].\'" target="blank">\'.$txt[\'twittlog5\'].\'</a>\';
+						return \'<a href="https://twitter.com/#!/\'.$row[\'twitname\'].\'" target="blank">\'.$txt[\'twittlog5\'].\'</a>\';
 					'),
 					'style' => 'width: 3%; text-align: center;',
 				),
@@ -385,7 +385,7 @@ function twitlogs(){
 					'),
 					'style' => 'width: 2%; text-align: center;',
 				),
-	    	),		
+	    	),
 		),
 		'form' => array(
 			'href' => $scripturl.'?action=admin;area=twitter;sa=twittlog',
@@ -399,7 +399,7 @@ function twitlogs(){
 			array(
 				'position' => 'below_table_data',
 				'value' => '
-						
+
 						<input type="submit" name="dis_sel" value="'.$txt['tw_app_dissel'].'" class="button_submit" />
 						<input type="submit" name="dis_all" value="'.$txt['tw_app_disall'].'" class="button_submit" />'
 			),
@@ -409,7 +409,7 @@ function twitlogs(){
 	    require_once($sourcedir . '/Subs-List.php');
 
 	    createList($list_options);
-		
+
 		if (isset($_POST['dis_all']))
         {
 		    checkSession();
@@ -421,13 +421,13 @@ function twitlogs(){
 			        'blank_string' => '',
 	            )
 	        );
-		
+
 		    redirectexit('action=admin;area=twitter;sa=twittlog');
         }
 	    elseif (!empty($_POST['dis_sel']) && isset($_POST['dis']))
 	    {
 		    checkSession();
-		
+
 		    $smcFunc['db_query']('', '
 	            UPDATE {db_prefix}members
 		        SET twitname = {string:blank_string}, twitid = {string:blank_string}
@@ -437,8 +437,8 @@ function twitlogs(){
 			        'blank_string' => '',
 	            )
 	        );
-	
+
 		    redirectexit('action=admin;area=twitter;sa=twittlog');
 	    }
     }
-?>	
+?>

@@ -125,7 +125,7 @@ $txt['shop_enter_cat_name'] = 'ERROR: Please enter a category name!';
 $txt['shop_give_negative'] = 'Nice try, but how can you GIVE a negative amount...? You were trying to steal, WEREN\'T YOU? ;)';
 //Please keep the link to DanSoft Australia here...
 global $modSettings;
-$txt['shop_guest_message'] = 'Sorry, guests can\'t access the shop!<br />Please register to view this forum\'s shop<br /><br />Powered by SMFShop <br />&copy; 2009-2013 <a href="http://www.smfhacks.com">SMFHacks</a> &copy; 2005, 2006, 2007 <a href="http://www.dansoftaustralia.net/">DanSoft Australia</a><br /><br />';
+$txt['shop_guest_message'] = 'Sorry, guests can\'t access the shop!<br />Please register to view this forum\'s shop<br /><br />Powered by SMFShop <br />&copy; 2009-2017 <a href="http://www.smfhacks.com">SMFHacks</a> &copy; 2005, 2006, 2007 <a href="http://www.dansoftaustralia.net/">DanSoft Australia</a><br /><br />';
 $txt['shop_im_sendmoney_subject'] = '%s sent to you by %s';
 $txt['shop_im_sendmoney_message'] = "%s has sent you %s. If they left a message explaining why, it will be below:\r\n\r\n %s\r\nHave a good day,\r\n --Forum Management";
 $txt['shop_im_senditem_subject'] = 'You have been sent an item!';

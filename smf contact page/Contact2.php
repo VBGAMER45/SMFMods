@@ -3,7 +3,7 @@
 Contact Page
 Version 3.2
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 if (!defined('SMF'))
@@ -28,17 +28,70 @@ function Contact()
 				
 		if(isset($modSettings['recaptcha_enabled']) &&!empty($modSettings['recaptcha_enabled']) && ($modSettings['recaptcha_enabled'] == 1 && !empty($modSettings['recaptcha_public_key']) && !empty($modSettings['recaptcha_private_key'])))
 		{
-			if(!empty($_POST["recaptcha_response_field"]) && !empty($_POST["recaptcha_challenge_field"])) //Check the input if this exists, if it doesn't, then the user didn't fill it out.
+			$loadRECAPTCHA = 0;
+			if (file_exists("$sourcedir/recaptchalib.php"))
 			{
 				require_once("$sourcedir/recaptchalib.php");
-
-				$resp = recaptcha_check_answer($modSettings['recaptcha_private_key'], $_SERVER['REMOTE_ADDR'], $_REQUEST['recaptcha_challenge_field'], $_REQUEST['recaptcha_response_field']);
-
-				if (!$resp->is_valid)
-					fatal_lang_error('error_wrong_verification_code', false);
+				$loadRECAPTCHA = 1;
+			}
+			
+			if (file_exists("$sourcedir/recaptcha/recaptcha-for-smf.php"))
+			{
+			
+			
+			 $recaptcha = new \ReCaptcha\ReCaptcha($modSettings['recaptcha_private_key']);
+			
+			
+	            // Was there a reCAPTCHA response?
+	            if(isset($_REQUEST["g-recaptcha-response"]))
+	            {
+	                $resp = $recaptcha->verify($_REQUEST["g-recaptcha-response"], $_SERVER["REMOTE_ADDR"]);
+	
+	                if (!$resp->isSuccess())
+	                    fatal_lang_error('error_wrong_verification_code', false);
+	            }
+	            else
+	                fatal_lang_error('error_wrong_verification_code', false);
+				
+			
+			
+			}
+			else if (class_exists('ReCaptcha') && $loadRECAPTCHA == 1) 
+			{
+					$reCaptcha = new ReCaptcha($modSettings['recaptcha_private_key']);
+		
+					// Was there a reCAPTCHA response?
+					if(isset($_POST["g-recaptcha-response"]))
+					{
+						$resp = $reCaptcha->verifyResponse( $_SERVER["REMOTE_ADDR"], $_POST["g-recaptcha-response"] );
+		
+						if (!$resp->success)
+							fatal_lang_error('error_wrong_verification_code', false);
+					}
+					else
+						fatal_lang_error('error_wrong_verification_code', false);
+			
 			}
 			else
-				fatal_lang_error('error_wrong_verification_code', false);
+			{
+
+				// Use non class program
+			
+				if(!empty($_POST["recaptcha_response_field"]) && !empty($_POST["recaptcha_challenge_field"])) //Check the input if this exists, if it doesn't, then the user didn't fill it out.
+				{
+			
+	
+					$resp = recaptcha_check_answer($modSettings['recaptcha_private_key'], $_SERVER['REMOTE_ADDR'], $_REQUEST['recaptcha_challenge_field'], $_REQUEST['recaptcha_response_field']);
+	
+					if (!$resp->is_valid)
+						fatal_lang_error('error_wrong_verification_code', false);
+				}
+				else
+					fatal_lang_error('error_wrong_verification_code', false);
+					
+				
+			}	
+				
 		}
 		else if (!empty($modSettings['reg_verification']))
 				{
@@ -57,16 +110,16 @@ function Contact()
 				}
 			}
 			
-			$from = $_POST['from'];
+			$from = trim($_POST['from']);
 			if ($from == '')
 				fatal_error($txt['smfcontact_errname'], false);
-			$subject = $_POST['subject'];
+			$subject = trim($_POST['subject']);
 			if ($subject == '')
 				fatal_error($txt['smfcontact_errsubject'], false);
 			$message = $_POST['message'];
 			if ($message == '')
 				fatal_error($txt['smfcontact_errmessage'], false);
-			$email = $_POST['email'];
+			$email = trim($_POST['email']);
 			if ($email == '')
 				fatal_error($txt['smfcontact_erremail'], false);
 

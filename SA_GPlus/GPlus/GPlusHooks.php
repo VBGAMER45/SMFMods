@@ -157,6 +157,28 @@ function gplus_profile_areas(&$profile_areas){
 	}
 }
 
+
+function gplus_USettings($id,$row,$where) {
+
+	global $smcFunc;
+
+	$results = $smcFunc['db_query']('', '
+		SELECT m.{raw:row}
+		FROM {db_prefix}members AS m
+		WHERE m.{raw:where} = {string:member_id}
+		LIMIT 1',
+		array(
+			'member_id' => $id,
+			'row' => $row,
+			'where' => $where
+		)
+	);
+	$temp = $smcFunc['db_fetch_assoc']($results);
+	$smcFunc['db_free_result']($results);
+
+	return $temp[$row];
+}
+
 function gplus_loadTheme(){
     global $modSettings, $user_info, $context;
 	
@@ -168,9 +190,9 @@ function gplus_loadTheme(){
     }
 	
 	if(isset($_SESSION['gplus']['idm']) && isset($_REQUEST['action']) && $_REQUEST['action'] == 'login' && !empty($modSettings['gp_app_enabledautolog'])){
-			
-		$context['gplus_id'] = twit_USettings($_SESSION['gplus']['idm'],'id_member','gpid');
-		
+
+		$context['gplus_id'] = gplus_USettings($_SESSION['gplus']['idm'],'id_member','gpid');
+
 		if (!empty($context['gplus_id'])) {
 			redirectexit('action=gplus;area=connectlog');   
 		}

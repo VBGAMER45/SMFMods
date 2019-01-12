@@ -71,7 +71,7 @@ elseif($_GET['do'] == 'sendmoney2')
 	if ($context['user']['money'] < $amount)
 		$context['shop_buy_message'] = $txt['shop_dont_have_much'];
 	// Trying to *give* a negative amount? Nice try...
-	elseif ($amount < 0) 
+	elseif ($amount < 1) 
 		$context['shop_buy_message'] = $txt['shop_give_negative'];
 	// Giving 0 credits...? What's the point?
 	elseif ($amount == 0)

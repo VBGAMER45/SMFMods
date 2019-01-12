@@ -59,20 +59,6 @@ $txt['welcome_admin'] = 'Welcome Configuration';
 
 <file name="$sourcedir/Register.php">
 	<operation>
-		<search position="before"><![CDATA[// Let the integration know that they've been activated!
-	call_integration_hook('integrate_activate', array($row['member_name']));]]></search>
-	<add><![CDATA[
-// Welcome Topic Mod
-	global $sourcedir;
-	require_once($sourcedir . '/WelcomeTopic2.php');
-				
-	DoWelcomePost($row['member_name']);
-	
-	
-	// End Welcome Topic Mod
-	]]></add>
-	</operation>
-	<operation>
 		<search position="before"><![CDATA[SELECT id_member, validation_code, member_name, real_name, email_address, is_activated, passwd, lngfile]]></search>
 	<add><![CDATA[, last_login]]></add>
 	</operation>

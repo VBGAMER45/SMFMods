@@ -69,7 +69,7 @@ class item_filedownload extends itemTemplate
 
 	function onUse()
 	{
-		global $item_info;
+		global $item_info, $smcFunc;
 		header('Content-type: application/octet-stream');
 		header('Content-Disposition: attachment; filename=' . $item_info[1]);
 		readfile($item_info[2]);

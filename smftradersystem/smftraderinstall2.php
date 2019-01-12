@@ -1,7 +1,7 @@
 <?php
 /*
-	SMF Trader System: 1.2
-	http://www.smfhacks.com
+	SMF Trader System: 2.0
+	https://www.smfhacks.com
 
 	smftraderinstall.php - SMF Trader System
 	Purpose - Installs the database tables for SMF Trader System
@@ -13,6 +13,18 @@ if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 elseif (!defined('SMF'))
   die('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
 
+
+$UTFData = '';
+
+$result = $smcFunc['db_query']('', "
+   SELECT 
+   	value
+   FROM {db_prefix}settings 
+   WHERE variable = 'global_character_set' AND value = 'UTF-8'");
+
+// If UTF8 found in the settings make the table UTF8!
+if ($smcFunc['db_num_rows']($result) > 0)
+	$UTFData = ' CHARACTER SET utf8';
 
 $smcFunc['db_query']('', "CREATE TABLE IF NOT EXISTS {db_prefix}feedback 
 (feedbackid int(11) NOT NULL auto_increment, 
@@ -27,7 +39,7 @@ approved tinyint(4) NOT NULL default '1',
 ID_LISTING int(11) NOT NULL default '0',
 KEY ID_LISTING (ID_LISTING),
 KEY ID_MEMBER (ID_MEMBER),
-PRIMARY KEY  (feedbackid))");
+PRIMARY KEY  (feedbackid)) $UTFData");
 
 $dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}feedback");
 $approved =  1;

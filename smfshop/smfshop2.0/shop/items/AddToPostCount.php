@@ -38,7 +38,7 @@ class item_AddToPostCount extends itemTemplate
 		$this->authorEmail = 'dansoft@dansoftaustralia.net';
 
 		$this->name = 'Add xxx to Post Count';
-		$this->desc = 'ncrease your Post Count by xxx!';
+		$this->desc = 'Increase your Post Count by xxx!';
 		$this->price = 50;
 
 		$this->require_input = false;

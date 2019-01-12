@@ -5,7 +5,7 @@ http://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0 and SMF 1.1.x
+For SMF 2.0.x and SMF 1.1.x
 
 Allows you to add RSS Feed Posting Bots to your forum.
 You can either use a real cron job

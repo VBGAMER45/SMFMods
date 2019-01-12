@@ -69,7 +69,11 @@ $txt['ref_showreflink'] = 'Show referral link on profile page';
 $txt['ref_showonpost'] = 'Show referrals on post display';
 $txt['ref_trackcookiehits'] = 'Track hits for referral link clicks';
 $txt['ref_cookietrackdays'] = 'Number of days to store the tracking cookie for referrals';
+$txt['ref_err_nomembid'] = 'No member selected';
 
+$txt['ref_txt_member_name'] = 'Member Name';
+$txt['ref_txt_member_group'] = 'Member Group';
+$txt['ref_txt_referredmembers'] = 'Referred Members';
 $txt['ref_txt_copyright'] = 'Copyright';
 $txt['ref_txt_copyrightremoval'] = 'Copyright Removal';
 $txt['ref_txt_copyrightkey'] = 'Copyright Key';
@@ -101,7 +105,11 @@ $txt['ref_showreflink'] = 'Show referral link on profile page';
 $txt['ref_showonpost'] = 'Show referrals on post display';
 $txt['ref_trackcookiehits'] = 'Track hits for referral link clicks';
 $txt['ref_cookietrackdays'] = 'Number of days to store the tracking cookie for referrals';
+$txt['ref_err_nomembid'] = 'No member selected';
 
+$txt['ref_txt_member_name'] = 'Member Name';
+$txt['ref_txt_member_group'] = 'Member Group';
+$txt['ref_txt_referredmembers'] = 'Referred Members';
 $txt['ref_txt_copyright'] = 'Copyright';
 $txt['ref_txt_copyrightremoval'] = 'Copyright Removal';
 $txt['ref_txt_copyrightkey'] = 'Copyright Key';
@@ -276,7 +284,7 @@ function ReferralsCheckInfo()
 	
 	echo '
 							<dt>', $txt['ref_refferals'] , '</dt>
-									<dd>', $context['member']['referrals_no'], '</dd>
+									<dd><a href="', $scripturl, '?action=refferals;sa=whorefer;u=', $context['member']['id'], '">', $context['member']['referrals_no'], '</a></dd>
 							';
 	// Refferals Link
 	if ($modSettings['ref_showreflink'])
@@ -303,7 +311,7 @@ function ReferralsCheckInfo()
 	<add><![CDATA[
 	// Start Refferals System
 	if ($modSettings['ref_showonpost'])
-		echo '<li>' . $txt['ref_refferals'] . ' ' . $message['member']['referrals_no'] . '</li>';
+		echo '<li>' . $txt['ref_refferals'] . ' <a href="', $scripturl, '?action=refferals;sa=whorefer;u=', $message['member']['id'], '">' . $message['member']['referrals_no'] . '</a></li>';
 
 	// End Refferals System
 	

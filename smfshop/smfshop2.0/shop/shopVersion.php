@@ -28,7 +28,7 @@
 ***********************************************************************************/
 
 $shopVersion['develVersion'] = false; // Is this version a testing/development version?
-$shopVersion['version'] = "3.1 (SMF 2.0 branch)";
-$shopVersion['build'] = "5";
-$shopVersion['date'] = "23th November 2009";
+$shopVersion['version'] = "4.0";
+$shopVersion['build'] = "1";
+$shopVersion['date'] = "10th May 2018";
 ?>

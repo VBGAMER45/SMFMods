@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:DownloadAttachment</id>
+	<name>Download Attachment</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+
+	<install for="2.0 - 2.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">downloadattach2.xml</modification>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">downloadattach2.xml</modification>
+	</uninstall>
+
+</package-info>

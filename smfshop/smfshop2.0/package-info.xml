@@ -10,7 +10,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
     <id>daniel15:SMFShop</id>
     <name>SMFShop</name>
-    <version>3.3.2</version>
+    <version>4.0.1</version>
     <type>modification</type>
 
     <install for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">

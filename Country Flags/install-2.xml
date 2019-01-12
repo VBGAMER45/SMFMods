@@ -289,6 +289,10 @@ function CountryFlag()
 	// Convert the $_POST['country'] to $_POST['default_options']['country']
 	if (isset($_POST['country']))
 	{
+		$_POST['country'] = preg_replace("/[^a-zA-Z0-9]+/", "", $_POST['country']);
+		if (strlen($_POST['country']) > 10)
+			$_POST['country'] = '';
+		
 		$_POST['default_options']['country'] = $_POST['country'];
 
 		// Check if it's required to select location
@@ -303,7 +307,12 @@ function CountryFlag()
 			
 	// Country Flag Mod smfhacks.com		
 	if (isset($_POST['country']))
-	$smcFunc['db_query']('', '
+	{
+		$_POST['country'] = preg_replace("/[^a-zA-Z0-9]+/", "", $_POST['country']);
+		if (strlen($_POST['country']) > 10)
+			$_POST['country'] = '';
+	
+		$smcFunc['db_query']('', '
 		UPDATE {db_prefix}members
 		SET country_flag = {string:country}
 		WHERE id_member = {int:memid}',
@@ -311,7 +320,8 @@ function CountryFlag()
 			'country' => $_POST['country'],
 			'memid' => $memberID,
 		)
-	);
+		);
+	}
 	// End Country Flag Mod smfhacks.com
 ]]></add>
 

@@ -12,6 +12,7 @@ function refferalsMain()
 	$subActions = array(
 		'settings' => 'refferalsSettings',
 		'settings2' => 'refferalsSettings2',
+		'whorefer' => 'refferalsWhoRefer',
         'copyright' => 'Referrals_CopyrightRemoval',
 	);
 
@@ -24,6 +25,34 @@ function refferalsMain()
 		$subActions[$sa]();
 	else
 		RefferalsLinkClick();
+}
+
+function refferalsWhoRefer()
+{
+	global $context, $txt, $smcFunc;
+	
+	$id = (int) $_REQUEST['u'];
+	
+	if (empty($id))
+		fatal_error($txt['ref_err_nomembid'],false);
+		
+	
+	$result = $smcFunc['db_query']('', "
+			SELECT
+				m.ID_MEMBER, m.real_name,m.date_registered, mg.online_color, mg.group_name
+			FROM {db_prefix}members as m	
+				left join {db_prefix}membergroups as mg ON (m.ID_GROUP = mg.ID_GROUP) 
+			WHERE m.referred_by = $id");
+			
+	$context['ref_members'] = array();		
+	while($refferalRow = $smcFunc['db_fetch_assoc']($result))
+	{
+		$context['ref_members'][] = $refferalRow;	
+	}
+	
+	$context['sub_template'] = 'ref_memlist';
+	$context['page_title'] = $txt['ref_txt_referredmembers'];
+	
 }
 
 function ProcessRefferalLink()
