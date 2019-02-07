@@ -1,0 +1,317 @@
+4.5.3a
++Added install support for SMF 2.1 RC1
+
+4.5.3
++Added support for vbox7
+
+4.5.2
++Added support for DTube
+
+4.5.1
+!Updated imgur to supprot https:// and this format of links https://i.imgur.com/AAAAA
+
+4.5
++Added support for Facebook Posts thanks to butch2k
++Added support for USNews.com thanks to butch2k
++Added support for local remote ogm and ogv files
+
+4.4
++Added option to include a div around all embeds with a custom classname for you to style control via css/javascript
++Updated facebook v5 embed code thanks to butch2k
+
+4.3
++Added support for spotify thanks to butch2k
++Peformance increase for 2.0 not parsing for search engine robots thanks to shawnb61 
+
+4.2.1
++Added support for vid.me
+
+4.2
++Added support for Pastebin
++Added support for Ted Talks
++Added more types of urls for twitch to support embedding
+
+
+4.1.4
+!Fixed some bugs with the dailymotion embed code
++Version check now use ssl since https://www.smfhacks.com now works!
+
+4.1.3
++https support for dailymotion
+
+4.1.2
++Added support for youtube playlists
+
+4.1.1
++Added support for imgur
+
+4.1
++Added support for multiple regexmatch for the same website
++Now supports short dailymotion links
+
+4.0.4
++Added support for streamable
+
+4.0.3
++Added support for https for liveleak
+!Made a fix for zippyshare
+
+4.0.2
+!Improvements to Facebook v5 and v4 videos. Fixed missing blockquote tag and added a width setting
+
+4.0.1
+!Fixed bug with multiple instragram links embeded.
+
+4.0
+!Make regex searches less greedy fixes issue with embedding multiple videos for certain video types in a post thanks to  shawnb61
++Added support for https for local .ogg and .webm files
+
+3.6.5
+!Fixed issue with local embeding of files which might take part of the filename out thanks to  shawnb61
+!Fixed height issue for some local embeded files thanks to  shawnb61
+
+3.6.4
+!Fixed unclosed <blockquote> in facebook videos
++Added max,width height support for facebook videos
+
+3.6.3
+!Fixed bug with local mp4
+
+3.6.2
+!Added support for http links for instagram
+!Fixed support for www. instagram links
+
+3.6.1
+!Short youtube use https or http depending on type  passed.
+
+3.6
++Added support for sendvid
++New facebook version v5 for videos. You must check that option in settings
+!Fixed instagram for SMF 1.1.x
++Updated jibjab regex
+
+
+
+3.5.2
++https support for local media files
+
+3.5
++Added support for instagram
+
+3.4
++Added support local ogg and local webm media files
+!Updated mp4 local to use the video tag instead of quicktime player
+
+3.3
++Now support the latest facebook video links 4th edition.
+
+3.2
+!Fixed regex for local/remote files for common extensions such as .wmv, .avi, .flv etc
+
+3.1
++Added support for buto.tv
+!Fixed some xhtml validation issues for some of the embed code for sites/local media.
+
+3.0.3
++Added support for Deezer.com
+
+3.0.2
++Added support for Twitch.tv
+
+3.0.1
++Updated Vimeo sharing to use the iframe based code instead of object
+
+3.0
++Added setting to disable autoembedding for mobile devices instead will just show the link as normal.
++New regex replacement function thanks to petitchevalroux
++Updated dailymotion embed code thanks to petitchevalroux
++Added https support for vimeo.com
++Added support for coub.com
+
+2.7.1
+!Updated/fixed vine.com url sharing code
+
+2.7
++Added support for new facebook video url code
+
+2.6
++Youtube embed code now switched to iframe which supports html5
+!Fixed bug when editing post in SMF 2.0 link would disappear using the editor.
+!Removed justin.tv since the site no longer works
+
+2.5.1
+!Removed option to disable embeding in signatures too buggy. Requires a full uninstall then install the new version to take affect.
+
+2.5
++Added support for jpopsuki.tv
+
+2.4.1
+!Fixed minor bug in displaying disable signature checkbox setting
+
+2.4
++Added option to disable signature autoembed thanks to Arantor for the method
+
+2.3
++Added SoundCloud Support
+!Fixed Facebook picture/video emdeding. Also supports https links now
+
+2.2
++Added support for Vine videos
++Added support for Seenive videos
+
+2.1.1
+!Make sure autoLinkUrls is enabled when the modification is installed.
+
+2.1
++New copyright removal system easy to use!
+
+2.0.8
++New embeding support for Facebook Videos/Pictures
+
+2.0.7a
++Added support for google maps with https
+
+2.0.7
++Added support for youtube links for https
+!Fixed on upgrade/reinstall keeping the sites still enabled.
+!Fixed youtube feature=player_embedded
+
+2.0.6
++Added checkall function to enable/disable all embeding sites at one time.
++Added link for copyright removal purchase option
+
+2.0.5 Mega Edition
+!Megavideo removed :(
+Easter Egg/Tribute to MegaUpload/Kim Dotcom added.
+
+2.0.4
+!Fixed bug with - in video url in short youtube urls  thanks DaleM
+
+2.0.3
+!Fixed bug with liveleak videos
+
+2.0.2
+!Fixed issue with default movie height/width if you have the defaults to zero to now correctly use the normal size of the movie found on those movie sites
+!Copyright checks to make sure it is not doubled
+!Fixed spelling of ustream.tv
++Added support for own3d.tv
+
+2.0.1
++Added wma streaming support
+!Fixed some height,width settings for streaming sites
+
+2.0
++Added local streaming of wmv,avi,flv,mov,mp4,ra,swf,ram,rm files
+!Fixed short youtube.be thanks DaleM
+!Fixed g4tv to support the www DaleM
+
+1.1.4
++Added support for new youtube short url domain
+!Fixed some issues with google map embed
+
+1.1.3
+!Updated zippyshare to use the same emded code both types
++Added Google Maps Support
+
+1.1.2
++Added support for two types of ZippyShare links!
+
+1.1.1
++Added more support for height/width changing
+!Fixed bug in 1.1 with comedycentral
+
+1.1
++Media sites are now arranged in order by title
++Media sites are now shown on three columns
++Added settings to set default height/width for most video sites. Otherwise enter 0 to use the default height/width for media site
++Added support for Smotri.com
++Added support for PinkBike.com
+
+
+1.0.12
++Added support for HostingCup.com
++Added support for MoveShare.net
++Added support for HostingBulk.com
+
+1.0.11
++Added support for VideoBB.com
+
+1.0.10
++Added support for xfire
++Added support for worldstarhiphop.com
++Added support for tinypic videos
++Added support for JibJab thanks to DaleM
++Added support for G4tv thanks to DaleM
++Added support for IGN thanks to DaleM
++Added support for Joystiq thanks to DaleM
+
+1.0.9
+!Fixed bug with youtube with the #ws in the url not working correctly
++Added support for bungie.net
+
+1.0.8
+!Fixed bug in stream.cz
++Added support for trophy-clips.com
++Added support for Yahoo videos
+
+1.0.7
++Added support for clipshack.com
++Added support for Mpora
++Added support for izlesene.com
++Added support for rambler.ru videos
++Added support for Tangle.com
+
+1.0.6
++Added support for blogdumpsvideo.com
++Added support for reuters
++Added support for MarketNewsVideo
++Added support for Clipsyndicate
++Added support for NyTimes
+
+1.0.5
++Added support for ESPN
++Added support for CNN iReport
++Added support for PBS
++Added support for TNT
++Added support for Comedy Central
++Added support for Stream.cz
+!Fix bug with megavideo not support non www urls
+
+1.0.4
++Added support for Stagevu
++Added support for Mail.ru
++Added support for Twitvid
++Added support for Trtube
++Added support for Blog.tv
++Added support for MegaVideo
++Added support for VH1
++Added support for BET
+
+1.0.3
+!Renamed to Simple Audio Video Embedder
+!Fixed issue with php4 support no longer using file_put_contents
++Added support for Justin.tv
++Added support for schooltube.com
++Added support for MySpace
++Added support for Mefeedia
++Added support for Crackle
++Added support for DailyMotion
++Added support for clipfish.de
++Added support for Goear.com
++Added support for clipmoon
+
+1.0.2
++Added support for Rutube
++Added support for Novamov
++Added support for myvideo.de
++Added support for LiveLeak.com
++Added support for Sevenload.com
++Added support for Gametrailers.com
++Added support for funnyordie.com
++Added support for Mevio
+
+1.0.1
++Added version checking.
++Added support for new video sites including Veoh,Ustream and Youku
+
+1.0 Auto Embed Media Pro

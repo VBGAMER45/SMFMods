@@ -1,0 +1,2 @@
+Congratulations! The Google Member Map modification was installed successfully!
+You will now be taken to the page where the settings for the modification are located.

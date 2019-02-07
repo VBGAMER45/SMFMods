@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	
+<file name="$themedir/languages/Who.english.php">
+	<operation>
+		<search position="before"><![CDATA[$txt['whoall_who'] = 'Viewing <a href="' . $scripturl . '?action=who">Who\'s Online</a>.';]]></search>
+		<add><![CDATA[
+$txt['whoall_googlemap'] = 'Viewing the <a href="' . $scripturl . '?action=googlemap">Member Map</a>.';
+$txt['whoall_.kml'] = 'Viewing the Google Earth Feed.';
+]]></add>
+	</operation>
+</file>
+
+</modification>

@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+<id>vbgamer45:SmushforSMF</id>
+<version>1.0</version>
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin smushit Text Strings
+$txt['smushit_attachment_check'] = 'Attachment Sumsh.it!';
+$txt['smushit_attachment_empty'] = 'There are no attachments for Sumsh.it!';
+$txt['smushit_attachment_check_desc'] = 'Smush.it uses optimization techniques specific to image format to remove unnecessary bytes from image files. It is a "lossless" tool, which means it optimizes the images without changing their look or visual quality. After Smush.it runs it will report how many bytes have been saved.  Smaller files save bandwidth and makes your forum faster.';
+$txt['smushit_attachment_size'] = 'Attempt to Sumsh.it all attachments larger than<div class="smalltext">Specify file limit in KB, e.g. 125 is a 128,000 byte file</div>';
+$txt['smushit_attachment_now'] = 'Sumsh.it! Now';
+$txt['smushit_attachment_yn'] = 'Run Sumsh.it! on selected files?';
+$txt['smushit_attachments'] = 'Smush.it Results';
+$txt['smushit_attachments_complete'] = 'Smush.it Results';
+$txt['smushit_attachments_nosavings'] = 'Smush.it was not able to make this file any smaller';
+$txt['smushit_attachments_error'] = 'Smush.it returned the following error:';
+$txt['smushit_attachments_complete_desc'] = 'Smush.it has finished running on your attachments';
+$txt['smushit_attachments_network'] = 'The Smush.it service did not return any results for this file';
+$txt['smushit_attachments_reduction'] = 'Smush.it reduced this file by';
+$txt['smushit_attachments_timeout'] = 'Smush.it processing time exceeded';
+$txt['smushit_attachments_corrupt'] = 'Smush.it returned a corrupt image';
+$txt['smushit_attachments_age'] = 'Sumsh.it attachments from the last';
+$txt['smushit_attachments_png'] = 'Allow Sumsh.it to convert .gif files to .png files if it will save space<div class="smalltext">Some gif files when saved as png will save space</div>';
+$txt['smushit_attachments_noformatchange'] = 'File skipped, Smush.it wanted to change the file format (gif-png)';
+$txt['smushit_attachments_verify'] = 'Smush.it did not return a valid image file, skipping it';
+$txt['smushit_attachments_copyfail'] = 'Unable to copy the Smush.it file back to the attachment directory';
+$txt['smushit_attachments_copyerror'] = 'Unable to copy the attachment file for processing';
+$txt['smushit_attachments_savings'] = 'Total Smush.it Savings:';
+$txt['smushit'] = 'Smush.it';
+$txt['smushited'] = 'Smushed';
+$txt['scheduled_task_desc_scheduled_smushit'] = 'Runs Smush.it on all message attachments added to your forum in the last 24 hours.';
+$txt['scheduled_task_scheduled_smushit'] = 'Smush.it Image Compression';
+$txt['smushit_decode_error'] = 'Json Decode Error';
+
+$txt['smushit_valid'] = 'Valid';
+$txt['smushit_invalid'] = 'InValid';
+// END smushit Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin smushit Text Strings
+$txt['smushit_attachment_check'] = 'Attachment Sumsh.it!';
+$txt['smushit_attachment_empty'] = 'There are no attachments for Sumsh.it!';
+$txt['smushit_attachment_check_desc'] = 'Smush.it uses optimization techniques specific to image format to remove unnecessary bytes from image files. It is a "lossless" tool, which means it optimizes the images without changing their look or visual quality. After Smush.it runs it will report how many bytes have been saved.  Smaller files save bandwidth and makes your forum faster.';
+$txt['smushit_attachment_size'] = 'Attempt to Sumsh.it all attachments larger than<div class="smalltext">Specify file limit in KB, e.g. 125 is a 128,000 byte file</div>';
+$txt['smushit_attachment_now'] = 'Sumsh.it! Now';
+$txt['smushit_attachment_yn'] = 'Run Sumsh.it! on selected files?';
+$txt['smushit_attachments'] = 'Smush.it Results';
+$txt['smushit_attachments_complete'] = 'Smush.it Results';
+$txt['smushit_attachments_nosavings'] = 'Smush.it was not able to make this file any smaller';
+$txt['smushit_attachments_error'] = 'Smush.it returned the following error:';
+$txt['smushit_attachments_complete_desc'] = 'Smush.it has finished running on your attachments';
+$txt['smushit_attachments_network'] = 'The Smush.it service did not return any results for this file';
+$txt['smushit_attachments_reduction'] = 'Smush.it reduced this file by';
+$txt['smushit_attachments_timeout'] = 'Smush.it processing time exceeded';
+$txt['smushit_attachments_corrupt'] = 'Smush.it returned a corrupt image';
+$txt['smushit_attachments_age'] = 'Sumsh.it attachments from the last';
+$txt['smushit_attachments_png'] = 'Allow Sumsh.it to convert .gif files to .png files if it will save space<div class="smalltext">Some gif files when saved as png will save space</div>';
+$txt['smushit_attachments_noformatchange'] = 'File skipped, Smush.it wanted to change the file format (gif-png)';
+$txt['smushit_attachments_verify'] = 'Smush.it did not return a valid image file, skipping it';
+$txt['smushit_attachments_copyfail'] = 'Unable to copy the Smush.it file back to the attachment directory';
+$txt['smushit_attachments_copyerror'] = 'Unable to copy the attachment file for processing';
+$txt['smushit_attachments_savings'] = 'Total Smush.it Savings:';
+$txt['smushit'] = 'Smush.it';
+$txt['smushited'] = 'Smushed';
+$txt['scheduled_task_desc_scheduled_smushit'] = 'Runs Smush.it on all message attachments added to your forum in the last 24 hours.';
+$txt['scheduled_task_scheduled_smushit'] = 'Smush.it Image Compression';
+$txt['smushit_decode_error'] = 'Json Decode Error';
+
+$txt['smushit_valid'] = 'Valid';
+$txt['smushit_invalid'] = 'InValid';
+// END smushit Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/ScheduledTasks.php">
+	<operation>
+			<search position="after"><![CDATA[// Select the next task to do.]]></search>
+	<add><![CDATA[
+	
+// Start smushit
+global $sourcedir;
+require_once($sourcedir . '/smushit.subs.php');
+
+// end smushit
+]]></add>
+	</operation>
+	
+</file>
+
+
+<file name="$sourcedir/ManageScheduledTasks.php">
+	<operation>
+			<search position="after"><![CDATA[// Load up the tasks.]]></search>
+	<add><![CDATA[
+	
+// Start smushit
+global $sourcedir;
+require_once($sourcedir . '/smushit.subs.php');
+
+// end smushit
+]]></add>
+	</operation>
+	
+
+</file>
+
+<file name="$sourcedir/ManageSettings.php">
+	<operation>
+			<search position="after"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+	<add><![CDATA[
+// Start smushit
+		array('check', 'smushit_attachments_png'),
+		array('int', 'smushit_attachment_size'),
+// end smushit
+]]></add>
+	</operation>
+	
+
+</file>
+
+<file name="$sourcedir/ManageAttachments.php">
+	<operation>
+			<search position="replace"><![CDATA['removeall' => 'RemoveAllAttachments'
+	);]]></search>
+	<add><![CDATA[
+			'smushit' => 'smushitAttachments',
+			'smushitbrowse' => 'SmushitBrowse',
+			'smushitselect' => 'SmushitSelect',
+			'removeall' => 'RemoveAllAttachments'
+	);
+// Start smushit
+global $sourcedir;
+require_once($sourcedir . '/smushit.subs.php');
+
+// end smushit
+]]></add>
+	</operation>
+	
+
+</file>
+
+
+
+<file name="$themedir/ManageAttachments.template.php">
+	<operation>
+			<search position="after"><![CDATA[<a href="', $scripturl, '?action=admin;area=manageattachments;sa=browse;avatars">', $context['browse_type'] === 'avatars' ? '<img src="' . $settings['images_url'] . '/selected.gif" alt="&gt;" /> ' : '', $txt['attachment_manager_avatars'], '</a> |]]></search>
+	<add><![CDATA[
+<a href="', $scripturl, '?action=admin;area=manageattachments;sa=smushitbrowse">', $context['browse_type'] === 'smushit' ? '<img src="' . $settings['images_url'] . '/selected.gif" alt="&gt;" /> ' : '', $txt['smushit'], '</a> |
+]]></add>
+	</operation>
+	
+
+</file>
+
+
+
+
+<file name="$themedir/ManageMaintenance.template.php">
+	<operation>
+			<search position="after"><![CDATA[<div class="cat_bar">
+			<h3 class="catbg">', $txt['maintain_errors'], '</h3>
+		</div>
+		<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<form action="', $scripturl, '?action=admin;area=repairboards" method="post" accept-charset="', $context['character_set'], '">
+					<p>', $txt['maintain_errors_info'], '</p>
+					<span><input type="submit" value="', $txt['maintain_run_now'], '" class="button_submit" /></span>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				</form>
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>]]></search>
+	<add><![CDATA[<div class="cat_bar">
+			<h3 class="catbg">', $txt['smushit_attachment_check'], '</h3>
+		</div>
+	<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+		<div class="content" style="margin-top: -10px">
+			<form action="', $scripturl, '?action=admin;area=manageattachments;sa=smushit;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="UTF-8">
+				<p>', $txt['smushit_attachment_check_desc'], '</p>
+				<br />
+				', $txt['smushit_attachments_age'], ' <input type="text" name="smushitage" value="25" size="4" class="input_text" /> ', $txt['days_word'], '<br />
+				<input type="submit" name="submit" value="', $txt['smushit_attachment_now'], '" class="right_submit" />
+			</form>
+		</div>
+	<span class="botslice"><span></span></span>
+		</div>
+	
+	]]></add>
+	</operation>
+	
+
+</file>
+
+
+		
+
+
+
+
+
+</modification>

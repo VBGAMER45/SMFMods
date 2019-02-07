@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Smush.it! For SMF</name>
+	<id>vbgamer45:SmushforSMF</id>
+	<version>1.0</version>
+	<type>modification</type>
+	<license><![CDATA[
+/**
+ * Smush.it
+ *
+ * @author spuds http://addons.elkarte.net/2015/05/Smushit/
+ * @license MPL 1.1 http://mozilla.org/MPL/1.1/
+ * Ported to SMF by vbgamer45 http://www.smfhacks.com
+ *
+ */
+]]></license>
+
+	<install for="2.0 - 2.0.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<database>add_settings.php</database>
+		<modification type="file">smushit.xml</modification>
+		<require-file name="sources/smushit.subs.php" destination="$sourcedir" />
+		<require-file name="sources/CurlFetchWebdata.class.php" destination="$sourcedir" />
+		
+		<require-file name="themes/smushit.english.php" destination="$themedir/languages" />
+		<require-file name="themes/smushit.template.php" destination="$themedir" />
+
+
+
+		<redirect url="index.php?action=admin;area=modsettings" timeout="5000">redirect.txt</redirect>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+
+
+		<modification type="file" reverse="true">smushit.xml</modification>
+		<database>remove_settings.php</database>
+		<remove-file name="$sourcedir/smushit.subs.php" />
+		<remove-file name="$sourcedir/CurlFetchWebdata.class.php" />
+		<remove-file name="$themedir/languages/smushit.english.php" />
+		<remove-file name="$themedir/smushit.template.php" />
+	</uninstall>
+
+</package-info>

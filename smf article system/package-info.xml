@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:SMFArticles</id>
+	<name>SMF Articles</name>
+	<type>modification</type>
+	<version>3.0.3a</version>
+
+	<install for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=articles;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">articles.xml</modification>
+		<require-file name="Articles.php" destination="$sourcedir" />
+		<require-file name="Articles.template.php" destination="$themedir" />
+		<require-file name="Articles.english.php" destination="$themedir/languages" />
+		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
+		<require-dir name="articles" destination="$boarddir" />
+		<code>articlessql.php</code>
+	</install>
+	
+	<upgrade for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=articles;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Articles.php" destination="$sourcedir" />
+		<require-file name="Articles.template.php" destination="$themedir" />
+		<require-file name="Articles.english.php" destination="$themedir/languages" />
+		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
+		<require-dir name="articles" destination="$boarddir" />
+		<code>articlessql.php</code>
+	</upgrade>
+
+	<uninstall for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<modification type="file" reverse="true">articles.xml</modification>
+		<remove-file name="$sourcedir/Articles.php" />
+		<remove-file name="$themedir/Articles.template.php" />
+		<remove-file name="$themedir/languages/Articles.english.php" />
+		<remove-file name="$themedir/languages/Articles.english-utf8.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=articles;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">articles2.xml</modification>
+		<require-file name="Articles2.php" destination="$sourcedir" />
+		<require-file name="Articles2.template.php" destination="$themedir" />
+		<require-file name="Articles.english.php" destination="$themedir/languages" />
+		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
+		<require-dir name="articles" destination="$boarddir" />
+		<code>articlessql2.php</code>
+	
+	</install>
+	<upgrade for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=articles;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Articles2.php" destination="$sourcedir" />
+		<require-file name="Articles2.template.php" destination="$themedir" />
+		<require-file name="Articles.english.php" destination="$themedir/languages" />
+		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
+		<require-dir name="articles" destination="$boarddir" />
+		<code>articlessql2.php</code>
+	
+	</upgrade>
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">articles2.xml</modification>
+		<remove-file name="$sourcedir/Articles2.php" />
+		<remove-file name="$themedir/Articles2.template.php" />
+		<remove-file name="$themedir/languages/Articles.english.php" />
+		<remove-file name="$themedir/languages/Articles.english-utf8.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	
+	
+	
+	<install for="2.1 - 2.1.99,2.1 Beta 1">
+		<redirect url="?action=admin;area=articles;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">articlesbeta21.xml</modification>
+		<require-file name="Articles2.php" destination="$sourcedir" />
+		<require-file name="ArticlesHooks.php" destination="$sourcedir" />
+		<require-file name="Articles2.1.template.php" destination="$themedir" />
+		<require-file name="Articles.english.php" destination="$themedir/languages" />
+		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
+		<require-dir name="articles" destination="$boarddir" />
+		<require-file name="articles.png" destination="$imagesdir/admin" />
+		<code>articlessql2.php</code>
+		<code>dohooks.php</code>
+	</install>
+	<upgrade for="2.1 - 2.1.99,2.1 Beta 1">
+		<redirect url="?action=admin;area=articles;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Articles2.php" destination="$sourcedir" />
+		<require-file name="ArticlesHooks.php" destination="$sourcedir" />
+		<require-file name="Articles2.1.template.php" destination="$themedir" />
+		<require-file name="Articles.english.php" destination="$themedir/languages" />
+		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
+		<require-dir name="articles" destination="$boarddir" />
+		<require-file name="articles.png" destination="$imagesdir/admin" />
+		<code>articlessql2.php</code>
+		<code>dohooks.php</code>
+	
+	</upgrade>
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1">
+		<modification type="file" reverse="true">articlesbeta21.xml</modification>
+		<remove-file name="$sourcedir/Articles2.php" />
+		<remove-file name="$themedir/Articles2.1.template.php" />
+		<remove-file name="$themedir/languages/Articles.english.php" />
+		<remove-file name="$themedir/languages/Articles.english-utf8.php" />
+		<remove-file name="$imagesdir/admin/articles.png" />
+		<remove-file name="$sourcedir/ArticlesHooks.php" />
+		<code>dohooks.php</code>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+
+</package-info>

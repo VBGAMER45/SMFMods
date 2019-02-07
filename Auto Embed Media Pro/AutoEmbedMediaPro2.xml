@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:autoembedmediapro</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Auto Embed Media Pro Text Strings
+$txt['mediapro_admin'] = 'Simple Audio Video Embedder';
+$txt['mediapro_settings'] = 'Settings';
+$txt['mediapro_save_settings'] = 'Save Settings';
+$txt['mediapro_err_cache'] = 'Cache folder not writable must fix for performance!';
+$txt['mediapro_settings2'] = 'Settings and configuration for Simple Audio Video Embedder';
+$txt['mediapro_copyremove'] = 'Copyright Removal';
+$txt['mediapro_copyremove2'] = 'Remove the copyright for Simple Audio Video Embedder';
+// END Auto Embed Media Pro  Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Auto Embed Media Pro Text Strings
+$txt['mediapro_admin'] = 'Simple Audio Video Embedder';
+$txt['mediapro_settings'] = 'Settings';
+$txt['mediapro_save_settings'] = 'Save Settings';
+$txt['mediapro_err_cache'] = 'Cache folder not writable must fix for performance!';
+$txt['mediapro_settings2'] = 'Settings and configuration for Simple Audio Video Embedder';
+$txt['mediapro_copyremove'] = 'Copyright Removal';
+$txt['mediapro_copyremove2'] = 'Remove the copyright for Simple Audio Video Embedder';
+// END Auto Embed Media Pro  Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<add><![CDATA[
+	// Auto Embed Media Pro
+	
+	$showInfo = MediaProCheckInfo();
+			    
+	if ($showInfo == true)
+    	{
+		if (!isset($autoMediaLoaded))
+		{
+		$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><a href="http://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
+		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="http://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
+		$autoMediaLoaded = 1;
+		}
+	}
+	
+	// End Auto Embed Media Pro
+			
+	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></add>
+	</operation>
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+
+function MediaProCheckInfo()
+{
+    global $modSettings, $boardurl;
+    
+    if (isset($modSettings['mediapro_copyrightkey']))
+    {
+        $m = 36;
+        if (!empty($modSettings['mediapro_copyrightkey']))
+        {
+            if ($modSettings['mediapro_copyrightkey'] == sha1($m . '-' . $boardurl))
+            {
+                return false;
+            }
+            else
+                return true;
+        }
+    }
+    
+    return true;
+}
+
+
+		
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'editpoll2' => array('Poll.php', 'EditPoll2'),]]></search>
+		<add><![CDATA[
+		'mediapro' => array('AutoEmbedMediaPro2.php', 'MediaProMain'),
+		]]></add>
+	</operation>
+
+	
+</file>
+
+<file name="$sourcedir/Admin.php">
+
+	<operation>
+		<search position="replace"><![CDATA['layout' => array(
+			'title' => $txt['layout_controls'],]]></search>
+		<add><![CDATA[
+		'mediapro' => array(
+			'title' => $txt['mediapro_admin'],
+			'permission' => array('admin_forum'),
+			'areas' => array(
+				'mediapro' => array(
+					'label' => $txt['mediapro_settings'],
+					'file' => 'AutoEmbedMediaPro2.php',
+					'function' => 'MediaProMain',
+					'custom_url' => $scripturl . '?action=admin;area=mediapro;sa=settings;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'permission' => array('admin_forum'),
+					'subsections' => array(
+						'settings' => array($txt['mediapro_settings']),
+						'copyright' => array($txt['mediapro_copyremove']),
+					),
+				),
+	
+			),
+		),
+
+		'layout' => array(
+			'title' => $txt['layout_controls'],
+				
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Subs.php">
+
+	
+<operation>
+		<search position="after"><![CDATA[// Cache the output if it took some time...]]></search>
+		<add><![CDATA[
+		// Auto Embed Media Pro
+		global $sourcedir, $modSettings;
+		if (file_exists($sourcedir . '/AutoEmbedMediaPro2.php'))
+		{
+		
+				require_once($sourcedir . '/AutoEmbedMediaPro2.php');
+				$message = MediaProProcess($message);
+		    
+		}
+
+		// End Auto Embed Media Pro
+]]></add>
+	</operation>	
+</file>
+
+<file name="$sourcedir/Post.php">
+	<operation>
+		<search position="replace"><![CDATA['<img>']]></search>
+		<add><![CDATA['<img><object><embed><div><iframe>']]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA['<img>']]></search>
+		<add><![CDATA['<img><object><embed><div><iframe>']]></add>
+	</operation>
+</file>
+
+
+</modification>

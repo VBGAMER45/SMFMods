@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:whoquotedme</id>
+	<name>Who Quoted Me</name>
+	<type>modification</type>
+	<version>1.0</version>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=whoquoted;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">whoquoted2.xml</modification>
+		<require-file name="whoquoted2.php" destination="$sourcedir" />
+		<require-file name="whoquoted2.template.php" destination="$themedir" />
+		<require-file name="whoquoted.english.php" destination="$themedir/languages" />
+		<require-file name="whoquoted.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="whoquotedhooks.php" destination="$sourcedir" />
+		<code>whoquotedinstall2.php</code>
+		<database>whoquoteddb.php</database>
+		
+		
+	</install>
+	
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<remove-file name="$sourcedir/whoquoted2.php" />
+		<remove-file name="$themedir/whoquoted2.template.php" />
+		<remove-file name="$themedir/languages/whoquoted.english.php" />
+		<remove-file name="$themedir/languages/whoquoted.english-utf8.php" />
+		<remove-file name="$sourcedir/whoquotedhooks.php"/>
+		<modification type="file" reverse="true">whoquoted2.xml</modification>
+		<code>whoquotedinstall2.php</code>
+		<database>whoquotedinstall2.php</database>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+
+
+	
+</package-info>

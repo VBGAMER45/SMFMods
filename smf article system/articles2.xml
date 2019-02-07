@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFArticles</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Articles Text Strings
+$txt['smfarticles_menu'] = 'Articles';
+$txt['smfarticles_admin'] = 'Articles Configuration';
+
+$txt['smfarticles_articlessettings'] = 'Settings';
+$txt['smfarticles_approvearticles'] = 'Approve Articles';
+$txt['smfarticles_form_approvecomments'] = 'Approve Comments';
+$txt['smfarticles_catpermlist'] = 'Category Permission List';
+$txt['smfarticles_txt_copyrightremoval'] = 'Copyright Removal';
+$txt['smfarticles_txt_managecategories'] = 'Manage Categories';
+$txt['smfarticles_txt_import'] = 'Import';
+
+$txt['permissiongroup_smfarticles'] = 'SMF Articles';
+$txt['permissiongroup_simple_smfarticles'] = 'SMF Articles';
+
+$txt['permissionname_view_articles'] = 'View Articles';
+$txt['permissionhelp_view_articles'] = 'Sets if the user can view the articles.';
+$txt['cannot_view_articles'] = 'You can not view the articles page.';
+
+$txt['permissionname_add_articles'] = 'Add Article';
+$txt['permissionhelp_add_articles'] = 'If the user is allowed to submit articles';
+
+$txt['cannot_add_articles'] = 'You can not add articles.';
+$txt['permissionname_edit_articles'] = 'Edit own Articles';
+$txt['permissionhelp_edit_articles'] = 'If the user is allowed to edit articles';
+
+$txt['cannot_edit_articles'] = 'You can not edit articles.';
+$txt['permissionname_delete_articles'] = 'Delete own Articles';
+$txt['permissionhelp_delete_articles'] = 'If the user is allowed to delete articles';
+$txt['cannot_delete_articles'] = 'You can not delete articles.';
+
+$txt['permissionname_articles_comment'] = 'Leave Comments';
+$txt['permissionhelp_articles_comment'] = 'Allows the user to leave comments on an article.';
+$txt['cannot_articles_comment'] = 'You are not allowed to leave comments.';
+
+
+$txt['permissionname_articles_auto_approve'] = 'Articles Auto Approved';
+$txt['permissionhelp_articles_auto_approve'] = 'If the users articles are auto approved when submitted.';
+
+$txt['permissionname_articles_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_articles_autocomment'] = 'Comments do not need to wait for approval.';
+
+$txt['permissionname_rate_articles'] = 'Rate Articles';
+$txt['permissionhelp_rate_articles'] = 'If the user is allowed to rate articles';
+$txt['cannot_rate_articles'] = 'You are not allowed to rate articles.';
+
+$txt['permissionname_articles_admin'] = 'Admin Articles';
+$txt['permissionhelp_articles_admin'] = 'User can manage the articles';
+$txt['cannot_articles_admin'] = 'You are not allowed to manage the articles.';
+// END SMF Articles Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Articles Text Strings
+$txt['smfarticles_menu'] = 'Articles';
+$txt['smfarticles_admin'] = 'Articles Configuration';
+
+$txt['smfarticles_articlessettings'] = 'Settings';
+$txt['smfarticles_approvearticles'] = 'Approve Articles';
+$txt['smfarticles_form_approvecomments'] = 'Approve Comments';
+$txt['smfarticles_catpermlist'] = 'Category Permission List';
+$txt['smfarticles_txt_copyrightremoval'] = 'Copyright Removal';
+$txt['smfarticles_txt_import'] = 'Import';
+
+$txt['permissiongroup_smfarticles'] = 'SMF Articles';
+$txt['permissiongroup_simple_smfarticles'] = 'SMF Articles';
+
+$txt['permissionname_view_articles'] = 'View Articles';
+$txt['permissionhelp_view_articles'] = 'Sets if the user can view the articles.';
+$txt['cannot_view_articles'] = 'You can not view the articles page.';
+
+$txt['permissionname_add_articles'] = 'Add Article';
+$txt['permissionhelp_add_articles'] = 'If the user is allowed to submit articles';
+
+$txt['cannot_add_articles'] = 'You can not add articles.';
+$txt['permissionname_edit_articles'] = 'Edit own Articles';
+$txt['permissionhelp_edit_articles'] = 'If the user is allowed to edit articles';
+
+$txt['cannot_edit_articles'] = 'You can not edit articles.';
+$txt['permissionname_delete_articles'] = 'Delete own Articles';
+$txt['permissionhelp_delete_articles'] = 'If the user is allowed to delete articles';
+$txt['cannot_delete_articles'] = 'You can not delete articles.';
+
+$txt['permissionname_articles_comment'] = 'Leave Comments';
+$txt['permissionhelp_articles_comment'] = 'Allows the user to leave comments on an article.';
+$txt['cannot_articles_comment'] = 'You are not allowed to leave comments.';
+
+
+$txt['permissionname_articles_auto_approve'] = 'Articles Auto Approved';
+$txt['permissionhelp_articles_auto_approve'] = 'If the users articles are auto approved when submitted.';
+
+$txt['permissionname_articles_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_articles_autocomment'] = 'Comments do not need to wait for approval.';
+
+$txt['permissionname_rate_articles'] = 'Rate Articles';
+$txt['permissionhelp_rate_articles'] = 'If the user is allowed to rate articles';
+$txt['cannot_rate_articles'] = 'You are not allowed to rate articles.';
+
+$txt['permissionname_articles_admin'] = 'Admin Articles';
+$txt['permissionhelp_articles_admin'] = 'User can manage the articles';
+$txt['cannot_articles_admin'] = 'You are not allowed to manage the articles.';
+// END SMF Articles Strings		
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Articles
+$txt['whoall_articles'] = 'Viewing the <a href="' . $scripturl . '?action=articles">' . $txt['smfarticles_menu'] . '</a>';
+// END SMF Articles Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['admin' => array('Admin.php', 'AdminMain'),]]></search>
+		<add><![CDATA[
+		'articles' => array('Articles2.php', 'ArticlesMain'),]]></add>
+	</operation>
+</file>
+
+
+
+
+
+
+
+<file name="$sourcedir/Admin.php">
+
+	<operation>
+		<search position="replace"><![CDATA['layout' => array(
+			'title' => $txt['layout_controls'],]]></search>
+		<add><![CDATA[
+		'articles' => array(
+			'title' => $txt['smfarticles_admin'],
+			'permission' => array('articles_admin'),
+			'areas' => array(
+				'articles' => array(
+					'label' => $txt['smfarticles_admin'],
+					'file' => 'Articles2.php',
+					'function' => 'ArticlesMain',
+					'custom_url' => $scripturl . '?action=admin;area=articles;sa=admin;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'subsections' => array(
+						'admin' => array($txt['smfarticles_articlessettings']),
+						'admincat' => array($txt['smfarticles_txt_managecategories']),
+						'alist' => array($txt['smfarticles_approvearticles']),
+						'comlist' => array($txt['smfarticles_form_approvecomments']),
+						'adminperm' => array($txt['smfarticles_catpermlist']),
+						'importtp' => array($txt['smfarticles_txt_import']),
+						'copyright' => array($txt['smfarticles_txt_copyrightremoval']),
+						
+					),
+				),),
+		),
+
+		'layout' => array(
+			'title' => $txt['layout_controls'],	
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_smfarticles'] = allowedTo('view_articles');
+		]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA['mlist' => array(]]></search>
+		<add><![CDATA[			
+		// [Articles] button
+			'articles' => array(
+				'title' => $txt['smfarticles_menu'],
+				'href' => $scripturl . '?action=articles',
+				'show' => $context['allow_view_smfarticles'],
+				'icon' => '',
+			),
+]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[	$groupLevels['global']['standard'] = array_merge($groupLevels['global']['restrict'], array(]]></search>
+		<add><![CDATA[
+		'view_articles',
+		'add_articles',
+		'edit_articles',
+		'delete_articles',
+		'rate_articles',
+		'articles_comment',
+		'articles_auto_approve',
+		'articles_autocomment',
+		'articles_admin',]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(]]></search>
+		<add><![CDATA[
+			'view_articles' => array(false, 'smfarticles', 'smfarticles'),
+			'add_articles' => array(false, 'smfarticles', 'smfarticles'),
+			'edit_articles' => array(false, 'smfarticles', 'smfarticles'),
+			'delete_articles' => array(false, 'smfarticles', 'smfarticles'),
+			'rate_articles' => array(false, 'smfarticles', 'smfarticles'),
+			'articles_comment' => array(false, 'smfarticles', 'smfarticles'),
+			'articles_auto_approve' => array(false, 'smfarticles', 'smfarticles'),
+			'articles_autocomment' => array(false, 'smfarticles', 'smfarticles'),
+			'articles_admin' => array(false, 'smfarticles', 'smfarticles'),]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Admin.php">
+
+	<operation error="ignore">
+		<search position="replace"><![CDATA['articles' => array(
+			'title' => $txt['smfarticles_admin'],
+			'permission' => array('articles_admin'),
+			'areas' => array(
+				'articles' => array(
+					'label' => $txt['smfarticles_admin'],
+					'file' => 'Articles2.php',
+					'function' => 'ArticlesMain',
+					'custom_url' => $scripturl . '?action=admin;area=articles;sa=admin;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'subsections' => array(
+						'admin' => array($txt['smfarticles_articlessettings']),
+						'alist' => array($txt['smfarticles_approvearticles']),
+						'comlist' => array($txt['smfarticles_form_approvecomments']),
+						'adminperm' => array($txt['smfarticles_catpermlist']),
+						'importtp' => array($txt['smfarticles_txt_import']),
+						
+					),
+				),),
+		),]]></search>
+		<add><![CDATA['articles' => array(
+			'title' => $txt['smfarticles_admin'],
+			'permission' => array('articles_admin'),
+			'areas' => array(
+				'articles' => array(
+					'label' => $txt['smfarticles_admin'],
+					'file' => 'Articles2.php',
+					'function' => 'ArticlesMain',
+					'custom_url' => $scripturl . '?action=admin;area=articles;sa=admin;sesc=' . $sc,
+					'icon' => 'server.gif',
+					'subsections' => array(
+						'admin' => array($txt['smfarticles_articlessettings']),
+						'admincat' => array($txt['smfarticles_txt_managecategories']),
+						'alist' => array($txt['smfarticles_approvearticles']),
+						'comlist' => array($txt['smfarticles_form_approvecomments']),
+						'adminperm' => array($txt['smfarticles_catpermlist']),
+						'importtp' => array($txt['smfarticles_txt_import']),
+						'copyright' => array($txt['smfarticles_txt_copyrightremoval']),
+						
+					),
+				),),
+		),]]></add>
+	</operation>
+</file>
+</modification>

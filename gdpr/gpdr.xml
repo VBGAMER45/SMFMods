@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:gpdrhelper</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin GPDR Helper Text Strings
+$txt['gpdr_title'] = 'GDPR Helper';
+
+$txt['gpdr_privacypolicy'] = 'Privacy Policy';
+$txt['gpdr_text_settings'] = 'Settings';
+$txt['gpdr_txt_exportdata']  = 'Export Data';
+
+$txt['gpdr_txt_privacy_header'] = 'Privacy Policy/Cookies';
+$txt['gpdr_txt_privacy_desc'] = 'We collect personal information when you use our online services. We use cookies to identify you and to personalize your experience. For details, please see our <a href="' . $scripturl . '?action=gpdr;sa=privacypolicy" target="_blank">Privacy Policy</a>';
+$txt['gpdr_txt_privacy_agree'] = 'I agree and consent to the Privacy Policy';
+$txt['gpdr_txt_privacy_fail'] = 'We can not process your registration if do not agree to our Privacy Policy';
+
+
+
+// END GPDR Helper Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin GPDR Helper Text Strings
+$txt['gpdr_title'] = 'GDPR Helper';
+
+$txt['gpdr_privacypolicy'] = 'Privacy Policy';
+$txt['gpdr_text_settings'] = 'Settings';
+$txt['gpdr_txt_exportdata']  = 'Export Data';
+
+$txt['gpdr_txt_privacy_header'] = 'Privacy Policy/Cookies';
+$txt['gpdr_txt_privacy_desc'] = 'We collect personal information when you use our online services. We use cookies to identify you and to personalize your experience. For details, please see our <a href="' . $scripturl . '?action=gpdr;sa=privacypolicy" target="_blank">Privacy Policy</a>';
+$txt['gpdr_txt_privacy_agree'] = 'I agree and consent to the Privacy Policy';
+$txt['gpdr_txt_privacy_fail'] = 'We can not process your registration if do not agree to our Privacy Policy';
+
+
+
+// END GPDR Helper Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'help' => array('Help.php', 'ShowHelp'),]]></search>
+		<add><![CDATA[
+		'gpdr' => array('gpdr.php', 'GPDR_Main'),
+		]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'gpdr_settings' => '<a href="' . $scripturl . '?action=gpdr;sa=settings;sesc=' . $sc . '">' . $txt['gpdr_title'] . '</a>',
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Load.php">
+
+	<operation>
+		<search position="before"><![CDATA[// Fix font size with HTML 4.01, etc.
+	if (isset($settings['doctype']))
+		$context['browser']['needs_size_fix'] |= $settings['doctype'] == 'html' && $context['browser']['is_ie6'];]]></search>
+		<add><![CDATA[
+// Start GPDR Helper
+global $modSettings, $user_info;
+if (!empty($modSettings['gpdr_force_privacy_agree']) && !empty($modSettings['gpdr_enable_privacy_policy']) && !$user_info['is_guest'])
+{
+	$t = time();
+	if (empty($options['gpdr_policydate']) || $modSettings['gpdr_last_privacydate'] > $options['gpdr_policydate'])
+	{
+		if (isset($_REQUEST['action']) && ($_REQUEST['action'] == 'gpdr' || $_REQUEST['action'] == 'logout'))
+		{
+
+		}
+		else
+		{
+			redirectexit('action=gpdr;sa=privacypolicy;reagree=1');
+		}
+	}
+}
+
+if (!empty($modSettings['gpdr_force_agreement_agree'])  && !$user_info['is_guest'])
+{
+
+		if (empty($options['gpdr_agreementdate']) || $modSettings['gpdr_last_agreementdate'] > $options['gpdr_agreementdate'])
+		{
+
+			if (isset($_REQUEST['action']) && ($_REQUEST['action'] == 'gpdr' || $_REQUEST['action'] == 'logout'))
+			{
+
+			}
+			else
+			{
+				redirectexit('action=gpdr;sa=registeragreement;reagree=1');
+			}
+
+		}
+
+
+}
+
+// END GPDR Helper
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Subs-Members.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// Make these peoples' posts guest posts.
+	db_query("
+		UPDATE {$db_prefix}messages
+		SET ID_MEMBER = 0" . (!empty($modSettings['allow_hideEmail']) ? ", posterEmail = ''" : '') . "
+		WHERE ID_MEMBER $condition", __FILE__, __LINE__);]]></search>
+		<add><![CDATA[
+// Start GPDR Helper
+if (empty($modSettings['gpdr_clear_memberinfo']))
+{
+// Make these peoples' posts guest posts.
+	db_query("
+		UPDATE {$db_prefix}messages
+		SET ID_MEMBER = 0" . (!empty($modSettings['allow_hideEmail']) ? ", posterEmail = ''" : '') . "
+		WHERE ID_MEMBER $condition", __FILE__, __LINE__);
+}
+else
+{
+global $sourcedir;
+
+require_once($sourcedir . '/gpdr.php');
+GPDR_CleanMemberInfo($users);
+}
+
+// END GPDR Helper
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile.php">
+
+	<operation>
+		<search position="before"><![CDATA[$context['profile_areas']['edit_profile']['areas']['pmprefs'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=pmprefs">' . $txt['pmprefs'] . '</a>';]]></search>
+		<add><![CDATA[
+// Start GPDR Helper
+if (!empty($modSettings['gpdr_allow_export_userdata']))
+$context['profile_areas']['edit_profile']['areas']['exportdata'] = '<a href="' . $scripturl . '?action=gpdr;sa=profile;u=' . $memID . '">' . $txt['gpdr_txt_exportdata']. '</a>';
+// END GPDR Helper
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<add><![CDATA[
+// Start GPDR Helper
+
+		if (!empty($modSettings['gpdr_enable_privacy_policy']))
+		{
+            global $txt;
+			$buffer = preg_replace('~(, Simple Machines</a>)~', ', Simple Machines</a><br /><a href="' . $scripturl . '?action=gpdr;sa=privacypolicy">' . $txt['gpdr_privacypolicy'] . '</a>', $buffer);
+			$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><a href="' . $scripturl . '?action=gpdr;sa=privacypolicy">' . $txt['gpdr_privacypolicy'] . '</a>', $buffer);
+
+		}
+
+
+// END GPDR Helper
+
+	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></add>
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="after"><![CDATA[// You can't register if it's disabled.]]></search>
+			<add><![CDATA[
+// Start GPDR Helper
+	if (!empty($modSettings['gpdr_enable_privacy_policy']))
+	{
+		if (!isset($_REQUEST['privacy_agree']))
+			fatal_error($txt['gpdr_txt_privacy_fail'],false);
+	}
+// END GPDR Helper
+]]></add>
+	</operation>
+
+
+		<operation>
+			<search position="after"><![CDATA[// If COPPA has been selected then things get complicated, setup the template.]]></search>
+			<add><![CDATA[
+// Start GPDR Helper
+if (!is_array($memberID))
+{
+	global $db_prefix, $settings;
+        $t = time();
+          db_query("
+				REPLACE INTO {$db_prefix}themes
+					(ID_MEMBER, ID_THEME, variable, value)
+				VALUES
+                (" . $memberID . "," . $settings['theme_id']  . ",'gpdr_agreementdate','$t')
+                ", __FILE__, __LINE__);
+
+
+	if (!empty($modSettings['gpdr_enable_privacy_policy']))
+	{
+          db_query("
+				REPLACE INTO {$db_prefix}themes
+					(ID_MEMBER, ID_THEME, variable, value)
+				VALUES
+                (" . $memberID . "," . $settings['theme_id']  . ",'gpdr_policydate','$t')
+                ", __FILE__, __LINE__);
+    }
+
+        cache_put_data('theme_settings-' . $settings['theme_id'] . ':' . $memberID, null, 60);
+}
+// END GPDR Helper
+]]></add>
+	</operation>
+
+</file>
+
+
+
+<file name="$sourcedir/ManageRegistration.php">
+		<operation>
+			<search position="before"><![CDATA[updateSettings(array('requireAgreement' => !empty($_POST['requireAgreement'])));]]></search>
+			<add><![CDATA[
+// Start GPDR Helper
+
+    	updateSettings(
+	array(
+    'gpdr_last_agreementdate' => time(),
+
+	));
+
+
+// END GPDR Helper
+]]></add>
+	</operation>
+
+</file>
+
+<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="replace"><![CDATA[<tr>
+						<td width="40%">
+							<b>', $txt[82], ':</b>
+						</td>
+						<td>
+							<input type="password" name="passwrd2" size="30" tabindex="', $context['tabindex']++, '" />
+						</td>
+					</tr>';]]></search>
+			<add><![CDATA[<tr>
+						<td width="40%">
+							<b>', $txt[82], ':</b>
+						</td>
+						<td>
+							<input type="password" name="passwrd2" size="30" tabindex="', $context['tabindex']++, '" />
+						</td>
+					</tr>';
+// Start GPDR Helper
+
+if (!empty($modSettings['gpdr_enable_privacy_policy']))
+{
+		echo '
+		<tr>
+						<td width="40%" valign="top">
+							<b>',  $txt['gpdr_txt_privacy_agree'], ':</b>
+						</td>
+						<td >
+							<input type="checkbox" name="privacy_agree" id="privacy_agree" tabindex="', $context['tabindex']++, '" class="input_check" />
+							<br />
+							' . $txt['gpdr_txt_privacy_desc'] . '
+						</td>
+					</tr>';
+
+}
+
+// END GPDR Helper
+]]></add>
+	</operation>
+
+</file>
+
+</modification>

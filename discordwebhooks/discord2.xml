@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:discordwebhooks</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Discord Text Strings
+$txt['discord_admin'] = 'Discord Settings';
+// END Discord Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Discord Text Strings
+$txt['discord_admin'] = 'Discord Settings';
+// END Discord Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+
+
+<file name="$sourcedir/Subs-Post.php">
+	<operation>
+		<search position="replace"><![CDATA[updateStats('topic', true);]]></search>
+		<add><![CDATA[updateStats('topic', true);
+		
+		// Discord web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/discord2.php');
+		discord_send_topic($msgOptions['id']);
+
+		
+]]></add>
+	</operation>
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[trackStats(array('posts' => '+'));]]></search>
+		<add><![CDATA[trackStats(array('posts' => '+'));
+		
+		// Discord web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/discord2.php');
+		discord_send_post($msgOptions['id']);
+
+		
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$sourcedir/Register.php">
+	<operation>
+		<search position="replace"><![CDATA[spamProtection('register');]]></search>
+		<add><![CDATA[spamProtection('register');
+		
+		// Discord web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/discord2.php');
+		discord_send_new_member_registration($memberID);
+
+		
+]]></add>
+	</operation>
+</file>
+
+
+</modification>

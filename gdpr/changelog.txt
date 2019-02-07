@@ -1,0 +1,24 @@
+1.0.5
+!Fixed incorrect setting used for clearing post information on member deletion
+
+1.0.4
+!Minor language update
++Checks for SSL if not adds a warning
++Version check now includes link to download new version
+
+1.0.3
+!Spelling fixes for GDPR
+
+
+1.0.2
++Added support for SMF 1.1.x
++Added option to decline changes to the privacy policy and agreement page
+!Fixed extension for post export data as .txt file
+!Fixed undefined error on view privacy policy page
+
+1.0.1
+!Bug fix error on registration if there is registration error. Requires uninstall of old version
+
+1.0
+First Release
+

@@ -1,0 +1,115 @@
+ABC News
+Amazon Product
+audioBoom
+Audiomack
+Bandcamp
+BBC News
+Blab
+Break
+CBS News Video
+CNBC
+CNN
+CNNMoney
+CollegeHumor
+Coub
+Dailymotion
+Democracy Now!
+dumpert
+8tracks
+ESPN
+Facebook
+Flickr
+FORA.tv
+Fox News
+Funny or Die
+Gamespot
+Getty Images
+Gfycat
+Gifs.com
+GitHub Gist (via custom iframe)
+Global News
+GoFundMe
+Google Drive
+Google+
+Google Sheets
+Healthguru
+Hudl
+Hulu
+HumorTV
+IGN
+IMDb
+Imgur
+Indiegogo
+Instagram
+Internet Archive
+Izlesene
+JW Platform
+Kontinental Hockey League (???)
+Kickstarter
+Kiss Video
+Libsyn
+LiveCap
+LiveLeak
+Livestream
+Mail.Ru
+Medium
+Metacafe
+Mixcloud
+MLB
+MRCTV
+MSNBC
+National Geographic Channel
+National Geographic Video
+NBC News
+NBC Sports
+NHL Videos and Highlights
+NPR
+The New York Times Video
+Oddshot
+Pastebin
+Pinterest
+Plays.tv
+Podbean
+Prezi
+Reddit threads and comments
+Rutube
+Scribd
+SlideShare
+SoundCloud
+Sportsnet
+Spotify
+Steam store
+Stitcher
+Straw Poll
+Streamable
+Team Coco
+TED Talks
+The Atlantic Video
+The Guardian
+The Onion
+TMZ
+Trailer Addict
+Tumblr
+Twitch
+Twitter
+Ustream
+VBOX7
+Veoh
+VEVO
+Viagame
+Video Detective
+Videomega
+vidme
+Vimeo
+Vine
+VK
+Vocaroo
+Vox
+Washington Post Video
+WorldStarHipHop
+The Wall Street Journal Online
+XboxClips
+Xbox DVR
+Yahoo! Screen
+Youku
+YouTube

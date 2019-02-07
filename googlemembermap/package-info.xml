@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:gmmMod</id>
+	<name>Google Member Map</name>
+	<version>3.0.4</version>
+	<type>modification</type>
+	
+	<install for="2.0 - 2.0.99">
+		<readme type="file" parsebbc="true">install-readme.txt</readme>
+		<require-file name="sources/GoogleMapIntegration.php" destination="$sourcedir">Our integration Functions</require-file>
+		<require-file name="sources/GoogleMap.php" destination="$sourcedir">The primary modification functions </require-file>
+		<require-file name="scripts/markerclusterer_compiled.js" destination="$themedir/scripts">Jasvascript to enable the cluster functions</require-file>
+		<require-dir name="scripts/jscolor" destination="$boarddir/Themes/default/scripts">Jasvascript to enable color selection</require-dir>
+		<require-file name="css/GoogleMap.css" destination="$themedir/css">Style Sheets</require-file>
+		<require-file name="templates/GoogleMap.template.php" destination="$themedir">The template for viewing the member map</require-file>
+		<require-file name="languages/GoogleMap.english.php" destination="$languagedir">The language strings</require-file>
+		<require-file name="google_earth_feed.gif" destination="$imagesdir" />
+		<database type="file">add_settings.php</database>
+		<modification type="file">modification.xml</modification>
+		<modification>language.xml</modification>
+		<modification>language-utf8.xml</modification>
+		<code type="file">add_remove_hooks.php</code>
+		<redirect url="index.php?action=admin;area=modsettings;sa=googlemap" timeout="5000">redirect.txt</redirect>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99">
+		<readme type="file" parsebbc="true">uninstall-readme.txt</readme>
+		<code type="file">add_remove_hooks.php</code>
+		<remove-file name="$sourcedir/GoogleMapIntegration.php" />
+		<remove-file name="$sourcedir/GoogleMap.php" />
+		<remove-file name="$themedir/scripts/markerclusterer_packed.js" />
+		<remove-dir name="$boarddir/Themes/default/scripts/jscolor" />
+		<remove-file name="$themedir/css/GoogleMap.css" />
+		<remove-file name="$themedir/GoogleMap.template.php" />
+		<remove-file name="$languagedir/GoogleMap.english.php" />
+		<remove-file name="$imagesdir/google_earth_feed.gif" />
+		<modification type="file" reverse="true">modification.xml</modification>
+		<modification reverse="true">language.xml</modification>
+		<modification reverse="true">language-utf8.xml</modification>
+		<database type="file">remove_settings.php</database>
+	</uninstall>
+
+</package-info>

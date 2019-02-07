@@ -1,0 +1,106 @@
+3.0.3a
+!Fixed install for SMF 2.1 Beta editions
+!Fixed some https links for social media
+
+3.0.3
+!Fixed article RSS feed url for article view
+
+3.0.2
+!Delete invalid pictures when they fail to upload
+
+3.0
++Now works for SMF 2.1 Beta 1
++New manage articles area
++Improved styles for SMF 2.0
++Added new copyright removal system
+
+2.5.1
+!Fixed the Facebook like article to encode the full article url
+!Fixed empty description field when editing category in SMF 2.0.x
+!Cleaned up some more html/styles in SMF 2.0.x version
+
+2.5
++Updated styling for SMF 2.0 for main areas for a better experience
++Updated admin areas with alternating row styles to make reading easier
+
+2.0.2
+!Fixed top articles bar layout issue in chrome for SMF 2.0
+
+2.0.1
+!Fixed possible undefined error on the search page
++Added future intergration support for Badge Awards
+
+2.0
++Added RSS feed icon/RSS feeds now support for the articles
++Added import from FAQ mod and Knowledge Base mod
+
+1.4
++Added sharing icons: Facebook, Google +1, Twitter
+
+1.3.3a
+!Fixed style issue with ShowArticlesBar style for SMF 2.0 RC5 thanks to MrGrumpy
+
+1.3.3
+!Improved search results for multiple pages
+
+1.3.2.1
+!Fixed issue with MySQL 5.5 since it no longer supports the Type for create tables uses Engine instead
+
+1.3.2
+!Fixed edit article bug for SMF 2.0 thanks to Arantor
+
+1.3.1
++Updated style for articles system for SMF 2.0 RC3 to be more curve
+
+1.3
++Added SMF 2.0 RC3 Support
+
+1.2.2
+!Fixed find members link on the search page
+
+1.2.1
+!Fixed issue with reserverd characters in article description and summary for SMF 2.0
+
+1.2a
++Added checking on view article if article no longer exists or not found
+
+1.2
++Added setting to control if images are shown at the end of the view article that are attached
++Better category dropdown struture in various areas
++Added bbc box to add/edit category SMF 1.1.x
+
+Version 1.1.2
+!Fixed bbc editor for categories in SMF 2.0 not working in IE6/IE7
+
+Version 1.1.1
+!Fixed search for SMF 2.0
+
+Version 1.1
++Added settings to allow attaching images to articles
++Added more display information on the person making the comment
+!Fixed bug with importing tiny portal articles for SMF 2.0
+
+Version 1.0.2
+!Fixed duplicate linktree on some pages in SMF 2.0
++Added bbc editor for categories in SMF 2.0
++Added a comma seperator for subcategories on SubCategories list.
+!Fixed link tree to show subcategories of articles and added to the display article page to include categories
++Added Recount articles function found under Settings
+!Improved the modification for better support with mod_security
+
+Version 1.0.1.8
+!Fixed minor bug in SMF 2.0 not showing the title of permissions under simple permissions in SMF.
+
+Version 1.0.1.7
+!Fixed bug with undefined error when viewing comment approval list.
+!Fixed approving single comment bug
+
+Version 1.0.1.6
+!Fixed undefined $user_info on view article page for SMF 2.0
+!Fixed aritlces comment link permission issue showing on the view articles page.
+
+Version 1.0.1.5
+!Fixed wyswig editor for SMF 2.0
+
+Version 1.0.1.2
+!Fixed bug with category totals if you change the total on the category

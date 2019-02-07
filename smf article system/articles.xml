@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFArticles</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Articles Text Strings
+$txt['smfarticles_menu'] = 'Articles';
+$txt['smfarticles_admin'] = 'Articles Configuration';
+
+$txt['permissiongroup_smfarticles'] = 'SMF Articles';
+
+$txt['permissionname_view_articles'] = 'View Articles';
+$txt['permissionhelp_view_articles'] = 'Sets if the user can view the articles.';
+$txt['cannot_view_articles'] = 'You can not view the articles page.';
+
+$txt['permissionname_add_articles'] = 'Add Article';
+$txt['permissionhelp_add_articles'] = 'If the user is allowed to submit articles';
+
+$txt['cannot_add_articles'] = 'You can not add articles.';
+$txt['permissionname_edit_articles'] = 'Edit own Articles';
+$txt['permissionhelp_edit_articles'] = 'If the user is allowed to edit articles';
+
+$txt['cannot_edit_articles'] = 'You can not edit articles.';
+$txt['permissionname_delete_articles'] = 'Delete own Articles';
+$txt['permissionhelp_delete_articles'] = 'If the user is allowed to delete articles';
+$txt['cannot_delete_articles'] = 'You can not delete articles.';
+
+$txt['permissionname_articles_comment'] = 'Leave Comments';
+$txt['permissionhelp_articles_comment'] = 'Allows the user to leave comments on an article.';
+$txt['cannot_articles_comment'] = 'You are not allowed to leave comments.';
+
+
+$txt['permissionname_articles_auto_approve'] = 'Articles Auto Approved';
+$txt['permissionhelp_articles_auto_approve'] = 'If the users articles are auto approved when submitted.';
+
+$txt['permissionname_articles_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_articles_autocomment'] = 'Comments do not need to wait for approval.';
+
+$txt['permissionname_rate_articles'] = 'Rate Articles';
+$txt['permissionhelp_rate_articles'] = 'If the user is allowed to rate articles';
+$txt['cannot_rate_articles'] = 'You are not allowed to rate articles.';
+
+$txt['permissionname_articles_admin'] = 'Admin Articles';
+$txt['permissionhelp_articles_admin'] = 'User can manage the articles';
+$txt['cannot_articles_admin'] = 'You are not allowed to manage the articles.';
+// END SMF Articles Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Articles Text Strings
+$txt['smfarticles_menu'] = 'Articles';
+$txt['smfarticles_admin'] = 'Articles Configuration';
+
+$txt['permissiongroup_smfarticles'] = 'SMF Articles';
+
+$txt['permissionname_view_articles'] = 'View Articles';
+$txt['permissionhelp_view_articles'] = 'Sets if the user can view the articles.';
+$txt['cannot_view_articles'] = 'You can not view the articles page.';
+
+$txt['permissionname_add_articles'] = 'Add Article';
+$txt['permissionhelp_add_articles'] = 'If the user is allowed to submit articles';
+
+$txt['cannot_add_articles'] = 'You can not add articles.';
+$txt['permissionname_edit_articles'] = 'Edit own Articles';
+$txt['permissionhelp_edit_articles'] = 'If the user is allowed to edit articles';
+
+$txt['cannot_edit_articles'] = 'You can not edit articles.';
+$txt['permissionname_delete_articles'] = 'Delete own Articles';
+$txt['permissionhelp_delete_articles'] = 'If the user is allowed to delete articles';
+$txt['cannot_delete_articles'] = 'You can not delete articles.';
+
+$txt['permissionname_articles_comment'] = 'Leave Comments';
+$txt['permissionhelp_articles_comment'] = 'Allows the user to leave comments on an article.';
+$txt['cannot_articles_comment'] = 'You are not allowed to leave comments.';
+
+
+$txt['permissionname_articles_auto_approve'] = 'Articles Auto Approved';
+$txt['permissionhelp_articles_auto_approve'] = 'If the users articles are auto approved when submitted.';
+
+$txt['permissionname_articles_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_articles_autocomment'] = 'Comments do not need to wait for approval.';
+
+$txt['permissionname_rate_articles'] = 'Rate Articles';
+$txt['permissionhelp_rate_articles'] = 'If the user is allowed to rate articles';
+$txt['cannot_rate_articles'] = 'You are not allowed to rate articles.';
+
+$txt['permissionname_articles_admin'] = 'Admin Articles';
+$txt['permissionhelp_articles_admin'] = 'User can manage the articles';
+$txt['cannot_articles_admin'] = 'You are not allowed to manage the articles.';
+// END SMF Articles Strings		
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin SMF Articles
+$txt['whoall_articles'] = 'Viewing the <a href="' . $scripturl . '?action=articles">' . $txt['smfarticles_menu'] . '</a>';
+// END SMF Articles Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['admin' => array('Admin.php', 'Admin'),]]></search>
+		<add><![CDATA[
+		'articles' => array('Articles.php', 'ArticlesMain'),]]></add>
+	</operation>
+</file>
+<file name="$themedir/index.template.php" error="ignore">
+	<operation>
+		<search position="before"><![CDATA[$current_action = 'admin';
+	if (in_array($context['current_action'], array(]]></search>
+		<add><![CDATA['articles',]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// the [member] list button
+	if ($context['allow_memberlist'])
+		echo ($current_action == 'mlist' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'mlist' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=mlist">' , $txt[331] , '</a>
+				</td>' , $current_action == 'mlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+]]></search>
+		<add><![CDATA[
+	// the [Articles] button
+	if ($context['allow_view_smfarticles'])
+		echo ($current_action == 'articles' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'articles' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=articles">' , $txt['smfarticles_menu']  , '</a>
+				</td>' , $current_action == 'articles' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA['pm' => array(
+				'pm_read' => false,
+				'pm_send' => false,
+			),]]></search>
+		<add><![CDATA[
+			'smfarticles' => array(
+				'view_articles' => false,
+				'add_articles' => false,
+				'edit_articles' => false,
+				'delete_articles' => false,
+				'rate_articles' => false,
+				'articles_comment' => false,
+				'articles_auto_approve' => false,
+				'articles_autocomment' => false,
+				'articles_admin' => false,
+			),]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'articles_settings' => '<a href="' . $scripturl . '?action=articles;sa=admin;sesc=' . $sc . '">' . $txt['smfarticles_admin'] . '</a>',
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_view_smfarticles'] = allowedTo('view_articles');
+		]]></add>
+	</operation>
+</file>
+</modification>
