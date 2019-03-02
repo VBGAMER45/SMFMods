@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:pushnotifications</id>
+	<name>Push Notifications</name>
+	<type>modification</type>
+	<version>1.0</version>
+	
+
+
+	<install for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=webpush;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">webpush2.xml</modification>
+		<require-file name="webpush2.php" destination="$sourcedir" />
+		<require-file name="webpush.template.php" destination="$themedir" />
+		<require-file name="webpush.english.php" destination="$themedir/languages" />
+		<require-file name="webpush.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="webpushhooks.php" destination="$sourcedir" />
+		
+		<require-file name="OneSignalSDKUpdaterWorker.js" destination="$boarddir" />
+		<require-file name="OneSignalSDKWorker.js" destination="$boarddir" />
+		<code>webpushinstall2.php</code>
+		
+	</install>
+	
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<remove-file name="$sourcedir/webpush2.php" />
+		<remove-file name="$themedir/webpush.template.php" />
+		<remove-file name="$themedir/languages/webpush.english.php" />
+		<remove-file name="$themedir/languages/webpush.english-utf8.php" />
+		<remove-file name="$sourcedir/webpushhooks.php"/>
+		<remove-file name="$boarddir/OneSignalSDKUpdaterWorker.js" />
+		<remove-file name="$boarddir/OneSignalSDKWorker.js" />
+		<modification type="file" reverse="true">webpush2.xml</modification>
+	</uninstall>
+	
+
+
+	
+</package-info>

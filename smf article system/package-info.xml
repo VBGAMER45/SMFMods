@@ -5,7 +5,7 @@
 	<id>vbgamer45:SMFArticles</id>
 	<name>SMF Articles</name>
 	<type>modification</type>
-	<version>3.0.3a</version>
+	<version>3.0.3b</version>
 
 	<install for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
 		<redirect url="?action=articles;sa=admin">redirect.txt</redirect>
@@ -75,7 +75,7 @@
 	
 	
 	
-	<install for="2.1 - 2.1.99,2.1 Beta 1">
+	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 RC1">
 		<redirect url="?action=admin;area=articles;sa=admin">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<modification type="file">articlesbeta21.xml</modification>
@@ -86,10 +86,11 @@
 		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
 		<require-dir name="articles" destination="$boarddir" />
 		<require-file name="articles.png" destination="$imagesdir/admin" />
+		<require-file name="articles.png" destination="$imagesdir" />
 		<code>articlessql2.php</code>
 		<code>dohooks.php</code>
 	</install>
-	<upgrade for="2.1 - 2.1.99,2.1 Beta 1">
+	<upgrade for="2.1 - 2.1.99,2.1 Beta 1,2.1 RC1">
 		<redirect url="?action=admin;area=articles;sa=admin">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<require-file name="Articles2.php" destination="$sourcedir" />
@@ -99,11 +100,12 @@
 		<require-file name="Articles.english-utf8.php" destination="$themedir/languages" />
 		<require-dir name="articles" destination="$boarddir" />
 		<require-file name="articles.png" destination="$imagesdir/admin" />
+		<require-file name="articles.png" destination="$imagesdir" />
 		<code>articlessql2.php</code>
 		<code>dohooks.php</code>
 	
 	</upgrade>
-	<uninstall for="2.1 - 2.1.99,2.1 Beta 1">
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 RC1">
 		<modification type="file" reverse="true">articlesbeta21.xml</modification>
 		<remove-file name="$sourcedir/Articles2.php" />
 		<remove-file name="$themedir/Articles2.1.template.php" />

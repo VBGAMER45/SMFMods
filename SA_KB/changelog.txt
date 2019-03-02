@@ -1,3 +1,8 @@
+2.0
+!Fixed some issues for PHP 7
+!Removed google plus social icon
+!Fixed twitter and facebook social icons to be https://
+
 1.1
 !Bug fixes
 

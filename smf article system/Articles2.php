@@ -3,7 +3,7 @@
 SMF Articles
 Version 3.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 
@@ -12,7 +12,7 @@ if (!defined('SMF'))
 
 function ArticlesMain()
 {
-	global $currentVersion, $modSettings, $boarddir, $boardurl, $context;
+	global $currentVersion, $modSettings, $boarddir, $boardurl, $context, $smcFunc;
 	
 	// Current version of the article system
 	$currentVersion = '3.0';
@@ -20,10 +20,16 @@ function ArticlesMain()
 	$context['articles21beta'] = false;
 	
 	// Load the main template file
-    if (isset($modSettings['articles_smfversion']) && $modSettings['articles_smfversion'] == '2.1')
+    if (function_exists("set_tld_regex"))
     {
 	   loadtemplate('Articles2.1');
         $context['articles21beta'] = true;
+        
+
+			$modSettings['disableQueryCheck'] = 1;
+			$smcFunc['db_query']('', "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
+			$modSettings['disableQueryCheck'] = 0;
+        
     }
     else
         loadtemplate('Articles2');

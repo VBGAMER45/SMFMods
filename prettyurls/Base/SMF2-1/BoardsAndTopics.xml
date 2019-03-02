@@ -221,15 +221,8 @@ function cleanRequest()
 		</operation>
 
 		<operation>
-			<search position="replace"><![CDATA[
-		$topic = (int) $_REQUEST['topic'];
-
-		// Now make sure the online log gets the right number.
-		$_GET['topic'] = $topic;
-	}
-	else
-		$topic = 0;
-]]></search>
+			<search position="replace"><![CDATA[// Topic should always be an integer
+		$topic = $_GET['topic'] = $_REQUEST['topic'] = (int) $_REQUEST['topic'];]]></search>
 			<add><![CDATA[
 		// Check for pretty topic URLs, and possibly redirect if oldschool queries were used.
 		$context['pretty']['query_string']['topic'] = $_REQUEST['topic'];
@@ -239,7 +232,7 @@ function cleanRequest()
 			if (!isset($_REQUEST['pretty']))
 				$context['pretty']['oldschoolquery'] = true;
 		} else {
-			$_REQUEST['topic'] = str_replace(array('&#039;',"&#39;", '\\'), array("\x12","\x12", ''), $_REQUEST['topic']);
+			$_REQUEST['topic'] = str_replace(array("'",'&#039;','&#39;', '\\'), array("\x12", "\x12", "\x12", ''), $_REQUEST['topic']);
 			//	Are we feeling lucky?
 			$query = $smcFunc['db_query']('', "
 				SELECT id_topic
@@ -263,14 +256,12 @@ function cleanRequest()
 			$context['pretty']['db_count']++;
 		}
 
-		// Now make sure the online log gets the right number.
-		$_GET['topic'] = $topic;
-	}
-	else
-		$topic = 0;
+	// Topic should always be an integer
+	$topic = $_GET['topic'] = $_REQUEST['topic'] = (int) $_REQUEST['topic'];
 
 	// Remove our querystring flag so that the noindex meta logic will work
-	unset($_GET['pretty']);
+	if (isset($_GET['pretty']))
+		unset($_GET['pretty']);
 ]]></add>
 		</operation>
 	</file>
@@ -301,6 +292,7 @@ function modifyBoard($board_id, &$boardOptions)
 //	Update the pretty board URLs
 	if (isset($boardOptions['pretty_url']))
 	{
+		global $sourcedir;
 		require_once($sourcedir . '/Subs-PrettyUrls.php');
 
 		//	Get the current board URLs

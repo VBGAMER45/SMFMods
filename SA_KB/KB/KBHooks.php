@@ -316,7 +316,7 @@ function KB_admin_areas(&$admin_areas){
     }
 }
 
-function KB_ob(&$buffer)
+function KB_ob($buffer)
 {
 	global $modSettings;
 

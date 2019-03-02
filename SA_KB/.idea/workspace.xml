@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_TEST_SOURCES" value="false" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="d46739f5-2ae3-4c7e-b472-7dd174f1158f" name="Default" comment="" />
-    <ignored path="SA_KB.iws" />
-    <ignored path=".idea/workspace.xml" />
-    <ignored path=".idea/dataSources.local.xml" />
+    <list default="true" id="c693a2b7-9281-405e-a883-4e31b7332927" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KB.template.php" afterPath="$PROJECT_DIR$/KB.template.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KB/KBEdit_Add.php" afterPath="$PROJECT_DIR$/KB/KBEdit_Add.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KB/KBHooks.php" afterPath="$PROJECT_DIR$/KB/KBHooks.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/UnInstall.php" afterPath="$PROJECT_DIR$/UnInstall.php" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,12 +17,8 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
-  </component>
-  <component name="DaemonCodeAnalyzer">
-    <disable_hints />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
@@ -25,89 +26,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="KBMenu.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBMenu.php">
+      <file leaf-file-name="KBEdit_Add.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBEdit_Add.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2633" max-vertical-offset="3621">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="-1329">
+              <caret line="694" column="63" lean-forward="false" selection-start-line="694" selection-start-column="63" selection-end-line="694" selection-end-column="63" />
               <folding>
-                <marker date="1337276137057" expanded="true" signature="1624:1753" placeholder="SELECT k.kbn..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KBMisc.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBMisc.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3313" max-vertical-offset="4148">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <marker date="1337276137047" expanded="true" signature="1552:1628" placeholder="SELECT rowor..." />
-                <marker date="1337276137047" expanded="true" signature="1923:2011" placeholder="SELECT kbid,..." />
-                <marker date="1337276137047" expanded="true" signature="3980:4102" placeholder="SELECT id_ar..." />
-                <marker date="1337276137047" expanded="true" signature="4988:5071" placeholder="SELECT rate ..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KBPerm.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBPerm.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="4027" max-vertical-offset="4862">
-              <caret line="243" column="11" selection-start-line="243" selection-start-column="11" selection-end-line="243" selection-end-column="11" />
-              <folding>
-                <marker date="1418406703783" expanded="true" signature="1155:1440" placeholder="SELECT m.id_..." />
-                <marker date="1418406703783" expanded="true" signature="1588:1783" placeholder="SELECT c.del..." />
-                <marker date="1418406703783" expanded="true" signature="2582:2852" placeholder="SELECT m.id_..." />
-                <marker date="1418406703783" expanded="true" signature="3000:3180" placeholder="SELECT c.edi..." />
-                <marker date="1418406703783" expanded="true" signature="4007:4124" placeholder="SELECT id_gr..." />
-                <marker date="1418406703783" expanded="true" signature="4438:4513" placeholder="SELECT name ..." />
-                <marker date="1418406703783" expanded="true" signature="4939:5343" placeholder="SELECT c.id_..." />
-                <marker date="1418406703783" expanded="true" signature="5671:5987" placeholder="SELECT c.id_..." />
-                <marker date="1418406703783" expanded="true" signature="6312:6627" placeholder="SELECT c.id_..." />
-                <marker date="1418406703783" expanded="true" signature="7430:7536" placeholder="SELECT kbid,..." />
-                <marker date="1418406703783" expanded="true" signature="8170:8289" placeholder="SELECT id_gr..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KBProfile.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBProfile.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="7669" max-vertical-offset="8517">
-              <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
-              <folding>
-                <marker date="1418406717269" expanded="true" signature="1828:1920" placeholder="SELECT COUNT..." />
-                <marker date="1418406717269" expanded="true" signature="2119:2191" placeholder="SELECT real_..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KBReport.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBReport.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3419" max-vertical-offset="4267">
-              <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
-              <folding>
-                <marker date="1337276137063" expanded="true" signature="1109:1183" placeholder="SELECT title..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KBRSS.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBRSS.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="886" max-vertical-offset="1734">
-              <caret line="101" column="38" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
-              <folding>
-                <marker date="1418406755884" expanded="true" signature="1758:1837" placeholder="SELECT name,..." />
-                <marker date="1418406755884" expanded="true" signature="2335:2787" placeholder="SELECT k.kbn..." />
-                <marker date="1418406755884" expanded="true" signature="3365:3792" placeholder="..." />
+                <marker date="1549604835067" expanded="true" signature="1402:1575" ph="SELECT c.kbi... " />
+                <marker date="1549604835067" expanded="true" signature="3280:3332" ph="SELECT MAX(k... " />
+                <marker date="1549604835067" expanded="true" signature="4530:4711" ph="SELECT c.kbi... " />
+                <marker date="1549604835067" expanded="true" signature="9862:9976" ph="SELECT kbid,... " />
+                <marker date="1549604835067" expanded="true" signature="10571:10788" ph="SELECT c.id_... " />
+                <marker date="1549604835067" expanded="true" signature="12613:12751" ph="SELECT title... " />
+                <marker date="1549604835067" expanded="true" signature="13326:13490" ph="SELECT k.kbn... " />
+                <marker date="1549604835067" expanded="true" signature="14388:14569" ph="SELECT c.kbi... " />
+                <marker date="1549604835067" expanded="true" signature="14895:15000" ph="SELECT thumb... " />
+                <marker date="1549604835067" expanded="true" signature="21875:22056" ph="SELECT thumb... " />
               </folding>
             </state>
           </provider>
@@ -116,63 +50,39 @@
       <file leaf-file-name="KBSearch.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/KB/KBSearch.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="5612" max-vertical-offset="6460">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="-5865">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1337276137059" expanded="true" signature="1467:1640" placeholder="SELECT c.kbi..." />
-                <marker date="1337276137059" expanded="true" signature="3831:3970" placeholder="SELECT real_..." />
+                <marker date="1350348051300" expanded="true" signature="1467:1640" ph="SELECT c.kbi... " />
+                <marker date="1350348051300" expanded="true" signature="3831:3970" ph="SELECT real_... " />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="KBSubs.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KB/KBSubs.php">
+      <file leaf-file-name="KB.english.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB.english.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="15944" max-vertical-offset="16779">
-              <caret line="819" column="39" selection-start-line="819" selection-start-column="39" selection-end-line="819" selection-end-column="39" />
+            <state relative-caret-position="572">
+              <caret line="45" column="54" lean-forward="true" selection-start-line="45" selection-start-column="54" selection-end-line="45" selection-end-column="54" />
               <folding>
-                <marker date="1418406648537" expanded="true" signature="3903:3993" placeholder="SELECT kbnid..." />
-                <marker date="1418406648537" expanded="true" signature="4985:5032" placeholder="DELETE FROM ..." />
-                <marker date="1418406648537" expanded="true" signature="6515:6627" placeholder="SELECT kbid,..." />
-                <marker date="1418406648537" expanded="true" signature="8605:9067" placeholder="SELECT k.kbn..." />
-                <marker date="1418406648537" expanded="true" signature="10164:10333" placeholder="SELECT a.id_..." />
-                <marker date="1418406648537" expanded="true" signature="11975:12347" placeholder="SELECT c.id_..." />
-                <marker date="1418406648537" expanded="true" signature="17593:17863" placeholder="..." />
-                <marker date="1418406648537" expanded="true" signature="18147:18677" placeholder="..." />
-                <marker date="1418406648537" expanded="true" signature="18199:18316" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18235:18310" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18356:18498" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18377:18492" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18537:18654" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18558:18648" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18876:20091" placeholder="..." />
-                <marker date="1418406648537" expanded="true" signature="18918:20075" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="18962:20062" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="19005:20043" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="19056:20027" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="19213:19865" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="19433:19807" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="19877:20008" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="20197:21306" placeholder="..." />
-                <marker date="1418406648537" expanded="true" signature="20239:21290" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="20279:21277" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="20313:21258" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="20364:21242" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="20514:21088" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="20702:21034" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="21092:21223" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="22821:23778" placeholder="..." />
-                <marker date="1418406648537" expanded="true" signature="22863:23762" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="22906:23753" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="22952:23740" placeholder="{&quot;debug&quot;: false...}" />
-                <marker date="1418406648537" expanded="true" signature="23001:23052" placeholder="{&quot;description&quot;: &quot;required&quot;...}" />
-                <marker date="1418406648537" expanded="true" signature="23075:23118" placeholder="{&quot;description&quot;: &quot;&quot;...}" />
-                <marker date="1418406648537" expanded="true" signature="23167:23728" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="23376:23713" placeholder="{...}" />
-                <marker date="1418406648537" expanded="true" signature="25891:25938" placeholder="SELECT id_ar..." />
-                <marker date="1418406648537" expanded="true" signature="26680:26723" placeholder="SELECT id_ca..." />
-                <marker date="1418406648537" expanded="true" signature="27376:27497" placeholder="SELECT c.kbi..." />
+                <marker date="1350348051768" expanded="true" signature="1853:2058" ph="..." />
+                <marker date="1350348051768" expanded="true" signature="2144:2349" ph="..." />
+                <marker date="1350348051768" expanded="true" signature="11185:11479" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBRSS.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBRSS.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1020">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1418442776530" expanded="true" signature="1758:1837" ph="SELECT name,... " />
+                <marker date="1418442776530" expanded="true" signature="2335:2787" ph="SELECT k.kbn... " />
+                <marker date="1418442776530" expanded="true" signature="3365:3792" ph="..." />
               </folding>
             </state>
           </provider>
@@ -181,34 +91,199 @@
       <file leaf-file-name="KBView.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/KB/KBView.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="4048" max-vertical-offset="4896">
-              <caret line="44" column="47" selection-start-line="44" selection-start-column="47" selection-end-line="44" selection-end-column="47" />
+            <state relative-caret-position="-2805">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1337276137062" expanded="true" signature="2411:2762" placeholder="SELECT k.kbn..." />
+                <marker date="1350348051300" expanded="true" signature="2411:2762" ph="SELECT k.kbn... " />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="KBView_All.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="KBView_All.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/KB/KBView_All.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.41606715" vertical-offset="3240" max-vertical-offset="4097">
-              <caret line="233" column="64" selection-start-line="233" selection-start-column="64" selection-end-line="233" selection-end-column="64" />
+            <state relative-caret-position="-3517">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBPerm.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBPerm.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-4296">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1418442776513" expanded="true" signature="1155:1440" ph="SELECT m.id_... " />
+                <marker date="1418442776513" expanded="true" signature="1588:1783" ph="SELECT c.del... " />
+                <marker date="1418442776513" expanded="true" signature="4007:4124" ph="SELECT id_gr... " />
+                <marker date="1418442776513" expanded="true" signature="4438:4513" ph="SELECT name " />
+                <marker date="1418442776513" expanded="true" signature="7430:7536" ph="SELECT kbid,... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBEditer.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBEditer.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-510">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBProfile.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBProfile.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-7590">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1418442776497" expanded="true" signature="1828:1920" ph="SELECT COUNT... " />
+                <marker date="1418442776497" expanded="true" signature="2119:2191" ph="SELECT real_... " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBMisc.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBMisc.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3582">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1350348051285" expanded="true" signature="1552:1628" ph="SELECT rowor... " />
+                <marker date="1350348051285" expanded="true" signature="1923:2011" ph="SELECT kbid,... " />
+                <marker date="1350348051285" expanded="true" signature="3980:4102" ph="SELECT id_ar... " />
+                <marker date="1350348051285" expanded="true" signature="4988:5071" ph="SELECT rate " />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBAdmin.template.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KBAdmin.template.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2038">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <marker date="1350348051706" expanded="true" signature="1028:1084" ph="..." />
+                <marker date="1350348051706" expanded="true" signature="1177:1489" ph="..." />
+                <marker date="1350348051706" expanded="true" signature="1756:1815" ph="..." />
+                <marker date="1350348051706" expanded="true" signature="1911:1992" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="remove_hooks.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/remove_hooks.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package-info.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/package-info.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-219">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="install.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/install.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KBSubs.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/KB/KBSubs.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="4517">
+              <caret line="826" column="56" lean-forward="false" selection-start-line="826" selection-start-column="56" selection-end-line="826" selection-end-column="56" />
+              <folding>
+                <marker date="1418442776480" expanded="true" signature="3903:3993" ph="SELECT kbnid... " />
+                <marker date="1418442776480" expanded="true" signature="4985:5032" ph="DELETE FROM " />
+                <marker date="1418442776480" expanded="true" signature="6515:6627" ph="SELECT kbid,... " />
+                <marker date="1418442776480" expanded="true" signature="8605:9067" ph="SELECT k.kbn... " />
+                <marker date="1418442776480" expanded="true" signature="10164:10333" ph="SELECT a.id_... " />
+                <marker date="1418442776480" expanded="true" signature="11975:12347" ph="SELECT c.id_... " />
+                <marker date="1418442776480" expanded="true" signature="17593:17863" ph="..." />
+                <marker date="1418442776480" expanded="true" signature="18147:18677" ph="..." />
+                <marker date="1418442776480" expanded="true" signature="18199:18316" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18235:18310" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18356:18498" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18377:18492" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18537:18654" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18558:18648" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18876:20091" ph="..." />
+                <marker date="1418442776480" expanded="true" signature="18918:20075" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="18962:20062" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="19005:20043" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="19056:20027" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="19213:19865" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="19433:19807" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="19877:20008" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="20197:21306" ph="..." />
+                <marker date="1418442776480" expanded="true" signature="20239:21290" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="20279:21277" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="20313:21258" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="20364:21242" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="20514:21088" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="20702:21034" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="21092:21223" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="22821:23778" ph="..." />
+                <marker date="1418442776480" expanded="true" signature="22863:23762" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="22906:23753" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="22952:23740" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="23001:23052" ph="{&quot;description&quot;: &quot;required&quot;...}" />
+                <marker date="1418442776480" expanded="true" signature="23075:23118" ph="{&quot;description&quot;: &quot;&quot;...}" />
+                <marker date="1418442776480" expanded="true" signature="23167:23728" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="23376:23713" ph="{...}" />
+                <marker date="1418442776480" expanded="true" signature="25891:25938" ph="SELECT id_ar... " />
+                <marker date="1418442776480" expanded="true" signature="26680:26723" ph="SELECT id_ca... " />
+                <marker date="1418442776480" expanded="true" signature="27376:27497" ph="SELECT c.kbi... " />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
   </component>
-  <component name="FindManager">
-    <FindUsagesManager>
-      <setting name="OPEN_NEW_TAB" value="true" />
-    </FindUsagesManager>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>KB_ob(</find>
+      <find>shd_buffer_replace</find>
+    </findStrings>
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/KB.template.php" />
+        <option value="$PROJECT_DIR$/UnInstall.php" />
+        <option value="$PROJECT_DIR$/KB/KBHooks.php" />
+        <option value="$PROJECT_DIR$/KB/KBEdit_Add.php" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
@@ -216,19 +291,6 @@
     <option name="y" value="-4" />
     <option name="width" value="1928" />
     <option name="height" value="1044" />
-  </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
-    <OptionsSetting value="true" id="Add" />
-    <OptionsSetting value="true" id="Remove" />
-    <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
-    <OptionsSetting value="true" id="Status" />
-    <OptionsSetting value="true" id="Edit" />
-    <ConfirmationsSetting value="0" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
-  </component>
-  <component name="ProjectReloadState">
-    <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -241,9 +303,10 @@
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -251,15 +314,9 @@
               <option name="myItemId" value="SA_KB" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-          </PATH>
-          <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="SA_KB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SA_KB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -269,11 +326,11 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="SA_KB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="sa_kb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -283,658 +340,706 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="SA_KB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="KB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="options.lastSelected" value="coverage" />
+    <property name="options.lastSelected" value="vcs.Subversion" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="FullScreen" value="false" />
+    <property name="js.eslint.eslintPackage" value="" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <TestRunner />
-      <method />
-    </configuration>
-    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" working-dir="">
+      <method />
+    </configuration>
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
       <method />
     </configuration>
     <configuration default="true" type="PhpBehatConfigurationType" factoryName="Behat">
       <BehatRunner />
       <method />
     </configuration>
-    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpSpecConfigurationType" factoryName="PHPSpec">
+      <PhpTestRunnerSettings />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
-      <node-options />
-      <gulpfile />
-      <tasks />
-      <pass-parent-envs>true</pass-parent-envs>
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
       <envs />
       <method />
     </configuration>
-    <list size="0" />
+    <configuration default="true" type="mocha-javascript-test-runner" factoryName="Mocha">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <working-directory />
+      <pass-parent-env>true</pass-parent-env>
+      <envs />
+      <ui />
+      <extra-mocha-options />
+      <test-kind>DIRECTORY</test-kind>
+      <test-directory />
+      <recursive>false</recursive>
+      <method />
+    </configuration>
   </component>
-  <component name="ShelveChangesManager" show_recycled="false" />
-  <component name="SvnConfiguration" cleanupOnStartRun="true">
-    <configuration>C:\Users\Jonathan\AppData\Roaming\Subversion</configuration>
-    <supportedVersion>125</supportedVersion>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration" myUseAcceleration="nothing" cleanupOnStartRun="true">
+    <configuration useDefault="false">C:\Users\Jonathan\AppData\Roaming\Subversion</configuration>
+    <myIsUseDefaultProxy>true</myIsUseDefaultProxy>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="C:\Users\Jonathan\Desktop\forummods\smfmods\free\SA_KB" />
+          <option name="myCopyRoot" value="C:\Users\Jonathan\Desktop\forummods\smfmods\free\SA_KB" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="C:\Users\Jonathan\Desktop\forummods\smfmods\free\SA_KB" />
+          <option name="myCopyRoot" value="C:\Users\Jonathan\Desktop\forummods\smfmods\free\SA_KB" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d46739f5-2ae3-4c7e-b472-7dd174f1158f" name="Default" comment="" />
-      <created>1418406486760</created>
+      <changelist id="c693a2b7-9281-405e-a883-4e31b7332927" name="Default" comment="" />
+      <created>1549603924796</created>
       <option name="number" value="Default" />
-      <updated>1418406486760</updated>
+      <option name="presentableId" value="Default" />
+      <updated>1549603924796</updated>
+      <workItem from="1549603926082" duration="1561000" />
     </task>
     <servers />
   </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="1561000" />
+  </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="-4" width="1928" height="1044" extended-state="0" />
+    <frame x="-4" y="-4" width="1928" height="1044" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25508022" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24973376" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35595107" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34593993" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
-  <component name="Vcs.Log.UiProperties">
-    <option name="RECENTLY_FILTERED_USER_GROUPS">
-      <collection />
-    </option>
-    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-      <collection />
-    </option>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="processedProjectFiles" value="true" />
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="myTodoPanelSettings">
-      <TodoPanelSettings />
-    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/KB/KBMenu.php">
+    <entry file="file://$PROJECT_DIR$/UnInstall.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3621">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137057" expanded="true" signature="1624:1753" placeholder="SELECT k.kbn..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBMisc.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3313" max-vertical-offset="4148">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137047" expanded="true" signature="1552:1628" placeholder="SELECT rowor..." />
-            <marker date="1337276137047" expanded="true" signature="1923:2011" placeholder="SELECT kbid,..." />
-            <marker date="1337276137047" expanded="true" signature="3980:4102" placeholder="SELECT id_ar..." />
-            <marker date="1337276137047" expanded="true" signature="4988:5071" placeholder="SELECT rate ..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBPerm.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4027" max-vertical-offset="4862">
-          <caret line="243" column="11" selection-start-line="243" selection-start-column="11" selection-end-line="243" selection-end-column="11" />
-          <folding>
-            <marker date="1418406703783" expanded="true" signature="1155:1440" placeholder="SELECT m.id_..." />
-            <marker date="1418406703783" expanded="true" signature="1588:1783" placeholder="SELECT c.del..." />
-            <marker date="1418406703783" expanded="true" signature="2582:2852" placeholder="SELECT m.id_..." />
-            <marker date="1418406703783" expanded="true" signature="3000:3180" placeholder="SELECT c.edi..." />
-            <marker date="1418406703783" expanded="true" signature="4007:4124" placeholder="SELECT id_gr..." />
-            <marker date="1418406703783" expanded="true" signature="4438:4513" placeholder="SELECT name ..." />
-            <marker date="1418406703783" expanded="true" signature="4939:5343" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="5671:5987" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="6312:6627" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="7430:7536" placeholder="SELECT kbid,..." />
-            <marker date="1418406703783" expanded="true" signature="8170:8289" placeholder="SELECT id_gr..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBProfile.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7669" max-vertical-offset="8517">
-          <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
-          <folding>
-            <marker date="1418406717269" expanded="true" signature="1828:1920" placeholder="SELECT COUNT..." />
-            <marker date="1418406717269" expanded="true" signature="2119:2191" placeholder="SELECT real_..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBReport.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3419" max-vertical-offset="4267">
-          <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
-          <folding>
-            <marker date="1337276137063" expanded="true" signature="1109:1183" placeholder="SELECT title..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBRSS.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="886" max-vertical-offset="1734">
-          <caret line="101" column="38" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
-          <folding>
-            <marker date="1418406755884" expanded="true" signature="1758:1837" placeholder="SELECT name,..." />
-            <marker date="1418406755884" expanded="true" signature="2335:2787" placeholder="SELECT k.kbn..." />
-            <marker date="1418406755884" expanded="true" signature="3365:3792" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBSearch.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5612" max-vertical-offset="6460">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137059" expanded="true" signature="1467:1640" placeholder="SELECT c.kbi..." />
-            <marker date="1337276137059" expanded="true" signature="3831:3970" placeholder="SELECT real_..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBSubs.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="15944" max-vertical-offset="16779">
-          <caret line="819" column="39" selection-start-line="819" selection-start-column="39" selection-end-line="819" selection-end-column="39" />
-          <folding>
-            <marker date="1418406648537" expanded="true" signature="3903:3993" placeholder="SELECT kbnid..." />
-            <marker date="1418406648537" expanded="true" signature="4985:5032" placeholder="DELETE FROM ..." />
-            <marker date="1418406648537" expanded="true" signature="6515:6627" placeholder="SELECT kbid,..." />
-            <marker date="1418406648537" expanded="true" signature="8605:9067" placeholder="SELECT k.kbn..." />
-            <marker date="1418406648537" expanded="true" signature="10164:10333" placeholder="SELECT a.id_..." />
-            <marker date="1418406648537" expanded="true" signature="11975:12347" placeholder="SELECT c.id_..." />
-            <marker date="1418406648537" expanded="true" signature="17593:17863" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18147:18677" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18199:18316" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18235:18310" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18356:18498" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18377:18492" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18537:18654" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18558:18648" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18876:20091" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18918:20075" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18962:20062" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19005:20043" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19056:20027" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19213:19865" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19433:19807" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19877:20008" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20197:21306" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="20239:21290" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20279:21277" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20313:21258" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20364:21242" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20514:21088" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20702:21034" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="21092:21223" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22821:23778" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="22863:23762" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22906:23753" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22952:23740" placeholder="{&quot;debug&quot;: false...}" />
-            <marker date="1418406648537" expanded="true" signature="23001:23052" placeholder="{&quot;description&quot;: &quot;required&quot;...}" />
-            <marker date="1418406648537" expanded="true" signature="23075:23118" placeholder="{&quot;description&quot;: &quot;&quot;...}" />
-            <marker date="1418406648537" expanded="true" signature="23167:23728" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="23376:23713" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="25891:25938" placeholder="SELECT id_ar..." />
-            <marker date="1418406648537" expanded="true" signature="26680:26723" placeholder="SELECT id_ca..." />
-            <marker date="1418406648537" expanded="true" signature="27376:27497" placeholder="SELECT c.kbi..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBView.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4048" max-vertical-offset="4896">
-          <caret line="44" column="47" selection-start-line="44" selection-start-column="47" selection-end-line="44" selection-end-column="47" />
-          <folding>
-            <marker date="1337276137062" expanded="true" signature="2411:2762" placeholder="SELECT k.kbn..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBView_All.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4097">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="221">
+          <caret line="17" column="54" lean-forward="false" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBMenu.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3621">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137057" expanded="true" signature="1624:1753" placeholder="SELECT k.kbn..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBMisc.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3313" max-vertical-offset="4148">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137047" expanded="true" signature="1552:1628" placeholder="SELECT rowor..." />
-            <marker date="1337276137047" expanded="true" signature="1923:2011" placeholder="SELECT kbid,..." />
-            <marker date="1337276137047" expanded="true" signature="3980:4102" placeholder="SELECT id_ar..." />
-            <marker date="1337276137047" expanded="true" signature="4988:5071" placeholder="SELECT rate ..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBPerm.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4027" max-vertical-offset="4862">
-          <caret line="243" column="11" selection-start-line="243" selection-start-column="11" selection-end-line="243" selection-end-column="11" />
-          <folding>
-            <marker date="1418406703783" expanded="true" signature="1155:1440" placeholder="SELECT m.id_..." />
-            <marker date="1418406703783" expanded="true" signature="1588:1783" placeholder="SELECT c.del..." />
-            <marker date="1418406703783" expanded="true" signature="2582:2852" placeholder="SELECT m.id_..." />
-            <marker date="1418406703783" expanded="true" signature="3000:3180" placeholder="SELECT c.edi..." />
-            <marker date="1418406703783" expanded="true" signature="4007:4124" placeholder="SELECT id_gr..." />
-            <marker date="1418406703783" expanded="true" signature="4438:4513" placeholder="SELECT name ..." />
-            <marker date="1418406703783" expanded="true" signature="4939:5343" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="5671:5987" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="6312:6627" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="7430:7536" placeholder="SELECT kbid,..." />
-            <marker date="1418406703783" expanded="true" signature="8170:8289" placeholder="SELECT id_gr..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBProfile.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7669" max-vertical-offset="8517">
-          <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
-          <folding>
-            <marker date="1418406717269" expanded="true" signature="1828:1920" placeholder="SELECT COUNT..." />
-            <marker date="1418406717269" expanded="true" signature="2119:2191" placeholder="SELECT real_..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBReport.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3419" max-vertical-offset="4267">
-          <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
-          <folding>
-            <marker date="1337276137063" expanded="true" signature="1109:1183" placeholder="SELECT title..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBRSS.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="886" max-vertical-offset="1734">
-          <caret line="101" column="38" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
-          <folding>
-            <marker date="1418406755884" expanded="true" signature="1758:1837" placeholder="SELECT name,..." />
-            <marker date="1418406755884" expanded="true" signature="2335:2787" placeholder="SELECT k.kbn..." />
-            <marker date="1418406755884" expanded="true" signature="3365:3792" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBSearch.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5612" max-vertical-offset="6460">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137059" expanded="true" signature="1467:1640" placeholder="SELECT c.kbi..." />
-            <marker date="1337276137059" expanded="true" signature="3831:3970" placeholder="SELECT real_..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBSubs.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="15944" max-vertical-offset="16779">
-          <caret line="819" column="39" selection-start-line="819" selection-start-column="39" selection-end-line="819" selection-end-column="39" />
-          <folding>
-            <marker date="1418406648537" expanded="true" signature="3903:3993" placeholder="SELECT kbnid..." />
-            <marker date="1418406648537" expanded="true" signature="4985:5032" placeholder="DELETE FROM ..." />
-            <marker date="1418406648537" expanded="true" signature="6515:6627" placeholder="SELECT kbid,..." />
-            <marker date="1418406648537" expanded="true" signature="8605:9067" placeholder="SELECT k.kbn..." />
-            <marker date="1418406648537" expanded="true" signature="10164:10333" placeholder="SELECT a.id_..." />
-            <marker date="1418406648537" expanded="true" signature="11975:12347" placeholder="SELECT c.id_..." />
-            <marker date="1418406648537" expanded="true" signature="17593:17863" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18147:18677" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18199:18316" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18235:18310" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18356:18498" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18377:18492" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18537:18654" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18558:18648" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18876:20091" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18918:20075" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18962:20062" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19005:20043" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19056:20027" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19213:19865" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19433:19807" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19877:20008" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20197:21306" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="20239:21290" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20279:21277" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20313:21258" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20364:21242" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20514:21088" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20702:21034" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="21092:21223" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22821:23778" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="22863:23762" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22906:23753" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22952:23740" placeholder="{&quot;debug&quot;: false...}" />
-            <marker date="1418406648537" expanded="true" signature="23001:23052" placeholder="{&quot;description&quot;: &quot;required&quot;...}" />
-            <marker date="1418406648537" expanded="true" signature="23075:23118" placeholder="{&quot;description&quot;: &quot;&quot;...}" />
-            <marker date="1418406648537" expanded="true" signature="23167:23728" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="23376:23713" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="25891:25938" placeholder="SELECT id_ar..." />
-            <marker date="1418406648537" expanded="true" signature="26680:26723" placeholder="SELECT id_ca..." />
-            <marker date="1418406648537" expanded="true" signature="27376:27497" placeholder="SELECT c.kbi..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBView.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4048" max-vertical-offset="4896">
-          <caret line="44" column="47" selection-start-line="44" selection-start-column="47" selection-end-line="44" selection-end-column="47" />
-          <folding>
-            <marker date="1337276137062" expanded="true" signature="2411:2762" placeholder="SELECT k.kbn..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBView_All.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4097">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KBAdmin.template.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.5" vertical-offset="0" max-vertical-offset="2618">
-          <caret line="13" column="2" selection-start-line="13" selection-start-column="2" selection-end-line="13" selection-end-column="2" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KB.template.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.8846154" vertical-offset="0" max-vertical-offset="23341">
-          <caret line="9" column="72" selection-start-line="9" selection-start-column="72" selection-end-line="9" selection-end-column="72" />
+        <state relative-caret-position="158">
+          <caret line="1242" column="49" lean-forward="true" selection-start-line="1242" selection-start-column="49" selection-end-line="1242" selection-end-column="49" />
+          <folding>
+            <marker date="1549604045567" expanded="true" signature="969:988" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="1388:1462" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="1515:1565" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="2359:2822" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="2387:2814" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="2422:2781" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="3487:3628" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="3508:3620" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="3547:3612" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="4140:4603" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="4168:4595" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="4203:4562" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="4854:5317" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="4882:5309" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="4917:5276" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5475:5543" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5615:5689" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5759:5930" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5772:5836" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5848:5921" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5961:6145" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="5974:6043" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6055:6136" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6176:6364" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6189:6256" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6268:6355" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6397:6583" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6410:6481" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6493:6583" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6518:6583" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6848:7422" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6861:6922" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6934:7413" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="6965:7400" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="7511:7694" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="7524:7585" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="7597:7694" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="8187:8206" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="8207:8313" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="8419:8484" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="8556:8624" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="8688:8853" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="8701:8762" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="8774:8844" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="8895:8914" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="9853:9930" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="10017:10186" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="10651:10664" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="10714:10746" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="10848:10904" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="10871:10904" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11035:11160" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11109:11160" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11152:11160" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11661:11732" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11876:12012" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11888:11947" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="11958:12012" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12211:12466" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12223:12293" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12304:12457" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12542:12681" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12554:12614" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12625:12681" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12835:12960" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12847:12917" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="12928:12960" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="13356:13502" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="13368:13437" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="13448:13502" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="14402:14415" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="14619:14662" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="14821:14867" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="15862:16032" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="16231:16286" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="17498:17529" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="18319:18332" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="18333:18389" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="18351:18383" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="18407:18420" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="18439:18542" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="18511:18542" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="18538:18542" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="19346:19359" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="20516:20979" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="20544:20971" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="20579:20938" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="21168:21181" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="21357:21413" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="21380:21413" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="21545:21671" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="21619:21671" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="21662:21671" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22216:22288" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22476:22646" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22488:22558" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22569:22637" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22688:22827" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22700:22760" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22771:22827" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22941:23064" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="22952:23021" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="23032:23064" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="23451:23598" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="23463:23532" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="23543:23598" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="24448:24461" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="24462:24558" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="25112:25282" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="25481:25536" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="26649:26680" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="27241:27260" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="27389:27408" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="27763:27870" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="27947:28067" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="27977:28067" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="27986:28040" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28044:28067" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28569:28752" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28582:28651" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28663:28743" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28783:28933" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28796:28867" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="28879:28933" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="29021:29177" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="29034:29094" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="29106:29177" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="29252:29271" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="29272:29410" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="29810:29829" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30084:30152" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30228:30349" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30259:30349" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30268:30322" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30326:30349" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30772:30937" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30785:30854" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30866:30928" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30968:31151" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="30981:31052" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="31064:31142" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="31181:31363" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="31194:31254" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="31266:31354" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="31391:31410" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="31411:31551" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32035:32107" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32204:32413" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32295:32413" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32678:34318" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32689:32861" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32712:32849" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32872:34306" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="32923:33102" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="32941:32970" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33019:33049" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="33154:33354" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33172:33201" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33265:33295" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="33405:33591" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33423:33452" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33498:33528" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="33643:33826" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33661:33690" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33736:33766" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="33877:34061" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33895:33924" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="33969:33999" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="34113:34294" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="34131:34160" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="34205:34235" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="34769:35230" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="34780:35218" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="34803:35206" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="35619:35634" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="35684:35696" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="35756:35787" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="35833:35848" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="35898:35910" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="35970:36001" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36044:36059" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36109:36121" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36181:36212" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36257:36272" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36322:36334" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36394:36425" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36467:36482" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36532:36544" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36604:36635" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36677:36692" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="36742:36754" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37165:37180" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37230:37242" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37302:37333" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37379:37394" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37444:37456" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37516:37547" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37590:37605" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37655:37667" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37727:37758" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37803:37818" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37868:37880" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="37940:37971" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38013:38028" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38078:38090" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38150:38181" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38223:38238" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38288:38300" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38715:38730" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38780:38792" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38852:38883" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38929:38944" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="38994:39006" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39066:39097" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39140:39155" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39205:39217" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39277:39308" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39353:39368" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39418:39430" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39490:39521" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39563:39578" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39628:39640" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39700:39731" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39773:39788" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="39838:39850" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="40438:40457" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="40599:40618" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="40732:40751" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="40869:40888" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="41061:41076" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="41151:41163" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="41239:41262" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="42272:42278" ph=" " />
+            <marker date="1549604045567" expanded="true" signature="42596:42602" ph=" " />
+            <marker date="1549604045567" expanded="true" signature="42742:42748" ph=" " />
+            <marker date="1549604045567" expanded="true" signature="43037:43058" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="43617:43623" ph=" " />
+            <marker date="1549604045567" expanded="false" signature="43872:43878" ph=" " />
+            <marker date="1549604045567" expanded="true" signature="44011:44041" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="44042:44327" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="45006:45061" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="45062:45068" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="46050:46136" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="46621:46645" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="46697:46703" ph=" " />
+            <marker date="1549604045567" expanded="true" signature="46704:46710" ph=" " />
+            <marker date="1549604045567" expanded="true" signature="46930:46943" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="47065:47078" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="47470:47585" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="47543:47556" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="48871:48893" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="49568:49677" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="49599:49677" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="49627:49677" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="49659:49677" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="49854:49860" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="49914:49920" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="50127:50187" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="50165:50187" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="50500:50532" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="50525:50532" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="50964:51113" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="50997:51097" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="51145:51201" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="51251:51818" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="52293:52356" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="52491:53288" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="52504:52587" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="52616:52695" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="52742:52777" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="52790:52819" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="52832:52954" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="52968:53062" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="53107:53137" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="53155:53183" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="53193:53278" ph="{...}" />
+            <marker date="1549604045567" expanded="true" signature="53664:53683" ph="..." />
+            <marker date="1549604045567" expanded="false" signature="53913:53932" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="53933:54054" ph="..." />
+            <marker date="1549604045567" expanded="true" signature="53965:53971" ph="©" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KB.english-utf8.php">
+    <entry file="file://$PROJECT_DIR$/KB/KBHooks.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6545">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB.english.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="206.03847" vertical-offset="5697" max-vertical-offset="6545">
-          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="2" />
+        <state relative-caret-position="199">
+          <caret line="318" column="23" lean-forward="true" selection-start-line="318" selection-start-column="23" selection-end-line="318" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/install.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="107.23077" vertical-offset="3213" max-vertical-offset="11747">
-          <caret line="47" column="44" selection-start-line="47" selection-start-column="44" selection-end-line="47" selection-end-column="44" />
+        <state relative-caret-position="-10793">
+          <caret line="44" column="13" lean-forward="false" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KB/KBAdmin.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="408.07693" vertical-offset="10916" max-vertical-offset="11764">
-          <caret line="40" column="24" selection-start-line="40" selection-start-column="24" selection-end-line="40" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBApprove.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="311.30768" vertical-offset="8094" max-vertical-offset="8942">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="-10708">
+          <caret line="50" column="6" lean-forward="true" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
+          <folding>
+            <marker date="1393171775800" expanded="true" signature="2286:2368" ph="DELETE FROM " />
+            <marker date="1393171775800" expanded="true" signature="2614:2742" ph="DELETE FROM " />
+            <marker date="1393171775800" expanded="true" signature="8361:8443" ph="SELECT c.kbi... " />
+            <marker date="1393171775800" expanded="true" signature="8995:9078" ph="SELECT id, t... " />
+            <marker date="1393171775800" expanded="true" signature="9549:9697" ph="SELECT k.kbn... " />
+            <marker date="1393171775800" expanded="true" signature="10392:10475" ph="SELECT c.kbi... " />
+            <marker date="1393171775800" expanded="true" signature="11038:11130" ph="SELECT autho... " />
+            <marker date="1393171775800" expanded="true" signature="11640:11818" ph="SELECT k.kbn... " />
+            <marker date="1393171775800" expanded="true" signature="12526:12609" ph="SELECT c.kbi... " />
+            <marker date="1393171775800" expanded="true" signature="13163:13347" ph="SELECT a.ID_... " />
+            <marker date="1393171775800" expanded="true" signature="13859:14032" ph="SELECT k.kbn... " />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KB/KBCats.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="170.57692" vertical-offset="4673" max-vertical-offset="5508">
-          <caret line="36" column="56" selection-start-line="36" selection-start-column="56" selection-end-line="36" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBEdit_Add.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="243.23077" vertical-offset="6324" max-vertical-offset="13277">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBEditer.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.5" vertical-offset="306" max-vertical-offset="1156">
-          <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBHooks.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6018">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBMain.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="157.5" vertical-offset="4095" max-vertical-offset="4930">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBMenu.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2633" max-vertical-offset="3621">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="-4942">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1337276137057" expanded="true" signature="1624:1753" placeholder="SELECT k.kbn..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBMisc.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3313" max-vertical-offset="4148">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137047" expanded="true" signature="1552:1628" placeholder="SELECT rowor..." />
-            <marker date="1337276137047" expanded="true" signature="1923:2011" placeholder="SELECT kbid,..." />
-            <marker date="1337276137047" expanded="true" signature="3980:4102" placeholder="SELECT id_ar..." />
-            <marker date="1337276137047" expanded="true" signature="4988:5071" placeholder="SELECT rate ..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBPerm.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4027" max-vertical-offset="4862">
-          <caret line="243" column="11" selection-start-line="243" selection-start-column="11" selection-end-line="243" selection-end-column="11" />
-          <folding>
-            <marker date="1418406703783" expanded="true" signature="1155:1440" placeholder="SELECT m.id_..." />
-            <marker date="1418406703783" expanded="true" signature="1588:1783" placeholder="SELECT c.del..." />
-            <marker date="1418406703783" expanded="true" signature="2582:2852" placeholder="SELECT m.id_..." />
-            <marker date="1418406703783" expanded="true" signature="3000:3180" placeholder="SELECT c.edi..." />
-            <marker date="1418406703783" expanded="true" signature="4007:4124" placeholder="SELECT id_gr..." />
-            <marker date="1418406703783" expanded="true" signature="4438:4513" placeholder="SELECT name ..." />
-            <marker date="1418406703783" expanded="true" signature="4939:5343" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="5671:5987" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="6312:6627" placeholder="SELECT c.id_..." />
-            <marker date="1418406703783" expanded="true" signature="7430:7536" placeholder="SELECT kbid,..." />
-            <marker date="1418406703783" expanded="true" signature="8170:8289" placeholder="SELECT id_gr..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBProfile.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7669" max-vertical-offset="8517">
-          <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
-          <folding>
-            <marker date="1418406717269" expanded="true" signature="1828:1920" placeholder="SELECT COUNT..." />
-            <marker date="1418406717269" expanded="true" signature="2119:2191" placeholder="SELECT real_..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBReport.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3419" max-vertical-offset="4267">
-          <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
-          <folding>
-            <marker date="1337276137063" expanded="true" signature="1109:1183" placeholder="SELECT title..." />
+            <marker date="1393171819864" expanded="true" signature="3270:3459" ph="..." />
+            <marker date="1393171819864" expanded="true" signature="3345:3353" ph="..." />
+            <marker date="1393171819864" expanded="true" signature="3441:3449" ph="..." />
+            <marker date="1393171819864" expanded="false" signature="9448:9454" ph=" " />
+            <marker date="1393171819864" expanded="false" signature="9605:9611" ph=" " />
+            <marker date="1393171819864" expanded="false" signature="9611:9617" ph=" " />
+            <marker date="1393171819864" expanded="false" signature="9643:9649" ph=" " />
+            <marker date="1393171819864" expanded="false" signature="9649:9655" ph=" " />
+            <marker date="1393171819864" expanded="false" signature="9839:9845" ph=" " />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KB/KBRSS.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="886" max-vertical-offset="1734">
-          <caret line="101" column="38" selection-start-line="101" selection-start-column="38" selection-end-line="101" selection-end-column="38" />
+        <state relative-caret-position="-1020">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1418406755884" expanded="true" signature="1758:1837" placeholder="SELECT name,..." />
-            <marker date="1418406755884" expanded="true" signature="2335:2787" placeholder="SELECT k.kbn..." />
-            <marker date="1418406755884" expanded="true" signature="3365:3792" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBSearch.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="5612" max-vertical-offset="6460">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1337276137059" expanded="true" signature="1467:1640" placeholder="SELECT c.kbi..." />
-            <marker date="1337276137059" expanded="true" signature="3831:3970" placeholder="SELECT real_..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/KB/KBSubs.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="15944" max-vertical-offset="16779">
-          <caret line="819" column="39" selection-start-line="819" selection-start-column="39" selection-end-line="819" selection-end-column="39" />
-          <folding>
-            <marker date="1418406648537" expanded="true" signature="3903:3993" placeholder="SELECT kbnid..." />
-            <marker date="1418406648537" expanded="true" signature="4985:5032" placeholder="DELETE FROM ..." />
-            <marker date="1418406648537" expanded="true" signature="6515:6627" placeholder="SELECT kbid,..." />
-            <marker date="1418406648537" expanded="true" signature="8605:9067" placeholder="SELECT k.kbn..." />
-            <marker date="1418406648537" expanded="true" signature="10164:10333" placeholder="SELECT a.id_..." />
-            <marker date="1418406648537" expanded="true" signature="11975:12347" placeholder="SELECT c.id_..." />
-            <marker date="1418406648537" expanded="true" signature="17593:17863" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18147:18677" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18199:18316" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18235:18310" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18356:18498" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18377:18492" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18537:18654" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18558:18648" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18876:20091" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="18918:20075" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="18962:20062" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19005:20043" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19056:20027" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19213:19865" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19433:19807" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="19877:20008" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20197:21306" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="20239:21290" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20279:21277" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20313:21258" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20364:21242" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20514:21088" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="20702:21034" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="21092:21223" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22821:23778" placeholder="..." />
-            <marker date="1418406648537" expanded="true" signature="22863:23762" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22906:23753" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="22952:23740" placeholder="{&quot;debug&quot;: false...}" />
-            <marker date="1418406648537" expanded="true" signature="23001:23052" placeholder="{&quot;description&quot;: &quot;required&quot;...}" />
-            <marker date="1418406648537" expanded="true" signature="23075:23118" placeholder="{&quot;description&quot;: &quot;&quot;...}" />
-            <marker date="1418406648537" expanded="true" signature="23167:23728" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="23376:23713" placeholder="{...}" />
-            <marker date="1418406648537" expanded="true" signature="25891:25938" placeholder="SELECT id_ar..." />
-            <marker date="1418406648537" expanded="true" signature="26680:26723" placeholder="SELECT id_ca..." />
-            <marker date="1418406648537" expanded="true" signature="27376:27497" placeholder="SELECT c.kbi..." />
+            <marker date="1418442776530" expanded="true" signature="1758:1837" ph="SELECT name,... " />
+            <marker date="1418442776530" expanded="true" signature="2335:2787" ph="SELECT k.kbn... " />
+            <marker date="1418442776530" expanded="true" signature="3365:3792" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KB/KBView.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="4048" max-vertical-offset="4896">
-          <caret line="44" column="47" selection-start-line="44" selection-start-column="47" selection-end-line="44" selection-end-column="47" />
+        <state relative-caret-position="-2805">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1337276137062" expanded="true" signature="2411:2762" placeholder="SELECT k.kbn..." />
+            <marker date="1350348051300" expanded="true" signature="2411:2762" ph="SELECT k.kbn... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBProfile.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7590">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1418442776497" expanded="true" signature="1828:1920" ph="SELECT COUNT... " />
+            <marker date="1418442776497" expanded="true" signature="2119:2191" ph="SELECT real_... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBMisc.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3582">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1350348051285" expanded="true" signature="1552:1628" ph="SELECT rowor... " />
+            <marker date="1350348051285" expanded="true" signature="1923:2011" ph="SELECT kbid,... " />
+            <marker date="1350348051285" expanded="true" signature="3980:4102" ph="SELECT id_ar... " />
+            <marker date="1350348051285" expanded="true" signature="4988:5071" ph="SELECT rate " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBSubs.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4517">
+          <caret line="826" column="56" lean-forward="false" selection-start-line="826" selection-start-column="56" selection-end-line="826" selection-end-column="56" />
+          <folding>
+            <marker date="1418442776480" expanded="true" signature="3903:3993" ph="SELECT kbnid... " />
+            <marker date="1418442776480" expanded="true" signature="4985:5032" ph="DELETE FROM " />
+            <marker date="1418442776480" expanded="true" signature="6515:6627" ph="SELECT kbid,... " />
+            <marker date="1418442776480" expanded="true" signature="8605:9067" ph="SELECT k.kbn... " />
+            <marker date="1418442776480" expanded="true" signature="10164:10333" ph="SELECT a.id_... " />
+            <marker date="1418442776480" expanded="true" signature="11975:12347" ph="SELECT c.id_... " />
+            <marker date="1418442776480" expanded="true" signature="17593:17863" ph="..." />
+            <marker date="1418442776480" expanded="true" signature="18147:18677" ph="..." />
+            <marker date="1418442776480" expanded="true" signature="18199:18316" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18235:18310" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18356:18498" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18377:18492" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18537:18654" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18558:18648" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18876:20091" ph="..." />
+            <marker date="1418442776480" expanded="true" signature="18918:20075" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="18962:20062" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="19005:20043" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="19056:20027" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="19213:19865" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="19433:19807" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="19877:20008" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="20197:21306" ph="..." />
+            <marker date="1418442776480" expanded="true" signature="20239:21290" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="20279:21277" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="20313:21258" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="20364:21242" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="20514:21088" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="20702:21034" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="21092:21223" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="22821:23778" ph="..." />
+            <marker date="1418442776480" expanded="true" signature="22863:23762" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="22906:23753" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="22952:23740" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="23001:23052" ph="{&quot;description&quot;: &quot;required&quot;...}" />
+            <marker date="1418442776480" expanded="true" signature="23075:23118" ph="{&quot;description&quot;: &quot;&quot;...}" />
+            <marker date="1418442776480" expanded="true" signature="23167:23728" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="23376:23713" ph="{...}" />
+            <marker date="1418442776480" expanded="true" signature="25891:25938" ph="SELECT id_ar... " />
+            <marker date="1418442776480" expanded="true" signature="26680:26723" ph="SELECT id_ca... " />
+            <marker date="1418442776480" expanded="true" signature="27376:27497" ph="SELECT c.kbi... " />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KB/KBView_All.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41606715" vertical-offset="3240" max-vertical-offset="4097">
-          <caret line="233" column="64" selection-start-line="233" selection-start-column="64" selection-end-line="233" selection-end-column="64" />
+        <state relative-caret-position="-3517">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBPerm.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4296">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1418442776513" expanded="true" signature="1155:1440" ph="SELECT m.id_... " />
+            <marker date="1418442776513" expanded="true" signature="1588:1783" ph="SELECT c.del... " />
+            <marker date="1418442776513" expanded="true" signature="4007:4124" ph="SELECT id_gr... " />
+            <marker date="1418442776513" expanded="true" signature="4438:4513" ph="SELECT name " />
+            <marker date="1418442776513" expanded="true" signature="7430:7536" ph="SELECT kbid,... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBEditer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-510">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBEdit_Add.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1329">
+          <caret line="694" column="63" lean-forward="false" selection-start-line="694" selection-start-column="63" selection-end-line="694" selection-end-column="63" />
+          <folding>
+            <marker date="1549604835067" expanded="true" signature="1402:1575" ph="SELECT c.kbi... " />
+            <marker date="1549604835067" expanded="true" signature="3280:3332" ph="SELECT MAX(k... " />
+            <marker date="1549604835067" expanded="true" signature="4530:4711" ph="SELECT c.kbi... " />
+            <marker date="1549604835067" expanded="true" signature="9862:9976" ph="SELECT kbid,... " />
+            <marker date="1549604835067" expanded="true" signature="10571:10788" ph="SELECT c.id_... " />
+            <marker date="1549604835067" expanded="true" signature="12613:12751" ph="SELECT title... " />
+            <marker date="1549604835067" expanded="true" signature="13326:13490" ph="SELECT k.kbn... " />
+            <marker date="1549604835067" expanded="true" signature="14388:14569" ph="SELECT c.kbi... " />
+            <marker date="1549604835067" expanded="true" signature="14895:15000" ph="SELECT thumb... " />
+            <marker date="1549604835067" expanded="true" signature="21875:22056" ph="SELECT thumb... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB/KBSearch.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5865">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1350348051300" expanded="true" signature="1467:1640" ph="SELECT c.kbi... " />
+            <marker date="1350348051300" expanded="true" signature="3831:3970" ph="SELECT real_... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KB.english.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="572">
+          <caret line="45" column="54" lean-forward="true" selection-start-line="45" selection-start-column="54" selection-end-line="45" selection-end-column="54" />
+          <folding>
+            <marker date="1350348051768" expanded="true" signature="1853:2058" ph="..." />
+            <marker date="1350348051768" expanded="true" signature="2144:2349" ph="..." />
+            <marker date="1350348051768" expanded="true" signature="11185:11479" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KBAdmin.template.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2038">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1350348051706" expanded="true" signature="1028:1084" ph="..." />
+            <marker date="1350348051706" expanded="true" signature="1177:1489" ph="..." />
+            <marker date="1350348051706" expanded="true" signature="1756:1815" ph="..." />
+            <marker date="1350348051706" expanded="true" signature="1911:1992" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/remove_hooks.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package-info.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-219">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/install.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

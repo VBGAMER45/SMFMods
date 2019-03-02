@@ -1587,7 +1587,7 @@ function ArticleSystemCopyright()
     $showInfo = ArticlesCheckInfo();
 
     if ($showInfo == true)
-	   echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Articles</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span></div>';
+	   echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Articles</a> by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span></div>';
 
 }
 

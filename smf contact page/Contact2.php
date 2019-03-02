@@ -142,9 +142,9 @@ $m .= "\n";
 
 		// Send email to webmaster
 		if (empty($modSettings['smfcontactpage_email']))
-			sendmail($webmaster_email, $subject, $m,$email);
+			sendmail($webmaster_email, $subject, $m,$email,null,'contact');
 		else 
-			sendmail($modSettings['smfcontactpage_email'], $subject, $m,$email);
+			sendmail($modSettings['smfcontactpage_email'], $subject, $m,$email,null,'contact');
 			
 		// Show template that mail was sent
 		loadtemplate('Contact2');

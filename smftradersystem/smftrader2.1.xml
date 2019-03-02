@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SMFTrader</id>
+<version>1.2</version>
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+$txt['smftrader_title'] = 'SMF Trader System';
+$txt['smftrader_version'] = '1.1';
+$txt['smftrader_admin'] = 'Trader Settings';
+$txt['smftrader_guest'] = 'Guest';
+//Display text strings
+$txt['smftrader_profile'] = 'Trade Count: ';
+//Profile text strings
+$txt['smftrader_submitfeedback'] = 'Submit feedback for ';
+$txt['smftrader_totalfeedback'] = 'Total  Positive Feedback: ';
+$txt['smftrader_positivefeedbackpercent'] = 'Positive Feedback: ';
+$txt['smftrader_positivefeedback'] = '<span style="color: #006400;">Positive Feedback: </span>';
+$txt['smftrader_neutralfeedback'] = 'Neutral Feedback: ';
+$txt['smftrader_negativefeedback'] = '<span style="color: #FF0000;">Negative Feedback: </span>';
+//Start trader.template
+
+//Submit Transaction Rating
+$txt['smftrader_whoareu'] = 'You were the:';
+$txt['smftrader_buyer'] = 'Buyer';
+$txt['smftrader_seller'] = 'Seller';
+$txt['smftrader_trade'] = 'Trade';
+
+
+$txt['smftrader_transaction'] = 'Transaction Rating:';
+$txt['smftrader_positive'] = 'Positive';
+$txt['smftrader_neutral'] = 'Neutral';
+$txt['smftrader_negative'] = 'Negative';
+
+$txt['smftrader_shortcomment'] = 'Short comment on your transaction:';
+$txt['smftrader_shortcomment_small'] = 'Short Comment';
+$txt['smftrader_shortcommentnote'] = 'Max: 100 characters';
+$txt['smftrader_topicurl'] = 'Topic URL:';
+$txt['smftrader_longcomment'] = 'Long comment on your transaction:';
+
+
+//Rating Overview
+$txt['smftrader_allfeedback'] = 'View All Feedback';
+$txt['smftrader_sellerfeedback'] = 'View Seller Feedback';
+$txt['smftrader_buyerfeedback'] = 'View Buyer Feedback';
+$txt['smftrader_tradefeedback'] = 'View Trade Feedback';
+
+//Page Titles
+$txt['smftrader_feedbacktitle'] = 'SMF Trader System - Trader Overview';
+$txt['smftrader_submittitle'] = 'SMF Trader System - Submit Feedback';
+$txt['smftrader_reporttitle'] = 'SMF Trader System - Report Bad Feedback';
+
+
+$txt['smftrader_contact'] = 'Contact';
+$txt['smftrader_viewprofile'] = 'View full profile.';
+$txt['smftrader_sendpm'] = 'Send this user a personal message.';
+//End trader.template
+
+//Permissions
+$txt['permissiongroup_smftrader'] = 'SMF Trader';
+$txt['permissiongroup_simple_smftrader'] = 'SMF Trader';
+$txt['permissionname_smftrader_feedback'] = 'Allow submit feedback';
+$txt['permissionhelp_smftrader_feedback'] = 'Allows the user to submit trader rating feedback.';
+$txt['permissionname_smftrader_deletefeed'] = 'Allow delete ANY feedback by ANY user.';
+$txt['permissionhelp_smftrader_deletefeed'] = 'Allows the user to delete feedback by anyone or anybody.';
+$txt['cannot_smftrader_feedback'] = 'You are not allowed to submit feedback.';
+$txt['cannot_smftrader_deletefeed'] = 'You are not allowed to delete feedback.';
+$txt['permissionname_smftrader_autorating'] = 'Auto Approve Ratings';
+$txt['permissionhelp_smftrader_autorating'] = 'Ratings do not need to wait for approval if this permission is given.';
+
+//END SMF Trader System Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+$txt['smftrader_title'] = 'SMF Trader System';
+$txt['smftrader_version'] = '1.1';
+$txt['smftrader_admin'] = 'Trader Settings';
+$txt['smftrader_guest'] = 'Guest';
+//Display text strings
+$txt['smftrader_profile'] = 'Trade Count: ';
+//Profile text strings
+$txt['smftrader_submitfeedback'] = 'Submit feedback for ';
+$txt['smftrader_totalfeedback'] = 'Total  Positive Feedback: ';
+$txt['smftrader_positivefeedbackpercent'] = 'Positive Feedback: ';
+$txt['smftrader_positivefeedback'] = '<span style="color: #006400;">Positive Feedback: </span>';
+$txt['smftrader_neutralfeedback'] = 'Neutral Feedback: ';
+$txt['smftrader_negativefeedback'] = '<span style="color: #FF0000;">Negative Feedback: </span>';
+//Start trader.template
+
+//Submit Transaction Rating
+$txt['smftrader_whoareu'] = 'You were the:';
+$txt['smftrader_buyer'] = 'Buyer';
+$txt['smftrader_seller'] = 'Seller';
+$txt['smftrader_trade'] = 'Trade';
+
+
+$txt['smftrader_transaction'] = 'Transaction Rating:';
+$txt['smftrader_positive'] = 'Positive';
+$txt['smftrader_neutral'] = 'Neutral';
+$txt['smftrader_negative'] = 'Negative';
+$txt['smftrader_shortcomment_small'] = 'Short Comment';
+$txt['smftrader_shortcomment'] = 'Short comment on your transaction:';
+$txt['smftrader_shortcommentnote'] = 'Max: 100 characters';
+$txt['smftrader_topicurl'] = 'Topic URL:';
+$txt['smftrader_longcomment'] = 'Long comment on your transaction:';
+
+
+//Rating Overview
+$txt['smftrader_allfeedback'] = 'View All Feedback';
+$txt['smftrader_sellerfeedback'] = 'View Seller Feedback';
+$txt['smftrader_buyerfeedback'] = 'View Buyer Feedback';
+$txt['smftrader_tradefeedback'] = 'View Trade Feedback';
+
+//Page Titles
+$txt['smftrader_feedbacktitle'] = 'SMF Trader System - Trader Overview';
+$txt['smftrader_submittitle'] = 'SMF Trader System - Submit Feedback';
+$txt['smftrader_reporttitle'] = 'SMF Trader System - Report Bad Feedback';
+
+
+$txt['smftrader_contact'] = 'Contact';
+$txt['smftrader_viewprofile'] = 'View full profile.';
+$txt['smftrader_sendpm'] = 'Send this user a personal message.';
+//End trader.template
+
+//Permissions
+$txt['permissiongroup_smftrader'] = 'SMF Trader';
+$txt['permissiongroup_simple_smftrader'] = 'SMF Trader';
+$txt['permissionname_smftrader_feedback'] = 'Allow submit feedback';
+$txt['permissionhelp_smftrader_feedback'] = 'Allows the user to submit trader rating feedback.';
+$txt['permissionname_smftrader_deletefeed'] = 'Allow delete ANY feedback by ANY user.';
+$txt['permissionhelp_smftrader_deletefeed'] = 'Allows the user to delete feedback by anyone or anybody.';
+$txt['cannot_smftrader_feedback'] = 'You are not allowed to submit feedback.';
+$txt['cannot_smftrader_deletefeed'] = 'You are not allowed to delete feedback.';
+$txt['permissionname_smftrader_autorating'] = 'Auto Approve Ratings';
+$txt['permissionhelp_smftrader_autorating'] = 'Ratings do not need to wait for approval if this permission is given.';
+
+//END SMF Trader System Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$themedir/Profile.template.php">
+	<operation>
+	<search position="replace"><![CDATA[<dd>', $context['member']['local_time'], '</dd>';]]></search>
+	<add><![CDATA[<dd>', $context['member']['local_time'], '</dd>';
+				
+	// Start SMF Trader System
+	global $sourcedir;
+	include_once $sourcedir . '/Trader2.php';
+		
+		
+	$tradecount = GetTraderCount($context['member']['id']);
+		
+		
+	GetTraderInformation($context['member']['id']);
+	
+	$context['neturalcount'] = 0;
+	$context['pcount'] = 0;
+	$context['ncount'] = 0;
+	foreach($context['trader_mem_data'] as $row)
+	{
+		if ($row['salevalue'] == 0)
+		{
+			$context['pcount'] = $row['total'];
+		}
+		else if ($row['salevalue'] == 2)
+		{
+			$context['ncount'] = $row['total'];
+		}	
+		else if ($row['salevalue'] == 1)
+		{
+			$context['neturalcount'] = $row['total'];
+		}
+		
+	}
+	
+	
+	$context['tradecount_nonetural'] = ($context['pcount'] +  $context['ncount']);
+
+	if ($modSettings['trader_use_pos_neg'])
+		$tradecount = ($context['pcount'] -$context['ncount']);
+
+	echo '
+		
+		
+		<dt class="clear">' . $txt['smftrader_title'] . '</dt>
+		<dt>' . $txt['smftrader_profile'] . '</dt><dd>(<a href="' . $scripturl .  '?action=trader&id=' . $context['member']['id'] . '">' . ($modSettings['trader_use_pos_neg'] ? ($tradecount > 0 ? '+' . $tradecount : $tradecount)  : $tradecount) . '</a>)</dd>
+		<dt>' . $txt['smftrader_positivefeedbackpercent']  . '</dt><dd>' , $context['tradecount_nonetural'] != 0 ? round(($context['pcount'] / $context['tradecount_nonetural']) * 100, 2) : 0 , '%</dd>
+		<dt>' . $txt['smftrader_positivefeedback'] . '</dt><dd>' . $context['pcount'] . '&nbsp;<img src="' .  $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/smiley.png" alt="positive" /></dd>
+		<dt>' . $txt['smftrader_neutralfeedback']  . '</dt><dd>' .  $context['neturalcount'] . '&nbsp;<img src="' . $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.png" alt="neutral" /></dd>
+		<dt>' . $txt['smftrader_negativefeedback']  . '</dt><dd>' .  $context['ncount'] . '&nbsp;<img src="' .  $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.png" alt="negative" /></dd>
+		<dt>' . $txt['smftrader_totalfeedback']  . '</dt><dd>' .  ($context['pcount'] - $context['ncount']) . '</dd>';
+		global $user_info;
+		if ($user_info['id'] != $context['member']['id'])
+		echo '
+		<dt class="clear"><a href="' . $scripturl .  '?action=trader&sa=submit&id=' . $context['member']['id'] . '">' . $txt['smftrader_submitfeedback'] . $context['member']['name'] . '</a></dt>
+	';
+	// END SMF Trader System
+	]]></add>
+	</operation>
+</file>
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="before"><![CDATA[// Show the member's primary group (like 'Administrator') if they have one.
+	if (!empty($message['member']['group']))
+		echo '
+								<li class="membergroup">', $message['member']['group'], '</li>';]]></search>
+		<add><![CDATA[
+		//Start SMF Trader System
+		global $sourcedir;
+		include_once $sourcedir . '/Trader2.php';
+				
+		GetTraderInformation($message['member']['id']);
+		
+		
+		$context['neturalcount'] = 0;
+		$context['pcount'] = 0;
+		$context['ncount'] = 0;
+		foreach($context['trader_mem_data'] as $row)
+		{
+			if ($row['salevalue'] == 0)
+			{
+				$context['pcount'] = $row['total'];
+			}
+			else if ($row['salevalue'] == 2)
+			{
+				$context['ncount'] = $row['total'];
+			}	
+			else if ($row['salevalue'] == 1)
+			{
+				$context['neturalcount'] = $row['total'];
+			}
+
+		}
+		
+
+		
+		if ($modSettings['trader_use_pos_neg'])
+			$tradecount = ($context['pcount'] - $context['ncount']);
+		else
+			$tradecount = $context['pcount'] + $context['ncount'] + $context['neturalcount'];
+		
+		
+
+		// Show the trader info
+				echo '<li>
+					<b>' . $txt['smftrader_profile'] . ' </b>
+					(<a href="' . $scripturl .  '?action=trader&id=' . $message['member']['id'] . '">', $modSettings['trader_use_pos_neg'] ? ($tradecount > 0 ? '+' . $tradecount : $tradecount)  : $tradecount  , '</a>)</li>';
+
+		//END SMF Trader System
+		]]>
+		</add>	
+	</operation>
+</file>
+
+
+
+<file name="$languagedir/Help.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+
+$helptxt['trader_approval'] = "
+When checked: All ratings require approval before being posted unless they are in an autoapproved group found in permissions
+<br /><br />
+When unchecked: All ratings are auto approved since the ratings do not require approval.";
+
+$helptxt['trader_use_pos_neg'] = "When enabled changes the trading count number to be a positive or negative figure based on the number of positive feedback minus the negative feedback. If it is a positive feedback number it results in a + (plus) in front of the number. If it is a negative feedback number results in a - (minus) in front the number.";
+
+//END SMF Trader System Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Help.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+
+$helptxt['trader_approval'] = "
+When checked: All ratings require approval before being posted unless they are in an autoapproved group found in permissions
+<br /><br />
+When unchecked: All ratings are auto approved since the ratings do not require approval.";
+
+$helptxt['trader_use_pos_neg'] = "When enabled changes the trading count number to be a positive or negative figure based on the number of positive feedback minus the negative feedback. If it is a positive feedback number it results in a + (plus) in front of the number. If it is a negative feedback number results in a - (minus) in front the number.";
+
+
+//END SMF Trader System Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+
+
+</modification>

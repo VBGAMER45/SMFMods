@@ -16,10 +16,10 @@ Contents:
 
 2. Requirements   
    Currently SMF Trader System supports SMF Versions
-   SMF 1.1.x and 1.0.x and SMF 2.0.x
+   SMF 2.1.x, SMF 2.0.X, SMF 1.1.
 
 3. License
-   Just keep the textlink to smfhacks.com in the files and the templates.
+   Just keep the textlink to smfhacks.com in the files and the templates or buy copyright removal at https://www.smfhacks.com
 
 4. Contact
    For support and more information visit http://www.smfhacks.com

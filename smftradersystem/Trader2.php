@@ -11,7 +11,10 @@ if (!defined('SMF'))
 
 function tradermain()
 {
-	loadtemplate('Trader2');
+    if (function_exists("set_tld_regex") )
+	    loadtemplate('Trader2.1');
+    else
+        loadtemplate('Trader2');
 
 	// Load the language files
 	if (loadlanguage('Trader') == false)

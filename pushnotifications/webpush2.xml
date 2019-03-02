@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:pushnotifications</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Push Notifications Mod Text Strings
+$txt['webpush_admin'] = 'Push Notifications Settings';
+// END Push Notifications Mod Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Push Notifications Mod Text Strings
+$txt['webpush_admin'] = 'Push Notifications Settings';
+// END Push Notifications Mod Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Subs-Post.php">
+	
+	<operation>
+		<search position="replace"><![CDATA[trackStats(array('posts' => '+'));]]></search>
+		<add><![CDATA[trackStats(array('posts' => '+'));
+		
+		// Push Notifications Mod SMFHacks.com
+		global $sourcedir, $scripturl;
+		require_once($sourcedir . '/webpush2.php');
+		$pushurl = $scripturl . '?topic=' . $topicOptions['id']. ".msg=" . $msgOptions['id'];
+		
+		// Get previous post member id 
+		global $smcFunc;
+		$dbresult = $smcFunc['db_query']('', "SELECT id_member FROM {db_prefix}messages WHERE id_topic = {int:id_topic} AND id_msg <  {int:id_msg} ORDER BY id_msg LIMIT 1"
+		,
+		array(
+			'id_msg' => $msgOptions['id'],
+			'id_topic' => $topicOptions['id']
+		)
+		
+		);
+		$previousMsgRow = $smcFunc['db_fetch_assoc']($dbresult);
+		$smcFunc['db_free_result']($dbresult);
+		
+		$previousMemberID = (int) $previousMsgRow['id_member'];
+		
+		webpush_send($previousMemberID,$posterOptions['id'],$posterOptions['name'],'reply',$pushurl,array('title' =>$msgOptions['subject']));
+		
+		// End Push Notifications Mod SMFHacks.com
+
+		
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="replace"><![CDATA[// Some basic information...
+	if (!isset($context['html_headers']))
+		$context['html_headers'] = '';]]></search>
+			<add><![CDATA[// Some basic information...
+	if (!isset($context['html_headers']))
+		$context['html_headers'] = '';
+	
+	// Push Notifications Mod SMFHacks.com
+	global $modSettings, $user_info;
+
+	if (!empty($modSettings['onesignal_enabled']))
+	$context['html_headers'] .= '
+	<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+	<script>
+	  var OneSignal = window.OneSignal || [];
+	  OneSignal.push(function() {
+	    OneSignal.init({
+	      appId: "' . $modSettings['onesignal_appid'] . '",
+	      autoRegister: false,
+	    });
+	  });
+
+	 OneSignal.push(function() {
+	  OneSignal.sendTags({
+	    uid: "'. $user_info['id'] .'",
+	    uname: "'. $user_info['name'] .'",
+	  });
+	});
+	</script>
+	';
+	// End Push Notifications Mod SMFHacks.com
+			]]></add>
+		</operation>
+</file>
+
+	<file name="$themedir/index.template.php">
+		<operation>
+			<search position="replace"><![CDATA[// Is the forum in maintenance mode?]]></search>
+			<add><![CDATA[// Push Notifications Mod SMFHacks.com
+			echo '<li><div class="onesignal-customlink-container"></div></li>';
+			// End Push Notifications Mod SMFHacks.com
+			
+// Is the forum in maintenance mode?]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Mentions.php" error="skip">
+	<operation>
+		<search position="replace"><![CDATA[if (!empty($mention['email_mentions']) && $approved]]></search>
+		<add><![CDATA[spamProtection('register');
+		
+		// Push Notifications Mod SMFHacks.com
+		global $sourcedir;
+		require_once($sourcedir . '/webpush2.php');
+		$pushurl = $scripturl . '?msg=" . $id_post];
+		webpush_send($mention['id'],$user_info['id'],$user_info['name'],'tag',$pushurl);
+		
+		// End Push Notifications Mod SMFHacks.com
+		
+	if (!empty($mention['email_mentions']) && $approved		
+]]></add>
+	</operation>
+</file>
+
+
+</modification>

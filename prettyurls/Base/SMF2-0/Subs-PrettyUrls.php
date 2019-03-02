@@ -238,7 +238,7 @@ function pretty_update_filters($installing = false)
 	// Build the new .htaccess file
 	$htaccess = '# PRETTYURLS MOD BEGINS
 # Pretty URLs mod
-# http://code.google.com/p/prettyurls/
+# https://www.smfhacks.com/prettyurls-seo-pro.php
 # .htaccess file generated automatically on: ' . date('F j, Y, G:i') . '
 
 RewriteEngine on';

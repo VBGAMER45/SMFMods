@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:maxchildboarddepth</id>
+<version>1.0</version>
+
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Count Child Child Boards Posts Text Strings
+// Text from SMF 2.1.x
+$txt['boardindex_max_depth'] = 'Maximum depth of sub-boards to check for new posts, etc.';
+$helptxt['boardindex_max_depth'] = 'This setting controls how many sub-board levels SMF will check when looking for new posts in sub-boards. It also affects which boards are included when the "Count sub-board\'s posts in parent\'s totals" option is enabled.<br><br>For example, if this is set to 1, a sub-board will only be marked "new" on the index page if the sub-board itself contains a new post. If it is set to 2, the sub-board will be marked "new" if there is a new post in the sub-board or in a sub-sub-board. If it is set to 10, the sub-board will be marked "new" if there is a new post in the sub-board, a sub-sub-board, a sub-sub-sub-board, etc., up to 10 levels deep.<br><br>Large, active forums may want to set this value to a low number in order to conserve server resources.';
+
+// END Count Child Child Boards Posts Text Strings				
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Count Child Child Boards Posts Text Strings
+// Text from SMF 2.1.x
+$txt['boardindex_max_depth'] = 'Maximum depth of sub-boards to check for new posts, etc.';
+$helptxt['boardindex_max_depth'] = 'This setting controls how many sub-board levels SMF will check when looking for new posts in sub-boards. It also affects which boards are included when the "Count sub-board\'s posts in parent\'s totals" option is enabled.<br><br>For example, if this is set to 1, a sub-board will only be marked "new" on the index page if the sub-board itself contains a new post. If it is set to 2, the sub-board will be marked "new" if there is a new post in the sub-board or in a sub-sub-board. If it is set to 10, the sub-board will be marked "new" if there is a new post in the sub-board, a sub-sub-board, a sub-sub-sub-board, etc., up to 10 levels deep.<br><br>Large, active forums may want to set this value to a low number in order to conserve server resources.';
+
+// END Count Child Child Boards Posts Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Subs-BoardIndex.php">
+	<operation>
+	<search position="replace"><![CDATA[AND b.child_level BETWEEN ' . $boardIndexOptions['base_level'] . ' AND ' . ($boardIndexOptions['base_level'] + 1)),]]></search>
+	<add><![CDATA[AND b.child_level BETWEEN ' . $boardIndexOptions['base_level'] . ' AND ' . ($boardIndexOptions['base_level'] + $modSettings['boardindex_max_depth'])),]]></add>
+	</operation>
+	
+	<operation>
+	<search position="replace"><![CDATA[$parent_map[$row_board['id_parent']][1]['topics'] += $row_board['num_topics'];]]></search>
+	<add><![CDATA[$parent_map[$row_board['id_parent']][1]['topics'] += $row_board['num_topics'];
+	
+				/** added by FH in order to also show last posts of grand children at board index **/
+				if($parent_map[$row_board['id_parent']][0]['last_post']['timestamp'] < forum_time(true, $row_board['poster_time'])) 
+				{
+					censorText($row_board['subject']);
+					$row_board['short_subject'] = shorten_subject($row_board['subject'], 24);
+					$this_last_post = array(
+						'id' => $row_board['id_msg'],
+						'time' => $row_board['poster_time'] > 0 ? timeformat($row_board['poster_time']) : $txt['not_applicable'],
+						'timestamp' => forum_time(true, $row_board['poster_time']),
+						'subject' => $row_board['short_subject'],
+						'member' => array(
+							'id' => $row_board['id_member'],
+							'username' => $row_board['poster_name'] != '' ? $row_board['poster_name'] : $txt['not_applicable'],
+							'name' => $row_board['real_name'],
+							'href' => $row_board['poster_name'] != '' && !empty($row_board['id_member']) ? $scripturl . '?action=profile;u=' . $row_board['id_member'] : '',
+							'link' => $row_board['poster_name'] != '' ? (!empty($row_board['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_board['id_member'] . '">' . $row_board['real_name'] . '</a>' : $row_board['real_name']) : $txt['not_applicable'],
+						),
+						'start' => 'msg' . $row_board['new_from'],
+						'topic' => $row_board['id_topic']
+					);
+
+					// Provide the href and link.
+					if ($row_board['subject'] != '')
+					{
+						$this_last_post['href'] = $scripturl . '?topic=' . $row_board['id_topic'] . '.msg' . ($user_info['is_guest'] ? $row_board['id_msg'] : $row_board['new_from']) . (empty($row_board['is_read']) ? ';boardseen' : '') . '#new';
+						$this_last_post['link'] = '<a href="' . $this_last_post['href'] . '" title="' . $row_board['subject'] . '">' . $row_board['short_subject'] . '</a>';
+					}
+					else
+					{
+						$this_last_post['href'] = '';
+						$this_last_post['link'] = $txt['not_applicable'];
+					}
+					
+					$parent_map[$row_board['id_parent']][0]['last_post'] = $this_last_post;
+				}
+				/** end **/
+	
+	]]></add>
+	</operation>	
+	
+</file>
+
+
+<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[		// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+	'',
+		// SMFHacks.com Count Child Child Boards Posts
+			array('int', 'boardindex_max_depth'),
+]]></add>
+		</operation>
+	</file>
+
+</modification>

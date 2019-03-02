@@ -81,7 +81,9 @@ function articles_admin_areas(&$admin_areas)
 function articles_menu_buttons(&$menu_buttons)
 {
 	global $txt, $user_info, $context, $modSettings, $scripturl;
-
+    
+    if (!isset($txt['smfarticles_menu']))
+        $txt['smfarticles_menu'] = 'Articles';
 	#You can use these settings to move the button around or even disable the button and use a sub button
 	#Main menu button options
 	
@@ -98,7 +100,7 @@ function articles_menu_buttons(&$menu_buttons)
 					'title' => $txt['smfarticles_menu'],
 					'href' => $scripturl . '?action=articles',
 					'show' => allowedTo('view_articles'),
-					'icon' => '',
+					'icon' => 'articles.png',
     		
 				    
 			    )	

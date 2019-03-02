@@ -1,3 +1,6 @@
+2.0a
++Added support for SMF 2.1.x
+
 2.0
 +Improved SMF 2.0 style in some areas of the trader system.
 +Listing is now shown on the detail page if you have SMF Classifieds installed.

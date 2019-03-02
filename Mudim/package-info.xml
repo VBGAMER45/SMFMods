@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:mudim</id>
+	<name>Mudim Vietnamese</name>
+	<type>modification</type>
+	<version>1.0</version>
+	
+	<install for="2.0-2.1.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">mudim.xml</modification>
+		<require-file name="mudim-0.9-r162.js" destination="$themedir/scripts" />
+	</install>
+
+	<uninstall for="2.0-2.1.99">
+		<modification type="file" reverse="true">mudim.xml</modification>
+		<remove-file name="$themedir/scripts/mudim-0.9-r162.js" />
+	</uninstall>
+</package-info>

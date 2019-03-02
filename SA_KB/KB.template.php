@@ -1065,9 +1065,8 @@ function template_kb_knowcont() {
 
 				echo'
 				    <div style="position: relative; left:10px;">
-			            <g:plusone size="small"></g:plusone><script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script>
-				        <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">'.$txt['kb_tweet'].'</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-				        <iframe src="http://www.facebook.com/plugins/like.php?href=' , $scripturl , '?action=kb;area=article;cont='.$_GET['cont'].'&amp;layout=button_count&amp;show_faces=true&amp;width=85&amp;action=like&amp;font&amp;colorscheme=light&amp;height=20" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:85px; height:20px;" allowTransparency="true"></iframe>
+				        <a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal">'.$txt['kb_tweet'].'</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+				        <iframe src="https://www.facebook.com/plugins/like.php?href=' , $scripturl , '?action=kb;area=article;cont='.$_GET['cont'].'&amp;layout=button_count&amp;show_faces=true&amp;width=85&amp;action=like&amp;font&amp;colorscheme=light&amp;height=20" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:85px; height:20px;" allowTransparency="true"></iframe>
                     </div>';
 
 					if(!empty($knowl['source'])){
@@ -1362,7 +1361,7 @@ function template_kb_copy() {
 echo '
  <br />
     <div class="smalltext" style="text-align: center;">SA Knowledge Base<br />
-       &copy; 2011 - '.date("Y",mktime()).' <a href="http://www.smfhacks.com">SMFHacks.com</a>
+       &copy; 2011 - '.date("Y").' <a href="https://www.smfhacks.com">SMFHacks.com</a>
     </div>';
 }
 ?>

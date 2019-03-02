@@ -229,6 +229,8 @@ function pretty_rewrite_buffer_fromcache($buffer)
 		$context['pretty']['replace_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"]+\"|\'[^\']+\')~';
 		foreach ($context['pretty']['replace_patterns'] as $pattern)
 			$buffer = preg_replace_callback($pattern, 'pretty_buffer_callback', $buffer);
+			
+		$buffer = str_replace('javascript:self.close()"','javascript:self.close();"',$buffer);	
 	}
 
 	//	Restore the script tags

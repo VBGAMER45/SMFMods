@@ -34,7 +34,7 @@ echo '
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
 
 	<tr>
-		<td class="windowbg">
+		<td class="windowbg2">
 			<table border="0" cellspacing="0" cellpadding="2" width="100%">
 				<tr>
 					<td><b>', $txt['smftrader_title'], '</b></td>
@@ -84,7 +84,7 @@ echo '
 			// Check if allowed to delete comment
 			$deletefeedback = allowedTo('smftrader_deletefeed');
 
-			$styleclass = 'windowbg';
+			$styleclass = 'windowbg2';
 			
 			foreach ($context['trader_feedback'] as $row)
 			{
@@ -169,10 +169,10 @@ echo '
 				echo '</tr>';
 				
 				
-				if ($styleclass == 'windowbg')
+				if ($styleclass == 'windowbg2')
 					$styleclass = 'windowbg2';
 				else 
-					$styleclass = 'windowbg';
+					$styleclass = 'windowbg2';
 				
 			}
 			
@@ -208,7 +208,7 @@ echo '
 	</div>
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
 	<tr>
-		<td class="windowbg">
+		<td class="windowbg2">
 			<form action="' . $scripturl . '?action=trader;sa=submit2" method="post">
 			<table border="0" cellspacing="0" cellpadding="0" width="100%">
 
@@ -311,7 +311,7 @@ echo '
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
 
 	<tr>
-		<td class="windowbg">
+		<td class="windowbg2">
 			<form action="' . $scripturl . '?action=trader;sa=report2" method="post">
 			<table border="0" cellspacing="0" cellpadding="0" width="100%">
 				<tr>
@@ -340,8 +340,6 @@ function template_detail()
 {
 	global $txt, $context, $scripturl;
 
-		
-				
 echo '
 <div class="tborder">
     <div class="cat_bar">
@@ -352,7 +350,7 @@ echo '
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
 
 	<tr>
-		<td class="windowbg">
+		<td class="windowbg2">
 			<table border="0" cellspacing="0" cellpadding="0" width="100%">
 				';
 		
@@ -402,13 +400,16 @@ function template_delete()
 
 echo '
 <div class="tborder">
+    <div class="cat_bar">
+		<h3 class="catbg centertext">
+			', $txt['smftrader_title'],' - ',$txt['smftrader_deletefeedback'], '
+		</h3>
+	</div>
+<div class="tborder">
 <form action="', $scripturl, '?action=trader;sa=delete2" method="post">
 <table border="0" cellpadding="4" cellspacing="1" align="center" class="bordercolor" width="100%">
-	<tr class="titlebg">
-		<td height="26" align="center">',$txt['smftrader_title'],' - ',$txt['smftrader_deletefeedback'],'</td>
-	</tr>
 	<tr>
-		<td class="windowbg">
+		<td class="windowbg2">
 			<table border="0" cellspacing="0" cellpadding="0" width="100%">
 				<tr>
 					<td width="25%" valign="top">' . $txt['smftrader_shortcomment_small'] . '</td>
@@ -450,7 +451,7 @@ echo '
 	</div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 			<b>' . $txt['smftrader_text_settings'] . '</b><br />
 			<form method="POST" action="' . $scripturl . '?action=trader;sa=admin2">
@@ -469,14 +470,14 @@ echo '
 			<br />
 			<form method="post" action="', $scripturl, '?action=trader;sa=bulkactions">
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="tborder">
-				<tr class="catbg">
-				<td class="catbg2" colspan="2" width="5%">',$txt['smftrader_rating'],'</td>
-				<td class="catbg2" width="45%">',$txt['smftrader_comment'],'</td>
-				<td class="catbg2" width="10%">',$txt['smftrader_to'],'</td>
-				<td class="catbg2" width="10%">',$txt['smftrader_from'],'</td>
-				<td class="catbg2" width="10%">',$txt['smftrader_detail'],'</td>
-				<td class="catbg2" width="10%">',$txt['smftrader_date'],'</td>
-				<td class="catbg2" width="10%">' . $txt['smftrader_options'] . '</td>
+				<tr  class="catbg2">
+				<td colspan="2" width="5%">',$txt['smftrader_rating'],'</td>
+				<td width="45%">',$txt['smftrader_comment'],'</td>
+				<td width="10%">',$txt['smftrader_to'],'</td>
+				<td width="10%">',$txt['smftrader_from'],'</td>
+				<td width="10%">',$txt['smftrader_detail'],'</td>
+				<td width="10%">',$txt['smftrader_date'],'</td>
+				<td width="10%">' . $txt['smftrader_options'] . '</td>
 				</tr>';
 
 			// List all ratings waiting for approval
@@ -567,7 +568,7 @@ echo '
 
 			</td>
 		</tr>
-<tr class="windowbg"><td><b>Has SMF Trader System helped you?</b> Then support the developers:<br />
+<tr class="windowbg2"><td><b>Has SMF Trader System helped you?</b> Then support the developers:<br />
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 	<input type="hidden" name="cmd" value="_xclick">
 	<input type="hidden" name="business" value="sales@visualbasiczone.com">
@@ -592,7 +593,7 @@ function TraderSystemCopyright()
 {
 	// Copyright link Removal order form
 	// http://www.smfhacks.com/copyright_removal.php
-	echo '<div align="center"><!--Link must remain or contact me to pay to remove.-->Powered by  <a href="http://www.smfhacks.com" target="blank"><span class="smalltext">SMF Trader System</span></a><!--End Copyright link--></div>';
+	echo '<div align="center"><!--Link must remain or contact me to pay to remove.-->Powered by  <a href="https://www.smfhacks.com" target="blank"><span class="smalltext">SMF Trader System</span></a><!--End Copyright link--></div>';
 
 }
 ?>

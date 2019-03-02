@@ -169,6 +169,13 @@ function pretty_rewrite_buffer_fromcache($buffer)
 
 			if (substr($url_id,0,11) == 'android-app')
 				continue;
+				
+			if (substr($url_id,0,7) == 'http://')
+				continue;
+				
+			if (substr($url_id,0,8) == 'https://')
+				continue;		
+				
 
 			$urls_query[] = $url_id;
 			$uncached_urls[$url_id] = array(

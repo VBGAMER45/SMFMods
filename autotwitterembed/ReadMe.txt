@@ -6,7 +6,7 @@ http://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x
+For SMF 2.1.x and SMF 2.0.x
 
 Auto embeds twitter tweets. Caches twitter status posts to handle many tweets being posted due to api limits of Twitter.
 

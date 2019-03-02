@@ -31,7 +31,7 @@ function discord_admin_areas(&$admin_areas)
 					'file' => 'discord2.php',
 					'function' => 'DiscordMain',
 					'custom_url' => $scripturl . '?action=admin;area=discord;sa=settings;sesc=' . $sc,
-					'icon' => 'server.gif',
+					'icon' =>  (function_exists("set_tld_regex") ? 'discord.png' : 'server.gif'),
 					'permission' => array('admin_forum'),
 					'subsections' => array(
 						'settings' => array($txt['discord_admin']),					),

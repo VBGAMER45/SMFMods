@@ -294,7 +294,7 @@ if ($m_cats == true || $context['article']['ID_MEMBER'] == $user_info['id'])
 		// Show the title
 
 
-		echo '<tr class="windowbg">
+		echo '<tr class="windowbg2">
 				<td><span class="smalltext"><b>',$txt['smfarticles_submittedby2'],'</b>', '
 				<a href="',$scripturl, '?action=profile;u=',$context['article']['ID_MEMBER'],'">', $context['article']['real_name'], '</a>
 		 <b>',$txt['smfarticles_date2'],'</b> ',
@@ -312,13 +312,13 @@ if ($m_cats == true || $context['article']['ID_MEMBER'] == $user_info['id'])
 
 		// Show Summary
 		if (!empty( $context['article']['description']))
-		echo '<tr class="windowbg">
+		echo '<tr class="windowbg2">
 				<td><b>',$txt['smfarticles_summary2'],'</b>',
 		 $context['article']['description'], '</td>
 			</tr>';
 
 		 // Show article
-		echo '<tr class="windowbg">
+		echo '<tr class="windowbg2">
 				<td><hr />
 				',parse_bbc($context['article_page']['pagetext']),'
 				</td>
@@ -349,7 +349,7 @@ if ($m_cats == true || $context['article']['ID_MEMBER'] == $user_info['id'])
 	$ratearticle = allowedTo('rate_articles');
 	if ($modSettings['smfarticles_enableratings'] == 1)
 	{
-		echo '<tr class="windowbg">
+		echo '<tr class="windowbg2">
 				<td><hr />';
 
 
@@ -393,7 +393,7 @@ if ($m_cats == true || $context['article']['ID_MEMBER'] == $user_info['id'])
 
 	if ($modSettings['smfarticles_sharingicons'])
 	{
-		echo '<tr class="windowbg">
+		echo '<tr class="windowbg2">
 				<td><table>
 				<tr>
 
@@ -1138,7 +1138,7 @@ echo '
         </h3>
 </div>
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 <table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
 
@@ -1203,7 +1203,7 @@ echo '
         </h3>
 </div>
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 			',$txt['smfarticles_txt_yourversion'] , $currentVersion, '&nbsp;',$txt['smfarticles_txt_latestversion'],'<span id="lastarticles" name="lastarticles"></span>
 			<br />
@@ -1247,7 +1247,7 @@ echo '
 			</form>
 
 
-<script language="JavaScript" type="text/javascript" src="http://www.smfhacks.com/versions/articles_version.js?t=' . time() .'"></script>
+<script language="JavaScript" type="text/javascript" src="https://www.smfhacks.com/versions/articles_version.js?t=' . time() .'"></script>
 			<script language="JavaScript" type="text/javascript">
 
 			function ArticlesCurrentVersion()
@@ -1278,7 +1278,7 @@ echo '
 		</tr>
 
 		<tr>
-		<td class="windowbg">
+		<td class="windowbg2">
 		<b>Has SMF Articles helped you?</b> Then support the developers:<br />
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 	<input type="hidden" name="cmd" value="_xclick" />
@@ -1296,7 +1296,7 @@ echo '
 			<table>
 				<tr>
 				<td>
-				<a href="http://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="http://www.smfhacks.com/chitika250x250.png" border="0"></a>
+				<a href="http://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="https://www.smfhacks.com/chitika250x250.png" border="0"></a>
 				</td>
 
 				</table>
@@ -1320,7 +1320,7 @@ function template_catperm()
         </h3>
 </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 		<td>
 		<form method="post" action="' , $scripturl , '?action=articles;sa=catperm2">
 		<table align="center" class="tborder">
@@ -1366,7 +1366,7 @@ function template_catperm()
 		</form>
 		</td>
 		</tr>
-			<tr class="windowbg">
+			<tr class="windowbg2">
 			<td>
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
 
@@ -1603,7 +1603,7 @@ function ArticleSystemCopyright()
     $showInfo = ArticlesCheckInfo();
 
     if ($showInfo == true)
-	   echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Articles</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span></div>';
+	   echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Articles</a> by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span></div>';
 
 }
 
@@ -2016,7 +2016,7 @@ echo '
         </h3>
 </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 			<form method="post" action="' , $scripturl , '?action=articles;sa=apprcomall">
 			<input type="submit" value="' , $txt['smfarticles_approveallcomments'] , '" />
@@ -2201,7 +2201,7 @@ function template_import()
 </div>
 <form method="post" action="' , $scripturl , '?action=articles;sa=importtp;doimport">
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
- <tr class="windowbg">
+ <tr class="windowbg2">
  <td colspan="2"  align="center">',$context['import_results'],'</td>
 </tr>
   <tr class="windowbg">
@@ -2213,7 +2213,7 @@ function template_import()
 echo '</select>
     </td>
   </tr>
-  <tr  class="windowbg">
+  <tr  class="windowbg2">
     <td colspan="2" align="center">
     <input type="submit" value="', $txt['smfarticles_txt_importtparticles'], '" name="submit" /></td>
   </tr>
@@ -2230,7 +2230,7 @@ echo '<br />';
 </div>
 <form method="post" action="' , $scripturl , '?action=articles;sa=importfaq;doimport">
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
- <tr class="windowbg">
+ <tr class="windowbg2">
  <td colspan="2" align="center">',$context['import_results'],'</td>
 </tr>
   <tr class="windowbg">
@@ -2242,7 +2242,7 @@ echo '<br />';
 echo '</select>
     </td>
   </tr>
-  <tr class="windowbg">
+  <tr class="windowbg2">
     <td colspan="2" align="center">
     <input type="submit" value="', $txt['smfarticles_txt_importfaqmod'], '" name="submit" /></td>
   </tr>
@@ -2259,10 +2259,10 @@ echo '<br />';
 </div>
 <form method="post" action="' , $scripturl , '?action=articles;sa=importkb;doimport">
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
- <tr class="windowbg">
+ <tr class="windowbg2">
  <td colspan="2" align="center">',$context['import_results'],'</td>
 </tr>
-  <tr class="windowbg">
+  <tr class="windowbg2">
     <td width="50%" align="right"><b>' , $txt['smfarticles_category'] , '</b></td>
     <td width="50%"><select name="catid">';
 		foreach ($context['articles_cat'] as $row)
@@ -2271,7 +2271,7 @@ echo '<br />';
 echo '</select>
     </td>
   </tr>
-  <tr class="windowbg">
+  <tr class="windowbg2">
     <td colspan="2" align="center">
     <input type="submit" value="', $txt['smfarticles_txt_importknowledgebase'], '" name="submit" /></td>
   </tr>
@@ -2306,24 +2306,6 @@ function ShowUserBox($memCommID)
 		if ((empty($settings['hide_post_group']) || $memberContext[$memCommID]['group'] == '') && $memberContext[$memCommID]['post_group'] != '')
 			echo '
 		', $memberContext[$memCommID]['post_group'], '<br />';
-		echo '
-		', $memberContext[$memCommID]['group_stars'], '<br />';
-
-		// Is karma display enabled?  Total or +/-?
-		if ($modSettings['karmaMode'] == '1')
-			echo '
-		<br />
-		', $modSettings['karmaLabel'], ' ', $memberContext[$memCommID]['karma']['good'] - $memberContext[$memCommID]['karma']['bad'], '<br />';
-		elseif ($modSettings['karmaMode'] == '2')
-			echo '
-		<br />
-		', $modSettings['karmaLabel'], ' +', $memberContext[$memCommID]['karma']['good'], '/-', $memberContext[$memCommID]['karma']['bad'], '<br />';
-
-		// Is this user allowed to modify this member's karma?
-		if ($memberContext[$memCommID]['karma']['allow'])
-			echo '
-		<a href="', $scripturl, '?action=modifykarma;sa=applaud;uid=', $memberContext[$memCommID]['id'], ';sesc=', $context['session_id'], '">', $modSettings['karmaApplaudLabel'], '</a>
-		<a href="', $scripturl, '?action=modifykarma;sa=smite;uid=', $memberContext[$memCommID]['id'],  ';sesc=', $context['session_id'], '">', $modSettings['karmaSmiteLabel'], '</a><br />';
 
 		// Show online and offline buttons?
 		if (!empty($modSettings['onlineEnable']) && !$memberContext[$memCommID]['is_guest'])
@@ -2444,7 +2426,7 @@ echo '
         </h3>
   </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 		<td>
 			<a href="' . $scripturl . '?action=articles;sa=addcat">' . $txt['smfarticles_addcat'] . '</a>
 			<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="table_grid">

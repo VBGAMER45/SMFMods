@@ -36,12 +36,12 @@
 		<code>UnInstall.php</code>
 	</uninstall>
 
-	<install for="2.0 - 2.0.99,2.1 Beta 3">
+	<install for="2.0 - 2.0.99,2.1 Beta 3,2.1 RC1">
 		<readme>ReadMe.txt</readme>
 		<modification type="file">reglinks.xml</modification>
 	</install>
 	
-	<uninstall for="2.0 - 2.0.99,2.1 Beta 3">
+	<uninstall for="2.0 - 2.0.99,2.1 Beta 3,2.1 RC1">
 		<modification type="file" reverse="true">reglinks.xml</modification>
 		<code>UnInstall.php</code>
 	</uninstall>

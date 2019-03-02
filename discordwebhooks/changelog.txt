@@ -1,3 +1,6 @@
+1.0.1a
++Added support for SMF 2.1.x
+
 1.0.1
 !Fixed entity issue with discord message posts thanks to moyack
 +Added (can_url) variable to handle canonical url thanks to moyack

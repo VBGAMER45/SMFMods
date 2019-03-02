@@ -692,6 +692,7 @@ function kb_checkAttachment(){
         {
 	        if(!getimagesize($_FILES[$fieldname]['tmp_name'][$key])){
 		        $kb_error_notimg = $_FILES[$fieldname]['name'][$key].' '.$txt['kb_attach_error9'].'';
+		        @unlink($_FILES[$fieldname]['tmp_name'][$key]);
 				fatal_error($kb_error_notimg, false);	
 	        }
         }
