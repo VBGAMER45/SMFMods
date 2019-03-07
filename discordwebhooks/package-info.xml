@@ -42,6 +42,7 @@
 		<remove-file name="$themedir/languages/discord.english-utf8.php" />
 		<remove-file name="$sourcedir/discordhooks.php"/>
 		<modification type="file" reverse="true">discord2.xml</modification>
+		<code>discordinstall2.php</code>
 	</uninstall>
 	
 
@@ -72,6 +73,7 @@
 		<remove-file name="$themedir/languages/discord.english-utf8.php" />
 		<remove-file name="$sourcedir/discordhooks.php"/>
 		<modification type="file" reverse="true">discord2.xml</modification>
+		<code>discordinstall2.php</code>
 	</uninstall>
 	
 	

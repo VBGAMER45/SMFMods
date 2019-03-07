@@ -22,7 +22,7 @@ function GPDR_Main()
 {
 	global $boardurl, $modSettings, $boarddir, $currentVersion, $context;
 
-	$currentVersion = '1.0.4';
+	$currentVersion = '1.0.5b';
 
 	// Load the language files
     if (loadlanguage('gpdr') == false)

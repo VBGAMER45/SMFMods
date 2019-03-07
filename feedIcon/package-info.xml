@@ -30,4 +30,15 @@
 		<code>UnInstall.php</code>
 	</uninstall>
 
+
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">feed2.1.xml</modification>
+		<require-file name="rss.png" destination="$themedir/images" />
+	</install>
+
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<modification type="file" reverse="true">feed2.1.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
 </package-info>

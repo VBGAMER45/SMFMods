@@ -1,11 +1,11 @@
 *******************************
 Feed Icon Board Index
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x AND SMF 1.1.x
+For SMF 2.1.x, SMF 2.0.x AND SMF 1.1.x
 
 Adds a RSS Feed Icon to the Board Index for each board. Allows users to easly subscribe to an RSS feed.
 

@@ -5,7 +5,7 @@ https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x and SMF 1.1.x
+For SMF 2.1.x, SMF 2.0.x and SMF 1.1.x
 
 Warning does not guarantee GDPR compliance. No warranty provided.
 

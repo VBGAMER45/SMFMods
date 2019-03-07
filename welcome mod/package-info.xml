@@ -5,7 +5,7 @@
 	<id>vbgamer45:WelcomeTopic</id>
 	<name>Welcome Topic Mod</name>
 	<type>modification</type>
-	<version>2.3</version>
+	<version>2.3a</version>
 
 	<install for="1.1 - 1.1.99">
 		<redirect url="?action=welcome">redirect.txt</redirect>
@@ -102,5 +102,43 @@
 		<modification type="file" reverse="true">WelcomeTopic2rc4.xml</modification>
 		<code>UnInstall.php</code>
 	</uninstall>
-	
+
+
+
+
+
+
+
+
+	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">WelcomeTopic2.1.xml</modification>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="welcomeHooks.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.1.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="welcome.png" destination="$imagesdir/admin" />
+		<code>WelcomeTopicsql2.php</code>
+		<code>dohooks.php</code>
+	</install>
+	<upgrade for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
+		<require-file name="welcomeHooks.php" destination="$sourcedir" />
+		<require-file name="WelcomeTopic2.1.template.php" destination="$themedir" />
+		<require-file name="WelcomeTopic.english.php" destination="$themedir/languages" />
+		<require-file name="WelcomeTopic.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="welcome.png" destination="$imagesdir/admin" />
+		<code>WelcomeTopicsql2.php</code>
+		<code>dohooks.php</code>
+	</upgrade>
+	<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<modification type="file" reverse="true">WelcomeTopic2.1.xml</modification>
+		<code>dohooks.php</code>
+		<code>UnInstall.php</code>
+	</uninstall>
+
 </package-info>

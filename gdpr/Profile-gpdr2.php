@@ -23,9 +23,14 @@ function GPDR_ExportProfile($memID)
 {
 	global $scripturl, $txt, $db_prefix, $context, $smcFunc, $user_info, $sourcedir, $modSettings;
 
+    if (empty($context['profile_fields']))
+            $context['profile_fields'] = array();
+
 	// Load the language files
 	if (loadlanguage('gpdr') == false)
 		loadLanguage('gpdr','english');
+
+
 
 
 	$txt['gpdr_txt_user_exportdata2'] = str_replace("%link",$scripturl . '?action=gpdr;sa=exportdata;type=profile&u=' . $context['id_member'], $txt['gpdr_txt_user_exportdata2']);

@@ -4,7 +4,7 @@ GDPR Helper
 Version 1.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2018 SMFHacks.com
+Copyright 2018-2019 SMFHacks.com
 
 ############################################
 License Information:

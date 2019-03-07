@@ -3,7 +3,7 @@
 Welcome Topic Mod
 Version 2.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 if (!defined('SMF'))
@@ -16,7 +16,10 @@ function WelcomeTopic()
 	isAllowedTo('admin_forum');
 	
 	// Load the WelcomeTopic template
-	loadtemplate('WelcomeTopic2');
+    if (function_exists("set_tld_regex"))
+	    loadtemplate('WelcomeTopic2.1');
+    else
+        loadtemplate('WelcomeTopic2');
 	
 	// Load the language files
 	if (loadlanguage('WelcomeTopic') == false)
@@ -174,7 +177,7 @@ function AddTopic2()
 	
 	
 	// If we came from WYSIWYG then turn it back into BBC regardless.
-	if (!empty($_REQUEST['topicbody_mode']) && isset($_REQUEST['topicbody']))
+	if (!empty($_REQUEST['topicbody_mode']) && isset($_REQUEST['topicbody']) && !function_exists("set_tld_regex"))
 	{
 		require_once($sourcedir . '/Subs-Editor.php');
 
@@ -269,7 +272,7 @@ function EditTopic2()
 	$id = (int) $_REQUEST['id'];
 	
 	// If we came from WYSIWYG then turn it back into BBC regardless.
-	if (!empty($_REQUEST['topicbody_mode']) && isset($_REQUEST['topicbody']))
+	if (!empty($_REQUEST['topicbody_mode']) && isset($_REQUEST['topicbody']) && !function_exists("set_tld_regex"))
 	{
 		require_once($sourcedir . '/Subs-Editor.php');
 

@@ -5,7 +5,7 @@ http://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x And SMF 1.1.x and SMF 1.0.x
+For SMF 2.1.x , SMF 2.0.x, SMF 1.1.x and SMF 1.0.x
 
 Addeds a new topic button on viewing a topic.
 Works for default theme only!

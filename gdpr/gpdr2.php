@@ -4,7 +4,7 @@ GDPR Helper
 Version 1.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2018 SMFHacks.com
+Copyright 2018=2019 SMFHacks.com
 
 ############################################
 License Information:
@@ -22,7 +22,7 @@ function GPDR_Main()
 {
 	global $boardurl, $modSettings, $boarddir, $currentVersion, $context;
 
-	$currentVersion = '1.0.4';
+	$currentVersion = '1.0.5b';
 
 	// Load the language files
     if (loadlanguage('gpdr') == false)
@@ -62,8 +62,10 @@ function GPDR_AdminPrivacyPolicy()
 
 	isAllowedTo('admin_forum');
 
-	loadTemplate('gpdr2');
-
+	if (function_exists("set_tld_regex"))
+	    loadTemplate('gpdr2.1');
+    else
+        loadTemplate('gpdr2');
 
 	$context['sub_template']  = 'privacypolicy_admin';
 
@@ -109,7 +111,7 @@ function GPDR_AdminPrivacyPolicy2()
 	isAllowedTo('admin_forum');
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
-	if (!empty($_REQUEST['privacypolicy_mode']) && isset($_REQUEST['privacypolicy']))
+	if (!empty($_REQUEST['privacypolicy_mode']) && isset($_REQUEST['privacypolicy']) && !function_exists("set_tld_regex"))
 	{
 		require_once($sourcedir . '/Subs-Editor.php');
 
@@ -150,7 +152,10 @@ function GPDR_AdminSettings()
 	global $context,  $txt;
 	isAllowedTo('admin_forum');
 
-	loadTemplate('gpdr2');
+	if (function_exists("set_tld_regex"))
+	    loadTemplate('gpdr2.1');
+    else
+        loadTemplate('gpdr2');
 
 	$context['page_title'] = $txt['gpdr_title'] . ' - ' . $txt['gpdr_text_settings'];
 
@@ -192,7 +197,10 @@ function GPDR_ViewPrivacyPolicy()
 	global $txt, $context, $boarddir, $modSettings, $webmaster_email, $mbname, $smcFunc, $user_info, $settings;
 
 
-	loadTemplate('gpdr2');
+	if (function_exists("set_tld_regex"))
+	    loadTemplate('gpdr2.1');
+    else
+        loadTemplate('gpdr2');
 
 	$data = file_get_contents($boarddir . "/privacypolicy.txt");
 
@@ -243,7 +251,10 @@ function GPDR_ReConfirmRegisterAgreement()
 	global $txt, $context, $boarddir, $modSettings, $webmaster_email, $mbname, $smcFunc, $user_info, $settings;
 
 
-	loadTemplate('gpdr2');
+	if (function_exists("set_tld_regex"))
+	    loadTemplate('gpdr2.1');
+    else
+        loadTemplate('gpdr2');
 
 	$data = file_get_contents($boarddir . "/agreement.txt");
 
@@ -340,7 +351,7 @@ function GPDR_CleanMemberInfo($users = array())
 
 function GPDR_ExportData()
 {
-    global $smcFunc, $user_info, $txt;
+    global $smcFunc, $user_info, $txt, $context;
 
     is_not_guest();
 
@@ -351,41 +362,79 @@ function GPDR_ExportData()
 
     $type = $_REQUEST['type'];
 
+    if (empty($context['profile_fields']))
+            $context['profile_fields'] = array();
+
+
     // Check what data we are exporting
     if ($type == 'profile')
     {
 
-        $result = $smcFunc['db_query']('', "
-				SELECT
-				id_member,member_name,real_name,email_address,date_registered,posts,gender,personal_text,
-				birthdate,website_title,website_url,signature
-				 FROM {db_prefix}members
-				WHERE ID_MEMBER =  $memID
-                ");
-        $row = $smcFunc['db_fetch_assoc']($result);
+        $data = '';
+        if (function_exists("set_tld_regex"))
+        {
+            $result = $smcFunc['db_query']('', "
+                    SELECT
+                    id_member,member_name,real_name,email_address,date_registered,posts,personal_text,
+                    birthdate,website_title,website_url,signature
+                     FROM {db_prefix}members
+                    WHERE ID_MEMBER =  $memID
+                    ");
+            $row = $smcFunc['db_fetch_assoc']($result);
 
-			$data = $txt['gpdr_profile_memid']  . ',' .  $txt['gpdr_profile_username'] . ','. $txt['gpdr_profile_displayname']  . ',';
-			$data .= $txt['gpdr_profile_email'] . ',' . $txt['gpdr_profile_totalposts'] . ',' . $txt['gpdr_profile_dateregistered']  . ',' . $txt['gpdr_profile_gender']  . ',';
-			$data .=  $txt['gpdr_profile_birthdate']  . ',' . $txt['gpdr_profile_personaltext'] . ',' . $txt['gpdr_profile_websitetitle'] . ',' . $txt['gpdr_profile_websiteurl'] . ',' . $txt['gpdr_profile_signature']  . "\r\n";
-            //new line
+                $data = $txt['gpdr_profile_memid']  . ',' .  $txt['gpdr_profile_username'] . ','. $txt['gpdr_profile_displayname']  . ',';
+                $data .= $txt['gpdr_profile_email'] . ',' . $txt['gpdr_profile_totalposts'] . ',' . $txt['gpdr_profile_dateregistered']  . ',';
+                $data .=  $txt['gpdr_profile_birthdate']  . ',' . $txt['gpdr_profile_personaltext'] . ',' . $txt['gpdr_profile_websitetitle'] . ',' . $txt['gpdr_profile_websiteurl'] . ',' . $txt['gpdr_profile_signature']  . "\r\n";
 
-            $row['gender'] =  ($row['gender']== 2 ? $txt['female'] : ($row['gender'] == 1 ? $txt['male'] : ''));
 
-			$data .= '"' . $row['id_member'] . '",';
-			$data .= '"' . $row['member_name'] . '",';
-			$data .= '"' . GPDR_FormatCSVData($row['real_name']) . '",';
-			$data .= '"' . $row['email_address'] . '",';
-			$data .= '"' . $row['posts'] . '",';
-			$data .= '"' . date("F j, Y, g:i a",$row['date_registered']) . '",';
-			$data .= '"' . $row['gender'] . '",';
-			$data .= '"' . $row['birthdate'] . '",';
-			$data .= '"' . GPDR_FormatCSVData($row['personal_text']) . '",';
-			$data .= '"' . GPDR_FormatCSVData($row['website_title']) . '",';
-			$data .= '"' . $row['website_url'] . '",';
-			$data .= '"' . GPDR_FormatCSVData($row['signature']) . '",';
+                $data .= '"' . $row['id_member'] . '",';
+                $data .= '"' . $row['member_name'] . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['real_name']) . '",';
+                $data .= '"' . $row['email_address'] . '",';
+                $data .= '"' . $row['posts'] . '",';
+                $data .= '"' . date("F j, Y, g:i a",$row['date_registered']) . '",';
+                $data .= '"' . $row['birthdate'] . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['personal_text']) . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['website_title']) . '",';
+                $data .= '"' . $row['website_url'] . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['signature']) . '",';
 
-			$data .= "\r\n";
+                $data .= "\r\n";
+        }
+        else
+        {
 
+
+
+            $result = $smcFunc['db_query']('', "
+                    SELECT
+                    id_member,member_name,real_name,email_address,date_registered,posts,gender,personal_text,
+                    birthdate,website_title,website_url,signature
+                     FROM {db_prefix}members
+                    WHERE ID_MEMBER =  $memID
+                    ");
+            $row = $smcFunc['db_fetch_assoc']($result);
+
+                $data = $txt['gpdr_profile_memid']  . ',' .  $txt['gpdr_profile_username'] . ','. $txt['gpdr_profile_displayname']  . ',';
+                $data .= $txt['gpdr_profile_email'] . ',' . $txt['gpdr_profile_totalposts'] . ',' . $txt['gpdr_profile_dateregistered']  . ',' . $txt['gpdr_profile_gender']  . ',';
+                $data .=  $txt['gpdr_profile_birthdate']  . ',' . $txt['gpdr_profile_personaltext'] . ',' . $txt['gpdr_profile_websitetitle'] . ',' . $txt['gpdr_profile_websiteurl'] . ',' . $txt['gpdr_profile_signature']  . "\r\n";
+                          $row['gender'] =  ($row['gender']== 2 ? $txt['female'] : ($row['gender'] == 1 ? $txt['male'] : ''));
+
+                $data .= '"' . $row['id_member'] . '",';
+                $data .= '"' . $row['member_name'] . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['real_name']) . '",';
+                $data .= '"' . $row['email_address'] . '",';
+                $data .= '"' . $row['posts'] . '",';
+                $data .= '"' . date("F j, Y, g:i a",$row['date_registered']) . '",';
+                $data .= '"' . $row['gender'] . '",';
+                $data .= '"' . $row['birthdate'] . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['personal_text']) . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['website_title']) . '",';
+                $data .= '"' . $row['website_url'] . '",';
+                $data .= '"' . GPDR_FormatCSVData($row['signature']) . '",';
+
+                $data .= "\r\n";
+        }
 
 			header("Pragma: no-cache");
 			header('Content-Disposition: attachment; filename="MyProfile.csv";');

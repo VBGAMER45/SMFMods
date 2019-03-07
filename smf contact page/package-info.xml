@@ -5,7 +5,7 @@
 	<id>vbgamer45:ContactPage</id>
 	<name>Contact Page</name>
 	<type>modification</type>
-	<version>5.0.1</version>
+	<version>5.0.1a</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
 		<readme>ReadMe.txt</readme>
@@ -44,5 +44,26 @@
 			<modification type="file" reverse="true">contact2.xml</modification>
 			<code>UnInstall.php</code>
 	</uninstall>
+
+
+
+
+
+	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">contact2.1.xml</modification>
+		    <require-file name="contactHooks.php" destination="$sourcedir" />
+			<require-file name="Contact2.php" destination="$sourcedir" />
+			<require-file name="Contact2.template.php" destination="$themedir" />
+			<require-file name="contact.png" destination="$imagesdir" />
+			<code>dohooks.php</code>
+		</install>
+
+		<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+			<modification type="file" reverse="true">contact2.1.xml</modification>
+			<code>dohooks.php</code>
+			<code>UnInstall.php</code>
+	</uninstall>
+
 
 </package-info>

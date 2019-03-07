@@ -5,7 +5,7 @@ https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x
+For SMF 2.1.x and SMF 2.0.x
 
 Adds discord web hooks for registration and posts on a forum
 

@@ -1,11 +1,11 @@
 *******************************
 Welcome Topic Mod
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x and SMF 1.1.x
+For SMF 2.1.x, SMF 2.0.x and SMF 1.1.x
 
 This mod creates a new topic when a user registers on the forum.
 If the member requires activation the topic will be created at that time or after the member is approved.
@@ -32,4 +32,4 @@ Download System Pro
 
 
 SMFHacks package server address is:
-http://www.smfhacks.com
+https://www.smfhacks.com

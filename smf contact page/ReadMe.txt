@@ -5,7 +5,7 @@ https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x and SMF 1.1.x and 1.0.x
+For SMF 2.1.x SMF 2.0.x and SMF 1.1.x and 1.0.x
 
 Adds a contact page to the default theme for SMF.
 
@@ -24,4 +24,4 @@ Ad Seller Pro
 
 
 SMFHacks package server address is:
-http://www.smfhacks.com
+https://www.smfhacks.com

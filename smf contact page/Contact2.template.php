@@ -49,7 +49,7 @@ echo '
 	
 echo '
   <tr>
-    <td width="28%" class="windowbg2"><span class="gen"><b>',$txt['smfcontact_emailaddress'],'</b></span></td>
+    <td width="28%" class="windowbg2"><b>',$txt['smfcontact_emailaddress'],'</b></td>
     <td width="72%" class="windowbg2"><input type="text" name="email" size="64" /></td>
   </tr>
   <tr>
@@ -61,13 +61,42 @@ echo '
 </form>
 ';
 
-	// Copyright link requird unless removal purchase is made
+	// Copyright link required unless removal purchase is made https://www.smfhacks.com/copyright_removal.php
 	echo '<br /><div align="center"><span class="smalltext">Powered by <a href="https://www.smfhacks.com" target="blank">Contact Page</a></span></div>';
 }
 
 function template_send()
 {
 	global $scripturl, $txt;
+
+
+    if (function_exists("set_tld_regex"))
+    {
+echo '
+<div>
+    <div class="cat_bar">
+		<h3 class="catbg centertext">
+        ',  $txt['smfcontact_messagesent'], '
+        </h3>
+  </div>
+
+
+	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="table_grid">
+
+		<tr class="windowbg2">
+			<td  class="centertext" style="padding: 3ex;">
+				',$txt['smfcontact_messagesent_click'],'<a href="', $scripturl, '">',$txt['smfcontact_messagesent_return'] ,'
+			</td>
+		</tr>
+	</table>
+</div>';
+    }
+    else
+    {
+
+
+
+
 echo '
 <div>
 	<table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
@@ -75,7 +104,7 @@ echo '
 			<td>',$txt['smfcontact_messagesent'],'</td>
 		</tr>
 
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td style="padding: 3ex;">
 				',$txt['smfcontact_messagesent_click'],'<a href="', $scripturl, '">',$txt['smfcontact_messagesent_return'] ,'
 			</td>
@@ -83,7 +112,11 @@ echo '
 	</table>
 </div>';
 
-	// Copyright link requird unless removal purchase is made
+    }
+
+
+
+	// Copyright link required unless removal purchase is made https://www.smfhacks.com/copyright_removal.php
 	echo '<br /><div align="center"><span class="smalltext">Powered by <a href="https://www.smfhacks.com" target="blank">Contact Page</a> by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span> </div>';
 }
 ?>

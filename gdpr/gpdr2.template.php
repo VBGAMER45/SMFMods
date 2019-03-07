@@ -189,7 +189,7 @@ echo '
 <tr class="windowbg"><td>Need more features? Find more about <a href="https://www.smfhacks.com/gdprpro.php" target="_blank">GDPR Pro by clicking here</a><br /><br />
 
 
-				<b>Has GPDR Helper helped you?</b> Then support the developers:<br />
+				<b>Has GDPR Helper helped you?</b> Then support the developers:<br />
 				    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 					<input type="hidden" name="cmd" value="_xclick">
 					<input type="hidden" name="business" value="sales@visualbasiczone.com">

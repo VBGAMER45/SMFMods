@@ -5,7 +5,7 @@
 	<id>vbgamer45:gpdrhelper</id>
 	<name>GDPR Helper</name>
 	<type>modification</type>
-	<version>1.0.5</version>
+	<version>1.0.5c</version>
 
 	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 		<redirect url="?action=admin;area=gpdr;sa=settings">redirect.txt</redirect>
@@ -80,6 +80,55 @@
 	</uninstall>
 
 
+	
+	
+	
+	
+	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<redirect url="?action=admin;area=gpdr;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">gpdr2.1.xml</modification>
+		<require-file name="gpdr2.php" destination="$sourcedir" />
+		<require-file name="Profile-gpdr2.php" destination="$sourcedir" />
+		<require-file name="gdprHooks.php" destination="$sourcedir" />
+		<require-file name="gpdr2.1.template.php" destination="$themedir" />
+		<require-file name="gpdr.english.php" destination="$themedir/languages" />
+		<require-file name="gpdr.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="privacy_template.txt" destination="$boarddir" />
+		<require-file name="privacypolicy.txt" destination="$boarddir" />
+		<require-file name="gdpr.png" destination="$imagesdir/admin" />
+		<require-file name="gdpr.png" destination="$imagesdir" />
+		<code>gpdrinstall2.php</code>
+		<code>dohooks.php</code>
+	</install>
+	
+	<upgrade for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<redirect url="?action=admin;area=gpdr;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="gpdr2.php" destination="$sourcedir" />
+		<require-file name="Profile-gpdr2.php" destination="$sourcedir" />
+		<require-file name="gdprHooks.php" destination="$sourcedir" />
+		<require-file name="gpdr2.template.php" destination="$themedir" />
+		<require-file name="gpdr.english.php" destination="$themedir/languages" />
+		<require-file name="gpdr.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="gdpr.png" destination="$imagesdir/admin" />
+		<require-file name="gdpr.png" destination="$imagesdir" />
+		<code>gpdrinstall2.php</code>
+		<code>dohooks.php</code>
+	
+	</upgrade>
+	<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<modification type="file" reverse="true">gpdr2.1.xml</modification>
+		<remove-file name="$sourcedir/gpdr2.php" />
+		<remove-file name="$sourcedir/Profile-gpdr2.php" />
+		<remove-file name="$themedir/gpdr2.1.template.php" />
+		<remove-file name="$themedir/languages/gpdr.english.php" />
+		<remove-file name="$themedir/languages/gpdr.english-utf8.php" />
+		<code>UnInstall.php</code>
+		<code>dohooks.php</code>
+	</uninstall>
+	
+	
 	
 	
 </package-info>

@@ -22,17 +22,34 @@ $txt['permissionhelp_view_attachments2'] = 'Allows user to view attachments in p
 </file>
 
 
-<file name="$languagedir/ManagePermissions.english-utf8.php" error="skip">
+<file name="$languagedir/ManagePermissions.polish-utf8.php" error="skip">
 	<operation>
 		<search position="after"><![CDATA[
 ?>]]></search>
 		<add><![CDATA[
 // Begin Download Attachment
-$txt['permissionname_view_attachments'] = 'Download attachments';
-$txt['permissionhelp_view_attachments'] = 'Attachments are files that are attached to posted messages. This feature can be enabled and configured in \'Attachments and avatars\'. Since attachments are not directly accessed, you can protect them from being downloaded by users that don\'t have this permission.';
+$txt['permissionname_view_attachments'] = 'Pobierz załączniki';
+$txt['permissionhelp_view_attachments'] = 'Załączniki to pliki dołączane do publikowanych wiadomości. Funkcja może być włączona i skonfigurowana w \'Załączniki i awatary\'. Ponieważ załączniki nie są bezpośrednio dostępne, możesz zabezpieczyć je przed pobraniem przez użytkowników, którzy nie mają do tego uprawnień.';
 
-$txt['permissionname_view_attachments2'] = 'View attachments';
-$txt['permissionhelp_view_attachments2'] = 'Allows user to view attachments in posting display. They can only download. If they have the download attachment permission.';
+$txt['permissionname_view_attachments2'] = 'Zobacz załączniki';
+$txt['permissionhelp_view_attachments2'] = 'Ta opcja umożliwia użytkownikowi przeglądanie załączników w tematach, ale nie zezwala na pobieranie załączników.';
+
+// END Download Attachment		
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/ManagePermissions.spanish_latin-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Download Attachment
+$txt['permissionname_view_attachments'] = 'Descargar adjuntos';
+$txt['permissionhelp_view_attachments'] = 'Los archivos adjuntos son archivos que se adjuntan en los mensajes publicados. Esta función se puede activar y configurar en \'Archivos Adjuntos y Avatares\'. Dado que no se puede acceder directamente a los archivos adjuntos, puede protegerlos de ser descargado por los usuarios que no disponen de este permiso.';
+
+$txt['permissionname_view_attachments2'] = 'Ver archivos adjuntos';
+$txt['permissionhelp_view_attachments2'] = 'Permite al usuario ver los archivos adjuntos en la publicación. Sólo pueden descargar, si tienen el permiso de descargar el archivo adjunto.';
 
 
 // END Download Attachment			
