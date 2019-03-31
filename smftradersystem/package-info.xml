@@ -5,7 +5,7 @@
 	<id>vbgamer45:SMFTraderSystem</id>
 	<name>SMF Trader System</name>
 	<type>modification</type>
-	<version>2.0</version>
+	<version>2.0.1</version>
 	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
 		<readme>ReadMe.txt</readme>
 		<modification type="file">smftrader.xml</modification>
@@ -40,7 +40,7 @@
 	</uninstall>
 
 
-    	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+    	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<readme>ReadMe.txt</readme>
 		<modification type="file">smftrader2.1.xml</modification>
 		<require-file name="Trader2.php" destination="$sourcedir" />
@@ -53,7 +53,7 @@
 		<code>smftraderinstall2.php</code>
 
 	</install>
-	<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<modification type="file" reverse="true">smftrader2.1.xml</modification>
         <code>dohooks.php</code>
 		<code>UnInstall.php</code>

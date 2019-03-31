@@ -1,3 +1,6 @@
+5.0.1
+!Fixed feeds that have both content and description fields
+
 5.0
 +Https images now supported with the embed images option
 +Added support for https feeds when using the fsockopen method

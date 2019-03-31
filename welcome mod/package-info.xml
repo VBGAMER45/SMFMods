@@ -110,7 +110,7 @@
 
 
 
-	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<modification type="file">WelcomeTopic2.1.xml</modification>
@@ -123,7 +123,7 @@
 		<code>WelcomeTopicsql2.php</code>
 		<code>dohooks.php</code>
 	</install>
-	<upgrade for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<upgrade for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<redirect url="?action=admin;area=welcome;sa=admin">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<require-file name="WelcomeTopic2.php" destination="$sourcedir" />
@@ -135,7 +135,7 @@
 		<code>WelcomeTopicsql2.php</code>
 		<code>dohooks.php</code>
 	</upgrade>
-	<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<modification type="file" reverse="true">WelcomeTopic2.1.xml</modification>
 		<code>dohooks.php</code>
 		<code>UnInstall.php</code>

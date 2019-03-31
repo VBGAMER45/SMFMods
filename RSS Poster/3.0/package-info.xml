@@ -5,7 +5,7 @@
 	<id>vbgamer45:FeedPoster</id>
 	<name>RSS Feed Poster</name>
 	<type>modification</type>
-	<version>5.0</version>
+	<version>5.0.1</version>
 
 	<install for="1.1 - 1.1.99">
 		<redirect url="?action=feedsadmin">redirect.txt</redirect>
@@ -71,9 +71,6 @@
 			<code>FeedPostersql2.php</code>
 		
 	</upgrade>
-		
-		
-	
 		<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 			<modification type="file" reverse="true">FeedPoster2.xml</modification>
 			<remove-file name="$sourcedir/FeedPoster2.php" />
@@ -82,6 +79,53 @@
 			<remove-file name="$themedir/FeedPoster2.template.php" />
 			<remove-file name="$themedir/languages/FeedPoster.english.php" />
 			<remove-file name="$themedir/languages/FeedPoster.english-utf8.php" />	
+			<code>UnInstall.php</code>
+	</uninstall>
+
+
+
+
+
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+			<redirect url="?action=admin;area=feedsadmin">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<modification type="file">FeedPoster2.1.xml</modification>
+			<require-file name="FeedPoster2.php" destination="$sourcedir" />
+			<require-file name="Subs-RSS2.php" destination="$sourcedir" />
+			<require-file name="feedposterHooks.php" destination="$sourcedir" />
+			<require-file name="cronrss.php" destination="$boarddir" />
+			<require-file name="FeedPoster2.1.template.php" destination="$themedir" />
+			<require-file name="FeedPoster.english.php" destination="$themedir/languages" />
+			<require-file name="FeedPoster.english-utf8.php" destination="$themedir/languages" />
+			<require-file name="feedposter.png" destination="$imagesdir/admin" />
+			<code>FeedPostersql2.php</code>
+			<code>dohooks.php</code>
+		</install>
+
+	<upgrade from="all" for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+			<redirect url="?action=admin;area=feedsadmin">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<require-file name="FeedPoster2.php" destination="$sourcedir" />
+			<require-file name="Subs-RSS2.php" destination="$sourcedir" />
+			<require-file name="feedposterHooks.php" destination="$sourcedir" />
+			<require-file name="cronrss.php" destination="$boarddir" />
+			<require-file name="FeedPoster2.1.template.php" destination="$themedir" />
+			<require-file name="FeedPoster.english.php" destination="$themedir/languages" />
+			<require-file name="FeedPoster.english-utf8.php" destination="$themedir/languages" />
+			<require-file name="feedposter.png" destination="$imagesdir/admin" />
+			<code>FeedPostersql2.php</code>
+			<code>dohooks.php</code>
+
+	</upgrade>
+		<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+			<modification type="file" reverse="true">FeedPoster2.1.xml</modification>
+			<remove-file name="$sourcedir/FeedPoster2.php" />
+			<remove-file name="$sourcedir/Subs-RSS2.php" />
+			<remove-file name="$boarddir/cronrss.php" />
+			<remove-file name="$themedir/FeedPoster2.1.template.php" />
+			<remove-file name="$themedir/languages/FeedPoster.english.php" />
+			<remove-file name="$themedir/languages/FeedPoster.english-utf8.php" />
+			<code>dohooks.php</code>
 			<code>UnInstall.php</code>
 	</uninstall>
 

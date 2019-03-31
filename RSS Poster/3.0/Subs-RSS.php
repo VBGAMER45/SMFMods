@@ -3,7 +3,7 @@
 RSS Feed Poster
 Version 4.2
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -139,9 +139,9 @@ function verify_rss_url($url)
 	{
 		$depth = array();
 
-		$xml_parser = xml_parser_create();
+		$xml_parser = xml_parser_create("UTF-8");
 		xml_set_element_handler($xml_parser, "startElement2", "endElement2");
-
+		xml_set_character_data_handler($xml_parser, "characterData1");
 
 		   if (!xml_parse($xml_parser, $finalrss)) {
 		      fatal_error(sprintf($txt['feedposter_err_xmlerror'],
@@ -170,7 +170,7 @@ function startElement2($parser, $name, $attrs)
 function endElement2($parser, $name)
 {
    global $depth;
-   $depth[$parser]--;
+   @$depth[$parser]--;
 }
 
 function UpdateRSSFeedBots()
@@ -233,7 +233,8 @@ function UpdateRSSFeedBots()
 			{
 
 				// Process the XML
-					$xml_parser = $xml_parser = xml_parser_create("UTF-8"); // xml_parser_create("ISO-8859-1");
+					$xml_parser = xml_parser_create("UTF-8"); // xml_parser_create("ISO-8859-1");
+                    
 					$context['feeditems'] = array();
 					$feedcount = 0;
 					$maxitemcount = $feed['numbertoimport'];
@@ -245,7 +246,7 @@ function UpdateRSSFeedBots()
 					$context['feeditems'][0]['title'] = '';
 					$context['feeditems'][0]['description'] = '';
 					$context['feeditems'][0]['link'] = '';
-
+					$context['feeditems'][0]['content'] = '';
 
 
 					xml_set_element_handler($xml_parser, "startElement1", "endElement1");
@@ -282,6 +283,13 @@ function UpdateRSSFeedBots()
 							{
 								continue;
 							}
+							
+							
+							if (empty($modSettings['rss_usedescription']) && !empty($context['feeditems'][$i]['content']))
+							{
+								$context['feeditems'][$i]['description'] = $context['feeditems'][$i]['content'];
+							}
+							
 							// Check feed Log
 							// Generate the hash for the log
 							if(!isset($context['feeditems'][$i]['title']) || !isset($context['feeditems'][$i]['description']))
@@ -607,6 +615,7 @@ function endElement1($parser, $name)
 		$context['feeditems'][$feedcount][] = array();
 		$context['feeditems'][$feedcount]['title'] = '';
 		$context['feeditems'][$feedcount]['description'] = '';
+		$context['feeditems'][$feedcount]['content'] = '';
 		$context['feeditems'][$feedcount]['link'] = '';
 		$tag_attrs = '';
 		$insideitem = false;
@@ -636,15 +645,14 @@ function characterData1($parser, $data)
 			break;
 			case "CONTENT":
 			if (empty($modSettings['rss_usedescription']))
-				$context['feeditems'][$feedcount]['description'] .= $data;
+				$context['feeditems'][$feedcount]['content'] .= $data;
+
 			break;
 			
 			case "CONTENT:ENCODED":
 			
 			if (empty($modSettings['rss_usedescription']))
-				$context['feeditems'][$feedcount]['description'] .= $data;
-
-
+				$context['feeditems'][$feedcount]['content'] .= $data;
 			break;
 
 			case "LINK":
@@ -664,6 +672,10 @@ function characterData1($parser, $data)
 // disguises the curl using fake headers and a fake user agent.
 function disguise_curl($url)
 {
+  if(!function_exists("curl_init"))
+    return false;
+    
+
   $curl = curl_init();
 
   // Setup headers - the same headers from Firefox version 2.0.0.6

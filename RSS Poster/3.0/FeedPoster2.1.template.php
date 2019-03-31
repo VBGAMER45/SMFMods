@@ -1,9 +1,9 @@
 <?php
 /*
 RSS Feed Poster
-Version 5.0
+Version 4.2
 by:vbgamer45
-https://www.smfhacks.com
+http://www.smfhacks.com
 */
 
 function template_main()
@@ -18,11 +18,11 @@ function template_main()
 		</h3>
 	</div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 				<form action="',$scripturl,'?action=feedsadmin;sa=bulkactions" method="post">
-				<table width="95%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-					<tr class="titlebg">
+				<table width="95%" cellspacing="0" align="center" cellpadding="4" class="table_grid">
+					<tr class="title_bar">
 						<td></td>
 						<td>', $txt['feedposter_feedtitle'], '</td>
 						<td>', $txt['feedposter_feedurl'], '</td>
@@ -34,7 +34,7 @@ function template_main()
 					</tr>';
 	
 	
-					$styleClass = 'windowbg';
+					$styleClass = 'windowbg2';
 					
 					foreach ($context['feeds'] as $key => $feed)
 					{
@@ -50,16 +50,16 @@ function template_main()
 							</tr>
 						';
 						
-						if ($styleClass == 'windowbg')
+						if ($styleClass == 'windowbg2')
 							$styleClass = 'windowbg2';
 						else 
-							$styleClass = 'windowbg';
+							$styleClass = 'windowbg2';
 						
 					}
 	
 	echo '		
-	<tr class="windowbg">
-			<td colspan="7">' .$txt['feedposter_withselected']  . '<select name="bulk">
+	<tr class="windowbg2">
+			<td colspan="8">' .$txt['feedposter_withselected']  . '<select name="bulk">
 			<option value=""></option>
 			<option value="delete">' .$txt['feedposter_delete']  . '</option>
 			<option value="enablefeed">' .$txt['feedposter_enable_feed']  . '</option>
@@ -72,8 +72,8 @@ function template_main()
 		 </tr>	
 	
 	
-	<tr class="windowbg">
-					<td colspan="7" align="center"><a href="', $scripturl, '?action=admin;area=feedsadmin;sa=addfeed">', $txt['feedposter_addfeed'], '</a></td>
+	<tr class="windowbg2">
+					<td colspan="8" align="center"><a href="', $scripturl, '?action=admin;area=feedsadmin;sa=addfeed">', $txt['feedposter_addfeed'], '</a></td>
 				</tr>
 				</table>
 				</form>
@@ -115,7 +115,7 @@ function template_main()
 				</form>
 				<br />
 				<b>Contributors</b><br />
-				Version 3.0 paid for by <a href="http://www.simplemachines.org/community/index.php?action=profile;u=42226">MoreBloodWine</a>
+				Version 3.0 paid for by <a href="https://www.simplemachines.org/community/index.php?action=profile;u=42226">MoreBloodWine</a>
 				
 
 			</td>
@@ -123,7 +123,7 @@ function template_main()
 </table>';
 
 	// The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><a href="http://www.smfhacks.com" target="blank">RSS Feed Poster</a></div>';
+	echo '<br /><div align="center"><a href="https://www.smfhacks.com" target="blank">RSS Feed Poster</a></div>';
 
 }
 
@@ -138,7 +138,7 @@ echo '
 		</h3>
 	</div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 			<form method="post" action="', $scripturl, '?action=feedsadmin;sa=addfeed2" name="frmfeed">
 				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
@@ -171,7 +171,7 @@ echo '</select>
 
 foreach ($context['msg_icons'] as $key => $option)
 {
-	echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . '.gif') ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename'] . '.gif') . '";';
+	echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . '.png') ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename'] . '.png') . '";';
 	
 
 }
@@ -191,7 +191,7 @@ echo '
 </td></tr>
 
 
-				<tr><td width="30%">', $txt['feedposter_postername'], '</td><td><input type="text" name="feedposter_postername" id="feedposter_postername" /><a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a></td></tr>
+				<tr><td width="30%">', $txt['feedposter_postername'], '</td><td><input type="text" name="feedposter_postername" id="feedposter_postername" /><a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/members.png" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a></td></tr>
 				<tr><td width="30%">', $txt['feedposter_topicprefix'], '</td><td><input type="text" name="feedposter_topicprefix" /></td></tr>
 				<tr><td width="30%">', $txt['feedposter_importevery'], '</td><td><input type="text" name="feedposter_importevery" value="360" /></td></tr>
 				<tr><td width="30%">', $txt['feedposter_numbertoimport'], '</td><td><input type="text" name="feedposter_numbertoimport" value="1" /></td></tr>
@@ -232,7 +232,7 @@ echo '
 </table>';
 
 	// The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><a href="http://www.smfhacks.com" target="blank">RSS Feed Poster</a></div>';
+	echo '<br /><div align="center"><a href="https://www.smfhacks.com" target="blank">RSS Feed Poster</a></div>';
 
 }
 
@@ -247,7 +247,7 @@ echo '
 		</h3>
 	</div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 			<form method="post" action="', $scripturl, '?action=feedsadmin;sa=editfeed2" name="frmfeed">
 				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
@@ -280,7 +280,7 @@ echo '</select>
 
 foreach ($context['msg_icons'] as $key => $option)
 {
-	echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . '.gif') ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename'] . '.gif') . '";';
+	echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . '.png') ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename'] . '.png') . '";';
 	
 
 }
@@ -298,7 +298,7 @@ echo '
 	// ]]></script>
 </td></tr>
 
-				<tr><td width="30%">', $txt['feedposter_postername'], '</td><td><input type="text" name="feedposter_postername" id="feedposter_postername" value="', $context['feed']['postername'], '" /><a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a></td></tr>
+				<tr><td width="30%">', $txt['feedposter_postername'], '</td><td><input type="text" name="feedposter_postername" id="feedposter_postername" value="', $context['feed']['postername'], '" /><a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/members.png" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=feedposter_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a></td></tr>
 				<tr><td width="30%">', $txt['feedposter_topicprefix'], '</td><td><input type="text" name="feedposter_topicprefix" value="', $context['feed']['topicprefix'], '" /></td></tr>
 				<tr><td width="30%">', $txt['feedposter_importevery'], '</td><td><input type="text" name="feedposter_importevery"  value="', $context['feed']['importevery'], '" /></td></tr>
 				<tr><td width="30%">', $txt['feedposter_numbertoimport'], '</td><td><input type="text" name="feedposter_numbertoimport" value="', $context['feed']['numbertoimport'], '" /></td></tr>
@@ -340,7 +340,7 @@ echo '
 
 	
 	// The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><a href="http://www.smfhacks.com" target="blank">RSS Feed Poster</a></div>';
+	echo '<br /><div align="center"><a href="https://www.smfhacks.com" target="blank">RSS Feed Poster</a></div>';
 
 }
 

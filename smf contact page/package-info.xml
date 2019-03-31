@@ -49,7 +49,7 @@
 
 
 
-	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
 			<readme>ReadMe.txt</readme>
 			<modification type="file">contact2.1.xml</modification>
 		    <require-file name="contactHooks.php" destination="$sourcedir" />
@@ -59,7 +59,7 @@
 			<code>dohooks.php</code>
 		</install>
 
-		<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
 			<modification type="file" reverse="true">contact2.1.xml</modification>
 			<code>dohooks.php</code>
 			<code>UnInstall.php</code>

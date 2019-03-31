@@ -51,7 +51,7 @@
 	
 	
 	
-	<install for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<redirect url="?action=admin;area=discord;sa=settings">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<modification type="file">discord2.xml</modification>
@@ -66,7 +66,7 @@
 	</install>
 	
 	
-	<uninstall for="2.1 - 2.1.99,2.0 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<remove-file name="$sourcedir/discord2.php" />
 		<remove-file name="$themedir/discord2.template.php" />
 		<remove-file name="$themedir/languages/discord.english.php" />

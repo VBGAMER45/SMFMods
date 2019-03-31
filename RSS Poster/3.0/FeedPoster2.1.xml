@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:FeedPoster</id>
+<version>1.1</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin RSS FeedPoster Text Strings
+$txt['smfrssposter_admin'] = 'Feed Poster Configuration';
+
+// END  RSS FeedPoster		
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin RSS FeedPoster Text Strings
+$txt['smfrssposter_admin'] = 'Feed Poster Configuration';
+
+// END  RSS FeedPoster		
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/ManageScheduledTasks.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin RSS FeedPoster Text Strings
+$txt['scheduled_task_update_feedbots'] = 'Update RSS Feed Poster bots';
+$txt['scheduled_task_desc_update_feedbots'] = 'Makes the RSS Feed Poster bots go look for new items in their feeds';
+
+// END  RSS FeedPoster		
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[loadPermissions();]]></search>
+		<add><![CDATA[
+		// RSS Feed Poster run fake cron job
+		if (!empty($modSettings['rss_fakecron']))
+		{
+			
+			if (empty($modSettings['rss_lastcron']) || $modSettings['rss_lastcron'] + (1 * 60) > time())
+			{
+				require_once($sourcedir . '/Subs-RSS2.php');
+				UpdateRSSFeedBots();
+				updateSettings(array('rss_lastcron' => time()));
+			}
+			
+			
+		}
+		
+		]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ScheduledTasks.php">
+	<operation error="ignore">
+			<search position="after"><![CDATA[
+?>]]></search>
+	<add><![CDATA[
+	
+function scheduled_update_feedbots()
+{
+   global $smcFunc, $sourcedir;
+
+   require_once($sourcedir . '/Subs-RSS2.php');
+
+
+   UpdateRSSFeedBots();
+   // Return for the log...
+   return true;
+}
+	
+]]></add>
+	</operation>
+</file>
+</modification>

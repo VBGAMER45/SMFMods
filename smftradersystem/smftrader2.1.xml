@@ -216,47 +216,51 @@ $txt['permissionhelp_smftrader_autorating'] = 'Ratings do not need to wait for a
 		echo '
 								<li class="membergroup">', $message['member']['group'], '</li>';]]></search>
 		<add><![CDATA[
+		
+		
 		//Start SMF Trader System
-		global $sourcedir;
-		include_once $sourcedir . '/Trader2.php';
-				
-		GetTraderInformation($message['member']['id']);
-		
-		
-		$context['neturalcount'] = 0;
-		$context['pcount'] = 0;
-		$context['ncount'] = 0;
-		foreach($context['trader_mem_data'] as $row)
+		if (!empty($message['member']['id']))
 		{
-			if ($row['salevalue'] == 0)
+			global $sourcedir;
+			include_once $sourcedir . '/Trader2.php';
+
+			GetTraderInformation($message['member']['id']);
+
+
+			$context['neturalcount'] = 0;
+			$context['pcount'] = 0;
+			$context['ncount'] = 0;
+			foreach($context['trader_mem_data'] as $row)
 			{
-				$context['pcount'] = $row['total'];
-			}
-			else if ($row['salevalue'] == 2)
-			{
-				$context['ncount'] = $row['total'];
-			}	
-			else if ($row['salevalue'] == 1)
-			{
-				$context['neturalcount'] = $row['total'];
+				if ($row['salevalue'] == 0)
+				{
+					$context['pcount'] = $row['total'];
+				}
+				else if ($row['salevalue'] == 2)
+				{
+					$context['ncount'] = $row['total'];
+				}	
+				else if ($row['salevalue'] == 1)
+				{
+					$context['neturalcount'] = $row['total'];
+				}
+
 			}
 
+
+
+			if ($modSettings['trader_use_pos_neg'])
+				$tradecount = ($context['pcount'] - $context['ncount']);
+			else
+				$tradecount = $context['pcount'] + $context['ncount'] + $context['neturalcount'];
+
+
+
+			// Show the trader info
+					echo '<li>
+						<b>' . $txt['smftrader_profile'] . ' </b>
+						(<a href="' . $scripturl .  '?action=trader&id=' . $message['member']['id'] . '">', $modSettings['trader_use_pos_neg'] ? ($tradecount > 0 ? '+' . $tradecount : $tradecount)  : $tradecount  , '</a>)</li>';
 		}
-		
-
-		
-		if ($modSettings['trader_use_pos_neg'])
-			$tradecount = ($context['pcount'] - $context['ncount']);
-		else
-			$tradecount = $context['pcount'] + $context['ncount'] + $context['neturalcount'];
-		
-		
-
-		// Show the trader info
-				echo '<li>
-					<b>' . $txt['smftrader_profile'] . ' </b>
-					(<a href="' . $scripturl .  '?action=trader&id=' . $message['member']['id'] . '">', $modSettings['trader_use_pos_neg'] ? ($tradecount > 0 ? '+' . $tradecount : $tradecount)  : $tradecount  , '</a>)</li>';
-
 		//END SMF Trader System
 		]]>
 		</add>	

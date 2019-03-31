@@ -1,3 +1,6 @@
+2.0.1
+!Do not show trader link for guests posts
+
 2.0a
 +Added support for SMF 2.1.x
 

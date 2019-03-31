@@ -1,7 +1,7 @@
 <?php
 /*
 RSS Feed Poster
-Version 4.2
+Version 5.0
 by:vbgamer45
 http://www.smfhacks.com
 */
@@ -15,7 +15,10 @@ function FeedsMain()
 	isAllowedTo('admin_forum');
 	
 	// Load the main feeds template
-	loadtemplate('FeedPoster2');
+    if (function_exists("set_tld_regex"))
+	    loadtemplate('FeedPoster2.1');
+    else
+        loadtemplate('FeedPoster2');
 
 	// Load the language files
 	if (loadlanguage('FeedPoster') == false)

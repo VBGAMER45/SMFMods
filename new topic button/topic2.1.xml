@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:NewTopicButton</id>
+<version>1.0</version>
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="before"><![CDATA[if ($context['can_reply'])
+		$context['normal_buttons']['reply'] = array('text' => 'reply', 'image' => 'reply.png', 'url' => $scripturl . '?action=post;topic=' . $context['current_topic'] . '.' . $context['start'] . ';last_msg=' . $context['topic_last_message'], 'active' => true);]]></search>
+		
+		<add><![CDATA[
+		 $context['can_post_new'] = allowedTo('post_new') || ($modSettings['postmod_active'] && allowedTo('post_unapproved_topics'));
+		
+		if ($context['can_post_new'])
+				$context['normal_buttons']['new_topic'] = array('text' => 'new_topic', 'image' => 'new_topic.png', 'lang' => true, 'url' => $scripturl . '?action=post;board=' . $context['current_board'] . '.0', 'active' => true);]]></add>
+	</operation>
+</file>
+</modification>

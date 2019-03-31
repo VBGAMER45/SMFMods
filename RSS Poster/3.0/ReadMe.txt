@@ -1,11 +1,11 @@
 *******************************
 RSS Feed Poster
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x and SMF 1.1.x
+For SMF 2.1.x, SMF 2.0.x and SMF 1.1.x
 
 Allows you to add RSS Feed Posting Bots to your forum.
 You can either use a real cron job
@@ -38,4 +38,4 @@ EzPortal.com
 
 
 SMFHacks package server address is:
-http://www.smfhacks.com
+https://www.smfhacks.com

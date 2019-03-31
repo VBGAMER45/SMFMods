@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:WelcomeTopic</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Welcome Topic Text Strings
+$txt['welcome_admin'] = 'Welcome Configuration';
+// End Welcome Topic Mod Text Strings
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Welcome Topic Text Strings
+$txt['welcome_admin'] = 'Welcome Configuration';
+// End Welcome Topic Mod Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+
+==
+
+
+</modification>

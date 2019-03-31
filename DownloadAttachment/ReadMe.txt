@@ -5,9 +5,9 @@ https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x
+For SMF 2.1.x and SMF 2.0.x
 
-Adds a seperate download and view permission for attachments
+Adds a separate download and view permission for attachments
 
 Other mods can be found at SMFHacks.com
 Include:
