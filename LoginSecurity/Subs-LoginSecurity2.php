@@ -137,7 +137,7 @@ function AddLoginFailure($memberID)
 		$msgBody = str_replace("%membermatches",$memberMatches ,$msgBody);
 		$msgBody = str_replace("%ip",$ip,$msgBody);
 		
-		sendmail($emailRow['email_address'], $txt['ls_failed_email_subject'], $msgBody);
+		sendmail($emailRow['email_address'], $txt['ls_failed_email_subject'], $msgBody, null, 'sendsecure', false, 1);
 		
 	}
 	
@@ -335,7 +335,7 @@ function SendSecureLink()
 	$msgBody = str_replace("%ip",$ip,$msgBody);
 	$msgBody = str_replace("%min",$modSettings['ls_securehash_expire_minutes'],$msgBody);
 	
-	sendmail($emailRow['email_address'], $txt['ls_secure_email_subject'] , $msgBody );
+	sendmail($emailRow['email_address'], $txt['ls_secure_email_subject'] , $msgBody , null, 'sendsecure', false, 1);
 	
 	
 	// Return to the boardurl

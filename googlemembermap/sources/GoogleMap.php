@@ -74,6 +74,8 @@ function gmm_main()
 function gmm_build_JS()
 {
 	global $context, $scripturl, $txt, $modSettings;
+	
+	$context['template_layers'] = array();
 
 	// Clean the buffer so we only return JS back to the template
 	ob_end_clean();
@@ -406,6 +408,8 @@ google.maps.event.addDomListener(window, "load", initialize);';
 function gmm_build_XML()
 {
 	global $smcFunc, $context, $settings, $options, $scripturl, $txt, $modSettings, $user_info, $memberContext;
+	
+	$context['template_layers'] = array();
 
 	// Make sure the buffer is empty so we return clean XML to the template
 	ob_end_clean();
@@ -619,6 +623,8 @@ function gmm_show_KML()
 	// Are we allowed to view the map?
 	loadLanguage('GoogleMap');
 	isAllowedTo('googleMap_view');
+	
+	$context['template_layers'] = array();
 
 	// If it's not enabled, die.
 	if (empty($modSettings['googleMap_KMLoutput_enable']))

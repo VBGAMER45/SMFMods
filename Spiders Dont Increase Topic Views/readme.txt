@@ -2,8 +2,8 @@
 [table]
 [tr]
 [td]
-[b]Current Version: [/b]1.1
-[b]Compatibility: [/b]SMF 1.1.x, SMF 2.0.x
+[b]Current Version: [/b]2.0
+[b]Compatibility: [/b]SMF 2.1.x, SMF 2.0.x, SMF 1.1.X
 [url=http://custom.simplemachines.org/mods/index.php?mod=882]Link to Mod[/url] | [url=http://www.simplemachines.org/community/index.php?topic=187277.0]Comments[/url] | [url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W43RKPPZ2KGYE]Donate[/url]                           
 [/td]
 [td]
@@ -17,7 +17,7 @@
 [hr]
 
 [color=#00BB00][b][size=12pt]Features[/size][/b][/color]
-[img]http://dev.smfchat.com/img/add.png[/img] Does not increase topic views for spiders.
+Does not increase topic views for spiders.
 
 When spiders are browsing your forum, they will increase the topic views in every topic they visit.  This modification basically detects most well-known spiders , and if so, it won't increase page count.
 

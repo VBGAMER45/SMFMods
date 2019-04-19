@@ -1,3 +1,6 @@
+2.1
+!Fixed issue with error for certain categories with subcategories
+
 2.0
 !Fixed some issues for PHP 7
 !Removed google plus social icon

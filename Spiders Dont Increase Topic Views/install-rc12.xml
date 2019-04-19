@@ -14,19 +14,27 @@ function Display()]]></search>
 // DETECT SPIDERS
 function detect_spider() {
 	// LIST OF SPIDERS
-	$known_spiders = array(
+$known_spiders = array(
+			'spider','Spider',
 			'WISENutbot', 		'MSNBot', 			'MSN spider',			'W3C Validator',
 			'Googlebot-Image',	'Googlebot',		'Mediapartners-Google',	'Openbot',
-			'Yahoo! Slurp',		'FAST-WebCrawler',	'Wget',					'Ask Jeeves', 
+			'Yahoo! Slurp',		'FAST-WebCrawler',	'Wget',					'Ask Jeeves',
 			'Speedy Spider',	'SurveyBot',		'IBM_Planetwide',		'OmniExplorer_Bot/6.68',
 			'ia_archiver',		'FAST-WebCrawler',	'Inktomi Slurp',		'Feedfetcher-Google',
 			'FeedBurner/1.0',	'appie',			'ping.blo.gs/2.0',		'http://www.relevantnoise.com',
 			'omgilibot/0.3',	'GigaBot',			'NewsGatorOnline/2.0',	'Jakarta Commons-HttpClient/3.0.1',
-			'Jakarta Commons-HttpClient/3.0-rc2',
+			'Jakarta Commons-HttpClient/3.0-rc2', 'Twiceler', 'Baiduspider','ContextAd Bot',"Crawler","msnbot",
+			'bingbot',"discobot","YandexBot","ezooms.bot","www.sitebot.org","TurnitinBot","Exabot","magpie-crawler",
+			"SISTRIX Crawler","Sosospider","MJ12bot","linkdexbot","spinn3r.com","compatible; Synapse","opensiteexplorer.org",
+            "majestic12.co.uk", "meanpath.com","fr-crawler","/commoncrawl.org","admantx.com","a6corp.com","crystalsemantics.com",
+            "archive.org","msnbot-media","verifying pingback","facebookexternalhit","XML-RPC","WordPress","XoviBot",
+            "VigLink","Grapeshot","ADmantX","archive.org_bot","sfFeedReader","Pinterest","Twitterbot","AdsBot-Google","InternetSeer.com",
+            "SemrushBot","HyperCrawl","Tapatalk CloudSearch","istellabot","SeznamBot","Cliqzbot","pingdom.com","SocialRankIOBot","Clickag","Mail.RU_Bot",
+            "The Knowledge AI"
 	);
 
 	foreach($known_spiders AS $agent) {
-		if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), strtolower($agent)) !== false) {
+		if (strrpos($_SERVER['HTTP_USER_AGENT'],$agent) !== false) {
 			return true;
 		}
 	}

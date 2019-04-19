@@ -21,7 +21,11 @@ function pretty_rewrite_buffer($buffer)
 	$context['pretty']['scriptID'] = 0;
 	$context['pretty']['scripts'] = array();
 	$buffer = preg_replace_callback('~<script.+?</script>~s', 'pretty_scripts_remove', $buffer);
-
+	
+	
+	if (empty($context['session_var']))
+				$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1(rand(1,1000) . rand(100,500))), 0, rand(7, 12));
+				
 	//	Find all URLs in the buffer
 	$context['pretty']['search_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"#]+|\'[^\'#]+)~';
 	$urls_query = array();
@@ -31,6 +35,9 @@ function pretty_rewrite_buffer($buffer)
 		preg_match_all($pattern, $buffer, $matches, PREG_PATTERN_ORDER);
 		foreach ($matches[2] as $match)
 		{
+
+			
+
 			//	Rip out everything that shouldn't be cached
 			$match = preg_replace(array('~^[\"\']|PHPSESSID=[^;]+|(se)?sc=[^;]+|' . $context['session_var'] . '=[^;]+~', '~\"~', '~;+|=;~', '~\?;~', '~\?$|;$|=$~'), array('', '%22', ';', '?', ''), $match);
 
@@ -64,7 +71,7 @@ function pretty_rewrite_buffer($buffer)
 		}
 	}
 
-	//	Procede only if there are actually URLs in the page
+	//	Proceed only if there are actually URLs in the page
 	if (count($urls_query) != 0)
 	{
 		$urls_query = array_keys(array_flip($urls_query));
@@ -119,6 +126,9 @@ function pretty_rewrite_buffer($buffer)
 		$context['pretty']['replace_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"]+\"|\'[^\']+\')~';
 		foreach ($context['pretty']['replace_patterns'] as $pattern)
 			$buffer = preg_replace_callback($pattern, 'pretty_buffer_callback', $buffer);
+
+
+		$buffer = str_replace('javascript:self.close()"','javascript:self.close();"',$buffer);
 	}
 
 	//	Restore the script tags
@@ -142,6 +152,10 @@ function pretty_rewrite_buffer_fromcache($buffer)
 	$context['pretty']['scriptID'] = 0;
 	$context['pretty']['scripts'] = array();
 	$buffer = preg_replace_callback('~<script.+?</script>~s', 'pretty_scripts_remove', $buffer);
+	
+	if (empty($context['session_var']))
+				$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1(rand(1,1000) . rand(100,500))), 0, rand(7, 12));
+	
 
 	//	Find all URLs in the buffer
 	$context['pretty']['search_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"#]+|\'[^\'#]+)~';
@@ -152,6 +166,9 @@ function pretty_rewrite_buffer_fromcache($buffer)
 		preg_match_all($pattern, $buffer, $matches, PREG_PATTERN_ORDER);
 		foreach ($matches[2] as $match)
 		{
+			
+
+
 			//	Rip out everything that shouldn't be cached
 			$match = preg_replace(array('~^[\"\']|PHPSESSID=[^;]+|(se)?sc=[^;]+|' . $context['session_var'] . '=[^;]+~', '~\"~', '~;+|=;~', '~\?;~', '~\?$|;$|=$~'), array('', '%22', ';', '?', ''), $match);
 
@@ -168,6 +185,12 @@ function pretty_rewrite_buffer_fromcache($buffer)
 				continue;
 
 			if (substr($url_id,0,11) == 'android-app')
+				continue;
+
+			if (substr($url_id,0,7) == 'http://')
+				continue;
+
+			if (substr($url_id,0,8) == 'https://')
 				continue;
 
 			$urls_query[] = $url_id;
@@ -261,6 +284,9 @@ function pretty_buffer_callback($matches)
 
 	//	Remove those annoying quotes
 	$matches[2] = preg_replace('~^[\"\']|[\"\']$~', '', $matches[2]);
+
+	if (empty($context['session_var']))
+		$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1(rand(1,1000) . rand(100,500))), 0, rand(7, 12));
 
 	//	Store the parts of the URL that won't be cached so they can be inserted later
 	preg_match('~PHPSESSID=[^;#&]+~', $matches[2], $PHPSESSID);

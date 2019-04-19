@@ -47,6 +47,7 @@ function imb_googlemap(&$buttons)
 			'title' => $txt['googleMap'],
 			'href' => $scripturl . '?action=googlemap',
 			'show' => !empty($modSettings['googleMap_Enable']) && allowedTo('googleMap_view'),
+			'icon' =>  (function_exists("set_tld_regex") ? 'googlemap.png' : 'server.gif'),
 			'sub_buttons' => array(),
 		)
 	);

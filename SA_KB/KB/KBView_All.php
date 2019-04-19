@@ -26,7 +26,7 @@ if (!defined('SMF'))
 	die('Hacking attempt...');	
 	
 function KB_know(){
-   global $txt, $sourcedir, $smcFunc, $catname, $modSettings, $user_info, $scripturl, $context;
+   global $txt, $sourcedir, $smcFunc, $modSettings, $user_info, $scripturl, $context;
    
     $context['sub_template']  = 'kb_know';
    

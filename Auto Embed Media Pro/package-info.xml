@@ -87,7 +87,7 @@
 	</uninstall>
 	
 
-	<install for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1">
+	<install for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
 		<redirect url="?action=admin;area=mediapro;sa=settings">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<modification type="file">AutoEmbedMediaPro2.1.xml</modification>
@@ -104,7 +104,7 @@
 	</install>
 	
 
-<upgrade from="all" for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1">
+<upgrade from="all" for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
 		<redirect url="?action=admin;area=mediapro;sa=settings">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<require-file name="AutoEmbedMediaProHooks.php" destination="$sourcedir" />
@@ -118,7 +118,7 @@
 		
 	</upgrade>
 
-	<uninstall for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1">
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
 		<remove-file name="$sourcedir/AutoEmbedMediaPro2.php" />
 		<remove-file name="$sourcedir/AutoEmbedMediaProHooks.php" />
 		<remove-file name="$themedir/AutoEmbedMediaPro2.template.php" />

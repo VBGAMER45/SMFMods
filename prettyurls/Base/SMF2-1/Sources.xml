@@ -65,7 +65,8 @@ $context += array('pretty' => array(
 					'label' => (isset($txt['pretty_urls']) ? $txt['pretty_urls'] : 'Pretty URLs'),
 					'file' => 'PrettyUrls.php',
 					'function' => 'PrettyInterface',
-					'custom_url' => $scripturl . '?action=admin;area=pretty',
+					'icon' => 'prettyurls.png',
+ 					'custom_url' => $scripturl . '?action=admin;area=pretty',
 				),
 ]]></add>
 		</operation>
@@ -251,9 +252,7 @@ function ob_sessrewrite($buffer)
 		</operation>
 
 		<operation>
-			<search position="before"><![CDATA[
-	$message = str_replace(array("\r", "\n"), array('', $line_break), $message);
-]]></search>
+			<search position="after"><![CDATA[list (, $from_name) = mimespecialchars(addcslashes($from !== null ? $from : $context['forum_name'], '<>()\'\\"'), true, $hotmail_fix, $line_break);]]></search>
 			<add><![CDATA[
 	// Prettify any URLs
 	if (!empty($modSettings['pretty_enable_filters']))

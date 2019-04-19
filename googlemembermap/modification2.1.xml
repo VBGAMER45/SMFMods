@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- --------------------------------------------------------------------------
+  package "Google Member Map" Mod for Simple Machines Forum (SMF) V2.0
+  author Spuds
+  copyright (c) 2011 Spuds
+  license license.txt (included with package) MPL 1.1
+--------------------------------------------------------------------------- -->
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA['website' => array(
+				'title' => $profile['website_title'],
+				'url' => $profile['website_url'],
+			),]]></search>
+			<add><![CDATA[
+		'googleMap' => array(
+			'latitude' => !isset($profile['latitude']) ? 0 : (float) $profile['latitude'],
+			'longitude' => !isset($profile['longitude']) ? 0 : (float) $profile['longitude'],
+			'pindate' => !isset($profile['pindate']) ? '' : $profile['pindate'],
+		),]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[mg.online_color AS member_group_color, COALESCE(mg.group_name, {string:blank_string}) AS member_group,]]></search>
+			<add><![CDATA[
+			mem.latitude, mem.longitude, mem.pindate, mg.online_color AS member_group_color, COALESCE(mg.group_name, {string:blank_string}) AS member_group,]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[$select_columns .= ', mem.additional_groups, mem.id_theme, mem.pm_ignore_list, mem.pm_receive_from,]]></search>
+			<add><![CDATA[$select_columns .= ', mem.additional_groups, mem.id_theme, mem.pm_ignore_list, mem.pm_receive_from, mem.latitude, mem.longitude, mem.pindate,]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile-Modify.php">
+		<operation>
+			<search position="before"><![CDATA[
+	$profile_strings = array(
+		'buddy_list',
+		'ignore_boards',
+	);
+]]></search>
+			<add><![CDATA[
+	if (isset($_POST['latitude']))
+		$profile_vars['latitude'] = $_POST['latitude'] != '' ? (float) $_POST['latitude'] : 0;
+	if (isset($_POST['longitude']))
+		$profile_vars['longitude'] = $_POST['longitude'] != '' ? (float) $_POST['longitude'] : 0;
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA['website_title', 'website_url',]]></search>
+			<add><![CDATA['latitude', 'hr',
+			'website_title', 'website_url',]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA['lngfile' => array(]]></search>
+			<add><![CDATA[
+		'latitude' => array(
+			'type' => 'callback',
+			'callback_func' => 'googlemap_modify',
+			'permission' => 'googleMap_place',
+			'input_validate' => create_function('&$value', '
+				global $profile_vars, $cur_profile;
+			
+				// set latitude to a float value	
+				$value = (float) $value;
+				
+				// fix up longitude as well
+				$profile_vars[\'longitude\'] = !empty($_POST[\'longitude\']) ? (float) $_POST[\'longitude\'] : 0;
+				$cur_profile[\'longitude\'] = !empty($_POST[\'longitude\']) ? (float) $_POST[\'longitude\'] : 0;
+	
+				// now is a good time for the pin date ;)
+				$pintime = time();
+				$profile_vars[\'pindate\'] = (int) $pintime;
+				$cur_profile[\'pindate\'] = (int) $pintime;
+
+				return true;
+			'),
+			'preload' => create_function('', '
+				global $context, $cur_profile;
+
+				$context[\'member\'][\'googleMap\'][\'latitude\'] = (float) $cur_profile[\'latitude\'];
+				$context[\'member\'][\'googleMap\'][\'longitude\'] = (float) $cur_profile[\'longitude\'];
+				$context[\'member\'][\'googleMap\'][\'pindate\'] = $cur_profile[\'pindate\'];
+
+				return true;
+			'),
+		),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Profile.template.php" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[<dd>', $context['member']['last_login'], (!empty($context['member']['is_hidden']) ? ' (' . $txt['hidden'] . ')' : ''), '</dd>';]]></search>
+			<add><![CDATA[<dd>', $context['member']['last_login'], (!empty($context['member']['is_hidden']) ? ' (' . $txt['hidden'] . ')' : ''), '</dd>';
+
+	if (!empty($modSettings['googleMap_Enable']) && allowedTo('googleMap_view'))
+	{
+		if (!empty($context['member']['googleMap']['longitude']) && !empty($context['member']['googleMap']['latitude']))
+		{
+			echo '
+	</dl>
+<hr />
+<br />
+<dl>
+	<dt><strong>' . $txt['googleMap_Where'] . ' ' . (preg_match('~\s(and|&|&amp;)\s~i', $context['member']['name']) ? $txt['googleMap_Whereare'] : $txt['googleMap_Whereis']) . ' ' . $context['member']['name'] . ':</strong></dt>
+	<dd>
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=' . $modSettings['googleMap_Key'] . '&sensor=false"></script>
+		<div id="map_canvas" style="width: 100%; height: 350px; color: #000000;"></div>
+		<input type="hidden" name="latitude" size="50" value="', $context['member']['googleMap']['latitude'], '" />
+		<input type="hidden" name="longitude" size="50" value="', $context['member']['googleMap']['longitude'], '" />
+		<input type="hidden" name="pindate" size="50" value="', $context['member']['googleMap']['pindate'], '" />
+		<script type="text/javascript"><!-- // --><', '', '![CDATA[
+			var latlng = new google.maps.LatLng(', $context['member']['googleMap']['latitude'], ', ', $context['member']['googleMap']['longitude'], ');
+			var options = {
+				zoom: 14,
+				center: latlng,
+				scrollwheel: false,
+				mapTypeId: google.maps.MapTypeId.HYBRID,
+				mapTypeControlOptions: {
+					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+				},
+				zoomControl: true,
+				zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.DEFAULT
+				},
+			};
+			map = new google.maps.Map(document.getElementById("map_canvas"), options);
+			var marker = new google.maps.Marker({
+				position: latlng,
+				map: map
+			});
+		// ]]', '', '></script>
+	</dd>
+</dl>';
+		}
+	}
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+
+// Call back for Google Map Member Map
+function template_profile_googlemap_modify()
+{
+	global $txt, $modSettings, $context;
+
+	if (!empty($modSettings['googleMap_Enable']) && allowedTo('googleMap_view')) 
+	{
+		echo '
+<dt><strong>', $txt['googleMap'], '</strong><br /><span class="smalltext">'. $txt['googleMap_PleaseClick'].'<br />' . $txt['googleMap_Disclaimer'] . '</span></dt>
+<dd>
+<style type="text/css">
+	#map_canvas input, textarea {background-color: #FFFFFF;}
+	.pac-container {background-color: #FFFFFF;}
+	.pac-item {color: #000000;}
+</style>
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=' . $modSettings['googleMap_Key'] . '&sensor=false&libraries=places"></script>
+		<input id="searchTextField" type="text" size="50">
+        <div id="map_canvas" style="width: 100%; height: 350px; color: #000000;" align="center"></div>
+        <input type="hidden" name="latitude" id="latitude" size="50" value="', $context['member']['googleMap']['latitude'], '" />
+        <input type="hidden" name="longitude" id="longitude" size="50" value="', $context['member']['googleMap']['longitude'], '" />
+        <input type="hidden" name="pindate" id="pindate" size="50" value="', $context['member']['googleMap']['pindate'], '" />
+        <script type="text/javascript"><!-- // --><', '', '![CDATA[
+		var markersArray = [];
+	
+		// used to clear previous pins placed on the map
+		function clearOverlays() {
+			if (markersArray) {
+				for (i in markersArray) {
+					markersArray[i].setMap(null);
+				}
+			}
+		}
+
+		// show the map
+		function initialize() {
+			var latlng = new google.maps.LatLng(', (!empty($context['member']['googleMap']['latitude']) ? $context['member']['googleMap']['latitude'] : (!empty($modSettings['googleMap_DefaultLat']) ? $modSettings['googleMap_DefaultLat'] : 0)) . ', ' . (!empty($context['member']['googleMap']['longitude']) ? $context['member']['googleMap']['longitude'] : (!empty($modSettings['googleMap_DefaultLong']) ? $modSettings['googleMap_DefaultLong'] : 0)), ');
+			var options = {
+				zoom: ', !empty($context['member']['googleMap']['latitude']) ? 15 : (!empty($modSettings['googleMap_DefaultZoom']) ? $modSettings['googleMap_DefaultZoom'] : 4), ',
+				center: latlng,
+				scrollwheel: false,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControlOptions: {
+					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+				},
+				zoomControl: true,
+				zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.DEFAULT
+				},
+			};
+			map = new google.maps.Map(document.getElementById("map_canvas"), options);';
+
+		// show the member pin, and provide a way to remove it,  if one has been set
+		if (!empty($context['member']['googleMap']['latitude']) && !empty($context['member']['googleMap']['longitude']))
+			echo '
+			var marker = new google.maps.Marker({
+				position: latlng,
+				map: map
+			});
+			markersArray.push(marker);
+			
+			// listen and act on a marker click, used to remove this pin
+			google.maps.event.addListener(marker, "click", function() {
+				clearOverlays();
+				document.getElementById("latitude").value = 0;
+				document.getElementById("longitude").value = 0;
+			});';
+			
+		echo '
+			// listen and act on a map click, used to add pins
+			google.maps.event.addListener(map, "click", function(event) {
+				clearOverlays();
+				var marker = new google.maps.Marker({position:event.latLng, map:map});
+				markersArray.push(marker);
+				map.panTo(event.latLng);
+				document.getElementById("latitude").value = event.latLng.lat();
+				document.getElementById("longitude").value = event.latLng.lng();
+				
+				// listen and act on a marker click, used to remove pins
+				google.maps.event.addListener(marker, "click", function() {
+				clearOverlays();
+				document.getElementById("latitude").value = 0;
+				document.getElementById("longitude").value = 0;
+				});
+			});
+			
+			// set up the searchbox to be part of the map
+			var input = document.getElementById("searchTextField");
+			var autocomplete = new google.maps.places.Autocomplete(input);
+			autocomplete.bindTo("bounds", map);
+			autocomplete.setTypes(["geocode"]);
+			
+			// watch for a search box selection, when found move and zoom to that place
+			google.maps.event.addListener(autocomplete, "place_changed", function() {
+				var place = autocomplete.getPlace();
+				if (place.geometry.viewport) {
+					map.fitBounds(place.geometry.viewport);
+				} else {
+					map.setCenter(place.geometry.location);
+					map.setZoom(13);
+				}
+			});
+		}
+		google.maps.event.addDomListener(window, "load", initialize);
+		// ]]', '', '></script>
+</dd>';
+	}
+}
+]]></add>
+		</operation>
+	</file>	
+
+</modification>

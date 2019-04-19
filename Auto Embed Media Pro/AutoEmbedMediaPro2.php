@@ -339,8 +339,8 @@ function MediaProisMobileDevice()
             array('iPad', 'ipad'),
 			array('iPod', 'ipod'),
 			array('PocketIE', 'iemobile'),
-			array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'])),
-			array('Opera Mobile', 'Opera Mobi'),
+			array('Opera Mini', 'opera mini'),
+			array('Opera Mobile', 'opera mobi'),
 			array('Android', 'android'),
 			array('Symbian', 'symbian'),
 			array('BlackBerry', 'blackberry'),
@@ -352,7 +352,7 @@ function MediaProisMobileDevice()
 		foreach ($user_agents as $ua)
 		{
 			$string = $ua[1];
-			if ((is_bool($string) && $string == true) || (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string)))
+			if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string))
 				return true;
 
         }

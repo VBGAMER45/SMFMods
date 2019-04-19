@@ -5,7 +5,7 @@
 	<id>vbgamer45:LoginSecurity</id>
 	<name>Login Security</name>
 	<type>modification</type>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 
 	<install for="1.1 - 1.1.99">
 		<redirect url="?action=featuresettings;sa=loginsecurity">redirect.txt</redirect>
@@ -70,4 +70,22 @@
 		<code>UnInstall.php</code>
 		
 	</uninstall>
+	
+	
+	
+	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
+		<redirect url="?action=admin;area=featuresettings;sa=loginsecurity">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">LoginSecurity2.1.xml</modification>
+		<require-file name="Subs-LoginSecurity2.php" destination="$sourcedir" />>
+		<code>LoginSecuritysql2.php</code>
+	</install>
+	
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
+		<modification type="file" reverse="true">LoginSecurity2.1.xml</modification>
+		<remove-file name="$sourcedir/Subs-LoginSecurity2.php" />
+		<code>UnInstall.php</code>
+		
+	</uninstall>
+	
 </package-info>

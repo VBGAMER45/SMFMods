@@ -167,7 +167,7 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by seperatin
 				<search position="replace"><![CDATA[elseif ($_POST['hash_passwrd'] == sha1($user_settings['passwd'] . $sc))
 			$sha_passwd = $user_settings['passwd'];
 		else
-		{]></search>
+		{]]></search>
 			<add><![CDATA[elseif ($_POST['hash_passwrd'] == sha1($user_settings['passwd'] . $sc))
 			$sha_passwd = $user_settings['passwd'];
 		else

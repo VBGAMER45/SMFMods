@@ -54,7 +54,7 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by separatin
 
 <file name="$sourcedir/LogInOut.php">
 	<operation>
-		<search position="replace"><![CDATA[// Figure out the password using SMF's encryption - if what they typed is right.]]></search>
+		<search position="replace"><![CDATA[// Bad password!  Thought you could fool the database?!]]></search>
 	<add><![CDATA[
 	// Login Security Mod
 	require_once($sourcedir . '/Subs-LoginSecurity2.php');
@@ -69,10 +69,10 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by separatin
 	// End Login Security Mod
 	
 	// Been guessing a lot, haven't we?
-		if (isset($_SESSION['failed_login']) && $_SESSION['failed_login'] >= $modSettings['failed_login_threshold'] * 3)
-		fatal_lang_error('login_threshold_fail', 'critical');
+	if (isset($_SESSION['failed_login']) && $_SESSION['failed_login'] >= $modSettings['failed_login_threshold'] * 3)
+		fatal_lang_error('login_threshold_fail', 'login');
 	
-	// Figure out the password using SMF's encryption - if what they typed is right.]]></add>
+	// Bad password!  Thought you could fool the database?!]]></add>
 	</operation>
 	
 	
@@ -135,7 +135,7 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by separatin
 	<operation>
 			<search position="replace"><![CDATA[// Been guessing a lot, haven't we?
 	if (isset($_SESSION['failed_login']) && $_SESSION['failed_login'] >= $modSettings['failed_login_threshold'] * 3)
-		fatal_lang_error('login_threshold_fail', 'critical');]]></search>
+		fatal_lang_error('login_threshold_fail', 'login');]]></search>
 			<add><![CDATA[
 			// Failed Login threshold Moved By Login Security]]></add>
 	</operation>
@@ -144,11 +144,11 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by separatin
 	
 	<operation>
 			<search position="replace"><![CDATA[// Bad password!  Thought you could fool the database?!
-	if ($user_settings['passwd'] != $sha_passwd)
+	if (!hash_verify_password($user_settings['member_name'], un_htmlspecialchars($_POST['passwrd']), $user_settings['passwd']))
 	{]]></search>
 		<add><![CDATA[
 	// Bad password!  Thought you could fool the database?!
-		if ($user_settings['passwd'] != $sha_passwd)
+	if (!hash_verify_password($user_settings['member_name'], un_htmlspecialchars($_POST['passwrd']), $user_settings['passwd']))
 	{
 		// Login Security Mod
 		require_once($sourcedir . '/Subs-LoginSecurity2.php');
@@ -163,29 +163,7 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by separatin
 	</operation>
 	
 	
-	<operation>
-				<search position="replace"><![CDATA[// Challenge passed.
-		elseif ($_REQUEST['hash_passwrd'] == sha1($user_settings['passwd'] . $sc))
-			$sha_passwd = $user_settings['passwd'];
-		else
-		{]]></search>
-			<add><![CDATA[// Challenge passed.
-		elseif ($_REQUEST['hash_passwrd'] == sha1($user_settings['passwd'] . $sc))
-			$sha_passwd = $user_settings['passwd'];
-		else
-		{
-			// Login Security Mod
-			require_once($sourcedir . '/Subs-LoginSecurity2.php');
-			
-			// They failed login....
-			AddLoginFailure($user_settings['id_member']);
-			
-			$loginSecurityErrorLogged = true;
-			
-			// End Login Security Mod
-			
-			]]></add>
-		</operation>
+
 	
 	
 	
@@ -214,7 +192,7 @@ $txt['ls_ip_address_protection_note'] = 'You can allow multiple ips by separatin
 	
 
 	<operation>
-		<search position="replace"><![CDATA[function ModifyKarmaSettings($return_config = false)]]></search>
+		<search position="replace"><![CDATA[function ModifyGeneralModSettings($return_config = false)]]></search>
 		<add><![CDATA[
 		
 function ModifyLoginSecuritySettings($return_config = false)
@@ -245,7 +223,7 @@ function ModifyLoginSecuritySettings($return_config = false)
 	prepareDBSettingContext($config_vars);
 }
 				
-function ModifyKarmaSettings($return_config = false)]]></add>
+function ModifyGeneralModSettings($return_config = false)]]></add>
 	</operation>
 	
 	
@@ -256,18 +234,18 @@ function ModifyKarmaSettings($return_config = false)]]></add>
 		<search position="replace"><![CDATA[// Something to end with?
 			if (!empty($field['postinput']))
 				echo '
-							', $field['postinput'];
+						', $field['postinput'];
 
 			echo '
-						</dd>';]]></search>
+					</dd>';]]></search>
 		<add><![CDATA[
 		// Something to end with?
-					if (!empty($field['postinput']))
-						echo '
-									', $field['postinput'];
-		
-					echo '
-						</dd>';
+			if (!empty($field['postinput']))
+				echo '
+						', $field['postinput'];
+
+			echo '
+					</dd>';
 		
 		// Login Security Mod
 		if ($modSettings['ls_allow_ip_security'] && $key == 'real_name')
@@ -340,7 +318,7 @@ function ModifyKarmaSettings($return_config = false)]]></add>
 		
 		// Login Security
 		$allowedips = '';
-		
+		global $modSettings;
 		if ($modSettings['ls_allow_ip_security'])
 		{
 			global $sourcedir;

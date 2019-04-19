@@ -206,8 +206,8 @@ $txt['ref_txt_copyremovalnote'] = 'Copyright removal removes the copyright line 
 	    
     	if ($showInfo == true)
     	{
-		$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><span class="smalltext">Referrals System by <a href="http://www.createaforum.com" target="_blank">CreateAForum.com</a></span>', $buffer);
-		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext">Referrals System by <a href="http://www.createaforum.com" title="Forum Hosting" target="_blank">CreateAForum.com</a></span>', $buffer);
+		$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><span class="smalltext">Referrals System by <a href="https://www.createaforum.com" target="_blank">CreateAForum.com</a></span>', $buffer);
+		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext">Referrals System by <a href="https://www.createaforum.com" title="Forum Hosting" target="_blank">CreateAForum.com</a></span>', $buffer);
 	}
 	// End Refferal System
 			

@@ -42,14 +42,14 @@ foreach ($hook_functions as $hook => $function)
 
 if (SMF == 'SSI')
 	echo 'Congratulations! You have successfully installed the mod hooks';
-	
-	
+
+
 if (!empty($context['uninstalling']))
 {
-	
+
 // Show the iframe with the uninstall
 $modName = base64_encode("Google Member Map");
-echo '<iframe src ="http://www.smfhacks.com/uninstall.php?modname=' . $modName . '" width="100%" height="200px">
+echo '<iframe src ="https://www.smfhacks.com/uninstall.php?modname=' . $modName . '" width="100%" height="200px">
   <p>Your browser does not support iframes.</p>
 </iframe>
 <b>Other Helpful Mods to make your forum stand out</b><br />
