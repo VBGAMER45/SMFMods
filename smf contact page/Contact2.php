@@ -95,6 +95,9 @@ function Contact()
 		}
 		else if (!empty($modSettings['reg_verification']))
 				{
+					
+					// no Repcachea
+					
 					require_once($sourcedir . '/Subs-Editor.php');
 					$verificationOptions = array(
 						'id' => 'post',

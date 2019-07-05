@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:LoginMenuButton</id>
+	<name>Login Menu Button</name>
+	<type>modification</type>
+	<version>1.0</version>
+	
+	
+		
+	<install for="2.1 - 2.1.99,2.1 Beta 1, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<require-file name="LoginMenuHooks.php" destination="$sourcedir" />
+		<require-file name="key_go.png" destination="$imagesdir" />
+		<code>dohooks.php</code>
+	</install>
+	<upgrade for="2.1 - 2.1.99,2.1 Beta 1, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<require-file name="LoginMenuHooks.php" destination="$sourcedir" />
+		<code>dohooks.php</code>
+	
+	</upgrade>
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+
+		<remove-file name="$sourcedir/LoginMenuHooks.php" />
+		<remove-file name="$imagesdir/key_go.png" />
+		<code>dohooks.php</code>
+	</uninstall>
+	
+
+</package-info>

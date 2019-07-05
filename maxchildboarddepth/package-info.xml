@@ -7,13 +7,13 @@
 	<type>modification</type>
 	<version>1.0</version>
 
-	<install for="2.0-2.1.99, 2.0 RC3">
+	<install for="2.0-2.0.99">
 		<readme>ReadMe.txt</readme>
 		<modification type="file">install.xml</modification>
 		<code>install.php</code>
 	</install>
 
-	<uninstall for="2.0-2.1.99, 2.0 RC3">
+	<uninstall for="2.0-2.0.99">
 		<modification type="file" reverse="true">install.xml</modification>
 	</uninstall>
 </package-info>

@@ -1,17 +1,17 @@
 <?php
 /*
-Login Security
+GDPR Helper 
 Version 1.0
 by:vbgamer45
 http://www.smfhacks.com
-Copyright 2008-2009 http://www.samsonsoftware.com
+Copyright 2008-2019 http://www.samsonsoftware.com
 */
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
   require_once(dirname(__FILE__) . '/SSI.php');
 
 // Show the iframe with the uninstall
-$modName = base64_encode("Login Security");
+$modName = base64_encode("GDPR Helper");
 echo '<iframe src ="https://www.smfhacks.com/uninstall.php?modname=' . $modName . '" width="100%" height="200px">
   <p>Your browser does not support iframes.</p>
 </iframe>
