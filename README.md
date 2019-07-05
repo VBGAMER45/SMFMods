@@ -1,2 +1,2 @@
 # SMFMods
-All my public and free modifications from http://www.smfhacks.com
+All my public and free modifications from https://www.smfhacks.com
