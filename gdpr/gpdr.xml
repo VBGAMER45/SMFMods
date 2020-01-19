@@ -198,7 +198,7 @@ $context['profile_areas']['edit_profile']['areas']['exportdata'] = '<a href="' .
 // Start GPDR Helper
 	if (!empty($modSettings['gpdr_enable_privacy_policy']))
 	{
-		if (!isset($_REQUEST['privacy_agree']))
+		if (!isset($_REQUEST['privacy_agree']) && !$user_info['is_admin'])
 			fatal_error($txt['gpdr_txt_privacy_fail'],false);
 	}
 // END GPDR Helper

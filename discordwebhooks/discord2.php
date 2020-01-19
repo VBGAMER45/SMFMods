@@ -215,13 +215,20 @@ function discord_send_topic($messageid)
 	$username = $row['real_name'];
 	
 	if (empty($row['real_name']))
+	{
+		// Load the language files
+		if (loadlanguage('discord') == false)
+			loadLanguage('discord','english');
+			
 		$username = $txt['discord_guest'];
+	}	
+		
 		
 		
 	$message = str_replace("(username)",$username,$message);
 	$message = str_replace("(title)",$row['subject'],$message);
 	$message = str_replace("(board)",$row['name'],$message);
-	$message = str_replace("(url)",$scripturl . '?topic=' . $row['id_topic'] . '.msg=' . $messageid,$message);
+	$message = str_replace("(url)",$scripturl . '?topic=' . $row['id_topic'] . '.msg' . $messageid . '#msg' . $messageid,$message);
 	$message = str_replace("(can_url)",$scripturl . '?topic=' . $row['id_topic'] . '.0',$message); // this one allows canonical url...
 	$message = html_entity_decode($message, ENT_QUOTES | ENT_XML1, 'UTF-8');
 	
@@ -240,8 +247,12 @@ function discord_send_topic($messageid)
 	
 	if (!empty($modSettings['discord_webhook_topic_url']))
 		$endpoint = $modSettings['discord_webhook_topic_url'];
-		
-		
+
+
+	if (empty($endpoint))
+		return;
+
+
 	discord_send($endpoint,$username,$message);
 	
 }
@@ -274,13 +285,18 @@ function discord_send_post($messageid)
 	$username = $row['real_name'];
 	
 	if (empty($row['real_name']))
+	{
+		// Load the language files
+		if (loadlanguage('discord') == false)
+			loadLanguage('discord','english');
+			
 		$username = $txt['discord_guest'];
-		
+	}	
 		
 	$message = str_replace("(username)",$username,$message);
 	$message = str_replace("(title)",$row['subject'],$message);
 	$message = str_replace("(board)",$row['name'],$message);
-	$message = str_replace("(url)",$scripturl . '?topic=' . $row['id_topic'] . '.msg=' . $messageid,$message);
+	$message = str_replace("(url)",$scripturl . '?topic=' . $row['id_topic'] . '.msg' . $messageid . '#msg' . $messageid,$message);
 	$message = str_replace("(can_url)",$scripturl . '?topic=' . $row['id_topic'] . '.0',$message); // this one allows canonical url...
 	$message = html_entity_decode($message, ENT_QUOTES | ENT_XML1, 'UTF-8');
 
@@ -300,6 +316,9 @@ function discord_send_post($messageid)
 	if (!empty($modSettings['discord_webhook_post_url']))
 		$endpoint = $modSettings['discord_webhook_post_url'];
 	
+	if (empty($endpoint))
+		return;
+		
 	discord_send($endpoint,$username,$message);
 	
 	
@@ -311,7 +330,10 @@ function discord_send_new_member_registration($memberID)
 	
 	if (empty($modSettings['discord_enable_push_registration']))
 		return;
-		
+
+	if (empty($modSettings['discord_webhook_url']))
+		return;
+
 	if (empty($memberID))
 		return;		
 		

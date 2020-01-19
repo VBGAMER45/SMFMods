@@ -1,3 +1,16 @@
+1.0.9
+!Fixed registering a user from admin area for SMF 2.0.x and 2.1.x, 1.1.x
+
+1.0.8
+!Handle updating privacy policy on edit for SMF 2.0.16
+
+1.0.7
+!Fixes importing of data for SMF 2.0.16 update
+
+1.0.6
++Adds support to copy to SMF's 2.0.16 privacy policy and agreeement data.
+Data is copied on install/upgrade so are ready for SMF 2.0.16
+
 1.0.5
 !Fixed incorrect setting used for clearing post information on member deletion
 

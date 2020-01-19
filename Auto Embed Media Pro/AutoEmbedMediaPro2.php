@@ -3,10 +3,10 @@
 Simple Audio Video Embedder
 Version 4.5
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 
 License Information:
-Links to http://www.smfhacks.com must remain unless
+Links to https://www.smfhacks.com must remain unless
 branding free option is purchased.
 */
 global $modSettings;
@@ -20,7 +20,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '4.5.3';
+	$mediaProVersion = '5.0.3';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -183,7 +183,7 @@ function MediaProSettings2()
     'mediapro_disablemobile' => $mediapro_disablemobile,
     'mediapro_usecustomdiv' => $mediapro_usecustomdiv,
     'mediapro_divclassname' => $mediapro_divclassname,
-    
+
 	));
 
 	// Redirect to the admin area
@@ -196,8 +196,8 @@ function MediaProProcess($message)
 
  	if (isset($context['save_embed_disable']) && $context['save_embed_disable'] == 1)
 		return $message;
-		
-	// Don't process if a robot	
+
+	// Don't process if a robot
 	if (!empty($user_info['possibly_robot']))
 		return $message;
 
@@ -246,13 +246,13 @@ function MediaProProcess($message)
 			$movie_height = $modSettings['mediapro_default_height'];
 		else
 			$movie_height = $mediaSite['height'];
-			
+
 			if (!empty($modSettings['mediapro_usecustomdiv']))
 			{
 				$mediaSite['embedcode'] = '<div class="' . $modSettings['mediapro_divclassname'] . '">' . $mediaSite['embedcode'];
-				
+
 				$mediaSite['embedcode'] .= '</div>';
-				
+
 			}
 
 
@@ -270,8 +270,8 @@ function MediaProProcess($message)
 			 $mediaSite['embedcode'] = str_replace('height=600','height=' . $movie_height, $mediaSite['embedcode']);
 			 $mediaSite['embedcode'] = str_replace('data-height="640"','data-height="' . $movie_height .'"', $mediaSite['embedcode']);
 			 $mediaSite['embedcode'] = str_replace('data-height="600"','data-height="' . $movie_height .'"', $mediaSite['embedcode']);
-			 
-		$medialinks = explode("ZSPLITMZ",$mediaSite['regexmatch']);	 
+
+		$medialinks = explode("ZSPLITMZ",$mediaSite['regexmatch']);
 
 		foreach($medialinks as $medialink)
 			$message = preg_replace('#<a href="' . $medialink . '"[^>]*>([^<]+)</a>#i', $mediaSite['embedcode'], $message);
@@ -334,28 +334,29 @@ function MegaThanks()
 
 function MediaProisMobileDevice()
 {
-    $user_agents = array(
-			array('iPhone', 'iphone'),
-            array('iPad', 'ipad'),
-			array('iPod', 'ipod'),
-			array('PocketIE', 'iemobile'),
-			array('Opera Mini', 'opera mini'),
-			array('Opera Mobile', 'opera mobi'),
-			array('Android', 'android'),
-			array('Symbian', 'symbian'),
-			array('BlackBerry', 'blackberry'),
-			array('BlackBerry Storm', 'blackberry05'),
-			array('Palm', 'palm'),
-			array('Web OS', 'webos'),
-		);
+	$user_agents = array(
+		array('iPhone', 'iphone'),
+		array('iPod', 'ipod'),
+		array('iPad', 'ipad'),
+		array('PocketIE', 'iemobile'),
+		array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ?  'operamini' : ''),
+		array('Opera Mobile', 'Opera Mobi'),
+		array('Android', 'android'),
+		array('Symbian', 'symbian'),
+		array('BlackBerry', 'blackberry'),
+		array('BlackBerry Storm', 'blackberry05'),
+		array('Palm', 'palm'),
+		array('Web OS', 'webos'),
+	);
 
-		foreach ($user_agents as $ua)
-		{
-			$string = $ua[1];
-			if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string))
+	foreach ($user_agents as $ua)
+	{
+			$string = (string) $ua[1];
+
+			if (!empty($string))
+			if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string)))
 				return true;
-
-        }
+	}
 
         return false;
 

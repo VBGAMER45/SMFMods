@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:blockproxyvpn</id>
+	<name>Block Proxy VPN On Registration</name>
+	<type>modification</type>
+	<version>1.1</version>
+
+
+
+	
+	<install for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3">
+		<readme>ReadMe.txt</readme>
+		<require-file name="blockvpnproxy.php" destination="$sourcedir" />
+		<modification type="file">blockproxy.xml</modification>
+		<hook hook="integrate_register_check" function="blockvpnproxy_register_check" file="$sourcedir/blockvpnproxy.php" />
+		
+	</install>
+
+	<uninstall for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3">
+		<hook hook="integrate_register_check" function="blockvpnproxy_register_check" file="$sourcedir/blockvpnproxy.php" reverse="true" />
+		<modification type="file" reverse="true">blockproxy.xml</modification>
+		<remove-file name="$sourcedir/blockvpnproxy.php" />
+	</uninstall>	
+	
+	
+	<install for="2.0-2.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">blockproxy2.xml</modification>
+		
+	</install>
+
+	<uninstall for="2.0-2.0.99">
+		<modification type="file" reverse="true">blockproxy2.xml</modification>
+	</uninstall>		
+</package-info>

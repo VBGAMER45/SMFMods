@@ -4,7 +4,7 @@ GDPR Helper
 Version 1.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2018 SMFHacks.com
+Copyright 2018-2019 SMFHacks.com
 
 ############################################
 License Information:
@@ -43,6 +43,53 @@ VALUES
 // Add Package Servers
 $smcFunc['db_query']('', "DELETE FROM {db_prefix}package_servers WHERE url = 'https://www.smfhacks.com'");
 $smcFunc['db_query']('', "REPLACE INTO {db_prefix}package_servers (name,url) VALUES ('SMFHacks.com Modification Site', 'https://www.smfhacks.com')");
+
+// SMF 2.0.16
+global $user_info;
+if (empty($modSettings['policy_updated_' . $user_info['language']]))
+{
+    global $boarddir, $mbname, $webmaster_email;
+	$data = file_get_contents($boarddir . "/privacypolicy.txt");
+	
+	if (empty($modSettings['gpdr_last_privacydate']))
+		$modSettings['gpdr_last_privacydate'] = time();
+
+	$data = str_replace("[business name]",$mbname,$data);
+    $data = str_replace("[email address]",$webmaster_email,$data);
+    $data = str_replace("[date]",date("F j, Y, g:i a",$modSettings['gpdr_last_privacydate']),$data);
+    
+    
+    
+     	updateSettings(
+	array(
+    'policy_updated_' . $user_info['language'] => $modSettings['gpdr_last_privacydate'],
+	'policy_' . $user_info['language'] => $data,
+	));
+
+    
+    
+}
+
+// GDPR 
+$modSettings['disableQueryCheck'] = 1;
+
+$smcFunc['db_query']('', "REPLACE INTO {db_prefix}themes
+                        (ID_MEMBER, ID_THEME, variable, value)
+                        SELECT ID_MEMBER, 1, 'policy_accepted', value FROM {db_prefix}themes WHERE 
+                        variable = 'gpdr_policydate'
+
+                        "         
+);
+
+
+$smcFunc['db_query']('', "REPLACE INTO {db_prefix}themes
+                        (ID_MEMBER, ID_THEME, variable, value)
+                        SELECT ID_MEMBER, 1, 'agreement_accepted', value FROM {db_prefix}themes WHERE 
+                        variable = 'gpdr_agreementdate'
+
+                        "         
+);
+
 
 
 

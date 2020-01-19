@@ -4,7 +4,7 @@ GDPR Helper
 Version 1.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2018=2019 SMFHacks.com
+Copyright 2018-2019 SMFHacks.com
 
 ############################################
 License Information:
@@ -22,7 +22,7 @@ function GPDR_Main()
 {
 	global $boardurl, $modSettings, $boarddir, $currentVersion, $context;
 
-	$currentVersion = '1.0.5b';
+	$currentVersion = '1.0.9';
 
 	// Load the language files
     if (loadlanguage('gpdr') == false)
@@ -106,7 +106,7 @@ function GPDR_AdminPrivacyPolicy()
 
 function GPDR_AdminPrivacyPolicy2()
 {
-	global $scripturl, $txt, $sourcedir, $modSettings, $smcFunc, $user_info, $boarddir;
+	global $scripturl, $txt, $sourcedir, $modSettings, $smcFunc, $user_info, $boarddir, $mbname, $webmaster_email;
 
 	isAllowedTo('admin_forum');
 
@@ -134,12 +134,20 @@ function GPDR_AdminPrivacyPolicy2()
 
     file_put_contents($boarddir . "/privacypolicy.txt",$privacypolicy);
 
+
+    $data = $privacypolicy;
+	$data = str_replace("[business name]",$mbname,$data);
+    $data = str_replace("[email address]",$webmaster_email,$data);
+    $data = str_replace("[date]",date("F j, Y, g:i a",time()),$data);
+
     // Save the date
     	updateSettings(
 	array(
     'gpdr_last_privacydate' => time(),
-
+    'policy_updated_' . $user_info['language'] => time(),
+	'policy_' . $user_info['language'] => $data,
 	));
+
 
 
 
@@ -238,6 +246,13 @@ function GPDR_ViewPrivacyPolicy()
 
             cache_put_data('theme_settings-' . $settings['theme_id'] . ':' . $user_info['id'], null, 60);
 
+           $smcFunc['db_query']('', "
+                    REPLACE INTO {db_prefix}themes
+                        (ID_MEMBER, ID_THEME, variable, value)
+                    VALUES
+                    (" . $user_info['id'] . ",1,'policy_accepted','$t')
+                    ");
+
             // Redirect to the board index
             redirectexit();
         }
@@ -289,6 +304,14 @@ function GPDR_ReConfirmRegisterAgreement()
                     VALUES
                     (" . $user_info['id'] . "," . $settings['theme_id'] . ",'gpdr_agreementdate','$t')
                     ");
+
+            $smcFunc['db_query']('', "
+                    REPLACE INTO {db_prefix}themes
+                        (ID_MEMBER, ID_THEME, variable, value)
+                    VALUES
+                    (" . $user_info['id'] . ",1,'agreement_accepted','$t')
+                    ");
+
 
             cache_put_data('theme_settings-' . $settings['theme_id'] . ':' . $user_info['id'], null, 60);
 
@@ -363,7 +386,7 @@ function GPDR_ExportData()
     $type = $_REQUEST['type'];
 
     if (empty($context['profile_fields']))
-            $context['profile_fields'] = array();
+    $context['profile_fields'] = array();
 
 
     // Check what data we are exporting

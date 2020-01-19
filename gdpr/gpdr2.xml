@@ -250,7 +250,7 @@ GPDR_CleanMemberInfo($users);
 // Start GPDR Helper
 	if (!empty($modSettings['gpdr_enable_privacy_policy']))
 	{
-		if (!isset($_REQUEST['privacy_agree']))
+		if (!isset($_REQUEST['privacy_agree']) && !$user_info['is_admin'])
 			$reg_errors[] = $txt['gpdr_txt_privacy_fail'];
 	}
 // END GPDR Helper
@@ -317,7 +317,8 @@ if (!is_array($memberID))
 <file name="$themedir/Register.template.php">
 		<operation>
 			<search position="after"><![CDATA[echo '
-			<div id="confirm_buttons">]]></search>
+			<div id="confirm_buttons">
+				<input type="submit" name="regSubmit" value="']]></search>
 			<add><![CDATA[
 // Start GPDR Helper
 

@@ -29,10 +29,10 @@ function template_main()
 
 		foreach ($context['smfstaff_groups']  as $id => $data)
 		{
-
-			$count_users = count(@$context['smfstaff_users'][$data['id']]);
-			if ($count_users == 0)
+			if (empty($context['smfstaff_users'][$data['id']]))
 				continue;
+
+
 				
 				echo '<table border="0" cellspacing="0" cellpadding="2" width="100%">';
 				echo '<tr>';
@@ -124,9 +124,9 @@ function template_main()
 			if ($modSettings['smfstaff_showlocalmods'])
 			{
 				
-				$localcount = count($context['smfstaff_localmods']);
 				
-				if ($localcount > 0)
+				
+				if (!empty($context['smfstaff_localmods']))
 				{
 					echo '<table border="0" cellspacing="0" cellpadding="2" width="100%">';
 					echo '<tr>';
@@ -221,7 +221,7 @@ function template_main()
 	
 			
 	// The Copyright is required to remain or contact me to purchase link removal.
-	echo '<div align="center" class="smalltext">Powered by: <a href="http://www.smfhacks.com" target="blank">SMF Staff</a></div>';
+	echo '<div align="center" class="smalltext">Powered by: <a href="https://www.smfhacks.com" target="blank">SMF Staff</a></div>';
 
 	
 }

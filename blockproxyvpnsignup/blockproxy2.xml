@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:blockproxyvpn</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Block Proxy VPN On Registration Text Strings
+$txt['blockvbn_signuperror'] = 'You can not signup for this forum using a proxy or a vpn service. Please disable then try to register again';
+// END Block Proxy VPN On Registration Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Block Proxy VPN On Registration Text Strings
+$txt['blockvbn_signuperror'] = 'You can not signup for this forum using a proxy or a vpn service. Please disable then try to register again';
+// END Block Proxy VPN On Registration Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Subs-Members.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// If we found any errors we need to do something about it right away!]]></search>
+		<add><![CDATA[
+// Begin Block Proxy VPN On Registration		
+	if (is_UserProxyVPN() == true)
+	{
+		$reg_errors[] = array('lang', 'blockvbn_signuperror');
+	}	
+// End Block Proxy VPN On Registration	
+		
+// If we found any errors we need to do something about it right away!]]></add>
+	</operation>
+
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Block Proxy VPN On Registration
+function is_UserProxyVPN($log = false) 
+{
+
+	$headers = array('CLIENT_IP', 'USERAGENT_VIA', 'HTTP_PC_REMOTE_ADDR', 'XPROXY_CONNECTION', 'HTTP_XPROXY_CONNECTION', 'FORWARDED','FORWARDED_FOR','FORWARDED_FOR_IP','VIA','X_FORWARDED','X_FORWARDED_FOR','HTTP_CLIENT_IP','HTTP_FORWARDED','HTTP_FORWARDED_FOR','HTTP_FORWARDED_FOR_IP','HTTP_PROXY_CONNECTION','HTTP_VIA','HTTP_X_FORWARDED','HTTP_X_FORWARDED_FOR');
+
+	foreach ($headers as $header)
+	{
+		if (isset($_SERVER[$header])) 
+		{
+			
+			if ($log == true)
+				log_error($header, 'general');
+			
+			return true;
+		}
+	}
+	
+	return false;
+	
+	
+}
+// END Block Proxy VPN On Registration		
+]]></add>
+	</operation>
+</file>
+
+</modification>

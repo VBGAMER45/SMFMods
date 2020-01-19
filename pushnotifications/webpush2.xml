@@ -109,7 +109,7 @@ $txt['webpush_admin'] = 'Push Notifications Settings';
 	</operation>
 </file>
 
-<file name="$languagedir/Mentions.php" error="skip">
+<file name="$sourcedir/Mentions.php" error="skip">
 	<operation>
 		<search position="replace"><![CDATA[if (!empty($mention['email_mentions']) && $approved]]></search>
 		<add><![CDATA[spamProtection('register');
@@ -117,13 +117,12 @@ $txt['webpush_admin'] = 'Push Notifications Settings';
 		// Push Notifications Mod SMFHacks.com
 		global $sourcedir;
 		require_once($sourcedir . '/webpush2.php');
-		$pushurl = $scripturl . '?msg=" . $id_post];
-		webpush_send($mention['id'],$user_info['id'],$user_info['name'],'tag',$pushurl);
+		$pushurl = $scripturl . '?msg=' . $id_post;
+		webpush_send($mention['id'],$user_info['id'],$user_info['name'],'tag',$pushurl, array('message'=>$subject, 'title'=>''));
 		
 		// End Push Notifications Mod SMFHacks.com
 		
-	if (!empty($mention['email_mentions']) && $approved		
-]]></add>
+	if (!empty($mention['email_mentions']) && $approved]]></add>
 	</operation>
 </file>
 

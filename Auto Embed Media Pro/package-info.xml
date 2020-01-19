@@ -4,7 +4,7 @@
 	<id>vbgamer45:autoembedmediapro</id>
 	<name>Simple Audio Video Embedder</name>
 	<type>modification</type>
-	<version>4.5.3a</version>
+	<version>5.0.3</version>
 	
 	
 	<upgrade from="all" for="1.1 - 1.1.99">

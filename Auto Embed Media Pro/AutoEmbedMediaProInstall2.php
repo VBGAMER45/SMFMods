@@ -3,10 +3,10 @@
 Simple Audio Video Embedder
 Version 4.5
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 
 License Information:
-Links to http://www.smfhacks.com must remain unless
+Links to https://www.smfhacks.com must remain unless
 branding free option is purchased.
 */
 
@@ -16,26 +16,29 @@ if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 elseif (!defined('SMF'))
   die('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
 
+// remove old xss flv player
+if (file_exists($boarddir . "/videos/player_flv_maxi.swf"))
+ 	unlink($boarddir . "/videos/player_flv_maxi.swf");
 
- 
+
 // Set up default settings
 $smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_default_width', '0')");
-$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_default_height','0')"); 
-$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_copyrightkey','')"); 
-$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_disablesig','0')"); 
-$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_disablemobile','0')"); 
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_default_height','0')");
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_copyrightkey','')");
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_disablesig','0')");
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_disablemobile','0')");
 
-$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_usecustomdiv','0')");  
-$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_divclassname','embedsave')");  
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_usecustomdiv','0')");
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('mediapro_divclassname','embedsave')");
 
-$smcFunc['db_query']('', "REPLACE INTO {db_prefix}settings VALUES ('autoLinkUrls','1')"); 
+$smcFunc['db_query']('', "REPLACE INTO {db_prefix}settings VALUES ('autoLinkUrls','1')");
 
 $smcFunc['db_query']('', "CREATE TABLE IF NOT EXISTS {db_prefix}mediapro_cache (
   id int(11) NOT NULL auto_increment,
   mediaurl varchar(255),
   embedcode text,
   PRIMARY KEY (id),
-  KEY (mediaurl) 
+  KEY (mediaurl)
 ) ");
 
 
@@ -240,7 +243,7 @@ VALUES
 ' . "')
 
 
-");       
+");
 
 // 1.0.5
 
@@ -359,9 +362,6 @@ VALUES
 (56, 'Worldstarhiphop.com', 'http://www.worldstarhiphop.com', 374,448, 'http://www.worldstarhiphop.com/videos/video.php" . '\\' .'\\' . "?v=([A-Z0-9]*)','" . '
 <object width="480" height="600"><param name="movie" value="http://www.worldstarhiphop.com/videos/e/16711680/$1"><param name="allowFullScreen" value="true"></param><embed src="http://www.worldstarhiphop.com/videos/e/16711680/$1" type="application/x-shockwave-flash" allowFullscreen="true" width="480" height="600"></embed></object>
 ' . "'),
-(57, 'TinyPic.com', 'http://www.tinypic.com', 420,440, 'http://[" . '\\' .'\\' . "w.]+tinypic.com/player.php" . '\\' .'\\' . "?v=([A-Z0-9]*)" . '\\' .'\\' . "&amp;s=([A-Z0-9]*)','" . '
-<embed width="480" height="600" type="application/x-shockwave-flash" src="http://v$2.tinypic.com/player.swf?file=$1&s=$2">
-' . "'),
 (58, 'JibJab', 'http://www.jibjab.com', 319,425, 'http://www.jibjab.com/view/([A-Za-z0-9]*)','" . '
 <object id="A64060" quality="high" data="http://static.jibjabcdn.com/sendables/aa7bc606/client/zero/ClientZero_EmbedViewer.swf?external_make_id=$1" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" wmode="transparent" width="480" height="600"><param name="wmode" value="transparent"></param><param name="movie" value="http://aka.zero.jibjab.com/client/zero/ClientZero_EmbedViewer.swf?external_make_id=$1"></param><param name="scaleMode" value="showAll"></param><param name="quality" value="high"></param><param name="allowNetworking" value="all"></param><param name="allowFullScreen" value="true" /><param name="FlashVars" value="external_make_id=$1"></param><param name="allowScriptAccess" value="always"></param></object>
 ' . "'),
@@ -416,8 +416,8 @@ VALUES
 	(67, 'PinkBike.com', 'http://www.pinkbike.com', 375,500, 'http://www.pinkbike.com/video/([0-9]*)/','" . '
 <object width="480" height="600"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="movie" value="http://www.pinkbike.com/v/$1/l/" /><embed src="http://www.pinkbike.com/v/$1/l/" type="application/x-shockwave-flash" width="480" height="600" allowFullScreen="true" allowScriptAccess="always"></embed></object>
 ' . "')
-	
-	
+
+
 ");
 
 
@@ -431,8 +431,8 @@ VALUES
 	(69, 'Zippyshare 2', 'http://www.zippyshare.com', 375,500, 'http://([A-Z0-9]*).zippyshare.com/view.jsp" . '\\' .'\\' . "?locale=([A-Z0-9]*)" . '\\' .'\\' . "&amp;key=([A-Z0-9]*)','" . '
 <object></object><script type="text/javascript">var zippywww="$1";var zippyfile="$3";var zippydown="ffffff";var zippyfront="000000";var zippyback="ffffff";var zippylight="000000";var zippywidth=480;var zippyauto=false;var zippyvol=80;var zippydwnbtn = 1;</script><script type="text/javascript" src="http://api.zippyshare.com/api/embed.js"></script>
 ' . "')
-	
-	
+
+
 ");
 
 // 1.1.3
@@ -447,11 +447,7 @@ VALUES
 
 ");
 
-// 2.0 Local Streaming
-global $boardurl;
-$smcFunc['db_query']('', "REPLACE INTO {db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+/*
 (72, 'Local/Remote FLV', '', 350,425, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".flv','" . '
 <object class="playerpreview" type="application/x-shockwave-flash" data="' . $boardurl . '/videos/player_flv_maxi.swf" width="480" height="600">
                 <param name="movie" value="' . $boardurl . '/videos/player_flv_maxi.swf" />
@@ -459,6 +455,15 @@ VALUES
                 <param name="FlashVars" value="flv=htt$1://$2.flv&amp;width=480&amp;height=600&amp;showfullscreen=1;showstop=1&amp;showvolume=1&amp;showtime=1&amp;bgcolor1=000000&amp;bgcolor2=000000&amp;playercolor=000000" />
 </object>
 ' . "'),
+
+*/
+
+
+// 2.0 Local Streaming
+global $boardurl;
+$smcFunc['db_query']('', "REPLACE INTO {db_prefix}mediapro_sites
+	(ID,title, website, height,width,  regexmatch, embedcode)
+VALUES
 (73, 'Local/Remote SWF', '', 350,425, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".swf','" . '
 <object width="480" height="600"
 			  classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
@@ -493,7 +498,7 @@ CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab" height="600" width="480">
 </video>
 ' . "'),
 (76, 'Local/Remote RM', '', 350,425, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".rm','" . '
-<OBJECT ID=RVOCX CLASSID="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA" 
+<OBJECT ID=RVOCX CLASSID="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA"
   width="480" height="600">
 <PARAM NAME="SRC" VALUE="htt$1://$2.\.rm" />
 <PARAM NAME="CONTROLS" VALUE="ImageWindow" />
@@ -505,7 +510,7 @@ CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab" height="600" width="480">
 
 ' . "'),
 (77, 'Local/Remote RAM', '', 350,425, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".ram','" . '
-<OBJECT ID=RVOCX CLASSID="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA" 
+<OBJECT ID=RVOCX CLASSID="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA"
   width="480" height="600">
 <PARAM NAME="SRC" VALUE="htt$1://$2.ram" />
 <PARAM NAME="CONTROLS" VALUE="ImageWindow" />
@@ -517,7 +522,7 @@ CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab" height="600" width="480">
 
 ' . "'),
 (78, 'Local/Remote RA', '', 350,425, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".ra','" . '
-<OBJECT ID=RVOCX CLASSID="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA" 
+<OBJECT ID=RVOCX CLASSID="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA"
   width="480" height="600">
 <PARAM NAME="SRC" VALUE="htt$1://$2.ra" />
 <PARAM NAME="CONTROLS" VALUE="ImageWindow" />
@@ -594,14 +599,14 @@ $smcFunc['db_query']('', "REPLACE INTO {db_prefix}mediapro_sites
 VALUES
 (83, 'Facebook Video','http://www.facebook.com', 385,640, 'htt(p|ps)://www" . '\\' .'\\' . ".facebook" . '\\' .'\\' . ".com/video/embed" . '\\' .'\\' . "?video_id=([" . '\\' .'\\' . "w]+)&*[" . '\\' .'\\' . "w;=]*','" . '
 <strong><div id="fb-root"></div> <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document,"script", "facebook-jssdk"));</script>
-<div class="fb-post" data-href="https://www.facebook.com/photo.php?v=$2" data-width="550"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=$2">Post</a> 
+<div class="fb-post" data-href="https://www.facebook.com/photo.php?v=$2" data-width="550"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=$2">Post</a>
 </div></div>
 </strong>'
  . "'),
 
 (84, 'Facebook Pictures','http://www.facebook.com', 385,640, 'htt(p|ps)://www" . '\\' .'\\' . ".facebook" . '\\' .'\\' . ".com/photo.php" . '\\' .'\\' . "?v=([" . '\\' .'\\' . "w]+)&*[" . '\\' .'\\' . "w;=]*','" . '
 <strong><div id="fb-root"></div> <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document,"script", "facebook-jssdk"));</script>
-<div class="fb-post" data-href="https://www.facebook.com/photo.php?v=$2" data-width="550"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=$2">Post</a> 
+<div class="fb-post" data-href="https://www.facebook.com/photo.php?v=$2" data-width="550"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=$2">Post</a>
 </div></div>
 </strong>'
  . "')
@@ -629,7 +634,7 @@ $smcFunc['db_query']('', "REPLACE INTO {db_prefix}mediapro_sites
 VALUES
 (90, 'Facebook Video (New)','http://www.facebook.com', 385,466, 'htt(p|ps)://www.facebook.com/video.php" . '\\' .'\\' . "?v=([0-9]*)','" . '
 <div id="fb-root"></div> <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document,"script", "facebook-jssdk"));</script>
-<div class="fb-post" data-href="https://www.facebook.com/video.php?v=$2" data-width="466"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/view.php?v=$2">Post</a> 
+<div class="fb-post" data-href="https://www.facebook.com/video.php?v=$2" data-width="466"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/view.php?v=$2">Post</a>
 </div></div>
 '
  . "')
@@ -699,7 +704,7 @@ VALUES
  . "'),
   (100, 'Sendvid','http://sendvid.com', 360,640, 'http://sendvid.com/([A-Za-z0-9]*)','" . '<iframe width="640" height="360" src="//sendvid.com/embed/$1" frameborder="0" allowfullscreen></iframe>
 ' . "')
- 
+
  ");
 
 
@@ -785,8 +790,20 @@ VALUES
 	(ID,title, website, height,width,  regexmatch, embedcode)
 VALUES
 (114, 'vbox7','https://www.vbox7.com',  315,560, 'https://www.vbox7.com/play:([A-Za-z0-9]*)','" . '<iframe width="560" height="315" src="https://www.vbox7.com/emb/external.php?vid=$1" frameborder="0" allowfullscreen></iframe>
+' . "'),
+(115, 'Local MP3', '', 350,425, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".mp3','" . '
+<audio controls>
+  <source src="htt$1://$2.mp3" type="audio/mpeg">
+</audio> 
+
+' . "'),
+(116, 'Yarn', '', 600,768, 'htt(p|ps)://getyarn.io/yarn-clip/([A-Za-z0-9\\-]*)','" . '
+<iframe seamless="seamless" style="width: 100%; border: none; display: block; max-width: 768px; height: 600px;" src="https://getyarn.io/yarn-clip/embed/$2?autoplay=false"> </iframe>
+
 ' . "')
 ");
+
+
 
 
 /*
@@ -807,12 +824,12 @@ global $smcFunc, $boarddir;
     if (!empty($enabledList))
     {
         $enableSQL = implode(",",$enabledList);
-        
+
         $smcFunc['db_query']('', "UPDATE {db_prefix}mediapro_sites SET enabled = 1
     	WHERE id IN ($enableSQL)");
-   
+
     }
-    
+
 
 
 	$mediaProItems = array();
@@ -842,5 +859,5 @@ $mediaProCache = \'' . serialize($mediaProItems)  . '\';
 	}
 
 	fclose($fp);
-	
+
 ?>

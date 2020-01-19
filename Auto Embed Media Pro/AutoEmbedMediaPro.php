@@ -3,10 +3,10 @@
 Simple Audio Video Embedder
 Version 4.5
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 
 License Information:
-Links to http://www.smfhacks.com must remain unless
+Links to https://www.smfhacks.com must remain unless
 branding free option is purchased.
 */
 
@@ -21,7 +21,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '4.5.3';
+	$mediaProVersion = '5.0.3';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -257,9 +257,9 @@ function MediaProProcess($message)
 			if (!empty($modSettings['mediapro_usecustomdiv']))
 			{
 				$mediaSite['embedcode'] = '<div class="' . $modSettings['mediapro_divclassname'] . '">' . $mediaSite['embedcode'];
-				
+
 				$mediaSite['embedcode'] .= '</div>';
-				
+
 			}
 
 
@@ -292,8 +292,8 @@ function MediaProProcess($message)
 		*/
 
         // 3.0
-        $medialinks = explode("ZSPLITMZ",$mediaSite['regexmatch']);	 
-        
+        $medialinks = explode("ZSPLITMZ",$mediaSite['regexmatch']);
+
 		foreach($medialinks as $medialink)
 			$message = preg_replace('#<a href="' . $medialink . '"[^>]*>([^<]+)</a>#i', $mediaSite['embedcode'], $message);
 
@@ -381,28 +381,29 @@ function MegaThanks()
 
 function MediaProisMobileDevice()
 {
-    $user_agents = array(
-			array('iPhone', 'iphone'),
-            array('iPad', 'ipad'),
-			array('iPod', 'ipod'),
-			array('PocketIE', 'iemobile'),
-			array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA'])),
-			array('Opera Mobile', 'Opera Mobi'),
-			array('Android', 'android'),
-			array('Symbian', 'symbian'),
-			array('BlackBerry', 'blackberry'),
-			array('BlackBerry Storm', 'blackberry05'),
-			array('Palm', 'palm'),
-			array('Web OS', 'webos'),
-		);
+	$user_agents = array(
+		array('iPhone', 'iphone'),
+		array('iPod', 'ipod'),
+		array('iPad', 'ipad'),
+		array('PocketIE', 'iemobile'),
+		array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ?  'operamini' : ''),
+		array('Opera Mobile', 'Opera Mobi'),
+		array('Android', 'android'),
+		array('Symbian', 'symbian'),
+		array('BlackBerry', 'blackberry'),
+		array('BlackBerry Storm', 'blackberry05'),
+		array('Palm', 'palm'),
+		array('Web OS', 'webos'),
+	);
 
-		foreach ($user_agents as $ua)
-		{
-			$string = $ua[1];
-			if ((is_bool($string) && $string == true) || (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string)))
+	foreach ($user_agents as $ua)
+	{
+			$string = (string) $ua[1];
+
+			if (!empty($string))
+			if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string)))
 				return true;
-
-        }
+	}
 
         return false;
 

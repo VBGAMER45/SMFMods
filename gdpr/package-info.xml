@@ -5,7 +5,7 @@
 	<id>vbgamer45:gpdrhelper</id>
 	<name>GDPR Helper</name>
 	<type>modification</type>
-	<version>1.0.5c</version>
+	<version>1.0.9</version>
 
 	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 		<redirect url="?action=admin;area=gpdr;sa=settings">redirect.txt</redirect>

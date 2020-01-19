@@ -58,7 +58,7 @@ function add_cache($tweet)
 {
 	global $smcFunc, $txt, $sourcedir;
 
-	$twitterapi_url = "https://api.twitter.com/1/statuses/oembed.json?id=";
+	$twitterapi_url = "https://api.twitter.com/1.1/statuses/oembed.json?id=";
 	$twitterapi_url = $twitterapi_url . $tweet;
     
 	if (function_exists('curl_init'))

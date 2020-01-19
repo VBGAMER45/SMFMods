@@ -1,3 +1,16 @@
+5.0.3
+!Fixed mobile detection for PHP 7.2+ so no warning messages logged
+
+5.0.2
++Added support for Yarn video site.
+
+5.0.1
++Added support for local/remote MP3 files
+
+5.0
+!Must Update. Fix security issue with Local/Remote FLV fusing player_flv_maxi.swf FLV Player.
+Have removed the option to play FLV videos. Make sure this file is removed videos/player_flv_maxi.swf from your forum
+
 4.5.3a
 +Added install support for SMF 2.1 RC1
 

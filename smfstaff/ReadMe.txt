@@ -1,7 +1,7 @@
 *******************************
 SMF Staff Page
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
