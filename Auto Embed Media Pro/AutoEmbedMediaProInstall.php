@@ -825,8 +825,14 @@ VALUES
 (116, 'Yarn', '', 600,768, 'htt(p|ps)://getyarn.io/yarn-clip/([A-Za-z0-9\\-]*)','" . '
 <iframe seamless="seamless" style="width: 100%; border: none; display: block; max-width: 768px; height: 600px;" src="https://getyarn.io/yarn-clip/embed/$2?autoplay=false"> </iframe>
 
-' . "')
+' . "'),
+(117, 'Buzzsprout', '', 600,768, 'htt(p|ps)://www.buzzsprout.com/([0-9]*)/([0-9]*)-(([0-9A-Za-z-]*)|([0-9A-Za-z-]*))','" . '
+<script src="https://www.buzzsprout.com/$2/$3-$4.js?player=small"></script>
 
+' . "'),
+(118, 'TikTok', '', 600,768, 'htt(p|ps)://www.tiktok.com/@([0-9A-Za-z_]*)/video/([0-9]*)','" . '
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@$2/video/$3" data-video-id="$3" style="max-width: 768px;min-width: 600px;" > <section> <a target="_blank" title="@$2" href="https://www.tiktok.com/@$2">@$2</a> <p> </p>&nbsp; </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+' . "')
 ", __FILE__, __LINE__);
 
 

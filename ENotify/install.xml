@@ -36,14 +36,22 @@
 				
 				]]></add>
 			</operation>
-	<operation>
+	<operation error="ignore">
 		<search position="replace"><![CDATA[// Remember this URL in case someone doesn't like sending HTTP_REFERER.
 	if (strpos($_SERVER['REQUEST_URL'], 'action=dlattach') === false]]></search>
 	<add><![CDATA[// Remember this URL in case someone doesn't like sending HTTP_REFERER.
 	if (strpos($_SERVER['REQUEST_URL'], 'action=dlattach') === false && strpos($_SERVER['REQUEST_URL'], 'action=enotify') === false]]></add>
 	</operation>	
 	
-			
+	<operation error="ignore">
+		<search position="replace"><![CDATA[// Remember this URL in case someone doesn't like sending HTTP_REFERER.
+	// !!! $remember_old_url is set in writeLog().
+	if (!empty($remember_old_url))]]></search>
+	<add><![CDATA[// Remember this URL in case someone doesn't like sending HTTP_REFERER.
+	// !!! $remember_old_url is set in writeLog().
+	if (!empty($remember_old_url))
+	if (strpos($_SERVER['REQUEST_URL'], 'action=dlattach') === false && strpos($_SERVER['REQUEST_URL'], 'action=enotify') === false]]></add>
+	</operation>				
 			
 	</file>
 	
@@ -177,8 +185,8 @@ function ENotify($return_config = false)
 			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
 			<add><![CDATA[
 	// enotify
-	$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><span class="smalltext">Enotify by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span>', $buffer);
-	$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext">Enotify by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span>', $buffer);
+	$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><span class="smalltext">Enotify by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span>', $buffer);
+	$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext">Enotify by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span>', $buffer);
 
 	// End enotify
 			

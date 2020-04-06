@@ -1,3 +1,9 @@
+5.0.5
++Added TikTok support
+
+5.0.4
++Added support for Buzzsprout
+
 5.0.3
 !Fixed mobile detection for PHP 7.2+ so no warning messages logged
 

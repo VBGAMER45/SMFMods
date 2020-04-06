@@ -160,11 +160,11 @@ function MediaProCheckInfo()
 <file name="$sourcedir/Post.php">
 	<operation>
 		<search position="replace"><![CDATA['<img>']]></search>
-		<add><![CDATA['<img><object><embed><div><iframe>']]></add>
+		<add><![CDATA['<img><object><embed><div><iframe><blockquote>']]></add>
 	</operation>
 	<operation>
 		<search position="replace"><![CDATA['<img>']]></search>
-		<add><![CDATA['<img><object><embed><div><iframe>']]></add>
+		<add><![CDATA['<img><object><embed><div><iframe><blockquote>']]></add>
 	</operation>
 </file>
 

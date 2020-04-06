@@ -187,7 +187,7 @@ function ViewTags()
 		$dbresult = $smcFunc['db_query']('', "
 		SELECT DISTINCT l.ID_TOPIC, t.num_replies,t.num_views,m.id_member,
 		m.poster_name,m.subject,m.id_topic,m.poster_time, 
-		t.id_board, g.tag, g.ID_TAG 
+		t.id_board, g.tag, g.ID_TAG, l.ID  
 		 FROM ({db_prefix}tags_log as l, {db_prefix}boards AS b, {db_prefix}topics as t, {db_prefix}messages as m) 
 		  LEFT JOIN {db_prefix}tags AS g ON (l.ID_TAG = g.ID_TAG)
 		 WHERE b.ID_BOARD = t.id_board AND l.ID_TOPIC = t.id_topic AND t.approved = 1 AND t.id_first_msg = m.id_msg AND " . $user_info['query_see_board'] . " ORDER BY l.ID DESC LIMIT 20");

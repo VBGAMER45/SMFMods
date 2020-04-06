@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:telegramautopost</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin telegram Text Strings
+$txt['telegram_admin'] = 'Telegram Settings';
+// END telegram Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin telegram Text Strings
+$txt['telegram_admin'] = 'Telegram Settings';
+// END telegram Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+
+
+<file name="$sourcedir/Subs-Post.php">
+	<operation>
+		<search position="replace"><![CDATA[updateStats('topic', true);]]></search>
+		<add><![CDATA[updateStats('topic', true);
+		
+		// telegram web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/telegram2.php');
+		telegram_send_topic($msgOptions['id']);
+
+		
+]]></add>
+	</operation>
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[trackStats(array('posts' => '+'));]]></search>
+		<add><![CDATA[trackStats(array('posts' => '+'));
+		
+		// telegram web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/telegram2.php');
+		telegram_send_post($msgOptions['id']);
+
+		
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$sourcedir/Register.php">
+	<operation>
+		<search position="replace"><![CDATA[spamProtection('register');]]></search>
+		<add><![CDATA[spamProtection('register');
+		
+		// telegram web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/telegram2.php');
+		telegram_send_new_member_registration($memberID);
+
+		
+]]></add>
+	</operation>
+</file>
+
+
+</modification>

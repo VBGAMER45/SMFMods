@@ -191,7 +191,6 @@ function ENotify($return_config = false)
 		</operation>
 	</file>
 
-
 <file name="$sourcedir/QueryString.php">
 		<operation>
 			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
