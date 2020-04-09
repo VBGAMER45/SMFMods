@@ -1,0 +1,8 @@
+div.h-captcha div {
+    margin: 1em auto;
+}
+
+#admincenter #hcaptcha_public_key, #admincenter #hcaptcha_private_key {
+    width: 75%;
+    max-width: 50ex;
+}

@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:hcaptchaforsmf</id>
+	<name>Visual Verification Options</name>
+
+	<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[
+			array('desc', 'configure_verification_means_desc'),
+]]></search>
+			<add><![CDATA[
+				array('check', 'hcaptcha_enabled', 'subtext' => $txt['hcaptcha_enable_desc']),
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[
+			// Clever Thomas, who is looking sheepy now? Not I, the mighty sword swinger did say.
+]]></search>
+			<add><![CDATA[
+			// hCaptcha
+			array('title', 'hcaptcha_configure'),
+			array('desc', 'hcaptcha_configure_desc', 'class' => 'windowbg'),
+				array('text', 'hcaptcha_public_key'),
+				array('text', 'hcaptcha_private_key'),
+				array('select', 'hcaptcha_theme', array('light' => $txt['hcaptcha_theme_light'],
+									 'dark' => $txt['hcaptcha_theme_dark'], )),
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Editor.php">
+		<operation>
+			<search position="after"><![CDATA[
+		);
+	$thisVerification = &$context['controls']['verification'][$verificationOptions['id']];
+]]></search>
+			<add><![CDATA[
+            'use_hcaptcha' => !empty($modSettings['hcaptcha_enabled']),
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+	if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']))
+]]></search>
+			<add><![CDATA[
+	if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['use_hcaptcha']))
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+		if ($thisVerification['number_questions'] && (!isset($_SESSION[$verificationOptions['id'] . '_vv']['q']) || !isset($_REQUEST[$verificationOptions['id'] . '_vv']['q'])))
+			fatal_lang_error('no_access', false);
+]]></search>
+			<add><![CDATA[
+
+		// hCaptcha Verification
+        if(!empty($modSettings['hcaptcha_enabled']) && ($modSettings['hcaptcha_enabled'] == 1 && !empty($modSettings['hcaptcha_public_key']) && !empty($modSettings['hcaptcha_private_key'])))
+        {
+
+        	// Verify the captcha
+			if(isset($_REQUEST["h-captcha-response"]))
+			{
+				require_once($sourcedir . '/Subs-Package.php');
+				$response = fetch_web_data('https://hcaptcha.com/siteverify?secret=' . $modSettings['hcaptcha_private_key'] . '&response=' . $_REQUEST["h-captcha-response"] . '&remoteip=' . $_SERVER["REMOTE_ADDR"]);
+				$response = json_decode($response, true);
+
+				if (true != $response["success"])
+					$verification_errors[] = 'wrong_verification_code';
+
+			}
+			else
+                $verification_errors[] = 'need_verification_code';
+
+
+
+        }
+]]></add>
+		</operation>
+	</file>
+</modification>

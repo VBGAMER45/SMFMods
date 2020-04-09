@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:hcaptchaforsmf</id>
+	<name>hCaptcha for SMF</name>
+	<version>1.0.0</version>
+	<type>modification</type>
+	<install for="2.0*">
+		<readme>README.md</readme>
+		<code>install.php</code>
+		<require-file name="files/hcaptcha.php" destination="$sourcedir" />
+		<require-file name="files/css/hcaptcha.css" destination="$themedir/css" />
+		<require-file name="files/language/hcaptcha.english.php" destination="$languagedir" />
+		<modification>install.xml</modification>
+		<modification>themes/curve.xml</modification>
+	</install>
+	<install>
+		<readme type="inline">This package doesn't appear to support your SMF version.</readme>
+	</install>
+	<uninstall for="2.0*">
+		<code>uninstall.php</code>
+		<remove-file name="$sourcedir/hcaptcha.php" />
+		<remove-file name="$themedir/css/hcaptcha.css" />
+		<remove-file name="$languagedir/hcaptcha.english.php" />
+		<modification reverse="true">install.xml</modification>
+		<modification reverse="true">themes/curve.xml</modification>
+	</uninstall>
+</package-info>

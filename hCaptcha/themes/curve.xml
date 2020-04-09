@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:hcaptchaforsmf</id>
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+	// How many items are there to display in total.
+	$total_items = count($verify_context['questions']) + ($verify_context['show_visual'] ? 1 : 0);
+]]></search>
+			<add><![CDATA[
+	$total_items += ($verify_context['use_hcaptcha'] ? 1 : 0);
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+			echo '
+			<div id="verification_control_', $i, '" class="verification_control">';
+
+]]></search>
+			<add><![CDATA[
+        if ($i == 0 && $verify_context['use_hcaptcha'])
+        {
+            // Render the hCaptcha Widget. Also, add a hidden form element so we pass back the "*_vv" values expected
+            //by some of the CAPTCHA-checking code in SMF to trigger the verification routines.
+            echo '<div class="h-captcha" data-sitekey="', $modSettings['hcaptcha_public_key'], '" data-theme="', $modSettings['hcaptcha_theme'] ,'"></div>
+              <input type="hidden" name="', $verify_id, '_vv[hcaptcha]" value="true">';
+        }
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+		if ($i == 0 && $verify_context['show_visual'])
+]]></search>
+			<add><![CDATA[
+		elseif ($i == 0 && $verify_context['show_visual'])
+]]></add>
+		</operation>
+	</file>
+</modification>

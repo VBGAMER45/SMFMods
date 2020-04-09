@@ -54,7 +54,11 @@
 	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
 		<redirect url="?action=admin;area=telegram;sa=settings">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
-		<modification type="file">telegram2.xml</modification>
+		<modification type="file">telegram21.xml</modification>
+
+		<hook hook="integrate_after_create_post" function="telegram_integrate_after_create_post" file="$sourcedir/telegramhooks.php"  />
+		<hook hook="integrate_create_topic" function="telegram_integrate_create_topic" file="$sourcedir/telegramhooks.php" />
+		<hook hook="integrate_register_after" function="telegram_integrate_register_after" file="$sourcedir/telegramhooks.php"  />
 		<require-file name="telegram2.php" destination="$sourcedir" />
 		<require-file name="telegram2.template.php" destination="$themedir" />
 		<require-file name="telegram.english.php" destination="$themedir/languages" />
@@ -67,12 +71,15 @@
 	
 	
 	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<hook hook="integrate_after_create_post" function="telegram_integrate_after_create_post" file="$sourcedir/telegramhooks.php" reverse="true" />
+		<hook hook="integrate_create_topic" function="telegram_integrate_create_topic" file="$sourcedir/telegramhooks.php" reverse="true" />
+		<hook hook="integrate_register_after" function="telegram_integrate_register_after" file="$sourcedir/telegramhooks.php" reverse="true" />
 		<remove-file name="$sourcedir/telegram2.php" />
 		<remove-file name="$themedir/telegram2.template.php" />
 		<remove-file name="$themedir/languages/telegram.english.php" />
 		<remove-file name="$themedir/languages/telegram.english-utf8.php" />
 		<remove-file name="$sourcedir/telegramhooks.php"/>
-		<modification type="file" reverse="true">telegram2.xml</modification>
+		<modification type="file" reverse="true">telegram21.xml</modification>
 		<code>telegraminstall2.php</code>
 	</uninstall>
 	

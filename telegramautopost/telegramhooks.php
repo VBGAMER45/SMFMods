@@ -76,4 +76,30 @@ function telegram_array_insert(&$input, $key, $insert, $where = 'before', $stric
 }
 
 
+function telegram_integrate_create_topic($msgOptions, $topicOptions, $posterOptions)
+{
+    if (!empty( $topicOptions['id']))
+    {
+        // telegram web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/telegram2.php');
+		telegram_send_topic($msgOptions['id']);
+    }
+}
+
+function telegram_integrate_after_create_post($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters)
+{
+		// telegram web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/telegram2.php');
+		telegram_send_post($msgOptions['id']);
+}
+
+function telegram_integrate_register_after($regOptions, $memberID)
+{
+		// telegram web hooks
+		global $sourcedir;
+		require_once($sourcedir . '/telegram2.php');
+		telegram_send_new_member_registration($memberID);
+}
 ?>

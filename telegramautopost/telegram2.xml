@@ -29,20 +29,7 @@ $txt['telegram_admin'] = 'Telegram Settings';
 
 
 <file name="$sourcedir/Subs-Post.php">
-	<operation>
-		<search position="replace"><![CDATA[updateStats('topic', true);]]></search>
-		<add><![CDATA[updateStats('topic', true);
-		
-		// telegram web hooks
-		global $sourcedir;
-		require_once($sourcedir . '/telegram2.php');
-		telegram_send_topic($msgOptions['id']);
 
-		
-]]></add>
-	</operation>
-	
-	
 	<operation>
 		<search position="replace"><![CDATA[trackStats(array('posts' => '+'));]]></search>
 		<add><![CDATA[trackStats(array('posts' => '+'));

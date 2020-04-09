@@ -22,6 +22,13 @@ $hook_functions = array(
        'integrate_admin_areas' => 'telegram_admin_areas',
 );
 
+// if 2.0
+if (!function_exists("set_tld_regex"))
+{
+    $hook_functions['integrate_create_topic'] = ' telegram_integrate_create_topic';
+}
+
+
 // Adding or removing them?
 if (!empty($context['uninstalling']))
 	$call = 'remove_integration_function';
