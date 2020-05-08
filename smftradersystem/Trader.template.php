@@ -273,6 +273,7 @@ echo '
 				</tr>
 			</table>
 			<input type="hidden" name="id" value="' . $context['traderid'] . '" />
+			<input type="hidden" name="sc" value="', $context['session_id'], '" />
 			</form>
 		</td>
 	</tr>
@@ -309,6 +310,7 @@ echo '
 				</tr>
 			</table>
 			<input type="hidden" name="feedid" value="' . $context['feedid'] . '" />
+			<input type="hidden" name="sc" value="', $context['session_id'], '" />
 			</form>
 		</td>
 	</tr>

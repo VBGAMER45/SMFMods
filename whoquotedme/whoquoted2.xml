@@ -27,6 +27,30 @@ $txt['whoquoted_txt_show_whoquoted'] = 'Show who quoted your posts';
 	</operation>
 </file>
 
+	<file name="$languagedir/Modifications.russian.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Begin Who Quoted Me Mod SMFHacks.com Text Strings
+$txt['whoquoted_admin'] = 'Кто цитировал меня';
+$txt['whoquoted_txt_show_whoquoted'] = 'Кто цитировал ваши сообщения.';
+// END Who Quoted Me Mod SMFHacks.com Text Strings
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Modifications.russian-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Begin Who Quoted Me Mod SMFHacks.com Text Strings
+$txt['whoquoted_admin'] = 'Кто цитировал меня';
+$txt['whoquoted_txt_show_whoquoted'] = 'Кто цитировал ваши сообщения.';
+// END Who Quoted Me Mod SMFHacks.com Text Strings
+]]></add>
+		</operation>
+	</file>
+
 <file name="$sourcedir/Subs-Post.php">
 	
 	<operation>

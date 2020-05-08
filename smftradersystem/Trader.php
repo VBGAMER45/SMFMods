@@ -268,6 +268,7 @@ function Submit2()
 
 	// Check if they are allowed to submit feedback
 	isAllowedTo('smftrader_feedback');
+	checkSession();
 
 	// Get the trader id
 	$traderid = (int) $_REQUEST['id'];
@@ -399,6 +400,7 @@ function Report2()
 	include $sourcedir . '/Subs-Post.php';
 
 	is_not_guest();
+	checkSession();
 
 	@$comment = htmlspecialchars($_REQUEST['comment'],ENT_QUOTES);
 

@@ -37,6 +37,7 @@ function template_telegram_settings()
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['telegram_enable_chat_id'] .' </td>
 	    	<td class="windowbg2"><input type="text" name="telegram_enable_chat_id" value="' . $modSettings['telegram_enable_chat_id'] . '" />
+	    	<br /><span class="smalltext">' .$txt['telegram_enable_chat_id_desc'] . '</span>
 	    	</td>
 	    </tr>  	 
 	    

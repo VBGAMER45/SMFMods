@@ -19,6 +19,8 @@ $txt['telegram_admin'] = 'Telegram Bot AutoPost Settings';
 $txt['telegram_enable_bot_auth_token'] = 'Telegram Bot Token';
 $txt['telegram_enable_bot_auth_token_desc'] = 'How to get Bot Token: <a href="https://core.telegram.org/bots/api#authorizing-your-bot" target="_blank">https://core.telegram.org/bots/api#authorizing-your-bot</a>';
 $txt['telegram_enable_chat_id'] = 'Telegram Chat ID';
+$txt['telegram_enable_chat_id_desc'] = 'How to get Chat ID <a href="https://stackoverflow.com/questions/31078710/how-to-obtain-telegram-chat-id-for-a-specific-user" target="_blank">https://stackoverflow.com/questions/31078710/how-to-obtain-telegram-chat-id-for-a-specific-user</a>';
+
 
 $txt['telegram_guest'] = 'Guest';
 

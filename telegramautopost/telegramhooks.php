@@ -89,10 +89,19 @@ function telegram_integrate_create_topic($msgOptions, $topicOptions, $posterOpti
 
 function telegram_integrate_after_create_post($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters)
 {
+    global $modSettings;
+
+        // don't do alert if topic notifications are enabled for new topics only
+     if (empty($topicOptions['id']) && $modSettings['telegram_enable_push_topic'] == 1)
+     {
+         return;
+     }
+
 		// telegram web hooks
-		global $sourcedir;
+		global $sourcedir, $context;
 		require_once($sourcedir . '/telegram2.php');
 		telegram_send_post($msgOptions['id']);
+
 }
 
 function telegram_integrate_register_after($regOptions, $memberID)

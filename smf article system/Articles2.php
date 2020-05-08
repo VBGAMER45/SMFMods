@@ -15,7 +15,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl, $context, $smcFunc;
 	
 	// Current version of the article system
-	$currentVersion = '3.0';
+	$currentVersion = '3.0.1';
 	
 	$context['articles21beta'] = false;
 	
@@ -24,7 +24,7 @@ function ArticlesMain()
     {
 	   loadtemplate('Articles2.1');
         $context['articles21beta'] = true;
-        
+         $context['show_bbc'] = true;
 
 			$modSettings['disableQueryCheck'] = 1;
 			$smcFunc['db_query']('', "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
@@ -33,6 +33,8 @@ function ArticlesMain()
     }
     else
         loadtemplate('Articles2');
+
+
 	
 	
 	// Load the language files
@@ -92,7 +94,7 @@ function ArticlesMain()
 		'delimage' => 'DeleteImage',
 		'rss' => 'ShowRSSFeed',
         'copyright' => 'Articles_CopyrightRemoval',
-        'admincat' => 'Articles_AdminCat',
+
 	);
 
 	// Follow the sa or just go to main article index.
@@ -1825,6 +1827,13 @@ function DoArticleAdminTabs($overrideSelected = '')
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$comment_total = $row['total'];
 	$smcFunc['db_free_result']($dbresult);
+
+
+	if (empty($context['admin_menu_name']))
+    {
+        $context['admin_menu_id'] = $context['max_menu_id'];
+        $context['admin_menu_name'] = 'menu_data_' . $context['admin_menu_id'];
+    }
 		
 	$context[$context['admin_menu_name']]['tab_data'] = array(
 			'title' =>  $txt['smfarticles_admin'],
@@ -2907,15 +2916,27 @@ function ImportTinyPortal()
 			fatal_error($txt['smfarticles_nocatselected']);
 		
 		$modSettings['disableQueryCheck'] = 1;
+
+
+		$dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {$tp_prefix}articles");
+        $author_idField = "authorid";
+
+        while ($row = $smcFunc['db_fetch_row']($dbresult))
+        {
+            if ($row[0] == 'author_id')
+                $author_idField = "author_id";
+        }
+
+
 		
 		$smcFunc['db_query']('', "INSERT INTO {db_prefix}articles (ID_MEMBER,title,description,views,approved,date )
-		 SELECT authorID ID_MEMBER, subject title, intro description, views, approved, date FROM {$tp_prefix}articles ");
+		 SELECT $author_idField ID_MEMBER, subject title, intro description, views, approved, date FROM {$tp_prefix}articles ");
 		// Insert all the pages.
 		$result = $smcFunc['db_query']('', "
 		SELECT 
 			a.ID_ARTICLE, a.ID_MEMBER, t.body, t.subject 
 		FROM {db_prefix}articles AS a, {$tp_prefix}articles AS t
-		WHERE t.authorID = a.ID_MEMBER AND t.date = a.date AND a.title = t.subject
+		WHERE t.$author_idField = a.ID_MEMBER AND t.date = a.date AND a.title = t.subject
 		 ");
 		$context['import_results'] = '<b>' . $txt['smfarticles_txt_importedarticles'] . '</b><br />';
 		while ($row = $smcFunc['db_fetch_assoc']($result))

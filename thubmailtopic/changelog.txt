@@ -1,3 +1,6 @@
+Version 4.0
+!Fixed a case where if you are just using linked images the column for thumbnail topic will not appear
+
 Version 3.0.1
 !Fixed bug SMF 2.0.x not saving new board thumbnail topic settings
 

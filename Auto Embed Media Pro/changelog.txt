@@ -1,3 +1,36 @@
+5.1
+!Removed old sites from new installs that no longer work
+HostingBulk.com
+HostingCup
+Movshare.net
+videobb.com/
+smotri.com
+g4tv.com
+www.xfire.com
+Trophy-clips.com
+Tangle.com
+video.mpora.com
+clipshack.com
+Stream.cz
+blogtv.com
+twitvid.com
+stagevu.com
+goear.com
+Clipfish.de
+mevio.com
+gametrailers.com
+sevenload.com
+MyVideo.de
+novamov.com
+UStream.tv
+collegehumor.com
+seenive.com
+vine.com
+Jpopsuki.tv
+vid.me
+tube.com
+
+
 5.0.5
 +Added TikTok support
 

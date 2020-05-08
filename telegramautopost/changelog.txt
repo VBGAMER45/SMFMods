@@ -1,1 +1,4 @@
+1.0.1
+!Improvements to handle hosts without cURL uses SMF's fetch web data function before fsockopen
+
 1.0 Initial Release

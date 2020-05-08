@@ -14,7 +14,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl;
 
 	// Current version of the article system
-	$currentVersion = '3.0';
+	$currentVersion = '3.0.4';
 
 	// Load the main Articles template
 	loadtemplate('Articles');
@@ -2665,14 +2665,26 @@ function ImportTinyPortal()
 
 		$modSettings['disableQueryCheck'] = 1;
 
+        $dbresult = db_query("SHOW COLUMNS FROM {$tp_prefix}articles", __FILE__, __LINE__);
+        $author_idField = "authorid";
+
+        while ($row = mysql_fetch_row($dbresult))
+        {
+            if ($row[0] == 'author_id')
+                $author_idField = "author_id";
+        }
+
+
+
+
 		db_query("INSERT INTO {$db_prefix}articles (ID_MEMBER,title,description,views,approved,date )
-		 SELECT authorID ID_MEMBER, subject title, intro description, views, approved, date FROM {$tp_prefix}articles ", __FILE__, __LINE__);
+		 SELECT $author_idField ID_MEMBER, subject title, intro description, views, approved, date FROM {$tp_prefix}articles ", __FILE__, __LINE__);
 		// Insert all the pages.
 		$result = db_query("
 		SELECT
 			a.ID_ARTICLE, a.ID_MEMBER, t.body, t.subject
 		FROM {$db_prefix}articles AS a, {$tp_prefix}articles AS t
-		WHERE t.authorID = a.ID_MEMBER AND t.date = a.date AND a.title = t.subject
+		WHERE t.$author_idField = a.ID_MEMBER AND t.date = a.date AND a.title = t.subject
 		 ", __FILE__, __LINE__);
 		$context['import_results'] = '<b>' . $txt['smfarticles_txt_importedarticles'] . '</b><br />';
 		while ($row = mysql_fetch_assoc($result))

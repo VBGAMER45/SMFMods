@@ -1,3 +1,6 @@
+3.0
+!Added session checks on feedback submission and reporting feedback
+
 2.0.1
 !Do not show trader link for guests posts
 

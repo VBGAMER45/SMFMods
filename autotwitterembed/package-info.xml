@@ -7,14 +7,14 @@
 	<version>1.1</version>
 	
 
-	<install for="2.0 - 2.0.99,2.1 Beta 3,2.1 RC1">
+	<install for="2.0 - 2.0.99,2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3">
 		<readme>ReadMe.txt</readme>
 		<modification type="file">autotwitter.xml</modification>
 		<require-file name="tweet-cache.php" destination="$boarddir" />
 		<database>install.php</database>
 	</install>
 	
-	<uninstall for="2.0 - 2.0.99,2.1 Beta 3,2.1 RC1">
+	<uninstall for="2.0 - 2.0.99,2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3">
 		<remove-file name="$boarddir/tweet-cache.php" />
 		<modification type="file" reverse="true">autotwitter.xml</modification>
 	</uninstall>

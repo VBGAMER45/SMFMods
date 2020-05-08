@@ -4,7 +4,7 @@
 	<id>vbgamer45:telegramautopost</id>
 	<name>Telegram Bot Auto Post</name>
 	<type>modification</type>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	
 
 
@@ -16,7 +16,7 @@
 		<require-file name="telegram2.template.php" destination="$themedir" />
 		<require-file name="telegram.english.php" destination="$themedir/languages" />
 		<require-file name="telegram.english-utf8.php" destination="$themedir/languages" />
-		<code>telegramhooks.php</code>
+		<code>telegraminstall2.php</code>
 		
 		
 	</upgrade>

@@ -61,7 +61,8 @@
 					'link' => $scripturl . '?action=dlattach;topic=' . $row['ID_TOPIC'] . '.0;attach=' . $row['bigId'] . ';image',
 					'filename' => $row['thnFilename'],
 					'width' => $row['thnWidth'],
-					'height' => $row['thnHeight']
+					'height' => $row['thnHeight'],
+					'bbcimg' => false
 				);
 
 				$context['show_thumbnails'] = true;
@@ -74,13 +75,51 @@
 					'link' => $scripturl . '?action=dlattach;topic=' . $row['ID_TOPIC'] . '.0;attach=' . $row['bigId'] . ';image',
 					'filename' => $row['bigFilename'],
 					'width' => $row['bigWidth'],
-					'height' => $row['bigHeight']
+					'height' => $row['bigHeight'],
+					'bbcimg' => false
 				);
 
 				$context['show_thumbnails'] = true;
 			}
 			else
-				$image = array();
+			{
+							// Scan the main post and get the first image tag
+							$image = array();
+							
+							$row['mainpost'] = parse_bbc($row['mainpost'], false,'', array('img'));
+								preg_match_all('/<img[^>]+>/i',$row['mainpost'], $result2);
+			
+								$imgTags = array();
+								foreach($result2 as $img_tag)
+								{
+									if (is_array($img_tag))
+										foreach( $img_tag as $r)
+											$imgTags[] = $r;
+								}
+			
+								$imageTagsToFix = array();
+								foreach($imgTags as $img_tag)
+								{
+									preg_match('/(src)=("[^"]*")/i', $img_tag, $matches);
+			
+									$matches[2] = str_replace('"',"",$matches[2]);
+									$matches[2] = str_replace("'","",$matches[2]);
+			
+									 $imageTagsToFix[] = $matches[2];
+			
+								}
+								
+								if (!empty($imageTagsToFix))
+								{				
+									$image = array(
+													'id' => 1,
+													'url' => $imageTagsToFix[0],
+													'bbcimg' => true,
+									);
+									
+									$context['show_thumbnails'] = true;
+								}
+						}
 				
 				
 			if (!in_array($row['id_board'],$modSettings['photo_boards']))

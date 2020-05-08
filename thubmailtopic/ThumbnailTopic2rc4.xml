@@ -119,6 +119,8 @@
 													'url' => $imageTagsToFix[0],
 													'bbcimg' => true,
 									);
+									
+									$context['show_thumbnails'] = true;
 								}
 						}
 						

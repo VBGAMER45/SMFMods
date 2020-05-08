@@ -128,22 +128,25 @@ function telegram_sendCURL($message)
 {
      global $modSettings;
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL,  'https://api.telegram.org/bot'.urlencode($modSettings['telegram_enable_bot_auth_token']).'/sendMessage');
+            curl_setopt($ch, CURLOPT_URL,  'https://api.telegram.org/bot'.$modSettings['telegram_enable_bot_auth_token'].'/sendMessage?chat_id=' .$modSettings['telegram_enable_chat_id'] . "&text=". urlencode($message['text']));
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+           // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_POSTFIELDS,  http_build_query($message));
+          //  curl_setopt($ch, CURLOPT_POSTFIELDS,  http_build_query($message));
             $result = curl_exec($ch);
             // Check for errors and display the error message
-            if ($errno = curl_errno($ch)) {
+            if ($errno = curl_errno($ch))
+            {
                 $error_message = curl_strerror($errno);
                 log_error("cURL error ({$errno}):\n {$error_message}");
             }
             $json_result = json_decode($result, true);
-            if (($httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE)) != 204) {
-                log_error($httpcode . ':' . $result);
+            if (($httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE)) != 204)
+            {
+                if ($httpcode  != 200)
+                    log_error($httpcode . ':' . $result);
             }
 
             if ($json_result === NULL)
@@ -164,23 +167,36 @@ function telegram_sendCURL($message)
 
 function telegram_sendSocket($message)
 {
-    global $modSettings;
+    global $modSettings, $sourcedir;
 
-	$parsed = parse_url('https://api.telegram.org/bot'.urlencode($modSettings['telegram_enable_bot_auth_token']).'/sendMessage');
-            $result = '';
-            if ($f = fsockopen((($parsed['scheme'] == 'https') ? 'ssl://' : '') . $parsed['host'], (($parsed['scheme'] == 'https') ? 443 : 80), $errno, $errmsg, 30)) {
-                $out = "POST " . $parsed['path'] . " HTTP/1.0\r\n";
-                $out .= "Host: " . $parsed['host'] . "\r\n";
-                $out .= "Content-Type: application/json\r\n";
-                $out .= "Content-Length: " . strlen($message) . "\r\n\r\n";
-                $out .= http_build_query($message);
-                fwrite($f, $out);
-                while (!feof($f)) {
-                    $result .= fread($f, 4096);
-                }
-                fclose($f);
-            }
-            return $result;
+
+	require_once($sourcedir . '/Subs-Package.php');
+
+	// Get the html and parse it for the openid variable which will tell us where to go.
+	$webdata = fetch_web_data('https://api.telegram.org/bot' . $modSettings['telegram_enable_bot_auth_token'] . '/sendMessage?chat_id=' . $modSettings['telegram_enable_chat_id'] . "&text=" . urlencode($message['text']));
+
+	if (empty($webdata))
+	{
+
+
+		$parsed = parse_url('https://api.telegram.org/bot' . $modSettings['telegram_enable_bot_auth_token'] . '/sendMessage?chat_id=' . $modSettings['telegram_enable_chat_id'] . "&text=" . urlencode($message['text']));
+		$result = '';
+		if ($f = fsockopen((($parsed['scheme'] == 'https') ? 'ssl://' : '') . $parsed['host'], (($parsed['scheme'] == 'https') ? 443 : 80), $errno, $errmsg, 30))
+		{
+			$out = "POST " . $parsed['path'] . " HTTP/1.0\r\n";
+			$out .= "Host: " . $parsed['host'] . "\r\n";
+			//     $out .= "Content-Length: " . strlen($message['text']) . "\r\n\r\n";
+			fwrite($f, $out);
+			while (!feof($f))
+			{
+				$result .= fread($f, 4096);
+			}
+			fclose($f);
+		}
+		return $result;
+
+
+	}
 }
 
 function telegram_send($message)
@@ -257,10 +273,7 @@ function telegram_send_topic($messageid)
 	
 	if (!in_array($row['id_board'],$boardlist))
 		return;	
-	
-	
 
-	
 
 	telegram_send($message);
 	
@@ -314,12 +327,7 @@ function telegram_send_post($messageid)
 	
 	if (!in_array($row['id_board'],$boardlist))
 		return;	
-	
 
-	
-	
-
-		
 	telegram_send($message);
 	
 	
