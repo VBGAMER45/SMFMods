@@ -1,5 +1,8 @@
+2.0
++Added support to Emoji's thanks to Arantor for changes needed
+
 1.0.1
-!Updated jquery libarary to use https
+!Updated jquery library to use https
 
 1.0
 Intial Release!

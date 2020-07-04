@@ -82,6 +82,14 @@ function add_cache($tweet)
 	$html = $json_content['html'];
 	if (!empty($html)) 
 	{
+
+		$smcFunc['db_query']('', '
+			SET NAMES {string:db_character_set}',
+			array(
+				'db_character_set' => 'utf8mb4',
+			)
+		);
+
 		$request = $smcFunc['db_insert']('',
 				'{db_prefix}tweet_cache',
 				array(

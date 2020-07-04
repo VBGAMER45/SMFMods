@@ -1298,13 +1298,7 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 	</form>
 			<br />
-			<table>
-				<tr>
-				<td>
-				<a href="http://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="http://www.smfhacks.com/chitika250x250.png" border="0"></a>
-				</td>
 
-				</table>
 
 	</td>
 	</tr>
@@ -2380,7 +2374,7 @@ function template_articles_copyright()
         ', $txt['smfarticles_txt_copyrightremoval'], '
         </h3>
 </div>
-        
+
 	<form method="post" action="',$scripturl,'?action=articles;sa=copyright;save=1">
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 	<tr class="windowbg2">
@@ -2404,7 +2398,7 @@ function template_articles_copyright()
 
 
     ArticleSystemCopyright();
-    
+
 }
 
 
@@ -2446,7 +2440,7 @@ echo '
 				<td><a href="' . $scripturl . '?action=articles;sa=editcat;cat=' . $category['id_cat'] . '">' . $txt['smfarticles_txtedit'] . '</a>&nbsp;
 				<a href="' . $scripturl . '?action=articles;sa=deletecat;cat=' . $category['id_cat'] . '">' . $txt['smfarticles_txtdel'] . '</a>&nbsp;
 				<a href="' . $scripturl . '?action=articles;sa=catperm;cat=' . $category['id_cat'] . '">' . $txt['smfarticles_txt_perm'] . '</a>';
-			
+
 				echo '
 				</td>
 
@@ -2459,7 +2453,7 @@ echo '
 				$cat_sep = 1;
 				GetManageSubCats($category['id_cat'],$context['articles_cat']);
 				$cat_sep = 0;
-			
+
 		}
 
 

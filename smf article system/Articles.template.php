@@ -1103,13 +1103,7 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 	</form>
 			<br />
-			<table>
-				<tr>
-				<td>
-				<a href="http://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="http://www.smfhacks.com/chitika250x250.png" border="0"></a>
-				</td>
 
-				</table>
 	</td>
 	</tr>
 
@@ -2124,6 +2118,6 @@ function template_articles_copyright()
 
 
     ArticleSystemCopyright();
-    
+
 }
 ?>

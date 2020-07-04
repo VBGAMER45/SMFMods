@@ -2,7 +2,7 @@
 Auto Twitter Embed
 Devloped by:  L'arri : voici.l.arriviste@gmail.com
 Packaged By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 

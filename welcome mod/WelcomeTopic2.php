@@ -11,23 +11,25 @@ if (!defined('SMF'))
 
 function WelcomeTopic()
 {
-	global $txt;
+	global $txt, $context;
 	// Check if they are allowed to admin the forum
 	isAllowedTo('admin_forum');
-	
+
+	$context['show_bbc'] = 1;
+
 	// Load the WelcomeTopic template
     if (function_exists("set_tld_regex"))
 	    loadtemplate('WelcomeTopic2.1');
     else
         loadtemplate('WelcomeTopic2');
-	
+
 	// Load the language files
 	if (loadlanguage('WelcomeTopic') == false)
 		loadLanguage('WelcomeTopic','english');
-		
+
 	$txt['welcome_topicnote'] = str_replace("{","[",$txt['welcome_topicnote']);
 	$txt['welcome_topicnote'] = str_replace("}","]",$txt['welcome_topicnote']);
-		
+
 	// Welcome Topic actions
 	$subActions = array(
 		'admin' => 'WelcomeTopicSettings',
@@ -37,50 +39,50 @@ function WelcomeTopic()
 		'edit' => 'EditTopic',
 		'edit2' => 'EditTopic2',
 		'delete' => 'DeleteTopic',
-		
+
 	);
 
 	// Follow the sa or main Welcome Topic Settings page.
 	if (!empty($subActions[@$_GET['sa']]))
 		$subActions[$_GET['sa']]();
 	else
-		WelcomeTopicSettings();	
-	
+		WelcomeTopicSettings();
+
 }
 
 function WelcomeTopicSettings()
-{	
+{
 	global $context, $mbname, $txt, $smcFunc;
-	
+
 	DoWelcomeAdminTabs();
 
 	// Load the main Welcome Topic
 	$context['sub_template']  = 'main';
 
 	// Set the page title
-	$context['page_title'] = $mbname . ' - ' . $txt['welcome_settings'];	
-	
+	$context['page_title'] = $mbname . ' - ' . $txt['welcome_settings'];
+
 	// Show the boards for the feeds.
 	$context['welcome_boards'] = array('');
 	$request = $smcFunc['db_query']('',"
-	SELECT 
-		b.ID_BOARD, b.name AS bName, c.name AS cName 
-	FROM {db_prefix}boards AS b, {db_prefix}categories AS c 
+	SELECT
+		b.ID_BOARD, b.name AS bName, c.name AS cName
+	FROM {db_prefix}boards AS b, {db_prefix}categories AS c
 	WHERE b.ID_CAT = c.ID_CAT ORDER BY c.cat_order, b.board_order");
-	
+
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$context['welcome_boards'][$row['ID_BOARD']] = $row['cName'] . ' - ' . $row['bName'];
-		
+
 	$smcFunc['db_free_result']($request);
-	
+
 	// Get all the Welcome Topics
 	$context['welcome_topics'] = array();
-	
+
 	$request = $smcFunc['db_query']('',"
-	SELECT 
+	SELECT
 		ID, welcomesubject
 	FROM {db_prefix}welcome");
-	
+
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 
@@ -89,41 +91,41 @@ function WelcomeTopicSettings()
 			'SUBJECT' => $row['welcomesubject'],
 
 		);
-		
-		
+
+
 	}
-		
+
 	$smcFunc['db_free_result']($request);
 
-	
+
 }
 
 function WelcomeTopicSettings2()
 {
 	global $smcFunc;
-	
+
 	$boardselect = (int) $_REQUEST['boardselect'];
 	$welcome_postername = str_replace('"','', $_REQUEST['welcome_postername']);
 	$welcome_postername = str_replace("'",'', $welcome_postername);
 	$welcome_postername = str_replace('\\','', $welcome_postername);
 	$welcome_postername = htmlspecialchars($welcome_postername, ENT_QUOTES);
-	
+
 	// Get the topic name
 	// Lookup the Memeber ID of the postername
 	$memid = 0;
-	
+
 	$dbresult = $smcFunc['db_query']('',"
-	SELECT 
-		real_name, ID_MEMBER 
-	FROM {db_prefix}members 
+	SELECT
+		real_name, ID_MEMBER
+	FROM {db_prefix}members
 	WHERE real_name = '$welcome_postername' OR member_name = '$welcome_postername'  LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
-	
+
 	if ($smcFunc['db_affected_rows']() != 0)
 		$memid = $row['ID_MEMBER'];
-	
-	
+
+
 
 	// Save the setting information
 	updateSettings(
@@ -132,7 +134,7 @@ function WelcomeTopicSettings2()
 	'welcome_memberid' => $memid,
 	));
 
-	
+
 	// Redirect to Welcome Topic settings page
 	redirectexit('action=admin;area=welcome;sa=admin');
 }
@@ -140,17 +142,17 @@ function WelcomeTopicSettings2()
 function AddTopic()
 {
 	global $smcFunc, $txt, $context, $mbname, $modSettings, $sourcedir;
-	
+
 
 	// Check if spellchecking is both enabled and actually working.
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
-	
+
 	// Load the add topic template
 	$context['sub_template']  = 'addtopic';
 
 	// Set the page title
 	$context['page_title'] = $mbname . ' - ' . $txt['welcome_addtopic'];
-	
+
 // Needed for the WYSIWYG editor.
 	require_once($sourcedir . '/Subs-Editor.php');
 
@@ -165,17 +167,17 @@ function AddTopic()
 		),
 	);
 	create_control_richedit($editorOptions);
-	$context['post_box_name'] = $editorOptions['id'];	
+	$context['post_box_name'] = $editorOptions['id'];
 
-	
-	
+
+
 }
 
 function AddTopic2()
 {
 	global $smcFunc, $txt, $sourcedir;
-	
-	
+
+
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['topicbody_mode']) && isset($_REQUEST['topicbody']) && !function_exists("set_tld_regex"))
 	{
@@ -187,25 +189,25 @@ function AddTopic2()
 		$_REQUEST['topicbody'] = un_htmlspecialchars($_REQUEST['topicbody']);
 
 	}
-	
+
 	$topicsubject = $smcFunc['htmlspecialchars']($_REQUEST['topicsubject'], ENT_QUOTES);
 	$topicbody = $smcFunc['htmlspecialchars']($_REQUEST['topicbody'], ENT_QUOTES);
-		
+
 	if ($topicsubject == '')
 		fatal_error($txt['welcome_err_nosubject'], false);
-		
+
 	if ($topicbody == '')
 		fatal_error($txt['welcome_err_nobody'], false);
-		
-		
+
+
 		// Insert the Topic
-		$smcFunc['db_query']('',"INSERT INTO {db_prefix}welcome 
+		$smcFunc['db_query']('',"INSERT INTO {db_prefix}welcome
 			(welcomesubject, welcomebody)
 		VALUES ({string:topicsubject}, {string:topicbody})",
 		array('topicsubject' => $topicsubject,
 		'topicbody' => $topicbody,
-		));	
-	
+		));
+
 	// Redirect to the main settings
 	redirectexit('action=admin;area=welcome;sa=admin');
 }
@@ -219,17 +221,17 @@ function EditTopic()
 
 	// Set the page title
 	$context['page_title'] = $mbname . ' - ' . $txt['welcome_edittopic'];
-	
-	// Get the Topic ID	
+
+	// Get the Topic ID
 	$id = (int) $_REQUEST['id'];
-	
-	
+
+
 	$request = $smcFunc['db_query']('',"
-	SELECT 
+	SELECT
 		ID, welcomesubject, welcomebody
 	FROM {db_prefix}welcome
 	WHERE ID = $id LIMIT 1");
-	
+
 	$row = $smcFunc['db_fetch_assoc']($request);
 
 		$context['welcome_topic']= array(
@@ -238,13 +240,13 @@ function EditTopic()
 			'BODY' => $row['welcomebody'],
 		);
 
-		
+
 	$smcFunc['db_free_result']($request);
-	
+
 	// Check if spellchecking is both enabled and actually working.
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
 
-	
+
 // Needed for the WYSIWYG editor.
 	require_once($sourcedir . '/Subs-Editor.php');
 
@@ -259,18 +261,18 @@ function EditTopic()
 		),
 	);
 	create_control_richedit($editorOptions);
-	$context['post_box_name'] = $editorOptions['id'];	
+	$context['post_box_name'] = $editorOptions['id'];
 
-	
-	
+
+
 }
 
 function EditTopic2()
 {
 	global $smcFunc, $txt, $sourcedir;
-	
+
 	$id = (int) $_REQUEST['id'];
-	
+
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['topicbody_mode']) && isset($_REQUEST['topicbody']) && !function_exists("set_tld_regex"))
 	{
@@ -282,76 +284,76 @@ function EditTopic2()
 		$_REQUEST['topicbody'] = un_htmlspecialchars($_REQUEST['topicbody']);
 
 	}
-	
+
 	$topicsubject = $smcFunc['htmlspecialchars']($_REQUEST['topicsubject'], ENT_QUOTES);
 	$topicbody = $smcFunc['htmlspecialchars']($_REQUEST['topicbody'], ENT_QUOTES);
-	
+
 	if ($topicsubject == '')
 		fatal_error($txt['welcome_err_nosubject'], false);
-		
+
 	if ($topicbody == '')
 		fatal_error($txt['welcome_err_nobody'], false);
-				
+
 	// Update the Topic
-		$smcFunc['db_query']('',"UPDATE {db_prefix}welcome 
-		SET welcomesubject = {string:topicsubject}, welcomebody = {string:topicbody} 
+		$smcFunc['db_query']('',"UPDATE {db_prefix}welcome
+		SET welcomesubject = {string:topicsubject}, welcomebody = {string:topicbody}
 		WHERE ID = $id LIMIT 1",
 		array('topicsubject' => $topicsubject,
 		'topicbody' => $topicbody,
-		));	
-		
+		));
 
-	
+
+
 	// Redirect to the main settings
 	redirectexit('action=admin;area=welcome;sa=admin');
-	
+
 }
 
 function DeleteTopic()
 {
 	global $smcFunc;
-	
+
 	// Get the Topic ID
 	$id = (int) $_REQUEST['id'];
-	
-	
-	$smcFunc['db_query']('',"DELETE FROM {db_prefix}welcome 
+
+
+	$smcFunc['db_query']('',"DELETE FROM {db_prefix}welcome
 			WHERE ID = " . $id);
-	
+
 	// Redirect make to the main config page
 	redirectexit('action=admin;area=welcome;sa=admin');
-	
+
 }
 
 function DoWelcomePost($memberName = '', $memberID = 0)
 {
 	global $smcFunc, $modSettings, $sourcedir;
-	
+
 	if (empty($memberName))
 	{
 		$result = $smcFunc['db_query']('',"
-		SELECT 
-			real_name 
-		FROM {db_prefix}members 
+		SELECT
+			real_name
+		FROM {db_prefix}members
 		WHERE ID_MEMBER = $memberID LIMIT 1");
 		$memRow = $smcFunc['db_fetch_assoc']($result);
 		$smcFunc['db_free_result']($result);
-		
+
 		$memberName = $memRow['real_name'];
 	}
-	
-	
-	
+
+
+
 	require_once($sourcedir . '/Subs-Post.php');
-	
+
 	if ($modSettings['welcome_boardid'] != 0)
 	{
 
-		
+
 		$result = $smcFunc['db_query']('',"
-		SELECT 
-			welcomesubject, welcomebody 
-		FROM {db_prefix}welcome 
+		SELECT
+			welcomesubject, welcomebody
+		FROM {db_prefix}welcome
 		 ORDER BY RAND() LIMIT 1");
 		if ($smcFunc['db_num_rows']($result) != 0)
 		{
@@ -385,8 +387,8 @@ function DoWelcomePost($memberName = '', $memberID = 0)
 		}
 
 		$smcFunc['db_free_result']($result);
-								
-								
+
+
 	}
 }
 
@@ -406,10 +408,10 @@ function DoWelcomeAdminTabs($overrideSelected = '')
 
 
 
-				
-				
+
+
 			),
-		);	
+		);
 
 
 }

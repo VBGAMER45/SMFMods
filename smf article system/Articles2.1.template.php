@@ -237,12 +237,12 @@ function template_articlelisting()
 						',  $context['page_index'],
 						'</td>
 					</tr>
-					
+
 			</table>';
 
 
 			// Show return to articles index link
-			
+
    	echo '
                     <div class="tborder">
             <div class="roundframe centertext">';
@@ -279,7 +279,7 @@ function template_viewarticle()
 	// Show the main article
 
 if ($m_cats == true || $context['article']['ID_MEMBER'] == $user_info['id'])
-	template_button_strip($context['articles']['view_article'], 'bottom');  
+	template_button_strip($context['articles']['view_article'], 'bottom');
 
 
 	echo '
@@ -1293,13 +1293,6 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 	</form>
 			<br />
-			<table>
-				<tr>
-				<td>
-				<a href="http://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="https://www.smfhacks.com/chitika250x250.png" border="0"></a>
-				</td>
-
-				</table>
 
 	</td>
 	</tr>
@@ -1555,7 +1548,7 @@ echo '
 function GetStarsByPrecent($percent)
 {
 	global $settings, $txt, $context;
-	
+
     if ($context['articles21beta'] == false)
     {
     	if ($percent == 0)
@@ -1570,8 +1563,8 @@ function GetStarsByPrecent($percent)
     		return str_repeat('<img src="' . $settings['images_url'] . '/star.gif" alt="*" border="0" />', 4);
     	else if ($percent <= 100)
     		return str_repeat('<img src="' . $settings['images_url'] . '/star.gif" alt="*" border="0" />', 5);
-            
-       } 
+
+       }
     else
     {
         if ($percent == 0)
@@ -1715,13 +1708,13 @@ function template_myarticles()
 
 			// Show return to articles index link
 			echo '</table>';
-			
-			
-			
+
+
+
    	echo '
    		<div class="tborder">
             <div class="roundframe centertext">';
-			
+
 				// See if they are allowed to add articles
 			if ($addarticle)
 			{
@@ -1951,18 +1944,18 @@ function template_search_results()
 
 			// Show return to articles index link
 			echo '</table>';
-			
-			
-			
+
+
+
    	echo '
                     <div class="tborder">
             <div class="roundframe centertext">';
 
-	
+
 			echo '
 			<a href="', $scripturl, '?action=articles">', $txt['smfarticles_returnindex'], '</a>
             </div>
-        </div>';	
+        </div>';
 
 
 	ArticleSystemCopyright();
@@ -2386,7 +2379,7 @@ function template_articles_copyright()
         ', $txt['smfarticles_txt_copyrightremoval'], '
         </h3>
 </div>
-        
+
 	<form method="post" action="',$scripturl,'?action=articles;sa=copyright;save=1">
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 	<tr class="windowbg2">
@@ -2410,7 +2403,7 @@ function template_articles_copyright()
 
 
     ArticleSystemCopyright();
-    
+
 }
 
 
@@ -2452,7 +2445,7 @@ echo '
 				<td><a href="' . $scripturl . '?action=articles;sa=editcat;cat=' . $category['id_cat'] . '">' . $txt['smfarticles_txtedit'] . '</a>&nbsp;
 				<a href="' . $scripturl . '?action=articles;sa=deletecat;cat=' . $category['id_cat'] . '">' . $txt['smfarticles_txtdel'] . '</a>&nbsp;
 				<a href="' . $scripturl . '?action=articles;sa=catperm;cat=' . $category['id_cat'] . '">' . $txt['smfarticles_txt_perm'] . '</a>';
-			
+
 				echo '
 				</td>
 
@@ -2465,7 +2458,7 @@ echo '
 				$cat_sep = 1;
 				GetManageSubCats($category['id_cat'],$context['articles_cat']);
 				$cat_sep = 0;
-			
+
 		}
 
 

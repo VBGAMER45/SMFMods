@@ -55,4 +55,8 @@ $smcFunc['db_create_table']('{db_prefix}tweet_cache',
 	),
 	array(),
 	'ignore');
+
+// Handle Emoji's
+$smcFunc['db_query']('','ALTER TABLE {db_prefix}tweet_cache CHANGE html html text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+
 ?>
