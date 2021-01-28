@@ -15,7 +15,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl, $context, $smcFunc;
 	
 	// Current version of the article system
-	$currentVersion = '3.0.1';
+	$currentVersion = '3.1';
 	
 	$context['articles21beta'] = false;
 	
@@ -72,7 +72,7 @@ function ArticlesMain()
 		'alist' => 'ApproveList',
 		'admin' => 'ArticlesAdmin',
 		'admin2' => 'ArticlesAdmin2',
-		'admincat' => 'ArticleAdminCats',
+		'admincat' => 'ArticlesAdminCats',
 		'adminperm' => 'ArticlesAdminPerm',
 		'catperm' => 'CatPerm',
 		'catperm2' => 'CatPerm2',
@@ -1536,16 +1536,6 @@ function ArticlesAdmin2()
 	redirectexit('action=admin;area=articles;sa=admin');
 }
 
-function ArticlesAdminCats()
-{
-	global $context, $mbname, $txt;
-
-	isAllowedTo('articles_admin');
-
-	$context['page_title'] = $mbname . ' - ' . $txt['smfarticles_title'] . ' - ' . $txt['smfarticles_managecats'];
-
-	$context['sub_template']  = 'manage_cats';
-}
 
 function ArticlesAdminPerm()
 {
@@ -3308,9 +3298,7 @@ function ShowRSSFeed()
 <rss version="0.92" xml:lang="', strtr($txt['lang_locale'], '_', '-'), '">
 <channel>
 	';
-	
 
-	
 	$catwhere = '';
 	if (!empty($cat))
 	{
@@ -3463,7 +3451,7 @@ function ArticlesCheckInfo()
     return true;
 }
 
-function Articles_AdminCat()
+function ArticlesAdminCats()
 {
 	global $context, $mbname, $txt, $smcFunc;
 

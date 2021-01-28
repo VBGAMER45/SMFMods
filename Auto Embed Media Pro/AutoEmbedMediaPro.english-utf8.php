@@ -41,10 +41,14 @@ $txt['mediapro_txt_copyremovalnote'] = 'Copyright removal removes the copyright 
 $txt['mediapro_disablesig'] = 'Disable embeding of signatures';
 $txt['mediapro_disablemobile'] = 'Disable embeding in mobile devices';
 
-$txt['mediapro_customembed']  ='Want to add another site? We can do custom work at $15 per embed site. <a href="http://www.smfhacks.com/index.php?action=contact" target="_blank">Contact Us here for details.</a>';
+$txt['mediapro_customembed']  ='Want to add another site? We can do custom work at $15 per embed site. <a href="https://www.smfhacks.com/index.php?action=contact" target="_blank">Contact Us here for details.</a>';
 
 
 $txt['mediapro_usecustomdiv'] = 'Use Custom Div for embeds';
 $txt['mediapro_divclassname'] = 'Class name: ';
+
+$txt['mediapro_showlink'] = 'Show original link of embed after embed ';
+$txt['mediapro_max_embeds'] = 'Maximum number of embeds to show per page load';
+
 
 ?>

@@ -138,14 +138,113 @@ function template_discord_settings()
 	  
 	  </table>
   	</form>
+<br><br>
+ <div class="cat_bar">
+		<h3 class="catbg centertext">
+        ', $txt['discord_board_level'] , '
+        </h3>
+  </div>
+  	<table border="0" cellpadding="0" cellspacing="0" width="100%">';
 
 
+	if (!empty($context['discord_hooks']))
+	{
+		foreach($context['discord_hooks'] as $boardhook)
+		{
+			echo '<tr>
+				<td align="center">' . $boardhook['bName'] . '</td>
+				<td align="center">';
 
+			if ($boardhook['push_type'] == 1)
+				echo $txt['discord_hook_post'];
+
+			if ($boardhook['push_type'] == 2)
+				echo $txt['discord_hook_topic'];
+
+			if ($boardhook['push_type'] == 3)
+				echo $txt['discord_hook_both'];
+
+		echo '</td>
+				<td align="center">' . $boardhook['url'] . '</td>
+				<td align="center"><a href="', $scripturl, '?action=admin;area=discord;sa=deletehook;id=' . $boardhook['id'] . '">' . $txt['discord_delete'] . '</a></td>
+				</tr>';
+		}
+	}
+
+	echo '
+  	<tr>
+  	<td colspan="4" align="center"><a href="', $scripturl, '?action=admin;area=discord;sa=addhook">' . $txt['discord_add_board_level'] . '</a></td>
+	</tr>
+  	</table>
   ';
+
 
 }
 
 
+function template_discord_add_hook()
+{
+	global $context, $txt, $scripturl, $boarddir, $modSettings;
 
+	echo '
+ <div class="cat_bar">
+		<h3 class="catbg centertext">
+        ', $txt['discord_admin'], '
+        </h3>
+  </div>
+	<form method="post" name="frmsettings" id="frmsettings" action="', $scripturl, '?action=admin;area=discord;sa=addhook2" accept-charset="', $context['character_set'], '">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+		<tr class="windowbg2">
+		<td valign="top">' . $txt['discord_hook_board'] . ' </td>
+		<td valign="top">';
+
+	echo '<select name="boardhook" size="5">';
+
+	foreach ($context['discord_boards'] as $key => $option)
+	{
+
+			echo '<option value="' . $key . '">' . $option . '</option>';
+
+
+	}
+
+	echo '</select>';
+
+	echo '	
+
+			</td>
+		</tr>
+		 
+	    <tr>
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['discord_hook_url']  . ' </td>
+	    	<td class="windowbg2"><input type="text" size="75" name="url" value="" />
+	    	</td>
+	    </tr>
+	    
+	    
+	    <tr>
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['discord_hook_type'] . ' </td>
+	    	<td class="windowbg2">
+	    	<select name="pushtype">
+	    	<option value="1">' . $txt['discord_hook_post'] . '</option>
+	    	<option value="2">' . $txt['discord_hook_topic'] . '</option>
+	    	<option value="3">' . $txt['discord_hook_both'] . '</option>
+			</select>
+	    	</td>
+	    </tr>  
+
+
+	  <tr>
+	    <td colspan="2" class="windowbg2" align="center">
+	     <input type="hidden" name="sc" value="', $context['session_id'], '" />
+	    <input type="submit" name="cmdsave" value="', $txt['discord_add_board_level'] , '" /></td>
+	  </tr>
+
+	  
+	  </table>
+  	</form>';
+
+}
 
 ?>

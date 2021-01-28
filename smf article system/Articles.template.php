@@ -441,9 +441,8 @@ echo '<table border="0" cellpadding="0" cellspacing="0" align="center" width="90
 				<td><table>
 				<tr>
 
-					<td><g:plusone size="small"></g:plusone><script type="text/javascript" src="http://apis.google.com/js/plusone.js"></script></td>
-					<td><a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></td>
-					<td>							<iframe src="http://www.facebook.com/plugins/like.php?href=' , urlencode($scripturl . '?action=articles;sa=view;article=' .  $context['article']['ID_ARTICLE']), '&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:21px;" allowTransparency="true"></iframe></td>
+					<td><a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script></td>
+					<td>							<iframe src="https://www.facebook.com/plugins/like.php?href=' , urlencode($scripturl . '?action=articles;sa=view;article=' .  $context['article']['ID_ARTICLE']), '&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:21px;" allowTransparency="true"></iframe></td>
 					</tr>
 				</table>
 				</td>
@@ -1057,7 +1056,7 @@ echo '
 			</form>
 
 
-<script language="JavaScript" type="text/javascript" src="http://www.smfhacks.com/versions/articles_version.js?t=' . time() .'"></script>
+<script language="JavaScript" type="text/javascript" src="https://www.smfhacks.com/versions/articles_version.js?t=' . time() .'"></script>
 			<script language="JavaScript" type="text/javascript">
 
 			function ArticlesCurrentVersion()

@@ -26,6 +26,9 @@ function DiscordMain()
 	$subActions = array(
 		'settings' => 'DiscordSettings',
 		'settings2' => 'DiscordSettings2',
+		'addhook' => 'DiscordAddHook',
+		'addhook2' => 'DiscordAddHook2',
+		'deletehook' => 'DiscordDeleteHook',
 	);
 
 	if (isset($_REQUEST['sa']))
@@ -52,7 +55,19 @@ function DiscordSettings()
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 			$context['discord_boards'][$row['ID_BOARD']] = $row['cName'] . ' - ' . $row['bName'];
 	$smcFunc['db_free_result']($request);
-	
+
+
+	$context['discord_hooks'] = array();
+	$request = $smcFunc['db_query']('', "
+				SELECT
+					b.ID_BOARD, b.name AS bName, h.push_type, h.url, h.id
+				FROM {db_prefix}discord_hook_boards as h, {db_prefix}boards AS b WHERE b.id_board = h.id_board");
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+			$context['discord_hooks'][] = $row;
+	$smcFunc['db_free_result']($request);
+
+
+
 
 	// Set template
 	$context['sub_template'] = 'discord_settings';
@@ -249,6 +264,15 @@ function discord_send_topic($messageid)
 		$endpoint = $modSettings['discord_webhook_topic_url'];
 
 
+	// 1 send post 2 topic 3 both
+	$request = $smcFunc['db_query']('', "
+				SELECT
+					id_board, url
+				FROM {db_prefix}discord_hook_boards WHERE push_type in (2,3) AND id_board = " . $row['id_board']);
+	$row = $smcFunc['db_fetch_assoc']($request);
+	if (!empty($row['url']))
+		$endpoint = $row['url'];
+
 	if (empty($endpoint))
 		return;
 
@@ -315,6 +339,17 @@ function discord_send_post($messageid)
 	
 	if (!empty($modSettings['discord_webhook_post_url']))
 		$endpoint = $modSettings['discord_webhook_post_url'];
+
+
+	// 1 send post 2 topic 3 both
+	$request = $smcFunc['db_query']('', "
+				SELECT
+					id_board, url
+				FROM {db_prefix}discord_hook_boards WHERE push_type in (1,3) AND id_board = " . $row['id_board']);
+	$row = $smcFunc['db_fetch_assoc']($request);
+	if (!empty($row['url']))
+		$endpoint = $row['url'];
+
 	
 	if (empty($endpoint))
 		return;
@@ -361,5 +396,62 @@ function discord_send_new_member_registration($memberID)
 	discord_send($modSettings['discord_webhook_url'],$username,$message);
 	
 }
+
+function DiscordAddHook()
+{
+	global $txt, $context,  $smcFunc;
+
+	$context['discord_boards'] = array();
+	$request = $smcFunc['db_query']('', "
+				SELECT
+					b.ID_BOARD, b.name AS bName, c.name AS cName
+				FROM {db_prefix}boards AS b, {db_prefix}categories AS c
+				WHERE b.ID_CAT = c.ID_CAT ORDER BY c.cat_order, b.board_order");
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+			$context['discord_boards'][$row['ID_BOARD']] = $row['cName'] . ' - ' . $row['bName'];
+	$smcFunc['db_free_result']($request);
+
+
+	// Set template
+	$context['sub_template'] = 'discord_add_hook';
+
+	// Set page title
+	$context['page_title'] = $txt['discord_add_board_level'];
+}
+
+function DiscordAddHook2()
+{
+	global  $smcFunc;
+
+	$pushtype = (int) $_REQUEST['pushtype'];
+	$boardhook = (int) $_REQUEST['boardhook'];
+
+	$url =  $smcFunc['htmlspecialchars']($_REQUEST['url'],ENT_QUOTES);
+
+	if (!empty($url) && !empty($boardhook))
+	{
+
+		$smcFunc['db_query']('', "INSERT INTO {db_prefix}discord_hook_boards (id_board, url, push_type)
+VALUES ('$boardhook','$url','$pushtype') ");
+	}
+
+	// Redirect to the admin area
+	redirectexit('action=admin;area=discord;sa=settings');
+
+}
+
+function DiscordDeleteHook()
+{
+	global  $smcFunc;
+
+	$id = (int) $_REQUEST['id'];
+
+	$smcFunc['db_query']('', "DELETE FROM {db_prefix}discord_hook_boards WHERE id = $id");
+
+	// Redirect to the admin area
+	redirectexit('action=admin;area=discord;sa=settings');
+
+}
+
 
 ?>

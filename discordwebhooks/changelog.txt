@@ -1,3 +1,6 @@
+2.0
++Added options to set custom discord post urls on a board level
+
 1.0.2
 !Fixed message link in postings to include anchor links.
 !Fixed case of username guest language string not being loaded.

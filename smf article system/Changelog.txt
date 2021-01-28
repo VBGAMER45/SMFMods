@@ -1,3 +1,8 @@
+3.1
+!Fixed bug with the manage categories link
+!Removed google+ code
+!Updated social sharing links to https for SMF 1.1.x
+
 3.0.4
 !Fixed importing new versions of TinyPortal article system
 !Fixed some undefined errors for SMF 2.1.x

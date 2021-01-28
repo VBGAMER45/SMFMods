@@ -1,7 +1,7 @@
 <?php
 /*
 Simple Audio Video Embedder
-Version 5.1
+Version 6.0
 by:vbgamer45
 https://www.smfhacks.com
 
@@ -20,7 +20,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '5.1.2';
+	$mediaProVersion = '6.0.2';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -175,6 +175,9 @@ function MediaProSettings2()
 	$mediapro_usecustomdiv = isset($_REQUEST['mediapro_usecustomdiv']) ? 1 :0;
 	$mediapro_divclassname = htmlspecialchars($_REQUEST['mediapro_divclassname'],ENT_QUOTES);
 
+	$mediapro_max_embeds = (int) $_REQUEST['mediapro_max_embeds'];
+	$mediapro_showlink = isset($_REQUEST['mediapro_showlink']) ? 1 : 0;
+	
 		updateSettings(
 	array(
 	'mediapro_default_height' => $mediapro_default_height,
@@ -183,7 +186,8 @@ function MediaProSettings2()
     'mediapro_disablemobile' => $mediapro_disablemobile,
     'mediapro_usecustomdiv' => $mediapro_usecustomdiv,
     'mediapro_divclassname' => $mediapro_divclassname,
-
+	'mediapro_max_embeds' => $mediapro_max_embeds,
+	'mediapro_showlink' => $mediapro_showlink,
 	));
 
 	// Redirect to the admin area
@@ -192,7 +196,8 @@ function MediaProSettings2()
 
 function MediaProProcess($message)
 {
-	global $boarddir, $modSettings, $context, $user_info;
+	global $boarddir, $modSettings, $context, $user_info, $boardurl;
+	static $playerCount = 0;
 
  	if (isset($context['save_embed_disable']) && $context['save_embed_disable'] == 1)
 		return $message;
@@ -211,12 +216,20 @@ function MediaProProcess($message)
             return $message;
     }
 
+    // Max embed settings
+	if (!empty($modSettings['mediapro_max_embeds']))
+	{
+		 if ($playerCount >= $modSettings['mediapro_max_embeds'])
+		 	return $message;
+	}
+
     // Check disable mobile
     if (!empty($modSettings['mediapro_disablemobile']))
     {
         if (MediaProisMobileDevice() == true)
             return $message;
     }
+
 
 	// Load the cache file
 	if (file_exists($boarddir . "/cache/mediaprocache.php"))
@@ -231,6 +244,11 @@ function MediaProProcess($message)
 	}
 	else
 		$mediaProItems = MediaProWriteCache();
+		
+	
+	$parsed_url = parse_url($boardurl);
+
+
 
 	// Loop though main array of enabled sites to process
 	if (count($mediaProItems) > 0)
@@ -255,14 +273,13 @@ function MediaProProcess($message)
 
 			}
 
-
+			$mediaSite['embedcode'] = str_replace('#playercount#', $playerCount, $mediaSite['embedcode']);
+			$mediaSite['embedcode'] = str_replace('#parent#', $parsed_url['host'], $mediaSite['embedcode']);
 
 			$mediaSite['embedcode'] = str_replace('width="480"','width="' . $movie_width  .'"', $mediaSite['embedcode']);
 			$mediaSite['embedcode'] = str_replace('width:480','width="' . $movie_width  .'px', $mediaSite['embedcode']);
 			$mediaSite['embedcode'] = str_replace('width=480','width=' . $movie_width , $mediaSite['embedcode']);
 			$mediaSite['embedcode'] = str_replace('data-width="480"','data-width="' . $movie_width  .'"', $mediaSite['embedcode']);
-
-
 
 
 			 $mediaSite['embedcode'] = str_replace('height="600"','height="' . $movie_height .'"', $mediaSite['embedcode']);
@@ -271,16 +288,57 @@ function MediaProProcess($message)
 			 $mediaSite['embedcode'] = str_replace('data-height="640"','data-height="' . $movie_height .'"', $mediaSite['embedcode']);
 			 $mediaSite['embedcode'] = str_replace('data-height="600"','data-height="' . $movie_height .'"', $mediaSite['embedcode']);
 
+
+			if (!empty($modSettings['mediapro_showlink']))
+				$mediaSite['embedcode'] .= '<br />#MYLINKMEDIA#';
+
+
 		$medialinks = explode("ZSPLITMZ",$mediaSite['regexmatch']);
 
 		foreach($medialinks as $medialink)
-			$message = preg_replace('#<a href="' . $medialink . '"[^>]*>([^<]+)</a>#i', $mediaSite['embedcode'], $message);
+		{
+
+
+			/// Old replace call
+//			$message = preg_replace('#<a href="' . $medialink . '"[^>]*>([^<]+)</a>#i', $mediaSite['embedcode'], $message,-1,$count);
+
+			$message = preg_replace_callback('#<a href="' . $medialink . '"[^>]*>([^<]+)</a>#i', function( $matches ) use ( $mediaSite, &$playerCount)
+			{
+				$mediaSite['embedcode'] = str_replace("#MYLINKMEDIA#",$matches[0],$mediaSite['embedcode']);
+
+				for ($m = 1;$m < count($matches);$m++)
+				{
+					$mediaSite['embedcode'] = str_replace('$' . $m,$matches[$m],$mediaSite['embedcode']);
+				}
+
+				$playerCount++;
+
+				return $mediaSite['embedcode'];
+
+
+            }
+
+            , $message,-1);
+
+
+		}
+
+
         // 2.0
 		// $message = preg_replace('#<a href="' . $mediaSite['regexmatch'] . '"(.*?)</a>#i', $mediaSite['embedcode'], $message);
 	}
 
 	// Return the updated message content
 	return $message;
+}
+
+function MediaProMatches($matches)
+{
+	print_r($matches);
+
+
+	return $matches;
+
 }
 
 function MediaProWriteCache()

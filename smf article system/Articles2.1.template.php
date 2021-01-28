@@ -397,7 +397,6 @@ if ($m_cats == true || $context['article']['ID_MEMBER'] == $user_info['id'])
 				<td><table>
 				<tr>
 
-					<td><g:plusone size="small"></g:plusone><script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script></td>
 					<td><a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script></td>
 					<td>							<iframe src="https://www.facebook.com/plugins/like.php?href=' , urlencode($scripturl . '?action=articles;sa=view;article=' . $context['article']['ID_ARTICLE']), '&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:21px;" allowTransparency="true"></iframe></td>
 					</tr>

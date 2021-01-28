@@ -1,7 +1,7 @@
 <?php
 /*
 Simple Audio Video Embedder
-Version 3.0
+Version 6.0
 by:vbgamer45
 http://www.smfhacks.com
 
@@ -61,17 +61,30 @@ function template_mediapro_settings()
 	    </tr>
         
 	    <tr>
-	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_disablemobile'] .'</td>
-	    	<td class="windowbg2"><input type="checkbox" name="mediapro_disablemobile" ' . ($modSettings['mediapro_disablemobile'] ? ' checked="checked"' : '')  . ' />
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_max_embeds'] .'</td>
+	    	<td class="windowbg2"><input type="text" size="5" name="mediapro_max_embeds" value="' . $modSettings['mediapro_max_embeds'] . '" />
 	    	</td>
-	    </tr>  
-        
+	    </tr>    
+	    
+	    
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_usecustomdiv'] .'</td>
 	    	<td class="windowbg2"><input type="checkbox" name="mediapro_usecustomdiv" ' . ($modSettings['mediapro_usecustomdiv'] ? ' checked="checked"' : '')  . ' />&nbsp;
 	    	' . $txt['mediapro_divclassname'] .'&nbsp;
 	    	
 	    	<input type="text" size="15" name="mediapro_divclassname" value="' . $modSettings['mediapro_divclassname'] . '" />
+	    	</td>
+	    </tr>  
+	    
+	    <tr>
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_disablemobile'] .'</td>
+	    	<td class="windowbg2"><input type="checkbox" name="mediapro_disablemobile" ' . ($modSettings['mediapro_disablemobile'] ? ' checked="checked"' : '')  . ' />
+	    	</td>
+	    </tr>  
+	    
+	    <tr>
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_showlink'] .'</td>
+	    	<td class="windowbg2"><input type="checkbox" name="mediapro_showlink" ' . ($modSettings['mediapro_showlink'] ? ' checked="checked"' : '')  . ' />
 	    	</td>
 	    </tr>  
         

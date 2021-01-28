@@ -31,6 +31,10 @@ db_query("INSERT IGNORE INTO {$db_prefix}settings VALUES ('mediapro_disablemobil
 db_query("INSERT IGNORE INTO {$db_prefix}settings VALUES ('mediapro_usecustomdiv','0')", __FILE__, __LINE__);
 db_query("INSERT IGNORE INTO {$db_prefix}settings VALUES ('mediapro_divclassname','embedsave')", __FILE__, __LINE__);
 
+db_query("INSERT IGNORE INTO {$db_prefix}settings VALUES ('mediapro_showlink','0')", __FILE__, __LINE__);
+db_query("INSERT IGNORE INTO {$db_prefix}settings VALUES ('mediapro_max_embeds','0')", __FILE__, __LINE__);
+
+
 db_query("REPLACE INTO {$db_prefix}settings VALUES ('autoLinkUrls','1')", __FILE__, __LINE__);
 
 
@@ -261,23 +265,11 @@ VALUES
 ' . "'),
 (50, 'Rambler.ru', 'http://www.rambler.ru', 370,390, 'http://vision.rambler.ru/users/([A-Z0-9]*)/([0-9]*)/([0-9]*)/','" . '
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="480" height="600"><param name="wmode" value="transparent"/><param name="allowFullScreen" value="true"/><param name="movie" value="http://vision.rambler.ru/i/e.swf?id=$1/$2/$3&logo=1" /><embed src="http://vision.rambler.ru/i/e.swf?id=$1/$2/$3&logo=1" width="480" height="600" type="application/x-shockwave-flash" wmode="transparent" allowFullScreen="true" /></object>
-' . "')
-", __FILE__, __LINE__);
-
-db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+' . "'),
 (53, 'Yahoo', 'http://video.yahoo.com', 322,512, 'http://video.yahoo.com/watch/([0-9]*)/([0-9]*)','" . '
  <object width="480" height="600""><param name="movie" value="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" /><param name="allowFullScreen" value="true" /><param name="AllowScriptAccess" VALUE="always" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="id=$2&vid=$1&lang=en-us&intl=us&thumbUrl=http%3A//l.yimg.com/a/i/us/sch/cn/video05/$1_rnd3230d645_19.jpg&embed=1" /><embed src="http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.46" type="application/x-shockwave-flash" width="480" height="600" allowFullScreen="true" AllowScriptAccess="always" bgcolor="#000000" flashVars="id=$2&vid=$1&lang=en-us&intl=us&thumbUrl=http%3A//l.yimg.com/a/i/us/sch/cn/video05/$1_rnd3230d645_19.jpg&embed=1" ></embed></object>
 
-' . "')
-", __FILE__, __LINE__);
-
-
-
-db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+' . "'),
 (54, 'Bungie.net', 'http://www.bungie.net', 360,640, 'http://www.bungie.net/Silverlight/bungiemediaplayer/embed.aspx" . '\\' .'\\' . "?fid=([0-9]*)','" . '
 <iframe src="http://www.bungie.net/Silverlight/bungiemediaplayer/embed.aspx?fid=$1" scrolling="no" style="padding:0;margin:0;border:0;" width="480" height="600" ></iframe>
 
@@ -317,30 +309,13 @@ db_query("REPLACE INTO {$db_prefix}mediapro_sites
 VALUES
 	(67, 'PinkBike.com', 'http://www.pinkbike.com', 375,500, 'http://www.pinkbike.com/video/([0-9]*)/','" . '
 <object width="480" height="600"><param name="allowFullScreen" value="true" /><param name="allowScriptAccess" value="always" /><param name="movie" value="http://www.pinkbike.com/v/$1/l/" /><embed src="http://www.pinkbike.com/v/$1/l/" type="application/x-shockwave-flash" width="480" height="600" allowFullScreen="true" allowScriptAccess="always"></embed></object>
-' . "')
-
-
-", __FILE__, __LINE__);
-
-
-db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+' . "'),
 	(68, 'Zippyshare', 'http://www.zippyshare.com', 300,20, 'http://www([0-9]*).zippyshare.com/v/([A-Z0-9]*)/file.html','" . '
 <object></object><script type="text/javascript">var zippywww="$1";var zippyfile="$2";var zippydown="ffffff";var zippyfront="000000";var zippyback="ffffff";var zippylight="000000";var zippywidth=480;var zippyauto=false;var zippyvol=80;var zippydwnbtn = 1;</script><script type="text/javascript" src="http://api.zippyshare.com/api/embed.js"></script>
 ' . "'),
 	(69, 'Zippyshare 2', 'http://www.zippyshare.com', 375,500, 'http://([A-Z0-9]*).zippyshare.com/view.jsp" . '\\' .'\\' . "?locale=([A-Z0-9]*)" . '\\' .'\\' . "&amp;key=([A-Z0-9]*)','" . '
 <object></object><script type="text/javascript">var zippywww="$1";var zippyfile="$3";var zippydown="ffffff";var zippyfront="000000";var zippyback="ffffff";var zippylight="000000";var zippywidth=480;var zippyauto=false;var zippyvol=80;var zippydwnbtn = 1;</script><script type="text/javascript" src="http://api.zippyshare.com/api/embed.js"></script>
-' . "')
-
-
-", __FILE__, __LINE__);
-
-// 1.1.3 1.1.4
-
-db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+' . "'),
 (70, 'Google Maps', 'http://maps.google.com/', 350,425, 'htt(p|ps)://(maps" . '\\' .'\\' . ".google" . '\\' .'\\' . ".[^" . '"' . ">]+/" . '\\' .'\\' . "w*?" . '\\' .'\\' . "?[^" . '"' . ">]+)','" . '
 <iframe width="480" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="htt$1://$2&output=svembed"></iframe>
 ' . "'),
@@ -529,13 +504,7 @@ VALUES
 <div class="fb-post" data-href="https://www.facebook.com/video.php?v=$2" data-width="466"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/view.php?v=$2">Post</a>
 </div></div>
 '
- . "')
-", __FILE__, __LINE__);
-
-
-db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+ . "'),
 (91, 'coub.com','http://coub.com', 367,480, 'htt(p|ps)://coub.com/view/([A-Za-z0-9]*)','" . '<iframe src="http://coub.com/embed/$2?muted=false&autostart=false&originalSize=false&hideTopBar=false&startWithHD=false" allowfullscreen="true" frameborder="0" width="480" height="600"></iframe>' . "')
 ", __FILE__, __LINE__);
 
@@ -603,13 +572,7 @@ VALUES
 	(ID,title, website, height,width,  regexmatch, embedcode)
 VALUES
 (98, 'Instagram','http://instagram.com', 360,640, 'htt(p|ps)://[www" . '\\' .'\\' . ".]*instagram.com/p/([A-Za-z0-9" . '\\' .'\\' . "-" . '\\' .'\\' . "_]*)/([^<>]+)','" . '<div><blockquote class="instagram-media" data-instgrm-version="4" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:658px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:8px;"> <div style=" background:#F8F8F8; line-height:0; margin-top:40px; padding:50.0% 0; text-align:center; width:100%;"> <div style=" background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAAGFBMVEUiIiI9PT0eHh4gIB4hIBkcHBwcHBwcHBydr+JQAAAACHRSTlMABA4YHyQsM5jtaMwAAADfSURBVDjL7ZVBEgMhCAQBAf//42xcNbpAqakcM0ftUmFAAIBE81IqBJdS3lS6zs3bIpB9WED3YYXFPmHRfT8sgyrCP1x8uEUxLMzNWElFOYCV6mHWWwMzdPEKHlhLw7NWJqkHc4uIZphavDzA2JPzUDsBZziNae2S6owH8xPmX8G7zzgKEOPUoYHvGz1TBCxMkd3kwNVbU0gKHkx+iZILf77IofhrY1nYFnB/lQPb79drWOyJVa/DAvg9B/rLB4cC+Nqgdz/TvBbBnr6GBReqn/nRmDgaQEej7WhonozjF+Y2I/fZou/qAAAAAElFTkSuQmCC); display:block; height:44px; margin:0 auto -44px; position:relative; top:-22px; width:44px;"></div></div><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://instagram.com/p/$2/" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_top"> </a></p></div></blockquote><script async defer src="//platform.instagram.com/en_US/embeds.js"></script></div>
-' . "')
-", __FILE__, __LINE__);
-
-
- db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
+' . "'),
 (99, 'Facebook Video (New v5)','http://www.facebook.com', 385,466, '(http|https):" . '\\' .'\\' . "/" . '\\' .'\\' . "/(|(.+?).)facebook.com/([" . '\\' .'\\' . "w" . '\\' .'\\' . "." . '\\' .'\\' . "_]+/videos/|video.php" . '\\' .'\\' . "?v=)(" . '\\' .'\\' . "d+)(|((/|" . '\\' .'\\' . "?|" . '\\' .'\\' . "&)(.+?)))','" . '
 <div id="fb-root"></div><script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";fjs.parentNode.insertBefore(js, fjs);}(document, "script", "facebook-jssdk"));</script><div class="fb-video" data-href="https://www.facebook.com/facebook/videos/$5/" data-width="500" data-show-text="false"  data-allowfullscreen="1"><blockquote cite="https://www.facebook.com/facebook/videos/$5/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook/videos/$5/">s</a></blockquote></div>
 '
@@ -637,16 +600,21 @@ db_query("REPLACE INTO {$db_prefix}mediapro_sites
 VALUES
 (104, 'Pastebin','https://pastebin.com', 360,640, 'https://pastebin.com/([A-Za-z0-9]*)','" . '<iframe src="https://pastebin.com/embed_iframe/$1" style="border:none;width:100%"></iframe>
 ' . "'),
-(105, 'Twitch V2','https://www.twitch.tv', 378,620, 'https://go.twitch.tv/videos/([A-Za-z0-9]*)ZSPLITMZhttps://www.twitch.tv/videos/([A-Za-z0-9]*)','" . '<iframe src="https://player.twitch.tv/?autoplay=false&video=$1" frameborder="0" allowfullscreen="true" scrolling="no" width="480" height="600"></iframe>
+(105, 'Twitch V2','https://www.twitch.tv', 378,620, 'https://go.twitch.tv/videos/([A-Za-z0-9]*)ZSPLITMZhttps://www.twitch.tv/videos/([A-Za-z0-9]*)','" . '<script src="https://player.twitch.tv/js/embed/v1.js"></script>
+
+<script type="text/javascript">
+  new Twitch.Player("twitch-embed#playercount#", {
+    video: "$1",
+    height: "600",
+    width: "480",
+    parent: "#parent#"
+  });
+</script>
+
 ' . "'),
 (106, 'Ted Talks','https://www.ted.com', 480,854, 'https://www.ted.com/talks/([A-Za-z0-9_]*)','" . '<iframe src="https://embed.ted.com/talks/$1" width="480" height="600"  frameborder="0" scrolling="no" allowfullscreen></iframe>
-' . "')
-", __FILE__, __LINE__);
-
-db_query("REPLACE INTO {$db_prefix}mediapro_sites
-	(ID,title, website, height,width,  regexmatch, embedcode)
-VALUES
-(108, 'Spotify','https://spotify.com',80,250, 'htt(p|ps)://open.spotify.com/track/([A-Za-z0-9]*)','" . '<iframe src="https://embed.spotify.com/?uri=spotify:track:$2" width="480" height="600" frameborder="0" allowtransparency="true"></iframe>
+' . "'),
+(108, 'Spotify','https://spotify.com',80,250, 'https?://open.spotify.com/([A-Za-z0-9]*)/([A-Za-z0-9]*)(" . '\\' .'\\' . "?)?([A-Za-z0-9" . '\\' .'\\' . "=" . '\\' .'\\' . "_" . '\\' .'\\' . "-]*)','" . '<iframe src="https://open.spotify.com/embed/$1/$2" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 ' . "')
 ", __FILE__, __LINE__);
 
@@ -713,6 +681,53 @@ VALUES
 
 
 ", __FILE__, __LINE__);
+
+
+db_query("REPLACE INTO {$db_prefix}mediapro_sites
+	(ID,title, website, height,width,  regexmatch, embedcode)
+VALUES
+(120, 'Videoclip.bg','https://videoclip.bg',360,640, 'htt(p|ps)://www.videoclip.bg/watch/([0-9]*)_([A-Za-z0-9-]*)','" . '<iframe width="640" height="360" src="https://www.videoclip.bg/embed/$2" frameborder="0" allowfullscreen allowscriptaccess></iframe>
+
+' . "'),
+(121, 'Gfycat','https://gfycat.com',360,640, 'https://gfycat.com/([A-Za-z0-9]*)([A-Za-z0-9-]*)','" . '<div style="position:relative; padding-bottom:calc(56.25% + 44px)"><iframe src="https://gfycat.com/ifr/$1" frameborder="0" scrolling="no" width="100%" height="100%" style="position:absolute;top:0;left:0;" allowfullscreen></iframe></div>
+
+' . "')
+", __FILE__, __LINE__);
+
+db_query("REPLACE INTO {$db_prefix}mediapro_sites
+	(ID,title, website, height,width,  regexmatch, embedcode)
+VALUES
+(122, 'codepen.io','https://codepen.io',360,640, 'https?://codepen.io/(.+)/pen/(.+)','" . '<iframe width="800" height="450" src="https://codepen.io/$1/full/$2" frameborder="0" allowfullscreen title="CodePen.io"></iframe>
+
+' . "'),
+(123, 'ustream.tv','https://ustream.tv',360,640, 'https?://ustream.tv/channel/([0-9]+)','" . '<iframe width="800" height="450" src="https://ustream.tv/embed/$1" frameborder="0" allowfullscreen title="UStream video"></iframe>
+
+' . "')
+", __FILE__, __LINE__);
+
+db_query("REPLACE INTO {$db_prefix}mediapro_sites
+	(ID,title, website, height,width,  regexmatch, embedcode)
+VALUES
+(124, 'Reddit','https://reddit.com',360,640, 'https://www.reddit.com/r/([A-Za-z0-9_]*)/comments/([A-Za-z0-9_]*)/([A-Za-z0-9_]*)/','" . '<blockquote class="reddit-card" data-card-created="1610762333"><a href="https://www.reddit.com/r/$1/comments/$2/$3/"> from <a href="http://www.reddit.com/r/$1">r/$1</a></blockquote>
+<script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
+
+' . "'),
+(125, 'Twitch Clips', 'https://twitch.tv/', 378, 620, 'https://clips.twitch.tv/([A-Za-z0-9]*)','" . '<iframe src="https://clips.twitch.tv/embed?clip=$1&parent=#parent#" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>' . "'),
+(126, 'GitHub Gist', 'https://github.com',  300, 700, 'https?://gist.github.com/([A-Za-z0-9-]*/[A-Za-z0-9]*)','" . '<script src="https://gist.github.com/$1.js"></script>'  . "')
+", __FILE__, __LINE__);
+
+
+db_query("REPLACE INTO {$db_prefix}mediapro_sites
+	(ID,title, website, height,width,  regexmatch, embedcode)
+VALUES
+(127, 'MSNBC','https://www.msnbc.com',315,560, 'https?://www.msnbc.com/msnbc/watch/([A-Za-z0-9-]*)-([0-9]+)','" . '<iframe width="560" height="315" src="https://www.msnbc.com/msnbc/embedded-video/mmvo$2" scrolling="no" frameborder="0" allowfullscreen></iframe>
+
+' . "'),
+(128, 'NBC News','https://www.nbcnews.com',315,560, 'https?://www.nbcnews.com/video/([A-Za-z0-9-]*)-([0-9]+)','" . '<iframe width="560" height="315" src="https://www.nbcnews.com/news/embedded-video/mmvo$2" scrolling="no" frameborder="0" allowfullscreen></iframe>
+
+' . "')
+", __FILE__, __LINE__);
+
 
 
 global $db_prefix, $boarddir;

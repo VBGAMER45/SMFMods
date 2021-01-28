@@ -233,7 +233,7 @@ $txt['smfarticles_images_view_article'] = 'Show images on view article page';
 $txt['smfarticles_err_article_not_found'] = 'Article not found';
 
 
-$txt['smfarticles_sharingicons'] = 'Show Sharing Icons: Facebook, Twitter, Google +1';
+$txt['smfarticles_sharingicons'] = 'Show Sharing Icons: Facebook, Twitter';
 
 
 $txt['smfarticles_showrss'] = 'Show RSS Feed Icons';

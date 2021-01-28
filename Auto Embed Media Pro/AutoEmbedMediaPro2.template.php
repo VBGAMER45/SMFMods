@@ -1,7 +1,7 @@
 <?php
 /*
 Simple Audio Video Embedder
-Version 3.0
+Version 6.0
 by:vbgamer45
 http://www.smfhacks.com
 
@@ -57,6 +57,14 @@ function template_mediapro_settings()
 	    	<br /><span class="smalltext">' .$txt['mediapro_txt_default_info'] . '</span>
 	    	</td>
 	    </tr>
+	    
+	    <tr>
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_max_embeds'] .'</td>
+	    	<td class="windowbg2"><input type="text" size="5" name="mediapro_max_embeds" value="' . $modSettings['mediapro_max_embeds'] . '" />
+	    	</td>
+	    </tr>    
+	    
+	    
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_usecustomdiv'] .'</td>
 	    	<td class="windowbg2"><input type="checkbox" name="mediapro_usecustomdiv" ' . ($modSettings['mediapro_usecustomdiv'] ? ' checked="checked"' : '')  . ' />&nbsp;
@@ -71,6 +79,13 @@ function template_mediapro_settings()
 	    	<td class="windowbg2"><input type="checkbox" name="mediapro_disablemobile" ' . ($modSettings['mediapro_disablemobile'] ? ' checked="checked"' : '')  . ' />
 	    	</td>
 	    </tr>  
+	    
+	    <tr>
+	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_showlink'] .'</td>
+	    	<td class="windowbg2"><input type="checkbox" name="mediapro_showlink" ' . ($modSettings['mediapro_showlink'] ? ' checked="checked"' : '')  . ' />
+	    	</td>
+	    </tr>  
+
 
 	    ';
 

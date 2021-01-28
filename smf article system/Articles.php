@@ -14,7 +14,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl;
 
 	// Current version of the article system
-	$currentVersion = '3.0.4';
+	$currentVersion = '3.1';
 
 	// Load the main Articles template
 	loadtemplate('Articles');
@@ -54,7 +54,7 @@ function ArticlesMain()
 		'alist' => 'ApproveList',
 		'admin' => 'ArticlesAdmin',
 		'admin2' => 'ArticlesAdmin2',
-		'admincat' => 'ArticleAdminCats',
+		'admincat' => 'ArticlesAdminCats',
 		'adminperm' => 'ArticlesAdminPerm',
 		'catperm' => 'CatPerm',
 		'catperm2' => 'CatPerm2',
@@ -1361,18 +1361,7 @@ function ArticlesAdmin2()
 	redirectexit('action=articles;sa=admin');
 }
 
-function ArticlesAdminCats()
-{
-	global $context, $mbname, $txt;
 
-	isAllowedTo('articles_admin');
-
-	$context['page_title'] = $mbname . ' - ' . $txt['smfarticles_title'] . ' - ' . $txt['smfarticles_managecats'];
-
-	adminIndex('articles_settings');
-
-	$context['sub_template']  = 'manage_cats';
-}
 
 function ArticlesAdminPerm()
 {
@@ -3156,5 +3145,31 @@ function ArticlesCheckInfo()
     }
 
     return true;
+}
+
+function ArticlesAdminCats()
+{
+	global $context, $mbname, $txt, $db_prefix;
+
+	isAllowedTo('articles_admin');
+
+	$context['page_title'] = $mbname . ' - ' . $txt['smfarticles_title'] . ' - ' . $txt['smfarticles_txt_managecategories'];
+
+	DoArticleAdminTabs();
+
+	$context['sub_template']  = 'manage_cats';
+
+	$dbresult = db_query("
+		SELECT
+			id_cat, title, id_parent, total
+		FROM {$db_prefix}articles_cat
+		 ORDER BY roworder ASC", __FILE__, __LINE__);
+
+	$context['articles_cat'] = array();
+	while($row = mysql_fetch_assoc($dbresult))
+	{
+		$context['articles_cat'][] = $row;
+	}
+	mysql_free_result($dbresult);
 }
 ?>

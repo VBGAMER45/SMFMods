@@ -38,7 +38,16 @@ $txt['discord_botname_topic'] = 'Botname for Topics';
 $txt['discord_botname_post'] = 'Botname for Posts';
 
 
-
+$txt['discord_hook_url'] = 'Hook Url';
+$txt['discord_board_level'] = 'Custom Board Level Post/Topics Hooks';
+$txt['discord_board_level_note'] = '<span class="smalltext">Note: Requires board to be selected above. The hook url for board overrides the default url used for post/topics</span>';
+$txt['discord_add_board_level'] = 'Add Board Level Hook';
+$txt['discord_hook_board'] = 'Board';
+$txt['discord_hook_type'] = 'Type';
+$txt['discord_hook_post'] = 'Posts';
+$txt['discord_hook_topic'] = 'Topics';
+$txt['discord_hook_both'] = 'Both Posts and Topics';
+$txt['discord_delete'] = '[Delete]';
 
 
 ?>

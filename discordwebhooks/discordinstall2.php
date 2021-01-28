@@ -54,4 +54,13 @@ $smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('discor
 $smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('discord_botname_topic', '')");
 $smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('discord_botname_post', '')");
 
+
+$smcFunc['db_query']('', "CREATE TABLE IF NOT EXISTS {db_prefix}discord_hook_boards
+(id int(11) NOT NULL auto_increment,
+id_board int(11) NOT NULL,
+url varchar(255),
+push_type tinyint(1) default 0,    
+PRIMARY KEY  (id)) ENGINE=MyISAM");
+
+
 ?>

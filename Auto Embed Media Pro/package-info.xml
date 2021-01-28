@@ -4,7 +4,7 @@
 	<id>vbgamer45:autoembedmediapro</id>
 	<name>Simple Audio Video Embedder</name>
 	<type>modification</type>
-	<version>5.1.2</version>
+	<version>6.0.2</version>
 	
 	
 	<upgrade from="all" for="1.1 - 1.1.99">
@@ -15,6 +15,7 @@
 		<require-dir name="cache" destination="$boarddir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		<code>AutoEmbedMediaProInstall.php</code>
 		
@@ -29,6 +30,7 @@
 		<require-dir name="cache" destination="$boarddir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		<code>AutoEmbedMediaProInstall.php</code>
 		
@@ -41,6 +43,7 @@
 		<remove-file name="$themedir/AutoEmbedMediaPro.template.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english-utf8.php" />
+		<remove-file name="$themedir/languages/AutoEmbedMediaPro.french-utf8.php" />
 		<modification type="file" reverse="true">AutoEmbedMediaPro.xml</modification>
 		<code>UnInstall.php</code>
 		
@@ -56,6 +59,7 @@
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		<code>AutoEmbedMediaProInstall2.php</code>
 		
@@ -69,6 +73,7 @@
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		
 		<code>AutoEmbedMediaProInstall2.php</code>
@@ -82,6 +87,7 @@
 		<remove-file name="$themedir/AutoEmbedMediaPro2.template.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english-utf8.php" />
+		<remove-file name="$themedir/languages/AutoEmbedMediaPro.french-utf8.php" />
 		<modification type="file" reverse="true">AutoEmbedMediaPro2.xml</modification>
 		<code>UnInstall.php</code>
 	</uninstall>
@@ -96,6 +102,7 @@
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		
 		<code>AutoEmbedMediaProInstall2.php</code>
@@ -112,6 +119,7 @@
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		<code>AutoEmbedMediaProInstall2.php</code>
 		<code>dohooks.php</code>
@@ -124,6 +132,7 @@
 		<remove-file name="$themedir/AutoEmbedMediaPro2.template.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english-utf8.php" />
+		<remove-file name="$themedir/languages/AutoEmbedMediaPro.french-utf8.php" />
 		<modification type="file" reverse="true">AutoEmbedMediaPro2.1.xml</modification>
 		<code>dohooks.php</code>
 		<code>UnInstall.php</code>
