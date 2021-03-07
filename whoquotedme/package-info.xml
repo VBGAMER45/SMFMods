@@ -4,7 +4,7 @@
 	<id>vbgamer45:whoquotedme</id>
 	<name>Who Quoted Me</name>
 	<type>modification</type>
-	<version>1.0</version>
+	<version>1.0a</version>
 	
 	<install for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 		<redirect url="?action=admin;area=whoquoted;sa=settings">redirect.txt</redirect>
@@ -36,5 +36,32 @@
 	
 
 
+
+
+
+	<install for="1.1 - 1.1.99">
+		<redirect url="?action=whoquoted;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">whoquoted.xml</modification>
+		<require-file name="whoquoted.php" destination="$sourcedir" />
+		<require-file name="whoquoted.template.php" destination="$themedir" />
+		<require-file name="whoquoted.english.php" destination="$themedir/languages" />
+		<require-file name="whoquoted.english-utf8.php" destination="$themedir/languages" />
+		<code>whoquotedinstall.php</code>
+		
+		
+	</install>
+	
+	
+	<uninstall for="1.1 - 1.1.99">
+		<remove-file name="$sourcedir/whoquoted.php" />
+		<remove-file name="$themedir/whoquoted.template.php" />
+		<remove-file name="$themedir/languages/whoquoted.english.php" />
+		<remove-file name="$themedir/languages/whoquoted.english-utf8.php" />
+		<modification type="file" reverse="true">whoquoted.xml</modification>
+		<code>whoquotedinstall.php</code>
+		<code>UnInstall.php</code>
+	</uninstall>
+	
 	
 </package-info>

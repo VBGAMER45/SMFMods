@@ -86,7 +86,7 @@ function KB_profile_articles_main(){
 }
 
 function KB_profile_articles(){
-   global $scripturl, $context, $txt, $modSettings, $sourcedir;
+   global $scripturl, $context, $txt, $modSettings, $sourcedir, $settings, $user_info, $smcFunc;
 
    if(empty($_REQUEST['u']))
 	    fatal_lang_error('kb_profile_no_mem');
@@ -102,64 +102,65 @@ function KB_profile_articles(){
 		'base_href' => $scripturl . '?action=profile;area=kb;u='.$memid.'',
 		'default_sort_col' => 'kbnid',
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $context, $user_info, $memid, $smcFunc;
-		
-		$memid = (int) $_REQUEST[\'u\'];	
-		
-		if ($context[\'user\'][\'is_guest\'])
-		  $groupid = -1;
-	    else
-	      $groupid =  $user_info[\'groups\'][0];
-		  
-		$request = $smcFunc[\'db_query\'](\'\', \'
-		    SELECT k.kbnid, k.title, k.views, k.date, p.view, k.id_cat, k.id_member, m.real_name, k.rate, k.comments
-            FROM {db_prefix}kb_articles AS k
-			LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member)
-			LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = kbid)  
-			LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat)  
-			WHERE k.id_member = {int:mem} AND approved = 1
-            ORDER BY {raw:sort}
-            LIMIT {int:start}, {int:per_page}\',
-            array(
-			   \'groupid\' => $groupid,
-			   \'mem\' => (int) $memid,
-			   \'sort\' => $sort,
-			   \'start\' => $start,
-			   \'per_page\' => $items_per_page,
-            )
-		);
-		$kbcn = array();
-			while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				
-				if ($row[\'view\'] != \'0\')
-				   $kbcn[] = $row;
-				   
-			$smcFunc[\'db_free_result\']($request);
+			'function' => function($start, $items_per_page, $sort) use ($context, $user_info,  $smcFunc)
+			{
 
-		return $kbcn;
-			'),
-		),
-		'get_count' => array(
-			'function' => create_function('', '
-				global $memid, $smcFunc;
-                
-				$memid = (int) $_REQUEST[\'u\'];
-				
-				$request = $smcFunc[\'db_query\'](\'\', \'
-					SELECT COUNT(*)
-					FROM {db_prefix}kb_articles
-					WHERE id_member = {int:mem} AND approved = 1\',
-			        array(
-			           \'mem\' => (int) $memid,
+				$memid = (int) $_REQUEST['u'];
+
+				if ($context['user']['is_guest'])
+				  $groupid = -1;
+				else
+				  $groupid =  $user_info['groups'][0];
+
+				$request = $smcFunc['db_query']('', '
+					SELECT k.kbnid, k.title, k.views, k.date, p.view, k.id_cat, k.id_member, m.real_name, k.rate, k.comments
+					FROM {db_prefix}kb_articles AS k
+					LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member)
+					LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = kbid)  
+					LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat)  
+					WHERE k.id_member = {int:mem} AND approved = 1
+					ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}',
+					array(
+					   'groupid' => $groupid,
+					   'mem' => (int) $memid,
+					   'sort' => $sort,
+					   'start' => $start,
+					   'per_page' => $items_per_page,
 					)
 				);
-				
-				list ($total_kbn) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
+				$kbcn = array();
+					while ($row = $smcFunc['db_fetch_assoc']($request))
+
+						if ($row['view'] != '0')
+						   $kbcn[] = $row;
+
+					$smcFunc['db_free_result']($request);
+
+				return $kbcn;
+
+
+			},
+		),
+		'get_count' => array(
+			'function' => function() use ($smcFunc)
+			{
+				$memid = (int) $_REQUEST['u'];
+
+				$request = $smcFunc['db_query']('', '
+					SELECT COUNT(*)
+					FROM {db_prefix}kb_articles
+					WHERE id_member = {int:mem} AND approved = 1',
+			        array(
+			           'mem' => (int) $memid,
+					)
+				);
+
+				list ($total_kbn) = $smcFunc['db_fetch_row']($request);
+				$smcFunc['db_free_result']($request);
 
 				return $total_kbn;
-			'),
+			},
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -168,17 +169,16 @@ function KB_profile_articles(){
 					'value' => '',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $settings;
-					if($row[\'views\'] >= 25){
-						return \'<img src="\'.$settings[\'images_url\'].\'/topic/veryhot_post.gif" alt="" align="middle" />\';
-					}elseif($row[\'views\'] >= 15){
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/hot_post.gif" alt="" align="middle" />\';
-					}else{
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/normal_post.gif" alt="" align="middle" />\';
-					}
-					
-					'),
+					'function' => function($row) use ($settings)
+					{
+						if($row['views'] >= 25){
+							return '<img src="'.$settings['images_url'].'/topic/veryhot_post.gif" alt="" align="middle" />';
+						}elseif($row['views'] >= 15){
+							return '<img src="'.$settings['images_url'].'/topic/hot_post.gif" alt="" align="middle" />';
+						}else{
+							return '<img src="'.$settings['images_url'].'/topic/normal_post.gif" alt="" align="middle" />';
+						}
+					},
 					'style' => 'width: 1%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -191,10 +191,10 @@ function KB_profile_articles(){
 					'value' => $txt['knowledgebasetitle'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $scripturl;
-						return \'<a href="\'.$scripturl.\'?action=kb;area=article;cont=\'.$row[\'kbnid\'].\'">\'.$row[\'title\'].\'</a>\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return '<a href="'.$scripturl.'?action=kb;area=article;cont='.$row['kbnid'].'">'.$row['title'].'</a>';
+					},
 					'style' => 'width: 20%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -207,10 +207,10 @@ function KB_profile_articles(){
 					'value' => $txt['knowledgebaseauthor'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                        global $scripturl;
-						return \'\'.KB_profileLink($row[\'real_name\'], $row[\'id_member\']).\'\';
-					'),
+					'function' => function($row)
+					{
+						return ''.KB_profileLink($row['real_name'], $row['id_member']).'';
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -223,10 +223,11 @@ function KB_profile_articles(){
 					'value' => $txt['knowledgebasecreated'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
+					'function' => function($row)
+					{
+						return '<div class="smalltext">'.timeformat($row['date']).'</div>';
+						},
 
-						return \'<div class="smalltext">\'.timeformat($row[\'date\']).\'</div>\';
-					'),
 					'style' => 'width: 10%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -239,9 +240,10 @@ function KB_profile_articles(){
 					'value' => $txt['kb_pinfi2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					    return KB_Stars_Precent($row[\'rate\']);
-					'),
+					'function' => function($row)
+					{
+						return KB_Stars_Precent($row['rate']);
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -254,10 +256,10 @@ function KB_profile_articles(){
 					'value' => $txt['kb_ecom2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'comments\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['comments'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -270,10 +272,10 @@ function KB_profile_articles(){
 					'value' => $txt['knowledgebaseviews'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'views\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['views'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -301,7 +303,7 @@ function KB_profile_articles(){
 	createList($list_options);
 }
 function KB_profile_notapproved(){
-   global $scripturl, $txt, $modSettings, $sourcedir;
+   global $scripturl, $txt, $modSettings, $sourcedir, $settings, $smcFunc, $context, $user_info;
   
     if(empty($_REQUEST['u']))
 	    fatal_lang_error('kb_profile_no_mem');
@@ -317,64 +319,62 @@ function KB_profile_notapproved(){
 		'base_href' => $scripturl . '?action=profile;area=kb;u='.$memid.'',
 		'default_sort_col' => 'kbnid',
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $context, $user_info, $memid, $smcFunc;
-		
-		$memid = (int) $_REQUEST[\'u\'];	
-		
-		if ($context[\'user\'][\'is_guest\'])
-		  $groupid = -1;
-	    else
-	      $groupid =  $user_info[\'groups\'][0];
-		  
-		$request = $smcFunc[\'db_query\'](\'\', \'
-		    SELECT k.kbnid, k.title, k.views, k.date, p.view, k.id_cat, k.id_member, m.real_name, k.rate, k.comments
-            FROM {db_prefix}kb_articles AS k
-			LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member)
-			LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = kbid)  
-			LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat)  
-			WHERE k.id_member = {int:mem} AND approved = 0
-            ORDER BY {raw:sort}
-            LIMIT {int:start}, {int:per_page}\',
-            array(
-			   \'groupid\' => $groupid,
-			   \'mem\' => (int) $memid,
-			   \'sort\' => $sort,
-			   \'start\' => $start,
-			   \'per_page\' => $items_per_page,
-            )
-		);
-		$kbcn = array();
-			while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				
-				if ($row[\'view\'] != \'0\')
-				   $kbcn[] = $row;
-				   
-			$smcFunc[\'db_free_result\']($request);
+			'function' => function ($start, $items_per_page, $sort) use ($context, $user_info, $smcFunc)
+			{
+				$memid = (int) $_REQUEST['u'];
 
-		return $kbcn;
-			'),
-		),
-		'get_count' => array(
-			'function' => create_function('', '
-				global $memid, $smcFunc;
-                
-				$memid = (int) $_REQUEST[\'u\'];
-				
-				$request = $smcFunc[\'db_query\'](\'\', \'
-					SELECT COUNT(*)
-					FROM {db_prefix}kb_articles
-					WHERE id_member = {int:mem} AND approved = 1\',
-			        array(
-			           \'mem\' => (int) $memid,
+				if ($context['user']['is_guest'])
+				  $groupid = -1;
+				else
+				  $groupid =  $user_info['groups'][0];
+
+				$request = $smcFunc['db_query']('', '
+					SELECT k.kbnid, k.title, k.views, k.date, p.view, k.id_cat, k.id_member, m.real_name, k.rate, k.comments
+					FROM {db_prefix}kb_articles AS k
+					LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member)
+					LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = kbid)  
+					LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat)  
+					WHERE k.id_member = {int:mem} AND approved = 0
+					ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}',
+					array(
+					   'groupid' => $groupid,
+					   'mem' => (int) $memid,
+					   'sort' => $sort,
+					   'start' => $start,
+					   'per_page' => $items_per_page,
 					)
 				);
-				
-				list ($total_kbn) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
+				$kbcn = array();
+					while ($row = $smcFunc['db_fetch_assoc']($request))
+
+						if ($row['view'] != '0')
+						   $kbcn[] = $row;
+
+					$smcFunc['db_free_result']($request);
+
+				return $kbcn;
+			},
+		),
+		'get_count' => array(
+			'function' => function() use ($smcFunc)
+			{
+				$memid = (int) $_REQUEST['u'];
+
+				$request = $smcFunc['db_query']('', '
+					SELECT COUNT(*)
+					FROM {db_prefix}kb_articles
+					WHERE id_member = {int:mem} AND approved = 1',
+			        array(
+			           'mem' => (int) $memid,
+					)
+				);
+
+				list ($total_kbn) = $smcFunc['db_fetch_row']($request);
+				$smcFunc['db_free_result']($request);
 
 				return $total_kbn;
-			'),
+			},
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -383,17 +383,15 @@ function KB_profile_notapproved(){
 					'value' => '',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $settings;
-					if($row[\'views\'] >= 25){
-						return \'<img src="\'.$settings[\'images_url\'].\'/topic/veryhot_post.gif" alt="" align="middle" />\';
-					}elseif($row[\'views\'] >= 15){
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/hot_post.gif" alt="" align="middle" />\';
-					}else{
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/normal_post.gif" alt="" align="middle" />\';
-					}
-					
-					'),
+					'function' => function($row) use ($settings) {
+						if($row['views'] >= 25){
+							return '<img src="'.$settings['images_url'].'/topic/veryhot_post.gif" alt="" align="middle" />';
+						}elseif($row['views'] >= 15){
+							return '<img src="'.$settings['images_url'].'/topic/hot_post.gif" alt="" align="middle" />';
+						}else{
+							return '<img src="'.$settings['images_url'].'/topic/normal_post.gif" alt="" align="middle" />';
+						}
+					},
 					'style' => 'width: 1%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -406,10 +404,10 @@ function KB_profile_notapproved(){
 					'value' => $txt['knowledgebasetitle'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $scripturl;
-						return \'<a href="\'.$scripturl.\'?action=kb;area=article;cont=\'.$row[\'kbnid\'].\'">\'.$row[\'title\'].\'</a>\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return '<a href="'.$scripturl.'?action=kb;area=article;cont='.$row['kbnid'].'">'.$row['title'].'</a>';
+					},
 					'style' => 'width: 20%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -422,10 +420,10 @@ function KB_profile_notapproved(){
 					'value' => $txt['knowledgebaseauthor'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                        global $scripturl;
-						return \'\'.KB_profileLink($row[\'real_name\'], $row[\'id_member\']).\'\';
-					'),
+					'function' => function($row)
+					{
+						return ''.KB_profileLink($row['real_name'], $row['id_member']).'';
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -438,10 +436,10 @@ function KB_profile_notapproved(){
 					'value' => $txt['knowledgebasecreated'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return \'<div class="smalltext">\'.timeformat($row[\'date\']).\'</div>\';
-					'),
+					'function' => function($row)
+					{
+						return '<div class="smalltext">'.timeformat($row['date']).'</div>';
+					},
 					'style' => 'width: 10%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -454,9 +452,10 @@ function KB_profile_notapproved(){
 					'value' => $txt['kb_pinfi2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					    return KB_Stars_Precent($row[\'rate\']);
-					'),
+					'function' => function($row)
+					{
+						return KB_Stars_Precent($row['rate']);
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -469,10 +468,10 @@ function KB_profile_notapproved(){
 					'value' => $txt['kb_ecom2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'comments\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['comments'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -485,10 +484,10 @@ function KB_profile_notapproved(){
 					'value' => $txt['knowledgebaseviews'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'views\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['views'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(

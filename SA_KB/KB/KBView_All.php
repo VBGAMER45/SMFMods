@@ -26,7 +26,7 @@ if (!defined('SMF'))
 	die('Hacking attempt...');	
 	
 function KB_know(){
-   global $txt, $sourcedir, $smcFunc, $modSettings, $user_info, $scripturl, $context;
+   global $txt, $sourcedir, $smcFunc, $modSettings, $user_info, $scripturl, $context, $settings;
    
     $context['sub_template']  = 'kb_know';
    
@@ -75,47 +75,45 @@ function KB_know(){
 		'base_href' => $scripturl . '?action=kb;area=cats;cat='.$_GET['cat'].'',
 		'default_sort_col' => 'kbnid',
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $user_info, $smcFunc;
-				
-		$request = $smcFunc[\'db_query\'](\'\', \'
-		    SELECT k.kbnid, k.title, k.views, k.date, k.id_cat, k.approved, k.id_member, m.real_name, k.rate, k.comments
-            FROM {db_prefix}kb_articles AS k
-			LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member) 
-			WHERE id_cat = {int:cat} AND approved = 1
-            ORDER BY {raw:sort}
-            LIMIT {int:start}, {int:per_page}\',
-            array(
-			   \'current_member\' => $user_info[\'id\'],
-			   \'cat\' => (int) $_GET[\'cat\'],
-			   \'sort\' => $sort,
-			   \'start\' => $start,
-			   \'per_page\' => $items_per_page,
-            )
-		);
-		$kbcn = array();
-			while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				$kbcn[] = $row;
-			$smcFunc[\'db_free_result\']($request);
+			'function' => function($start, $items_per_page, $sort)  use($user_info, $smcFunc)
+			{
+				$request = $smcFunc['db_query']('', '
+					SELECT k.kbnid, k.title, k.views, k.date, k.id_cat, k.approved, k.id_member, m.real_name, k.rate, k.comments
+					FROM {db_prefix}kb_articles AS k
+					LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member) 
+					WHERE id_cat = {int:cat} AND approved = 1
+					ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}',
+					array(
+					   'current_member' => $user_info['id'],
+					   'cat' => (int) $_GET['cat'],
+					   'sort' => $sort,
+					   'start' => $start,
+					   'per_page' => $items_per_page,
+					)
+				);
+				$kbcn = array();
+					while ($row = $smcFunc['db_fetch_assoc']($request))
+						$kbcn[] = $row;
+					$smcFunc['db_free_result']($request);
 
-		return $kbcn;
-			'),
+				return $kbcn;
+			},
 		),
 		'get_count' => array(
-			'function' => create_function('', '
-				global $smcFunc;
-
-				$request = $smcFunc[\'db_query\'](\'\', \'
+			'function' => function () use ($smcFunc)
+			{
+				$request = $smcFunc['db_query']('', '
 					SELECT COUNT(*)
 					FROM {db_prefix}kb_articles
-					WHERE id_cat = {int:cat} AND approved = 1\',
-			        array(\'cat\' => (int) $_GET[\'cat\'],));
-				
-				list ($total_kbn) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
+					WHERE id_cat = {int:cat} AND approved = 1',
+			        array('cat' => (int) $_GET['cat'],));
+
+				list ($total_kbn) = $smcFunc['db_fetch_row']($request);
+				$smcFunc['db_free_result']($request);
 
 				return $total_kbn;
-			'),
+			},
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -124,17 +122,16 @@ function KB_know(){
 					'value' => '-',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $settings;
-					if($row[\'views\'] >= 25){
-						return \'<img src="\'.$settings[\'images_url\'].\'/topic/veryhot_post.gif" alt="" align="middle" />\';
-					}elseif($row[\'views\'] >= 15){
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/hot_post.gif" alt="" align="middle" />\';
-					}else{
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/normal_post.gif" alt="" align="middle" />\';
-					}
-					
-					'),
+					'function' => function($row) use ($settings)
+					{
+						if($row['views'] >= 25){
+							return '<img src="'.$settings['images_url'].'/topic/veryhot_post.gif" alt="" align="middle" />';
+						}elseif($row['views'] >= 15){
+							return '<img src="'.$settings['images_url'].'/topic/hot_post.gif" alt="" align="middle" />';
+						}else{
+							return '<img src="'.$settings['images_url'].'/topic/normal_post.gif" alt="" align="middle" />';
+						}
+					},
 					'style' => 'width: 1%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -147,11 +144,10 @@ function KB_know(){
 					'value' => $txt['knowledgebasetitle'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $scripturl;
-						 
-						return \'<a href="\'.$scripturl.\'?action=kb;area=article;cont=\'.$row[\'kbnid\'].\'">\'.$row[\'title\'].\'</a>\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return '<a href="'.$scripturl.'?action=kb;area=article;cont='.$row['kbnid'].'">'.$row['title'].'</a>';
+					},
 					'style' => 'width: 20%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -164,10 +160,10 @@ function KB_know(){
 					'value' => $txt['knowledgebaseauthor'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                        global $scripturl;
-						return \'\'.KB_profileLink($row[\'real_name\'], $row[\'id_member\']).\'\';
-					'),
+					'function' =>function($row)
+					{
+						return ''.KB_profileLink($row['real_name'], $row['id_member']).'';
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -180,10 +176,10 @@ function KB_know(){
 					'value' => $txt['knowledgebasecreated'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return \'<div class="smalltext">\'.timeformat($row[\'date\']).\'</div>\';
-					'),
+					'function' => function($row)
+					{
+						return '<div class="smalltext">'.timeformat($row['date']).'</div>';
+					},
 					'style' => 'width: 10%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -196,9 +192,10 @@ function KB_know(){
 					'value' => $txt['kb_pinfi2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					    return KB_Stars_Precent($row[\'rate\']);
-					'),
+					'function' => function($row)
+					{
+						return KB_Stars_Precent($row['rate']);
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -211,10 +208,10 @@ function KB_know(){
 					'value' => $txt['kb_ecom2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'comments\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['comments'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -227,10 +224,10 @@ function KB_know(){
 					'value' => $txt['knowledgebaseviews'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'views\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['views'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(

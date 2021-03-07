@@ -49,8 +49,8 @@ $txt['mediapro_copyremove2'] = 'Remove the copyright for Simple Audio Video Embe
     	{
 		if (!isset($autoMediaLoaded))
 		{
-		$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><a href="http://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
-		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="http://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
+		$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><a href="https://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
+		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="https://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
 		$autoMediaLoaded = 1;
 		}
 	}
@@ -91,17 +91,7 @@ function MediaProCheckInfo()
 	
 </file>
 
-<file name="$boarddir/index.php">
-	<operation>
-		<search position="before"><![CDATA[
-		'editpoll2' => array('Poll.php', 'EditPoll2'),]]></search>
-		<add><![CDATA[
-		'mediapro' => array('AutoEmbedMediaPro2.php', 'MediaProMain'),
-		]]></add>
-	</operation>
 
-	
-</file>
 
 <file name="$sourcedir/Admin.php">
 

@@ -43,48 +43,46 @@ function KB_approvecom()
              'sort' => 'sortcom',
         ),
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $smcFunc;
-		
-		    $request = $smcFunc[\'db_query\'](\'\', \'
-			    SELECT c.id, c.id_article, m.id_member, c.date, m.real_name, c.comment
-                FROM {db_prefix}kb_comments AS c
-			    LEFT JOIN {db_prefix}members AS m  ON (c.id_member = m.id_member) 
-			    WHERE approved = 0
-                ORDER BY {raw:sort}
-                LIMIT {int:start}, {int:per_page}\',
-            array(
-			  
-			   \'sort\' => $sort,
-			   \'start\' => $start,
-			   \'per_page\' => $items_per_page,
-            )
-		 );
-		$kbcn1 = array();
-			while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				
-				   $kbcn1[] = $row;
-				   
-			$smcFunc[\'db_free_result\']($request);
+			'function' => function($start, $items_per_page, $sort) use($smcFunc)
+			{
+					$request = $smcFunc['db_query']('', '
+						SELECT c.id, c.id_article, m.id_member, c.date, m.real_name, c.comment
+						FROM {db_prefix}kb_comments AS c
+						LEFT JOIN {db_prefix}members AS m  ON (c.id_member = m.id_member) 
+						WHERE approved = 0
+						ORDER BY {raw:sort}
+						LIMIT {int:start}, {int:per_page}',
+					array(
 
-		return $kbcn1;
-			'),
+					   'sort' => $sort,
+					   'start' => $start,
+					   'per_page' => $items_per_page,
+					)
+				 );
+				$kbcn1 = array();
+					while ($row = $smcFunc['db_fetch_assoc']($request))
+
+						   $kbcn1[] = $row;
+
+					$smcFunc['db_free_result']($request);
+
+				return $kbcn1;
+			},
 		),
 		'get_count' => array(
-			'function' => create_function('', '
-				global $smcFunc;
-
-				$request = $smcFunc[\'db_query\'](\'\', \'
+			'function' => function() use ($smcFunc)
+			{
+				$request = $smcFunc['db_query']('', '
 					SELECT COUNT(*)
 					FROM {db_prefix}kb_comments
-					WHERE approved = 0 \',
+					WHERE approved = 0 ',
 			        array());
-				
-				list ($total_kbn) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
+
+				list ($total_kbn) = $smcFunc['db_fetch_row']($request);
+				$smcFunc['db_free_result']($request);
 
 				return $total_kbn;
-			'),
+			}
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -93,10 +91,10 @@ function KB_approvecom()
 					'value' => $txt['kb_rlistcomment'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $scripturl;
-						return \'\'.$row[\'comment\'].\'\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return ''.$row['comment'].'';
+					},
 					'style' => 'width: 20%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -109,16 +107,16 @@ function KB_approvecom()
 					'value' => $txt['knowledgebaseauthor'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                        global $txt, $scripturl;
-						if($row[\'id_member\'] != 0){
-			              	return \'<a href="\'.$scripturl.\'?action=profile;u=\'.$row[\'id_member\'].\'">\'.$row[\'real_name\'].\'</a>\';
-			            }      
-			            else{
-			              return $txt[\'guest_title\'];
+					'function' => function($row) use ($txt, $scripturl)
+					{
+						if($row['id_member'] != 0){
+			              	return '<a href="'.$scripturl.'?action=profile;u='.$row['id_member'].'">'.$row['real_name'].'</a>';
 			            }
-					
-					'),
+			            else{
+			              return $txt['guest_title'];
+			            }
+					}
+					,
 					'style' => 'width: 4%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -131,10 +129,10 @@ function KB_approvecom()
 					'value' => $txt['knowledgebasecreated'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return \'<div class="smalltext">\'.timeformat($row[\'date\']).\'</div>\';
-					'),
+					'function' => function($row)
+					{
+						return '<div class="smalltext">'.timeformat($row['date']).'</div>';
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 			),
@@ -144,10 +142,10 @@ function KB_approvecom()
 					'value' => '<input type="checkbox" name="all" class="input_check" onclick="invertAll(this, this.form);" />',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                         global $sc,$scripturl;
-						return \'<input type="checkbox" class="input_check" name="approve[]" value="\' . $row[\'id\'] . \'" />\';
-					'),
+					'function' => function($row) use($scripturl)
+					{
+						return '<input type="checkbox" class="input_check" name="approve[]" value="' . $row['id'] . '" />';
+					},
 					'style' => 'width: 2%; text-align: center;',
 				),
 	    	),		
@@ -262,7 +260,7 @@ function KB_approvecom()
 
 function KB_approve()
 {
-	global $scripturl, $sourcedir, $txt, $smcFunc, $context;
+	global $scripturl, $sourcedir, $txt, $smcFunc, $context, $user_info;
 
 	$list_options = array(
 		'id' => 'kb_know',
@@ -276,56 +274,54 @@ function KB_approve()
              'sort' => 'sortarticle',
         ),
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $user_info, $context, $smcFunc;
+			'function' => function($start, $items_per_page, $sort) use($user_info, $context, $smcFunc)
+			{
+				if ($context['user']['is_guest'])
+				   $groupid = -1;
+				 else
+				   $groupid =  $user_info['groups'][0];
 
-        	if ($context[\'user\'][\'is_guest\'])
-		       $groupid = -1;
-	         else
-	           $groupid =  $user_info[\'groups\'][0];
-			   
-		    $request = $smcFunc[\'db_query\'](\'\', \'
-			    SELECT k.kbnid, k.title, k.views, k.date, p.view, k.id_cat, k.id_member, m.real_name
-                FROM {db_prefix}kb_articles AS k
-			    LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member) 
-			    LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = c.kbid)
-			    LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND k.id_cat = p.id_cat)
-			    WHERE approved = 0
-                ORDER BY {raw:sort}
-                LIMIT {int:start}, {int:per_page}\',
-            array(
-			   \'groupid\' => $groupid,
-			   \'sort\' => $sort,
-			   \'start\' => $start,
-			   \'per_page\' => $items_per_page,
-            )
-		 );
-		$kbcn = array();
-			while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				
-				if($row[\'view\'] != \'0\')
-				   $kbcn[] = $row;
-				   
-			$smcFunc[\'db_free_result\']($request);
+				$request = $smcFunc['db_query']('', '
+					SELECT k.kbnid, k.title, k.views, k.date, p.view, k.id_cat, k.id_member, m.real_name
+					FROM {db_prefix}kb_articles AS k
+					LEFT JOIN {db_prefix}members AS m  ON (k.id_member = m.id_member) 
+					LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = c.kbid)
+					LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND k.id_cat = p.id_cat)
+					WHERE approved = 0
+					ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}',
+				array(
+				   'groupid' => $groupid,
+				   'sort' => $sort,
+				   'start' => $start,
+				   'per_page' => $items_per_page,
+				)
+			 );
+			$kbcn = array();
+				while ($row = $smcFunc['db_fetch_assoc']($request))
 
-		return $kbcn;
-			'),
+					if($row['view'] != '0')
+					   $kbcn[] = $row;
+
+				$smcFunc['db_free_result']($request);
+
+			return $kbcn;
+			},
 		),
 		'get_count' => array(
-			'function' => create_function('', '
-				global $smcFunc;
-
-				$request = $smcFunc[\'db_query\'](\'\', \'
+			'function' => function() use ($smcFunc)
+			{
+				$request = $smcFunc['db_query']('', '
 					SELECT COUNT(*)
 					FROM {db_prefix}kb_articles
-					WHERE approved = 0 \',
+					WHERE approved = 0 ',
 			        array());
-				
-				list ($total_kbn) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
+
+				list ($total_kbn) = $smcFunc['db_fetch_row']($request);
+				$smcFunc['db_free_result']($request);
 
 				return $total_kbn;
-			'),
+			},
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -334,10 +330,10 @@ function KB_approve()
 					'value' => $txt['knowledgebasetitle'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $scripturl;
-						return \'<a href="\'.$scripturl.\'?action=kb;area=article;cont=\'.$row[\'kbnid\'].\'">\'.$row[\'title\'].\'</a>\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return '<a href="'.$scripturl.'?action=kb;area=article;cont='.$row['kbnid'].'">'.$row['title'].'</a>';
+					},
 					'style' => 'width: 20%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -350,10 +346,10 @@ function KB_approve()
 					'value' => $txt['knowledgebaseauthor'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                        global $scripturl;
-						return \'<a href="\'.$scripturl.\'?action=profile;u=\'.$row[\'id_member\'].\'">\'.$row[\'real_name\'].\'</a>\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return '<a href="'.$scripturl.'?action=profile;u='.$row['id_member'].'">'.$row['real_name'].'</a>';
+					},
 					'style' => 'width: 4%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -366,10 +362,10 @@ function KB_approve()
 					'value' => $txt['knowledgebasecreated'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return timeformat($row[\'date\']);
-					'),
+					'function' => function($row)
+					{
+						return timeformat($row['date']);
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 			),
@@ -379,10 +375,10 @@ function KB_approve()
 					'value' => '<input type="checkbox" name="all" class="input_check" onclick="invertAll(this, this.form);" />',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                         global $sc,$scripturl;
-						return \'<input type="checkbox" class="input_check" name="approve1[]" value="\' . $row[\'kbnid\'] . \'" />\';
-					'),
+					'function' => function($row) use($scripturl)
+					{
+						return '<input type="checkbox" class="input_check" name="approve1[]" value="' . $row['kbnid'] . '" />';
+					},
 					'style' => 'width: 2%; text-align: center;',
 				),
 	    	),		

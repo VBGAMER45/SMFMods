@@ -1,11 +1,18 @@
+6.0.4
++Added Rumble Support
+
+6.0.3
++Added support for Twitch Channels and Clips thanks to  tjbalon
+!Removed s in Facebook v5 code link
+
 6.0.2
 +Added support MSNBC videos
-+Added suppport NBC News videos
++Added support NBC News videos
 
 6.0.1
 +Added support for Reddit posts
-+Added suppport for twitch clips thanks to  tjbalon
-+Added suppport for github gists thanks to  tjbalon
++Added support for twitch clips thanks to  tjbalon
++Added support for github gists thanks to  tjbalon
 +Updated spotify entry (now supports artist, track, playlists, and albums) tjbalon
 
 6.0

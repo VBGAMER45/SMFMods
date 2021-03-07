@@ -14,16 +14,6 @@ if (!defined('SMF'))
 
 
 
-// Hook Add Action
-function automedia_actions(&$actionArray)
-{
-	global $sourcedir, $modSettings;
-
- 
-  $actionArray += array('mediapro' => array('AutoEmbedMediaPro2.php', 'MediaProMain'));
-  
-}
-
 
 function automedia_admin_areas(&$admin_areas)
 {

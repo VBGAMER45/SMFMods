@@ -142,7 +142,7 @@ if ($row['total'] == 0)
 {
 	$smcFunc['db_query']('', "INSERT INTO {db_prefix}scheduled_tasks
 	   (time_offset, time_regularity, time_unit, disabled, task)
-	VALUES ('0', '6', 'h', '0', 'update_feedbots')");
+	VALUES ('0', '2', 'm', '0', 'update_feedbots')");
 }
 
 ?>

@@ -189,6 +189,17 @@ function discord_sendSocket($message, $webhook)
 
 function discord_send($endpoint, $username, $message, $avatar = null, $embeds = null, $tts = false) 
 {
+	global $modSettings, $scripturl, $sourcedir;
+		// Prettify any URLs
+	if (!empty($modSettings['pretty_enable_filters']))
+	{
+		require_once($sourcedir . '/PrettyUrls-Filters.php');
+		$context['pretty']['search_patterns'][] = '`(\s)(' . $scripturl . '[^#\s]*)`';
+		$context['pretty']['replace_patterns'][] = '`(\s)(' . $scripturl . '[^\s]*)`';
+		$message = pretty_rewrite_buffer($message);
+	}
+	
+	
             $push = json_encode(array(
                 'username' => $username,
                 'avatar_url' => $avatar,

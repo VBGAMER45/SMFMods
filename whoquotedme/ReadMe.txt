@@ -5,7 +5,7 @@ https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x
+For SMF 2.0.x, SMF 1.1.x
 
 Shows the user a list of people that have quoted them.
 Has built in option to rebuild quote history for all old posts

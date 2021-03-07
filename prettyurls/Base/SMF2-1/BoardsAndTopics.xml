@@ -24,7 +24,15 @@
 
 	// Load the proper template.
 ]]></add>
-		</operation>
+</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[if (!in_array($k, array('topic', 'board', 'start', session_name())))]]></search>
+			<add><![CDATA[if (!in_array($k, array('topic', 'board', 'pretty', 'start', session_name())))]]></add>
+</operation>
+
+
+		
 	</file>
 
 	<file name="$sourcedir/ManageBoards.php">
@@ -160,6 +168,12 @@ function PrettyBoardUrls()
 	// If this is a redirection board head off.
 ]]></add>
 		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[if (!in_array($k, array('board', 'start', $session_name)))]]></search>
+			<add><![CDATA[if (!in_array($k, array('board', 'pretty', 'start', $session_name)))]]></add>
+</operation>
+		
 	</file>
 
 	<file name="$sourcedir/QueryString.php">

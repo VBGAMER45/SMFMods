@@ -25,4 +25,28 @@
 		<modification reverse="true">install.xml</modification>
 		<modification reverse="true">themes/curve.xml</modification>
 	</uninstall>
+	
+	
+	<install for="2.1*">
+		<readme>README.md</readme>
+		<code>install.php</code>
+		<require-file name="files/hcaptcha.php" destination="$sourcedir" />
+		<require-file name="files/css/hcaptcha.css" destination="$themedir/css" />
+		<require-file name="files/language/hcaptcha.english.php" destination="$languagedir" />
+		<modification>install.xml</modification>
+		<modification>themes/curve.xml</modification>
+	</install>
+	<install>
+		<readme type="inline">This package doesn't appear to support your SMF version.</readme>
+	</install>
+	<uninstall for="2.1*">
+		<code>uninstall.php</code>
+		<remove-file name="$sourcedir/hcaptcha.php" />
+		<remove-file name="$themedir/css/hcaptcha.css" />
+		<remove-file name="$languagedir/hcaptcha.english.php" />
+		<modification reverse="true">install.xml</modification>
+		<modification reverse="true">themes/curve.xml</modification>
+	</uninstall>
+</package-info>
+	
 </package-info>

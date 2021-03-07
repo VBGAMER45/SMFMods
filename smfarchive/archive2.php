@@ -255,7 +255,7 @@ function archive_footer()
 {
 // Link back to SMF Hacks must remain.
 // http://www.smfhacks.com/copyright_removal.php
-echo '<br /><div align="center" id="footer"><!--Copyright for SMFHacks must stay-->SMF Archive Funded by SMF For Free&nbsp;<a href="http://www.smfforfree.com">Free Forum Hosting</a><br /><a href="http://www.smfhacks.com" target="blank">SMF Hacks</a><!--EndCopyright for SMFHacks must stay--></div>
+echo '<br /><div align="center" id="footer"><!--Copyright for SMFHacks must stay-->SMF Archive by&nbsp;<a href="http://www.createaforum.com">Free Forum Hosting</a><!--EndCopyright for SMFHacks must stay--></div>
 	</body></html>';
 }
 ?>

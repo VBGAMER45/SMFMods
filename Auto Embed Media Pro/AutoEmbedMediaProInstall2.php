@@ -516,7 +516,7 @@ VALUES
 '
  . "'),
 (91, 'coub.com','http://coub.com', 367,480, 'htt(p|ps)://coub.com/view/([A-Za-z0-9]*)','" . '<iframe src="http://coub.com/embed/$2?muted=false&autostart=false&originalSize=false&hideTopBar=false&startWithHD=false" allowfullscreen="true" frameborder="0" width="480" height="600"></iframe>' . "'),
-(92, 'Twitch.tv','http://twitch.tv', 378,620, 'http://www.twitch.tv/([A-Za-z0-9]*)/([A-Za-z0-9]*)/([0-9]*)','" . '<object bgcolor="#000000" data="http://www.twitch.tv/swflibs/TwitchPlayer.swf" height="600" id="clip_embed_player_flash" type="application/x-shockwave-flash" width="480"><param name="movie" value="http://www.twitch.tv/swflibs/TwitchPlayer.swf" /><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="flashvars" value="channel=$1&amp;auto_play=false&amp;start_volume=25&amp;videoId=$2$3" /></object>' . "'),
+(92, 'Twitch.tv Channels','https://twitch.tv', 378,620, 'https?://www.twitch.tv/([A-Za-z0-9]*)','" . '<div id="twitch-embed#playercount#"></div><script src="https://player.twitch.tv/js/embed/v1.js"></script><script type="text/javascript">  new Twitch.Player("twitch-embed#playercount#", {    channel: "$1", autoplay: false,  height: "378",    width: "620",    parent: "#parent#"  });</script>' . "'),
 (93, 'Deezer.com','http://Deezer.com', 240,700, 'http://www.deezer.com/([A-Za-z0-9]*)/([0-9]*)','" . '<iframe scrolling="no" frameborder="0" allowTransparency="true" src="http://www.deezer.com/plugins/player?autoplay=false&playlist=true&width=700&height=240&cover=true&type=$1&id=$2&title=&app_id=undefined" width="480" height="600"></iframe>' . "')
 ");
 
@@ -559,7 +559,7 @@ VALUES
 (98, 'Instagram','http://instagram.com', 360,640, 'htt(p|ps)://[www" . '\\' .'\\' . ".]*instagram.com/p/([A-Za-z0-9" . '\\' .'\\' . "-" . '\\' .'\\' . "_]*)/([^<>]+)','" . '<div><blockquote class="instagram-media" data-instgrm-version="4" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:658px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:8px;"> <div style=" background:#F8F8F8; line-height:0; margin-top:40px; padding:50.0% 0; text-align:center; width:100%;"> <div style=" background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAAGFBMVEUiIiI9PT0eHh4gIB4hIBkcHBwcHBwcHBydr+JQAAAACHRSTlMABA4YHyQsM5jtaMwAAADfSURBVDjL7ZVBEgMhCAQBAf//42xcNbpAqakcM0ftUmFAAIBE81IqBJdS3lS6zs3bIpB9WED3YYXFPmHRfT8sgyrCP1x8uEUxLMzNWElFOYCV6mHWWwMzdPEKHlhLw7NWJqkHc4uIZphavDzA2JPzUDsBZziNae2S6owH8xPmX8G7zzgKEOPUoYHvGz1TBCxMkd3kwNVbU0gKHkx+iZILf77IofhrY1nYFnB/lQPb79drWOyJVa/DAvg9B/rLB4cC+Nqgdz/TvBbBnr6GBReqn/nRmDgaQEej7WhonozjF+Y2I/fZou/qAAAAAElFTkSuQmCC); display:block; height:44px; margin:0 auto -44px; position:relative; top:-22px; width:44px;"></div></div><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://instagram.com/p/$2/" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_top"> </a></p></div></blockquote><script async defer src="//platform.instagram.com/en_US/embeds.js"></script></div>
 ' . "'),
 (99, 'Facebook Video (New v5)','http://www.facebook.com', 385,466, '(http|https):" . '\\' .'\\' . "/" . '\\' .'\\' . "/(|(.+?).)facebook.com/([" . '\\' .'\\' . "w" . '\\' .'\\' . "." . '\\' .'\\' . "_]+/videos/|video.php" . '\\' .'\\' . "?v=)(" . '\\' .'\\' . "d+)(|((/|" . '\\' .'\\' . "?|" . '\\' .'\\' . "&)(.+?)))','" . '
-<div id="fb-root"></div><script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12";fjs.parentNode.insertBefore(js, fjs);}(document, "script", "facebook-jssdk"));</script><div class="fb-video" data-href="https://www.facebook.com/facebook/videos/$5/" data-width="500" data-show-text="false"  data-allowfullscreen="1"><blockquote cite="https://www.facebook.com/facebook/videos/$5/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook/videos/$5/">s</a></blockquote></div>
+<div id="fb-root"></div><script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";fjs.parentNode.insertBefore(js, fjs);}(document, "script", "facebook-jssdk"));</script><div class="fb-video" data-href="https://www.facebook.com/facebook/videos/$5/" data-width="500" data-show-text="false"  data-allowfullscreen="1"><blockquote cite="https://www.facebook.com/facebook/videos/$5/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook/videos/$5/"></a></blockquote></div>
 
 '
  . "'),
@@ -588,7 +588,7 @@ VALUES
 VALUES
 (104, 'Pastebin','https://pastebin.com', 360,640, 'https://pastebin.com/([A-Za-z0-9]*)','" . '<iframe src="https://pastebin.com/embed_iframe/$1" style="border:none;width:100%"></iframe>
 ' . "'),
-(105, 'Twitch V2','https://www.twitch.tv', 378,620, 'https://go.twitch.tv/videos/([A-Za-z0-9]*)ZSPLITMZhttps://www.twitch.tv/videos/([A-Za-z0-9]*)','" . '<div id="twitch-embed#playercount#"></div>
+(105, 'Twitch Videos','https://www.twitch.tv', 378,620, 'https://go.twitch.tv/videos/([A-Za-z0-9]*)ZSPLITMZhttps://www.twitch.tv/videos/([A-Za-z0-9]*)','" . '<div id="twitch-embed#playercount#"></div>
 
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 
@@ -597,6 +597,7 @@ VALUES
     video: "$1",
     height: "600",
     width: "480",
+    autoplay: false,
     parent: "#parent#"
   });
 </script>
@@ -720,9 +721,33 @@ VALUES
 ' . "'),
 (128, 'NBC News','https://www.nbcnews.com',315,560, 'https?://www.nbcnews.com/video/([A-Za-z0-9-]*)-([0-9]+)','" . '<iframe width="560" height="315" src="https://www.nbcnews.com/news/embedded-video/mmvo$2" scrolling="no" frameborder="0" allowfullscreen></iframe>
 
+' . "'),
+(129, 'Twitch Clips','https://twitch.tv',378,620, 'https://clips.twitch.tv/([A-Za-z0-9]*)','" . '<iframe src="https://clips.twitch.tv/embed?clip=$1&parent=#parent#" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
+
+' . "'),
+(130, 'Rumble','https://rumble.com',360,640, 'https://rumble.com/embed/([A-Za-z0-9]*)/" . '\\' .'\\' . "?pub=([A-Za-z0-9]*)ZSPLITMZhttps://rumble.com/embed/([A-Za-z0-9]*)/','" . '<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/$1/?pub=4" frameborder="0" allowfullscreen></iframe>
+
 ' . "')
 ");
 
+
+
+
+/*
+ $smcFunc['db_query']('', "REPLACE INTO {db_prefix}mediapro_sites
+	(ID,title, website, height,width,  regexmatch, embedcode)
+VALUES
+(800, 'BitChute','https://www.bitchute.com',315,560, 'https://www.bitchute.com/video/([A-Za-z0-9-]*)/','" . '<iframe width="640" height="360" scrolling="no" frameborder="0" style="border: none;" src="https://www.bitchute.com/embed/$1/"></iframe>
+
+' . "'),
+(801, 'PeerTube','https://peer.tube',378,620, 'https://peer.tube/videos/watch/([A-Za-z0-9-]*)','" . '<iframe width="560" height="315" sandbox="allow-same-origin allow-scripts" src="https://peer.tube/videos/embed/$1" frameborder="0" allowfullscreen></iframe>
+
+' . "'),
+(802, 'kenfm.de','https://kenfm.de',378,620, 'https://tube.kenfm.de/videos/watch/([A-Za-z0-9-]*)/ZSPLITMZhttps://tube.kenfm.de/videos/watch/([A-Za-z0-9-]*)ZSPLITMZhttps://tube.kenfm.de/videos/watch/([A-Za-z0-9-]*)" . '\\' .'\\' . "?start=([A-Za-z0-9-]*)','" . '<iframe width="560" height="315" sandbox="allow-same-origin allow-scripts allow-popups" src="https://tube.kenfm.de/videos/embed/$1?start=$2" frameborder="0" allowfullscreen></iframe>
+
+' . "')
+");
+*/
 
 
 

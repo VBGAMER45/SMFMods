@@ -55,7 +55,7 @@ function KBa(){
 }
 
 function KB_show_logs(){
-  global $txt, $sourcedir, $modSettings, $smcFunc, $scripturl, $context;
+  global $txt, $sourcedir, $modSettings, $smcFunc, $scripturl, $context, $user_info;
   
     $context['sub_template']  = 'kbdolog';
   
@@ -101,48 +101,44 @@ function KB_show_logs(){
 		'default_sort_col' => 'id_log',
 		'default_sort_dir' => 'desc',
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $context, $modSettings, $scripturl, $user_info, $smcFunc;
-		
-		
-		$request = $smcFunc[\'db_query\'](\'\', \'
-			SELECT a.id_log, a.user_id, a.reason, a.time, a.user_ip, m.real_name, mg.group_name
-            FROM {db_prefix}kb_log_actions AS a
-			LEFT JOIN {db_prefix}members AS m ON (a.user_id = m.id_member)
-			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN m.id_group = {int:reg_group_id} THEN m.id_post_group ELSE m.id_group END)
-             ORDER BY {raw:sort}
-			LIMIT {int:start}, {int:per_page}\',
-            array(
-			  \'reg_group_id\' => 0,
-			  \'sort\' => $sort,
-			  \'start\' => $start,
-			  \'per_page\' => $items_per_page,
-            )
-		);
-		$context[\'knowact\'] = array();
-		while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				
-				 $context[\'knowact\'][] = $row;
-				  
-		$smcFunc[\'db_free_result\']($request);
-		return $context[\'knowact\'];
-		
-			'),
+			'function' => function ($start, $items_per_page, $sort) use (&$context, $modSettings, $scripturl, $user_info, $smcFunc)
+			{
+				$request = $smcFunc['db_query']('', '
+					SELECT a.id_log, a.user_id, a.reason, a.time, a.user_ip, m.real_name, mg.group_name
+					FROM {db_prefix}kb_log_actions AS a
+					LEFT JOIN {db_prefix}members AS m ON (a.user_id = m.id_member)
+					LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = CASE WHEN m.id_group = {int:reg_group_id} THEN m.id_post_group ELSE m.id_group END)
+					 ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}',
+					array(
+					  'reg_group_id' => 0,
+					  'sort' => $sort,
+					  'start' => $start,
+					  'per_page' => $items_per_page,
+					)
+				);
+				$context['knowact'] = array();
+				while ($row = $smcFunc['db_fetch_assoc']($request))
+
+						 $context['knowact'][] = $row;
+
+				$smcFunc['db_free_result']($request);
+				return $context['knowact'];
+			},
 		),
 		'get_count' => array(
-			'function' => create_function('', '
-				global $smcFunc;
-
-				$request = $smcFunc[\'db_query\'](\'\', \'
+			'function' => function() use ($smcFunc)
+			{
+				$request = $smcFunc['db_query']('', '
 					SELECT COUNT(*)
-					FROM {db_prefix}kb_log_actions\',
+					FROM {db_prefix}kb_log_actions',
 			       array());
-				   
-				list ($total_kb) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
+
+				list ($total_kb) = $smcFunc['db_fetch_row']($request);
+				$smcFunc['db_free_result']($request);
 
 				return $total_kb;
-			'),
+			}
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -151,11 +147,10 @@ function KB_show_logs(){
 					'value' => $txt['knowledgebase_actions'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					
-					    return \'<div class="smalltext">\'.$row[\'reason\'].\'</div>\';
-				    				
-					'),
+					'function' =>  function($row)
+					{
+						return '<div class="smalltext">'.$row['reason'].'</div>';
+					},
 					'style' => 'width: 10%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -168,11 +163,10 @@ function KB_show_logs(){
 					'value' => $txt['kb_log_admin2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					
-					    return \'\'.timeformat($row[\'time\']).\'\';
-				    				
-					'),
+					'function' => function($row)
+					{
+						return ''.timeformat($row['time']).'';
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -185,16 +179,15 @@ function KB_show_logs(){
 					'value' => $txt['kb_log_admin3'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $txt, $scripturl;
-					   if($row[\'user_id\'] != 0){
-			              	return \'<a href="\'.$scripturl.\'?action=profile;u=\'.$row[\'user_id\'].\'">\'.$row[\'real_name\'].\'</a>\';
-			            }      
-			            else{
-			              return $txt[\'guest_title\'];
+					'function' => function($row) use ($txt, $scripturl)
+					{
+					   if($row['user_id'] != 0){
+			              	return '<a href="'.$scripturl.'?action=profile;u='.$row['user_id'].'">'.$row['real_name'].'</a>';
 			            }
-				    				
-					'),
+			            else{
+			              return $txt['guest_title'];
+			            }
+					},
 					'style' => 'width: 2%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -207,16 +200,15 @@ function KB_show_logs(){
 					'value' => $txt['kb_log_admin4'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					
-					    if($row[\'group_name\']){
-			              	return \'\'.$row[\'group_name\'].\'\';
-			            }      
-			            else{
-			              return \'N/A\';
-			            }
-				    				
-					'),
+					'function' => function($row){
+						{
+							if($row['group_name']){
+			              		return ''.$row['group_name'].'';
+							}
+							else{
+							  return 'N/A';
+							}}
+					},
 					'style' => 'width: 2%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -229,11 +221,10 @@ function KB_show_logs(){
 					'value' => $txt['kb_log_admin5'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					
-					    return \'\'.$row[\'user_ip\'].\'\';
-				    				
-					'),
+					'function' => function($row)
+					{
+						return ''.$row['user_ip'].'';
+					},
 					'style' => 'width: 2%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -246,9 +237,10 @@ function KB_show_logs(){
 					'value' => '<input type="checkbox" name="all" class="input_check" onclick="invertAll(this, this.form);" />',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-						return \'<input type="checkbox" class="input_check" name="delete[]" value="\' . $row[\'id_log\'] . \'" />\';
-					'),
+					'function' => function($row)
+					{
+						return '<input type="checkbox" class="input_check" name="delete[]" value="' . $row['id_log'] . '" />';
+					},
 					'style' => 'width: 2%; text-align: center;',
 				),
 			),

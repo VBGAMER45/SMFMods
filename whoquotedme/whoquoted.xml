@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:whoquoted</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Who Quoted Me Mod SMFHacks.com Text Strings
+$txt['whoquoted_admin'] = 'Who Quoted Me Settings';
+$txt['whoquoted_txt_show_whoquoted'] = 'Show who quoted your posts';
+// END Who Quoted Me Mod SMFHacks.com Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Who Quoted Me Mod SMFHacks.com Text Strings
+$txt['whoquoted_admin'] = 'Who Quoted Me Settings';
+$txt['whoquoted_txt_show_whoquoted'] = 'Show who quoted your posts';
+// END Who Quoted Me Mod SMFHacks.com Text Strings		
+]]></add>
+	</operation>
+</file>
+
+	<file name="$languagedir/Modifications.russian.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Begin Who Quoted Me Mod SMFHacks.com Text Strings
+$txt['whoquoted_admin'] = 'Кто цитировал меня';
+$txt['whoquoted_txt_show_whoquoted'] = 'Кто цитировал ваши сообщения.';
+// END Who Quoted Me Mod SMFHacks.com Text Strings
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Modifications.russian-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Begin Who Quoted Me Mod SMFHacks.com Text Strings
+$txt['whoquoted_admin'] = 'Кто цитировал меня';
+$txt['whoquoted_txt_show_whoquoted'] = 'Кто цитировал ваши сообщения.';
+// END Who Quoted Me Mod SMFHacks.com Text Strings
+]]></add>
+		</operation>
+	</file>
+
+<file name="$sourcedir/Subs-Post.php">
+	
+	<operation>
+		<search position="replace"><![CDATA[trackStats(array('posts' => '+'));]]></search>
+		<add><![CDATA[trackStats(array('posts' => '+'));
+		
+		// Who Quoted Me Mod SMFHacks.com
+		global $sourcedir;
+		require_once($sourcedir . '/whoquoted.php');
+		WhoQuoted_ParseMessage($msgOptions['id'],$topicOptions['id'], $msgOptions['body'],$posterOptions['id']);
+		
+		// End Who Quoted Me Mod SMFHacks.com
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[updateStats('topic', true);]]></search>
+		<add><![CDATA[updateStats('topic', true);
+		
+		// Who Quoted Me Mod SMFHacks.com
+		global $sourcedir;
+		require_once($sourcedir . '/whoquoted.php');
+		WhoQuoted_ParseMessage($msgOptions['id'],$topicOptions['id'], $msgOptions['body'],$posterOptions['id']);
+		
+		// End Who Quoted Me Mod SMFHacks.com
+
+		
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/index.template.php">
+		<operation>
+			<search position="replace"><![CDATA[// Is the forum in maintenance mode?]]></search>
+			<add><![CDATA[// Who Quoted Me Mod SMFHacks.com
+			if (!empty($modSettings['whoquoted_enabled']))
+				echo '<a href="' . $scripturl . '?action=whoquoted">',$txt['whoquoted_txt_show_whoquoted'],'</a><br />';
+			// End Who Quoted Me Mod SMFHacks.com
+			
+// Is the forum in maintenance mode?]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'help' => array('Help.php', 'ShowHelp'),]]></search>
+		<add><![CDATA[
+		'whoquoted' => array('whoquoted.php', 'WhoQuotedMain'),]]></add>
+	</operation>
+</file>
+
+	<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'whoquoted' => '<a href="' . $scripturl . '?action=whoquoted&sa=settings;sesc=' . $sc . '">' . $txt['whoquoted_admin'] . '</a>',
+]]></add>
+	</operation>
+</file>
+</modification>

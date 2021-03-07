@@ -206,7 +206,7 @@ function cleanRequest()
 			<add><![CDATA[
 		// Now make absolutely sure it's a number.
 		// Check for pretty board URLs too, and possibly redirect if oldschool queries were used.
-		$_REQUEST['board'] = str_replace(array('&#039;', '\\'), array("\x12", ''), $_REQUEST['board']);
+		$_REQUEST['board'] = str_replace(array('&#039;',"&#39;", '\\'), array("\x12","\x12", ''), $_REQUEST['board']);
 		$context['pretty']['query_string']['board'] = $_REQUEST['board'];
 		if (is_numeric($_REQUEST['board']))
 		{
@@ -214,6 +214,7 @@ function cleanRequest()
 			if (!isset($_REQUEST['pretty']))
 				$context['pretty']['oldschoolquery'] = true;
 		} else {
+			$_REQUEST['board'] = str_replace(array('&#039;',"&#39;", '\\'), array("\x12","\x12", ''), $_REQUEST['board']);
 			$pretty_board_lookup = unserialize($modSettings['pretty_board_lookup']);
 			$board = (int) isset($pretty_board_lookup[$_REQUEST['board']]) ? $pretty_board_lookup[$_REQUEST['board']] : 0;
 
@@ -242,7 +243,7 @@ function cleanRequest()
 			if (!isset($_REQUEST['pretty']))
 				$context['pretty']['oldschoolquery'] = true;
 		} else {
-			$_REQUEST['topic'] = str_replace(array('&#039;', '\\'), array("\x12", ''), $_REQUEST['topic']);
+			$_REQUEST['topic'] = str_replace(array("'",'&#039;','&#39;', '\\'), array("\x12", "\x12", "\x12", ''), $_REQUEST['topic']);
 			//	Are we feeling lucky?
 			$query = $smcFunc['db_query']('', "
 				SELECT id_topic

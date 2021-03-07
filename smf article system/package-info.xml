@@ -5,7 +5,7 @@
 	<id>vbgamer45:SMFArticles</id>
 	<name>SMF Articles</name>
 	<type>modification</type>
-	<version>3.1</version>
+	<version>3.1a</version>
 
 	<install for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
 		<redirect url="?action=articles;sa=admin">redirect.txt</redirect>

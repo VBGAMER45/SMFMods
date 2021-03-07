@@ -20,7 +20,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '6.0.2';
+	$mediaProVersion = '6.0.3';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -177,7 +177,7 @@ function MediaProSettings2()
 
 	$mediapro_max_embeds = (int) $_REQUEST['mediapro_max_embeds'];
 	$mediapro_showlink = isset($_REQUEST['mediapro_showlink']) ? 1 : 0;
-	
+
 		updateSettings(
 	array(
 	'mediapro_default_height' => $mediapro_default_height,
@@ -244,8 +244,8 @@ function MediaProProcess($message)
 	}
 	else
 		$mediaProItems = MediaProWriteCache();
-		
-	
+
+
 	$parsed_url = parse_url($boardurl);
 
 
@@ -397,7 +397,7 @@ function MediaProisMobileDevice()
 		array('iPod', 'ipod'),
 		array('iPad', 'ipad'),
 		array('PocketIE', 'iemobile'),
-		array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ?  'operamini' : ''),
+		array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ?  'operamini' : 'operamini'),
 		array('Opera Mobile', 'Opera Mobi'),
 		array('Android', 'android'),
 		array('Symbian', 'symbian'),

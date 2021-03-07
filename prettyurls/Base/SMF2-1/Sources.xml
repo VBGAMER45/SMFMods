@@ -97,7 +97,21 @@ $context += array('pretty' => array(
 	</file>
 
 	<file name="$sourcedir/News.php">
-		<operation>
+	
+	
+		<operation   error="ignore">
+			<search position="after"><![CDATA[
+	if ($xml_format == 'smf' || isset($_GET['debug']))
+]]></search>
+			<add><![CDATA[
+	//	Pretty URLs need to be rewritten
+	ob_start('ob_sessrewrite');
+	$context['pretty']['search_patterns'][] = '~(<link>|<id>|<comments>|<guid>)([^#<]+)~';
+	$context['pretty']['replace_patterns'][] = '~(<link>|<id>|<comments>|<guid>)([^<]+)~';
+]]></add>
+		</operation>
+	
+		<operation   error="ignore">
 			<search position="after"><![CDATA[
 	if ($xml_format == 'smf' || isset($_REQUEST['debug']))
 ]]></search>

@@ -138,8 +138,6 @@ function SmushitBrowse()
 	
 	$context['browse_type'] = 'smushit';
 
-
-
 	// Set the options for the list.
 	$listOptions = array(
 		'id' => 'file_list',
@@ -160,25 +158,24 @@ function SmushitBrowse()
 					'value' => $txt['attachment_name'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $modSettings, $context, $scripturl;
+					'function' => function($rowData) use ($modSettings, $context, $scripturl)
+					{
+						$link = '<a href="';
+						$link .= sprintf('%1$s?action=dlattach;topic=%2$d.0&id=%3$d', $scripturl, $rowData['id_topic'], $rowData['id_attach']);
+						$link .= '"';
 
-						$link = \'<a href="\';
-						$link .= sprintf(\'%1$s?action=dlattach;topic=%2$d.0&id=%3$d\', $scripturl, $rowData[\'id_topic\'], $rowData[\'id_attach\']);
-						$link .= \'"\';
+						// Show a popup on click if it's a picture and we know its dimensions.
+						if (!empty($rowData['width']) && !empty($rowData['height']))
+							$link .= sprintf(' onclick="return reqWin(this.href' .  ' + \';image\\' . ', %1$d, %2$d, true);"', $rowData['width'] + 20, $rowData['height'] + 20);
 
-						// Show a popup on click if it\'s a picture and we know its dimensions.
-						if (!empty($rowData[\'width\']) && !empty($rowData[\'height\']))
-							$link .= sprintf(\' onclick="return reqWin(this.href\' .  \' + \\\';image\\\'\' . \', %1$d, %2$d, true);"\', $rowData[\'width\'] + 20, $rowData[\'height\'] + 20);
-
-						$link .= sprintf(\'>%1$s</a>\', preg_replace(\'~&amp;#(\\\\d{1,7}|x[0-9a-fA-F]{1,6});~\', \'&#\\\\1;\', htmlspecialchars($rowData[\'filename\'])));
+						$link .= sprintf('>%1$s</a>', preg_replace('~&amp;#(\d{1,7}|x[0-9a-fA-F]{1,6});~', '&#\1;', htmlspecialchars($rowData['filename'])));
 
 						// Show the dimensions.
-						if (!empty($rowData[\'width\']) && !empty($rowData[\'height\']))
-							$link .= sprintf(\' <span class="smalltext">%1$dx%2$d</span>\', $rowData[\'width\'], $rowData[\'height\']);
+						if (!empty($rowData['width']) && !empty($rowData['height']))
+							$link .= sprintf(' <span class="smalltext">%1$dx%2$d</span>', $rowData['width'], $rowData['height']);
 
 						return $link;
-					'),
+					}
 				),
 				'sort' => array(
 					'default' => 'a.filename',
@@ -190,10 +187,10 @@ function SmushitBrowse()
 					'value' => $txt['attachment_file_size'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $txt;
-						return sprintf(\'%1$s%2$s\', round($rowData[\'size\'] / 1024, 2), $txt[\'kilobyte\']);
-					'),
+					'function' => function ($rowData) use ($txt)
+					{
+						return sprintf('%1$s%2$s', round($rowData['size'] / 1024, 2), $txt['kilobyte']);
+					}
 				),
 				'sort' => array(
 					'default' => 'a.size DESC',
@@ -205,10 +202,10 @@ function SmushitBrowse()
 					'value' => $txt['smushited'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $txt;
-						return (($rowData[\'smushit\'] == 0) ? $txt[\'no\'] : $txt[\'yes\']);
-					'),
+					'function' => function ($rowData) use ($txt)
+					{
+						return (($rowData['smushit'] == 0) ? $txt['no'] : $txt['yes']);
+					}
 				),
 				'sort' => array(
 					'default' => 'a.smushit DESC',
@@ -220,10 +217,10 @@ function SmushitBrowse()
 					'value' => $txt['subject'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $txt, $scripturl;
-						return sprintf(\'%1$s <a href="%2$s?topic=%3$d.0.msg%4$d#msg%4$d">%5$s</a>\', $txt[\'in\'], $scripturl, $rowData[\'id_topic\'], $rowData[\'id_msg\'], $rowData[\'subject\']);
-					'),
+					'function' => function($rowData) use ($txt, $scripturl)
+					{
+						return sprintf('%1$s <a href="%2$s?topic=%3$d.0.msg%4$d#msg%4$d">%5$s</a>', $txt['in'], $scripturl, $rowData['id_topic'], $rowData['id_msg'], $rowData['subject']);
+					}
 				),
 				'sort' => array(
 					'default' => 'm.subject',
@@ -235,13 +232,12 @@ function SmushitBrowse()
 					'value' => $txt['date'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $txt, $context, $scripturl;
-
+					'function' => function($rowData) use ($txt, $context, $scripturl)
+					{
 						// The date the message containing the attachment was posted
-						$date = empty($rowData[\'poster_time\']) ? $txt[\'never\'] : timeformat($rowData[\'poster_time\']);
+						$date = empty($rowData['poster_time']) ? $txt['never'] : timeformat($rowData['poster_time']);
 						return $date;
-					'),
+					}
 				),
 				'sort' => array(
 					'default' => 'm.poster_time',
@@ -727,6 +723,7 @@ function scheduled_smushit()
 	$files = smushit_getFiles(0, 0, '', 'unsmushed', $size, $age);
 
 	// While we have attachments .... smush.em
+	if (!empty($files))
 	foreach ($files as $row)
 	{
 		smushitMain($row);

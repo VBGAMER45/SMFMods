@@ -63,7 +63,7 @@ function KB_searchmain(){
     KB_PrettyCategory();
 }
 function KB_search(){
-   global $smcFunc, $txt, $scripturl, $modSettings, $searchquery, $sc, $kb_where, $sourcedir, $user_info, $context;
+   global $smcFunc, $txt, $scripturl, $modSettings, $searchquery, $sc, $kb_where, $sourcedir, $user_info, $context, $settings;
       
     $context['sub_template']  = 'kb_search';
 	$context['page_title'] = $txt['kb_searchsearch1'];
@@ -196,62 +196,61 @@ function KB_search(){
 		'base_href' => $scripturl.'?action=kb;area=search;q='.$question.';sesc='.$sc.'',
 		'default_sort_col' => 'title',
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $searchquery, $kb_where, $context, $user_info, $smcFunc;
-		 
-		      if ($context[\'user\'][\'is_guest\'])
-		       $groupid = -1;
-	          else
-	           $groupid =  $user_info[\'groups\'][0];
-			   
-		    $request = $smcFunc[\'db_query\'](\'\', "
-                SELECT k.kbnid, k.title, k.views, k.date, k.id_cat, p.view, k.id_member, m.real_name, k.rate, k.comments
-                FROM {db_prefix}kb_articles AS k
-                LEFT JOIN {db_prefix}members AS m ON (m.id_member = k.id_member)
-				LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = c.kbid)
-			    LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND k.id_cat = p.id_cat)
-                WHERE  {raw:kb_where} ({raw:searchquery}) AND approved = 1
-				ORDER BY {raw:sort}
-                LIMIT {int:start}, {int:per_page}",
-                array(
-			       \'groupid\' => $groupid,
-			       \'sort\' => $sort,
-			       \'start\' => $start,
-			       \'per_page\' => $items_per_page,
-				   \'kb_where\' => $kb_where,
-				   \'searchquery\' => $searchquery,
-                )    
-			);
-		$kbs = array();
-			while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-				
-				if($row[\'view\'] != \'0\')
-				 $kbs[] = $row;
-				
-			$smcFunc[\'db_free_result\']($request);
-        			
-		return $kbs;
-		
-			'),
+			'function' => function($start, $items_per_page, $sort) use($searchquery, $kb_where, $context, $user_info, $smcFunc)
+			{
+
+				  if ($context['user']['is_guest'])
+				   $groupid = -1;
+				  else
+				   $groupid =  $user_info['groups'][0];
+
+				$request = $smcFunc['db_query']('', "
+					SELECT k.kbnid, k.title, k.views, k.date, k.id_cat, p.view, k.id_member, m.real_name, k.rate, k.comments
+					FROM {db_prefix}kb_articles AS k
+					LEFT JOIN {db_prefix}members AS m ON (m.id_member = k.id_member)
+					LEFT JOIN {db_prefix}kb_category AS c ON (k.id_cat = c.kbid)
+					LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND k.id_cat = p.id_cat)
+					WHERE  {raw:kb_where} ({raw:searchquery}) AND approved = 1
+					ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}",
+					array(
+					   'groupid' => $groupid,
+					   'sort' => $sort,
+					   'start' => $start,
+					   'per_page' => $items_per_page,
+					   'kb_where' => $kb_where,
+					   'searchquery' => $searchquery,
+					)
+				);
+			$kbs = array();
+				while ($row = $smcFunc['db_fetch_assoc']($request))
+
+					if($row['view'] != '0')
+					 $kbs[] = $row;
+
+				$smcFunc['db_free_result']($request);
+
+			return $kbs;
+
+			},
 		),
 		'get_count' => array(
-			'function' => create_function('', '
-				global $searchquery, $kb_where, $smcFunc;
-			   
-				    $dbresult = $smcFunc[\'db_query\'](\'\', "
+			'function' => function() use ($searchquery,$kb_where, $smcFunc)
+			{
+				$dbresult = $smcFunc['db_query']('', "
                         SELECT k.kbnid
                         FROM {db_prefix}kb_articles AS k
                         WHERE  {raw:kb_where} ({raw:searchquery}) AND approved = 1",
 	                    array(
-		                   \'kb_where\' => $kb_where,
-			               \'searchquery\' => $searchquery,
+		                   'kb_where' => $kb_where,
+			               'searchquery' => $searchquery,
 	                    )
 					);
-                    $numrows = $smcFunc[\'db_num_rows\']($dbresult);
-                    $smcFunc[\'db_free_result\']($dbresult);
+                    $numrows = $smcFunc['db_num_rows']($dbresult);
+                    $smcFunc['db_free_result']($dbresult);
 
 				return $numrows;
-			'),
+			},
 		),
 		'no_items_label' => $txt['kb_noresults'],
 		'columns' => array(
@@ -260,17 +259,17 @@ function KB_search(){
 					'value' => '',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $settings;
-					if($row[\'views\'] >= 25){
-						return \'<img src="\'.$settings[\'images_url\'].\'/topic/veryhot_post.gif" alt="" align="middle" />\';
-					}elseif($row[\'views\'] >= 15){
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/hot_post.gif" alt="" align="middle" />\';
-					}else{
-					    return \'<img src="\'.$settings[\'images_url\'].\'/topic/normal_post.gif" alt="" align="middle" />\';
-					}
-					
-					'),
+					'function' => function($row) use ($settings)
+					{
+						if($row['views'] >= 25){
+							return '<img src="'.$settings['images_url'].'/topic/veryhot_post.gif" alt="" align="middle" />';
+						}elseif($row['views'] >= 15){
+							return '<img src="'.$settings['images_url'].'/topic/hot_post.gif" alt="" align="middle" />';
+						}else{
+							return '<img src="'.$settings['images_url'].'/topic/normal_post.gif" alt="" align="middle" />';
+						}
+
+					},
 					'style' => 'width: 1%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -283,11 +282,10 @@ function KB_search(){
 					'value' => $txt['knowledgebasetitle'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $scripturl;
-					    
-						return \'<a href="\'.$scripturl.\'?action=kb;area=article;cont=\'.$row[\'kbnid\'].\'">\'.$row[\'title\'].\'</a>\';
-					'),
+					'function' => function($row) use ($scripturl)
+					{
+						return '<a href="'.$scripturl.'?action=kb;area=article;cont='.$row['kbnid'].'">'.$row['title'].'</a>';
+					},
 					'style' => 'width: 20%; text-align: left;',
 				),
 				'sort' =>  array(
@@ -300,10 +298,10 @@ function KB_search(){
 					'value' => $txt['knowledgebaseauthor'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-                        global $scripturl;
-						return \'\'.KB_profileLink($row[\'real_name\'], $row[\'id_member\']).\'\';
-					'),
+					'function' => function($row)
+					{
+						return ''.KB_profileLink($row['real_name'], $row['id_member']).'';
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -316,10 +314,10 @@ function KB_search(){
 					'value' => $txt['knowledgebasecreated'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return \'<div class="smalltext">\'.timeformat($row[\'date\']).\'</div>\';
-					'),
+					'function' => function($row)
+					{
+						return '<div class="smalltext">'.timeformat($row['date']).'</div>';
+					},
 					'style' => 'width: 10%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -332,9 +330,10 @@ function KB_search(){
 					'value' => $txt['kb_pinfi2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					    return KB_Stars_Precent($row[\'rate\']);
-					'),
+					'function' => function($row)
+					{
+						return KB_Stars_Precent($row['rate']);
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -347,10 +346,10 @@ function KB_search(){
 					'value' => $txt['kb_ecom2'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'comments\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['comments'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(
@@ -363,10 +362,10 @@ function KB_search(){
 					'value' => $txt['knowledgebaseviews'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-
-						return $row[\'views\'];
-					'),
+					'function' => function($row)
+					{
+						return $row['views'];
+					},
 					'style' => 'width: 5%; text-align: center;',
 				),
 				'sort' =>  array(

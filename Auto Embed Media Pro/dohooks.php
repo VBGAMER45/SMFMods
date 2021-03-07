@@ -13,7 +13,6 @@ branding free option is purchased.
 $hook_functions = array(
 	   'integrate_pre_include' => '$sourcedir/AutoEmbedMediaProHooks.php',
         'integrate_admin_areas' => 'automedia_admin_areas',
-		'integrate_actions' => 'automedia_actions',
 );
 
 // Adding or removing them?

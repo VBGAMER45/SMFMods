@@ -10,6 +10,12 @@ function pretty_rewrite_buffer($buffer)
 {
 	global $boardurl, $context, $modSettings, $smcFunc;
 
+	if (isset($_REQUEST['action']))
+	{
+		if ($_REQUEST['action'] == 'post2')
+			return $buffer;
+	}
+
 	if (!empty($modSettings['pretty_bufferusecache']))
 	{
 		$buffer = pretty_rewrite_buffer_fromcache($buffer);
@@ -21,11 +27,11 @@ function pretty_rewrite_buffer($buffer)
 	$context['pretty']['scriptID'] = 0;
 	$context['pretty']['scripts'] = array();
 	$buffer = preg_replace_callback('~<script.+?</script>~s', 'pretty_scripts_remove', $buffer);
-	
-	
+
+
 	if (empty($context['session_var']))
-				$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1(rand(1,1000) . rand(100,500))), 0, rand(7, 12));
-				
+				$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1($smcFunc['random_int']() . session_id() . $smcFunc['random_int']())), 0, $smcFunc['random_int'](7, 12));
+
 	//	Find all URLs in the buffer
 	$context['pretty']['search_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"#]+|\'[^\'#]+)~';
 	$urls_query = array();
@@ -36,13 +42,13 @@ function pretty_rewrite_buffer($buffer)
 		foreach ($matches[2] as $match)
 		{
 
-			
+
 
 			//	Rip out everything that shouldn't be cached
 			$match = preg_replace(array('~^[\"\']|PHPSESSID=[^;]+|(se)?sc=[^;]+|' . $context['session_var'] . '=[^;]+~', '~\"~', '~;+|=;~', '~\?;~', '~\?$|;$|=$~'), array('', '%22', ';', '?', ''), $match);
 
 			// Absolutise relative URLs
-			if (!preg_match('~^[a-zA-Z]+:|^#|@~', $match) && SMF != 'SSI')
+			if (!preg_match('~^[a-zA-Z\-]+:|^#|@~', $match) && SMF != 'SSI')
 				$match = $boardurl . '/' . $match;
 
 			// Replace $boardurl with something a little shorter
@@ -55,14 +61,17 @@ function pretty_rewrite_buffer($buffer)
 
 			if (substr($url_id,0,11) == 'android-app')
 				continue;
-				
+
+			if (substr($url_id,0,7) == 'ios-app')
+				continue;
+
 			if (substr($url_id,0,7) == 'http://')
 				continue;
-				
+
 			if (substr($url_id,0,8) == 'https://')
-				continue;		
-				
-			// Skip any other ursl	
+				continue;
+
+			// Skip any other ursl
 			$urls_query[] = $url_id;
 			$uncached_urls[$url_id] = array(
 				'url' => $match,
@@ -141,7 +150,7 @@ function pretty_rewrite_buffer($buffer)
 
 function pretty_rewrite_buffer_fromcache($buffer)
 {
-	global $boardurl, $context, $modSettings;
+	global $boardurl, $context, $modSettings, $smcFunc;
 
 	// Function by nend
 	// http://www.simplemachines.org/community/index.php?topic=146969.msg3277889#msg3277889
@@ -152,10 +161,10 @@ function pretty_rewrite_buffer_fromcache($buffer)
 	$context['pretty']['scriptID'] = 0;
 	$context['pretty']['scripts'] = array();
 	$buffer = preg_replace_callback('~<script.+?</script>~s', 'pretty_scripts_remove', $buffer);
-	
+
 	if (empty($context['session_var']))
-				$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1(rand(1,1000) . rand(100,500))), 0, rand(7, 12));
-	
+				$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1($smcFunc['random_int']() . session_id() . $smcFunc['random_int']())), 0, $smcFunc['random_int'](7, 12));
+
 
 	//	Find all URLs in the buffer
 	$context['pretty']['search_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"#]+|\'[^\'#]+)~';
@@ -166,14 +175,14 @@ function pretty_rewrite_buffer_fromcache($buffer)
 		preg_match_all($pattern, $buffer, $matches, PREG_PATTERN_ORDER);
 		foreach ($matches[2] as $match)
 		{
-			
+
 
 
 			//	Rip out everything that shouldn't be cached
 			$match = preg_replace(array('~^[\"\']|PHPSESSID=[^;]+|(se)?sc=[^;]+|' . $context['session_var'] . '=[^;]+~', '~\"~', '~;+|=;~', '~\?;~', '~\?$|;$|=$~'), array('', '%22', ';', '?', ''), $match);
 
 			// Absolutise relative URLs
-			if (!preg_match('~^[a-zA-Z]+:|^#|@~', $match) && SMF != 'SSI')
+			if (!preg_match('~^[a-zA-Z\-]+:|^#|@~', $match) && SMF != 'SSI')
 				$match = $boardurl . '/' . $match;
 
 			// Replace $boardurl with something a little shorter
@@ -185,6 +194,9 @@ function pretty_rewrite_buffer_fromcache($buffer)
 				continue;
 
 			if (substr($url_id,0,11) == 'android-app')
+				continue;
+
+			if (substr($url_id,0,7) == 'ios-app')
 				continue;
 
 			if (substr($url_id,0,7) == 'http://')
@@ -201,7 +213,7 @@ function pretty_rewrite_buffer_fromcache($buffer)
 		}
 	}
 
-	//	Procede only if there are actually URLs in the page
+	//	Proceed only if there are actually URLs in the page
 	if (count($urls_query) != 0)
 	{
 		$urls_query = array_keys(array_flip($urls_query));
@@ -252,8 +264,8 @@ function pretty_rewrite_buffer_fromcache($buffer)
 		$context['pretty']['replace_patterns'][] = '~(<a[^>]+href=|<link[^>]+href=|<form[^>]+?action=)(\"[^\"]+\"|\'[^\']+\')~';
 		foreach ($context['pretty']['replace_patterns'] as $pattern)
 			$buffer = preg_replace_callback($pattern, 'pretty_buffer_callback', $buffer);
-			
-		$buffer = str_replace('javascript:self.close()"','javascript:self.close();"',$buffer);	
+
+		$buffer = str_replace('javascript:self.close()"','javascript:self.close();"',$buffer);
 	}
 
 	//	Restore the script tags
@@ -277,7 +289,7 @@ function pretty_scripts_remove($match)
 //	A callback function to replace the buffer's URLs with their cached URLs
 function pretty_buffer_callback($matches)
 {
-	global $boardurl, $context;
+	global $boardurl, $context, $smcFunc;
 
 	// Is this URL in an attribute, and so will need new quotes?
 	$addQuotes = preg_match('~^[\"\']~', $matches[2]);
@@ -286,7 +298,7 @@ function pretty_buffer_callback($matches)
 	$matches[2] = preg_replace('~^[\"\']|[\"\']$~', '', $matches[2]);
 
 	if (empty($context['session_var']))
-		$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1(rand(1,1000) . rand(100,500))), 0, rand(7, 12));
+		$context['session_var'] = substr(preg_replace('~^\d+~', '', sha1($smcFunc['random_int']() . session_id() . $smcFunc['random_int']())), 0, $smcFunc['random_int'](7, 12));
 
 	//	Store the parts of the URL that won't be cached so they can be inserted later
 	preg_match('~PHPSESSID=[^;#&]+~', $matches[2], $PHPSESSID);
@@ -327,10 +339,10 @@ function pretty_urls_actions_filter($urls)
 	$skip_actions = array();
 	if (isset($modSettings['pretty_skipactions']))
 		$skip_actions = explode(",",$modSettings['pretty_skipactions']);
-		
-		
+
+
 	$skip_actions[] = 'verificationcode';
-			
+
 
 	$pattern = '`' . $scripturl . '(.*)action=([^;]+)`S';
 	$replacement = $boardurl . '/$2/$1';

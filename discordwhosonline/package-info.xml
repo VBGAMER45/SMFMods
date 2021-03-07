@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Discord Who's Online</name>
+	<id>vbgamer45:discordonline</id>
+	<type>modification</type>
+	<version>1.0.1</version>
+
+	<install for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<redirect url="?action=admin;area=modsettings;sa=general" timeout="5" type="inline">Redirecting...</redirect>
+		<require-file name="discordonline.php" destination="$sourcedir" />
+		<require-file name="discordonline.english.php" destination="$themedir/languages" />
+		<code>add_remove_hooks.php</code>
+	</install>
+	<uninstall for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<code>add_remove_hooks.php</code>
+		<remove-file name="$sourcedir/discordonline.php" />
+		<remove-file name="$themedir/languages/discordonline.english.php" />
+	</uninstall>
+	
+	
+	<install for="2.0 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file">smf2.xml</modification>
+		<redirect url="?action=admin;area=modsettings;sa=general" timeout="5" type="inline">Redirecting...</redirect>
+		<require-file name="discordonline.php" destination="$sourcedir" />
+		<require-file name="discordonline.english.php" destination="$themedir/languages" />
+		<code>add_remove_hooks.php</code>
+	</install>
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" reverse="true">smf2.xml</modification>
+		<code>add_remove_hooks.php</code>
+		<remove-file name="$sourcedir/discordonline.php" />
+		<remove-file name="$themedir/languages/discordonline.english.php" />
+	</uninstall>
+	
+</package-info>

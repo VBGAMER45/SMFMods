@@ -7,7 +7,7 @@ hCaptcha is degined to keep out bots, protects user privacy and rewards website 
 
 This modification allows you to use [hCaptcha](https://www.hcaptcha.com/)
 instead of the built-in Visual Verification system. It supports the SMF
-2.0.x series.
+2.0.x and 2.1.x series.
 
 
 

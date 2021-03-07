@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
-<!-- --------------------------------------------------------------------------
-  package "Google Member Map" Mod for Simple Machines Forum (SMF) V2.0
-  author Spuds
-  copyright (c) 2011 Spuds
-  license license.txt (included with package) MPL 1.1
---------------------------------------------------------------------------- -->
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 
 
@@ -64,32 +58,41 @@
 			'type' => 'callback',
 			'callback_func' => 'googlemap_modify',
 			'permission' => 'googleMap_place',
-			'input_validate' => create_function('&$value', '
+			'input_validate' => function(&$value)
+			{
 				global $profile_vars, $cur_profile;
-			
 				// set latitude to a float value	
 				$value = (float) $value;
+
+				$update = false;
 				
 				// fix up longitude as well
-				$profile_vars[\'longitude\'] = !empty($_POST[\'longitude\']) ? (float) $_POST[\'longitude\'] : 0;
-				$cur_profile[\'longitude\'] = !empty($_POST[\'longitude\']) ? (float) $_POST[\'longitude\'] : 0;
+				$profile_vars['longitude'] = !empty($_POST['longitude']) ? (float) $_POST['longitude'] : 0;
+
+				if ($cur_profile['latitude'] != $value || $cur_profile['longitude'] != $profile_vars['longitude'])
+					$update = true;
+
+
+				$cur_profile['longitude'] = !empty($_POST['longitude']) ? (float) $_POST['longitude'] : 0;
 	
 				// now is a good time for the pin date ;)
-				$pintime = time();
-				$profile_vars[\'pindate\'] = (int) $pintime;
-				$cur_profile[\'pindate\'] = (int) $pintime;
+				if ($update == true)
+				{
+					$pintime = time();
+					$profile_vars['pindate'] = (int) $pintime;
+					$cur_profile['pindate'] = (int) $pintime;
+				}
 
 				return true;
-			'),
-			'preload' => create_function('', '
-				global $context, $cur_profile;
-
-				$context[\'member\'][\'googleMap\'][\'latitude\'] = (float) $cur_profile[\'latitude\'];
-				$context[\'member\'][\'googleMap\'][\'longitude\'] = (float) $cur_profile[\'longitude\'];
-				$context[\'member\'][\'googleMap\'][\'pindate\'] = $cur_profile[\'pindate\'];
-
-				return true;
-			'),
+			},
+			'preload'  => function() use (&$context, &$cur_profile)
+				{
+					$context['member']['googleMap']['latitude'] = (float) $cur_profile['latitude'];
+					$context['member']['googleMap']['longitude'] = (float) $cur_profile['longitude'];
+					$context['member']['googleMap']['pindate'] = $cur_profile['pindate'];
+					
+					return true;
+				},
 		),]]></add>
 		</operation>
 	</file>

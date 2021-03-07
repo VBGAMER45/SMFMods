@@ -1,3 +1,10 @@
+2.3
+!Removed create_function for better PHP 7.4+ support
+
+2.2
+!Fixed deprecated /e regex for highslide Fixes PHP 7.3+
++Updated highslide with MIT license version. Allows use on commercial sites now
+
 2.1
 !Fixed issue with error for certain categories with subcategories
 
@@ -94,8 +101,8 @@ added action logs
 added check to see if article exist on view article page
 added option to disable views
 fixed missing session checks
-fixed user being able to see unapproved article that isn’t  
-there’s
+fixed user being able to see unapproved article that isnï¿½t  
+thereï¿½s
 now you can see your unapproved articles in your profile
 
 

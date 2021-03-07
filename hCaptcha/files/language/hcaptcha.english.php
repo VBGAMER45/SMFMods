@@ -11,7 +11,7 @@
 
 // hCaptcha for SMF
 $txt['hcaptcha_configure'] = 'hCaptcha Verification System';
-$txt['hcaptcha_configure_desc'] = '<span class="smalltext">Don\'t have keys for hCaptcha? <a href="https://dashboard.hcaptcha.com/signup" target="_blank"><span style="text-decoration: underline">Get them here</span></a>.';
+$txt['hcaptcha_configure_desc'] = '<span class="smalltext">Don\'t have keys for hCaptcha? <a href="https://hcaptcha.com/?r=7fd2a238d619" target="_blank"><span style="text-decoration: underline">Get them here</span></a>.';
 $txt['hcaptcha_enabled'] = 'Use hCaptcha Verification System';
 $txt['hcaptcha_enable_desc'] = 'hCaptcha settings are below. If you don\'t want the built-in image verification, you must set it to none.';
 $txt['hcaptcha_theme'] = 'hCaptcha Theme';

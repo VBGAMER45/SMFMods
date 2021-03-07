@@ -101,7 +101,7 @@ function KB()
 }
 
 function KB_main(){
-  global $txt, $context, $smcFunc, $modSettings, $scripturl, $user_info, $sourcedir;
+  global $txt, $context, $smcFunc, $modSettings, $scripturl, $user_info, $sourcedir, $settings;
 
     if(!empty($modSettings['kb_efeaturedarticle']))
 		$context['get_featured'] = KB_get_featured();	
@@ -115,98 +115,96 @@ function KB_main(){
 		'base_href' => $scripturl . '?action=kb',
 		'default_sort_col' => 'roword',
 		'get_items' => array(
-			'function' => create_function('$start, $items_per_page, $sort', '
-				global $context, $modSettings, $scripturl, $user_info, $smcFunc;
-		
-		$context[\'sa_cat\'] = array();
-		
-		if ($context[\'user\'][\'is_guest\'])
-			$groupid = -1;
-		else
-			$groupid =  $user_info[\'groups\'][0];
-			
-		if (($context[\'sa_cat\'] = cache_get_data(\'kb_get_main\'.$start.\'\', 3600)) === null)
-	    {
-		$context[\'sa_cat\'] = array();
-		$request = $smcFunc[\'db_query\'](\'\', \'
-		    SELECT c.kbid, c.name, c.description, c.count, p.view, c.image
-            FROM {db_prefix}kb_category AS c
-			LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat) 
-            WHERE id_parent = 0			
-            ORDER BY {raw:sort}
-            LIMIT {int:start}, {int:per_page}\',
-            array(
-			  \'groupid\' => $groupid,
-			   \'sort\' => $sort,
-			  \'start\' => $start,
-			  \'per_page\' => $items_per_page,
-            )
-	    );
+			'function' => function($start, $items_per_page, $sort) use($context, $modSettings, $scripturl, $user_info, $smcFunc)
+			{
+				$context['sa_cat'] = array();
 
-	    // Loop through all results
-	    while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-	    {
-		    if($row[\'view\'] != 0 || $row[\'view\'] == \'\'){    
-		   
-		       // And add them to the list
-		       $context[\'sa_cat\'][$row[\'kbid\']] = $row;
-		       $context[\'sa_cat\'][$row[\'kbid\']][\'subcats\'] = array();
-		   
-		    }
-	    }
-	    $smcFunc[\'db_free_result\']($request);
-        if (!empty($modSettings[\'kb_countsub\'])){
-		foreach($context[\'sa_cat\'] as $test){
-	    // Find the sub categories.
-	    $request = $smcFunc[\'db_query\'](\'\', \'
-		    SELECT c.kbid, c.name, c.id_parent, p.view, c.image, c.count
-		    FROM {db_prefix}kb_category AS c
-			LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat)
-		    WHERE id_parent = {int:cat} AND id_parent > 0
-		    ORDER BY kbid ASC\',
-		    array(
-			    \'cat\' => $test[\'kbid\'],
-				\'groupid\' => $groupid,
-		    )
-	    );
+				if ($context['user']['is_guest'])
+					$groupid = -1;
+				else
+					$groupid =  $user_info['groups'][0];
 
-	    if ($smcFunc[\'db_num_rows\']($request) > 0)
-	    {
-		    while ($row = $smcFunc[\'db_fetch_assoc\']($request))
-			
-			if($row[\'view\'] != 0 || $row[\'view\'] == \'\'){    
-				
-			    $context[\'sa_cat\'][$row[\'id_parent\']][\'subcats\'][] = \'<a href="\'.$scripturl.\'?action=kb;area=cats;cat=\'.$row[\'kbid\'].\'">\' . $row[\'name\'] . \'</a>\';
-	        
-			} 
-		}
-	    $smcFunc[\'db_free_result\']($request);
-		}
-		}
-		cache_put_data(\'kb_get_main\'.$start.\'\',  $context[\'sa_cat\'], 3600);
-		}  
-		return $context[\'sa_cat\'];
-		
-			'),
+				if (($context['sa_cat'] = cache_get_data('kb_get_main'.$start.'', 3600)) === null)
+				{
+				$context['sa_cat'] = array();
+				$request = $smcFunc['db_query']('', '
+					SELECT c.kbid, c.name, c.description, c.count, p.view, c.image
+					FROM {db_prefix}kb_category AS c
+					LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat) 
+					WHERE id_parent = 0			
+					ORDER BY {raw:sort}
+					LIMIT {int:start}, {int:per_page}',
+					array(
+					  'groupid' => $groupid,
+					   'sort' => $sort,
+					  'start' => $start,
+					  'per_page' => $items_per_page,
+					)
+				);
+
+				// Loop through all results
+				while ($row = $smcFunc['db_fetch_assoc']($request))
+				{
+					if($row['view'] != 0 || $row['view'] == ''){
+
+					   // And add them to the list
+					   $context['sa_cat'][$row['kbid']] = $row;
+					   $context['sa_cat'][$row['kbid']]['subcats'] = array();
+
+					}
+				}
+				$smcFunc['db_free_result']($request);
+				if (!empty($modSettings['kb_countsub'])){
+				foreach($context['sa_cat'] as $test){
+				// Find the sub categories.
+				$request = $smcFunc['db_query']('', '
+					SELECT c.kbid, c.name, c.id_parent, p.view, c.image, c.count
+					FROM {db_prefix}kb_category AS c
+					LEFT JOIN {db_prefix}kb_catperm AS p ON (p.id_group = {int:groupid} AND c.kbid = p.id_cat)
+					WHERE id_parent = {int:cat} AND id_parent > 0
+					ORDER BY kbid ASC',
+					array(
+						'cat' => $test['kbid'],
+						'groupid' => $groupid,
+					)
+				);
+
+				if ($smcFunc['db_num_rows']($request) > 0)
+				{
+					while ($row = $smcFunc['db_fetch_assoc']($request))
+
+					if($row['view'] != 0 || $row['view'] == ''){
+
+						$context['sa_cat'][$row['id_parent']]['subcats'][] = '<a href="'.$scripturl.'?action=kb;area=cats;cat='.$row['kbid'].'">' . $row['name'] . '</a>';
+
+					}
+				}
+				$smcFunc['db_free_result']($request);
+				}
+				}
+				cache_put_data('kb_get_main'.$start.'',  $context['sa_cat'], 3600);
+				}
+				return $context['sa_cat'];
+			},
 		),
 		'get_count' => array(
-			'function' => create_function('', '
-				global $smcFunc;
-            if (($total_kb = cache_get_data(\'kb_totalkb_main\', 3600)) === null)
-	        {
-				$request = $smcFunc[\'db_query\'](\'\', \'
-					SELECT COUNT(*)
-					FROM {db_prefix}kb_category
-					WHERE id_parent = 0	\',
-			       array());
-				   
-				list ($total_kb) = $smcFunc[\'db_fetch_row\']($request);
-				$smcFunc[\'db_free_result\']($request);
-            
-			    cache_put_data(\'kb_totalkb_main\',  $total_kb, 3600);
-		    }     
-				return $total_kb;
-			'),
+			'function' => function() use ($smcFunc)
+			{
+				if (($total_kb = cache_get_data('kb_totalkb_main', 3600)) === null)
+				{
+					$request = $smcFunc['db_query']('', '
+						SELECT COUNT(*)
+						FROM {db_prefix}kb_category
+						WHERE id_parent = 0	',
+					   array());
+
+					list ($total_kb) = $smcFunc['db_fetch_row']($request);
+					$smcFunc['db_free_result']($request);
+
+					cache_put_data('kb_totalkb_main',  $total_kb, 3600);
+				}
+					return $total_kb;
+			},
 		),
 		'no_items_label' => $txt['knowledgebasenone'],
 		'columns' => array(
@@ -215,16 +213,15 @@ function KB_main(){
 					'value' => '',
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $settings;
-					if($row[\'image\']){
-					    return \'<img src="\'.$row[\'image\'].\'" alt="" />\';
-				    }	
-                    else{
-					 return \'<img src="\'.$settings[\'default_images_url\'].\'/noimg.png" alt="" />\';
-                    }					
-					'),
-					'style' => 'width: 5%; text-align: center;',
+					'function' => function($row) use ($settings)
+					{
+						if($row['image']){
+							return '<img src="'.$row['image'].'" alt="" />';
+						}
+						else{
+						 return '<img src="'.$settings['default_images_url'].'/noimg.png" alt="" />';
+						}
+					},
 				),
 			),
 			'roword' => array(
@@ -233,25 +230,23 @@ function KB_main(){
 					
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					global $txt, $settings, $modSettings, $scripturl;
-                    
-					$rss_icon = !empty($modSettings[\'kb_enablersscat\']) ? \'<a href="\'.$scripturl.\'?action=kb;area=rss;cat=\'.$row[\'kbid\'].\';type=rss"><img src="\'.$settings[\'default_images_url\'].\'/kb_feed.png" alt="" /></a>\' : \'\';
-				       
-					   if (!empty($row[\'subcats\']) && !empty($modSettings[\'kb_countsub\'])){
-			
-						    return \'<a href="\'.$scripturl.\'?action=kb;area=cats;cat=\'.$row[\'kbid\'].\'">\'.parse_bbc($row[\'name\']).\'</a>&nbsp; 
-							\'.$rss_icon.\'
-							<br />\'.parse_bbc($row[\'description\']).\'
-						   <hr /><span class="smalltext"><strong>\'.$txt[\'kb_xubcat1\'].\':&nbsp;&nbsp;</strong> \' . implode(\',&nbsp;&nbsp;\', $row[\'subcats\']) . \'</span>\';
+					'function' => function($row) use ($txt, $settings, $modSettings, $scripturl)
+					{
+						$rss_icon = !empty($modSettings['kb_enablersscat']) ? '<a href="'.$scripturl.'?action=kb;area=rss;cat='.$row['kbid'].';type=rss"><img src="'.$settings['default_images_url'].'/kb_feed.png" alt="" /></a>' : '';
+
+					   if (!empty($row['subcats']) && !empty($modSettings['kb_countsub'])){
+
+						    return '<a href="'.$scripturl.'?action=kb;area=cats;cat='.$row['kbid'].'">'.parse_bbc($row['name']).'</a>&nbsp; 
+							'.$rss_icon.'
+							<br />'.parse_bbc($row['description']).'
+						   <hr /><span class="smalltext"><strong>'.$txt['kb_xubcat1'].':&nbsp;&nbsp;</strong> ' . implode(',&nbsp;&nbsp;', $row['subcats']) . '</span>';
 						}
 						else{
-						    return \'<a href="\'.$scripturl.\'?action=kb;area=cats;cat=\'.$row[\'kbid\'].\'">\'.parse_bbc($row[\'name\']).\'</a>&nbsp;
-							\'.$rss_icon.\'
-							<br />\'.parse_bbc($row[\'description\']).\'\';
+						    return '<a href="'.$scripturl.'?action=kb;area=cats;cat='.$row['kbid'].'">'.parse_bbc($row['name']).'</a>&nbsp;
+							'.$rss_icon.'
+							<br />'.parse_bbc($row['description']).'';
 						}
-					
-					'),
+					},
 					'style' => 'width: 80%; text-align: left;',
 					 
 				),
@@ -265,19 +260,17 @@ function KB_main(){
 					'value' => $txt['knowledgebasecount'],
 				),
 				'data' => array(
-					'function' => create_function('$row', '
-					
+					'function' => function($row)
+					{
 						global $total;
-					    
-						    if (($total = cache_get_data(\'kb_total_main\'.$row[\'kbid\'].\'\', 3600)) === null)
+
+						    if (($total = cache_get_data('kb_total_main'.$row['kbid'].'', 3600)) === null)
 	                        {
-							    KB_cattotalbyid($row[\'kbid\']);
-							    cache_put_data(\'kb_total_main\'.$row[\'kbid\'].\'\',  $total, 3600);
-		                    }  
+							    KB_cattotalbyid($row['kbid']);
+							    cache_put_data('kb_total_main'.$row['kbid'].'',  $total, 3600);
+		                    }
 						return $total;
-					
-					'),
-					
+					},
 					'style' => 'width: 10%; text-align: center;',
 				),
 				'sort' =>  array(

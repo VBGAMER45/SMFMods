@@ -5,7 +5,7 @@ Version 1.6
 by:vbgamer45
 http://www.smfhacks.com
 */
-
+ini_set("display_errors",1);
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -27,8 +27,8 @@ function tradermain()
 		'report2' => 'Report2',
 		'submit' => 'Submit',
 		'detail' => 'ViewDetail',
-		'delete' => 'Delete',
-		'delete2' => 'Delete2',
+		'delete' => 'Trader_Delete',
+		'delete2' => 'Trader_Delete2',
 		'submit2' => 'Submit2',
 		'admin' => 'AdminSettings',
 		'admin2' => 'AdminSettings2',
@@ -69,7 +69,9 @@ function TraderMainView()
 
 	$context['traderid'] = $memid;
 	$context['tradername'] = $row['real_name'];
-
+	
+	// Set the page title
+	$context['page_title'] = $txt['smftrader_feedbacktitle'] . ' - ' . $row['real_name'];
 
 	$smcFunc['db_query']('', "
 	SELECT
@@ -174,8 +176,7 @@ function TraderMainView()
 
 	$context['page_index'] = constructPageIndex($scripturl . '?action=trader&id=' . $context['traderid'] . ';view=' . $view , $_REQUEST['start'], $total, $modSettings['trader_feedbackperpage']);
 
-	// Set the page title
-	$context['page_title'] = $txt['smftrader_feedbacktitle'] . ' - ' . $row['real_name'];
+
 
 
 }
@@ -528,7 +529,7 @@ function ViewDetail()
 
 }
 
-function Delete()
+function Trader_Delete()
 {
 	global $context, $smcFunc, $txt;
 
@@ -558,7 +559,7 @@ function Delete()
 
 }
 
-function Delete2()
+function Trader_Delete2()
 {
 	global $txt;
 

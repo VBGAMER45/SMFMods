@@ -2253,8 +2253,11 @@ function ViewArticle()
 	$m_cats = allowedTo('articles_admin');
 	$context['m_cats'] = $m_cats;
 
+	if (isset($_REQUEST['id']))
+		$_REQUEST['article'] = $_REQUEST['id'];
+
 	if (!isset($_REQUEST['article']))
-		fatal_error($txt['smfarticles_noarticleselected']);
+		fatal_error($txt['smfarticles_noarticleselected'],false);
 
 	$article = (int) $_REQUEST['article'];
 
@@ -2398,7 +2401,7 @@ function UpdateCategoryTotals($ID_CAT)
 	mysql_free_result($dbresult);
 
 	// Update the count
-	$dbresult = db_query("UPDATE {$db_prefix}articles_cat SET total = $total WHERE ID_CAT = $ID_CAT LIMIT 1", __FILE__, __LINE__);
+	db_query("UPDATE {$db_prefix}articles_cat SET total = $total WHERE ID_CAT = $ID_CAT LIMIT 1", __FILE__, __LINE__);
 
 }
 

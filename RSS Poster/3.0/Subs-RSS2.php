@@ -176,6 +176,10 @@ function UpdateRSSFeedBots()
 	// Load the language files
 	if (loadlanguage('FeedPoster') == false)
 		loadLanguage('FeedPoster', 'english');
+		
+		
+	$context['character_set'] = empty($modSettings['global_character_set']) ? $txt['lang_character_set'] : $modSettings['global_character_set'];
+	$context['utf8'] = $context['character_set'] === 'UTF-8' && (strpos(strtolower(PHP_OS), 'win') === false || @version_compare(PHP_VERSION, '4.2.3') != -1);
 	
 	// First get all the enabled bots
 	$context['feeds'] = array();
@@ -594,7 +598,7 @@ function startElement1($parser, $name, $attrs)
 
 function endElement1($parser, $name)
 {
-	global $insideitem, $tag, $feedcount, $context;
+	global $insideitem, $tag, $feedcount, $context, $tag_attrs;
 
 	if ($name == "ITEM"  || $name == "ENTRY")
 	{
@@ -612,7 +616,7 @@ function endElement1($parser, $name)
 
 function characterData1($parser, $data)
  {
-	global $insideitem, $tag,  $feedcount, $context, $maxitemcount, $modSettings;
+	global $insideitem, $tag,  $feedcount, $context, $maxitemcount, $modSettings, $tag_attrs;
 
 	if ($insideitem)
  	{

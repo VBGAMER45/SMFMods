@@ -20,7 +20,7 @@ function template_mediapro_settings()
         ', $txt['mediapro_admin'] , '
         </h3>
   </div>
-	<form method="post" name="frmsettings" id="frmsettings" action="', $scripturl, '?action=mediapro;sa=settings2" accept-charset="', $context['character_set'], '">
+	<form method="post" name="frmsettings" id="frmsettings" action="', $scripturl, '?action=admin;area=mediapro;sa=settings2" accept-charset="', $context['character_set'], '">
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	';
 

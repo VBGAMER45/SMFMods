@@ -4,7 +4,7 @@
 	
 <file name="$themedir/languages/Who.english-utf8.php" error="skip">
 	<operation>
-		<search position="before"><![CDATA[$txt['whoall_who'] = 'Viewing <a href="' . $scripturl . '?action=who">Who\'s Online</a>.';]]></search>
+		<search position="end"></search>
 		<add><![CDATA[
 $txt['whoall_googlemap'] = 'Viewing the <a href="' . $scripturl . '?action=googlemap">Member Map</a>.';
 $txt['whoall_.kml'] = 'Viewing the Google Earth Feed.';

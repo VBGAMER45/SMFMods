@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:discordonline</id>
+<version>1.0</version>
+<file name="$themedir/BoardIndex.template.php">
+<operation>
+		<search position="after"><![CDATA[// If they are logged in, but statistical information is off... show a personal message bar.]]></search>
+		<add><![CDATA[
+		// Discord Who's Online
+		global $sourcedir, $modSettings;
+	   if (!empty($modSettings['discord_online_enabled']))
+	   {
+	   		global $sourcedir;
+	   		require_once($sourcedir . '/discordonline.php');
+			discordonline_boardlayout();
+			template_ic_block_discord_whos_online();
+	   }
+		// Discord Who's Online
+]]></add>
+	</operation>	
+</file>
+</modification>

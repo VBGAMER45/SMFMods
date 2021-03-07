@@ -49,8 +49,8 @@ $txt['mediapro_copyremove2'] = 'Remove the copyright for Simple Audio Video Embe
     	{
 		if (!isset($autoMediaLoaded))
 		{
-		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="http://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
-		$buffer = preg_replace('~(rel="noopener">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="http://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
+		$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="https://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
+		$buffer = preg_replace('~(rel="noopener">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><a href="https://www.createaforum.com" target="_blank">Simple Audio Video Embedder</a>', $buffer);
 		
 		
 		$autoMediaLoaded = 1;

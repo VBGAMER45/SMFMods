@@ -21,7 +21,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '6.0.2';
+	$mediaProVersion = '6.0.3';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -253,8 +253,8 @@ function MediaProProcess($message)
 	}
 	else
 		$mediaProItems = MediaProWriteCache();
-		
-	$parsed_url = parse_url($boardurl);		
+
+	$parsed_url = parse_url($boardurl);
 
 	// Loop though main array of enabled sites to process
 	if (count($mediaProItems) > 0)
@@ -402,7 +402,7 @@ function MediaProisMobileDevice()
 		array('iPod', 'ipod'),
 		array('iPad', 'ipad'),
 		array('PocketIE', 'iemobile'),
-		array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ?  'operamini' : ''),
+		array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ?  'operamini' : 'operamini'),
 		array('Opera Mobile', 'Opera Mobi'),
 		array('Android', 'android'),
 		array('Symbian', 'symbian'),

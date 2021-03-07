@@ -36,10 +36,8 @@ $txt['kb_img_max_height'] = 'Maximum height of thumbnails';
 $txt['kb_img_max_width'] = 'Maximum width of thumbnails';
 $txt['kb_osource'] = 'Original Article Source';
 $txt['kb_source'] = 'Source';
-$txt['kb_enablehs_attach'] = 'Enable highslide for attached images<div class="smalltext">Highslide JS License:
-Highslide JS is licensed under a Creative Commons Attribution-NonCommercial 2.5 License. This means you need the author\'s permission to use Highslide JS on commercial websites.</div>';
-$txt['kb_enablehs_img'] = 'Convert bbc img tags to highslide<div class="smalltext">Highslide JS License:
-Highslide JS is licensed under a Creative Commons Attribution-NonCommercial 2.5 License. This means you need the author\'s permission to use Highslide JS on commercial websites.</div>';
+$txt['kb_enablehs_attach'] = 'Enable highslide for attached images';
+$txt['kb_enablehs_img'] = 'Convert bbc img tags to highslide';
 $txt['kb_parse_wiki'] = 'Parse wiki syntax <div class="smalltext">this is experimental may not work as intended</div>';
 $txt['kb_enable_attachment'] = 'Allow attached images';
 $txt['kb_num_attachment'] = 'Number of allowed images per article';

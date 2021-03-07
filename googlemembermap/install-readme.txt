@@ -20,8 +20,8 @@ Google Earth can also make use of the pin data. This mod allows for the exportin
 
 [color=blue][b][size=12pt][u]Features[/u][/size][/b][/color]
 o Adds a member map button to the main menu
-o Adds a member profile area for users to add their pin to thier profile.  This will then appear on the map.  
-o Ablilty to search by location when placing thier pin
+o Adds a member profile area for users to add their pin to their profile.  This will then appear on the map.
+o Ability to search by location when placing thier pin
 o Adds Profile info bubbles to the map pins
 o Ability to cluster pins together to improve map legabilty.  Clusters will un-cluster as you zoom in on them
 
@@ -32,6 +32,11 @@ In your admin panel you will need to enable it, which implies your acceptance of
 Please use the member map thread for support with this modification.
 
 [color=blue][b][size=12pt][u]Changelog[/u][/size][/b][/color]
+
+[b]3.0.6 - [/b]
+!Fixed updating pins
+!Only update pin date if location changed.
+
 [b]3.0 - 11/24/2016 [/b]
 o + added api key setting to make google maps work again
 o + Fixed some urls and made links https
