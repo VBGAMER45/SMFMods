@@ -4,7 +4,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<name>Smush.it! For SMF</name>
 	<id>vbgamer45:SmushforSMF</id>
-	<version>1.1</version>
+	<version>1.1a</version>
 	<type>modification</type>
 	<license><![CDATA[
 /**

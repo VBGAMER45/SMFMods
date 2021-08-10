@@ -163,7 +163,7 @@ function  template_ic_block_discord_whos_online()
 
 			if (!empty($modSettings['discord_online_show_avatars']))
 			{
-				echo '<img src="' .$row['avatar'] . '" style="max-height: 25px" alt="" />';
+				echo '<img src="' .$row['avatar'] . '" style="max-height: 25px;vertical-align:middle" alt="" />';
 			}
 
 			echo $row['name'];

@@ -20,7 +20,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '6.0.3';
+	$mediaProVersion = '6.0.4';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -274,7 +274,7 @@ function MediaProProcess($message)
 			}
 
 			$mediaSite['embedcode'] = str_replace('#playercount#', $playerCount, $mediaSite['embedcode']);
-			$mediaSite['embedcode'] = str_replace('#parent#', $parsed_url['host'], $mediaSite['embedcode']);
+			$mediaSite['embedcode'] = str_replace('#parent#', (isset($parsed_url['host']) ? $parsed_url['host'] : ''), $mediaSite['embedcode']);
 
 			$mediaSite['embedcode'] = str_replace('width="480"','width="' . $movie_width  .'"', $mediaSite['embedcode']);
 			$mediaSite['embedcode'] = str_replace('width:480','width="' . $movie_width  .'px', $mediaSite['embedcode']);

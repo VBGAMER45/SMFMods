@@ -282,25 +282,16 @@ function cleanRequest()
 
 	<file name="$sourcedir/Subs-Boards.php">
 		<operation>
-			<search position="replace"><![CDATA[
-function modifyBoard($board_id, &$boardOptions)
-{
-	global $cat_tree, $boards, $smcFunc;
-]]></search>
-			<add><![CDATA[
-function modifyBoard($board_id, &$boardOptions)
-{
-	global $cat_tree, $boards, $smcFunc, $modSettings, $context;
+			<search position="replace"><![CDATA[// Get some basic information about all boards and categories.]]></search>
+			<add><![CDATA[// Get some basic information about all boards and categories.
+	global $modSettings, $context;
 ]]></add>
 		</operation>
 
 		<operation>
-			<search position="replace"><![CDATA[
-	if (isset($boardOptions['move_to']))
-		reorderBoards();
-]]></search>
-			<add><![CDATA[
-	if (isset($boardOptions['move_to']))
+			<search position="replace"><![CDATA[if (isset($boardOptions['move_to']))
+		reorderBoards();]]></search>
+			<add><![CDATA[if (isset($boardOptions['move_to']))
 		reorderBoards();
 
 //	Update the pretty board URLs
