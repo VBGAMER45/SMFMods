@@ -5,12 +5,12 @@
 	<id>vbgamer45:blockproxyvpn</id>
 	<name>Block Proxy VPN On Registration</name>
 	<type>modification</type>
-	<version>1.1</version>
+	<version>1.2</version>
 
 
 
 	
-	<install for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3">
+	<install for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
 		<readme>ReadMe.txt</readme>
 		<require-file name="blockvpnproxy.php" destination="$sourcedir" />
 		<modification type="file">blockproxy.xml</modification>
@@ -18,7 +18,7 @@
 		
 	</install>
 
-	<uninstall for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3">
+	<uninstall for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
 		<hook hook="integrate_register_check" function="blockvpnproxy_register_check" file="$sourcedir/blockvpnproxy.php" reverse="true" />
 		<modification type="file" reverse="true">blockproxy.xml</modification>
 		<remove-file name="$sourcedir/blockvpnproxy.php" />

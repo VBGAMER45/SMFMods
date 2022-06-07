@@ -32,7 +32,7 @@ function template_mainview()
         </h3>
   </div>
   <br />
-        
+
 
 		';
 
@@ -101,8 +101,7 @@ echo '
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
   <tr>
-    <td width="50%" valign="top"
-    >';
+    <td width="50%" valign="top">';
 
 		// Show Top 5 rated
 		if (!empty($modSettings['smflinks_setshowtoprate']))
@@ -114,8 +113,8 @@ echo '
         </h3>
   </div>
             ';
-            
-            
+
+
 			echo '<table align="center">';
 
 
@@ -151,7 +150,7 @@ echo '
         ', $txt['smflinks_topfivevisited'], '
         </h3>
   </div>';
-  
+
 			echo '<table align="center">';
 			foreach($context['links_tophits'] as $row)
 			{
@@ -191,9 +190,9 @@ echo '
         ', $txt['smflinks_linkspanel'], '
         </h3>
   </div>
-            
+
 ';
-            
+
 			echo '<div align="center" class="windowbg2"><a href="' . $scripturl . '?action=links;sa=addcat">' . $txt['smflinks_addcat'] . '</a>&nbsp;';
 			if ($addlink)
 				echo '<a href="' . $scripturl . '?action=links;sa=addlink">' . $txt['smflinks_addlink'] . '</a>&nbsp;';
@@ -323,7 +322,7 @@ echo '
 		{
 
 			echo '
-            
+
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="tborder">
 				<tr class="windowbg">
 					<td align="center">', $txt['smflinks_nolinks'],'</td>
@@ -521,11 +520,11 @@ function template_addcat()
   </div>
 <table cellspacing="0" align="center" cellpadding="4" class="tborder" width="100%">
   <tr>
-    <td width="28%"  class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_ctitle'] . '</strong></span></td>
+    <td width="28%"  class="windowbg2" align="right"><strong>' . $txt['smflinks_ctitle'] . '</strong></td>
     <td width="72%"  class="windowbg2"><input type="text" name="title" size="64" maxlength="100" /></td>
   </tr>
   <tr>
-    <td width="28%" class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_parentcategory'] .'</strong>&nbsp;</span></td>
+    <td width="28%" class="windowbg2" align="right"><strong>' . $txt['smflinks_parentcategory'] .'</strong>&nbsp;</td>
     <td width="72%" class="windowbg2"><select name="parent">
     <option value="0">' . $txt['smflinks_text_catnone'] . '</option>
     ';
@@ -539,7 +538,7 @@ function template_addcat()
 	</td>
   </tr>
   <tr>
-    <td width="28%"   valign="top" class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_description'] . '</strong></span></td>
+    <td width="28%"   valign="top" class="windowbg2" align="right"><strong>' . $txt['smflinks_description'] . '</strong></td>
     <td width="72%"   class="windowbg2"><table>
 	   ';
 
@@ -605,7 +604,7 @@ function template_addcat()
 	   </table></td>
   </tr>
   <tr>
-    <td width="28%"   class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_image'] . '</strong>&nbsp;</span></td>
+    <td width="28%"   class="windowbg2" align="right"><strong>' . $txt['smflinks_image'] . '</strong>&nbsp</td>
     <td width="72%"   class="windowbg2"><input type="text" name="image" size="64" maxlength="100" /></td>
   </tr>
   <tr>
@@ -643,11 +642,11 @@ echo '
   </div>
 <table cellspacing="0" align="center" cellpadding="4" class="tborder"  width="100%">
   <tr>
-    <td width="28%"  class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_ctitle'] . '</strong></span></td>
+    <td width="28%"  class="windowbg2" align="right"><strong>' . $txt['smflinks_ctitle'] . '</strong></td>
     <td width="72%" class="windowbg2"><input type="text" name="title" size="64" maxlength="100" value="' . $row['title'] . '" /></td>
   </tr>
  <tr>
-    <td width="28%" class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_parentcategory'] .'</strong>&nbsp;</span></td>
+    <td width="28%" class="windowbg2" align="right"><strong>' . $txt['smflinks_parentcategory'] .'</strong>&nbsp;</td>
     <td width="72%" class="windowbg2"><select name="parent">
     <option value="0">' . $txt['smflinks_text_catnone'] . '</option>
     ';
@@ -665,7 +664,7 @@ echo '
 	</td>
   </tr>
   <tr>
-    <td width="28%" valign="top" class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_description'] . '</strong></span></td>
+    <td width="28%" valign="top" class="windowbg2" align="right"><strong>' . $txt['smflinks_description'] . '</strong></td>
     <td width="72%" class="windowbg2"><table>
 	   ';
 
@@ -731,7 +730,7 @@ echo '
 	   </table></td>
   </tr>
   <tr>
-    <td width="28%" class="windowbg2" align="right"><span class="gen"><strong>' . $txt['smflinks_image'] . '</strong>&nbsp;</span></td>
+    <td width="28%" class="windowbg2" align="right"><strong>' . $txt['smflinks_image'] . '</strong>&nbsp;</td>
     <td width="72%" class="windowbg2"><input type="text" name="image" size="64" maxlength="100" value="' . $row['image'] . '" /></td>
   </tr>
   <tr>
@@ -796,11 +795,11 @@ function template_addlink()
   </div>
 <table cellspacing="0"  align="center" cellpadding="4" class="tborder" width="100%">
   <tr>
-    <td width="28%"   class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_ctitle'] . '</strong></span></td>
+    <td width="28%"   class="windowbg2"><strong>' . $txt['smflinks_ctitle'] . '</strong></td>
     <td width="72%"   class="windowbg2"><input type="text" name="title" size="64" maxlength="100" /></td>
   </tr>
   <tr>
-    <td width="28%"   class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_category'] . '</strong></span></td>
+    <td width="28%"   class="windowbg2"><strong>' . $txt['smflinks_category'] . '</strong></td>
     <td width="72%"   class="windowbg2"><select name="catid">';
 		foreach ($context['links_cats'] as $row)
   			echo '<option value="' . $row['ID_CAT'] . '" ' . (($row['ID_CAT'] == $context['links_catid']) ? 'selected="selected" ' : '') .' >' . $row['title'] . '</option>';
@@ -809,11 +808,11 @@ echo '</select>
     </td>
   </tr>
   <tr>
-    <td width="28%"   class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_url'] . '</strong></span></td>
-    <td width="72%"   class="windowbg2"><input type="text" name="url" size="64" maxlength="250" value="http://" /></td>
+    <td width="28%"   class="windowbg2"><strong>' . $txt['smflinks_url'] . '</strong></td>
+    <td width="72%"   class="windowbg2"><input type="text" name="url" size="64" maxlength="250" value="" /></td>
   </tr>
   <tr>
-    <td width="28%"   valign="top" class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_description'] . '</strong></span></td>
+    <td width="28%"   valign="top" class="windowbg2"><strong>' . $txt['smflinks_description'] . '</strong></td>
     <td width="72%"   class="windowbg2">';
 
 		if (!empty($modSettings['smflinks_setallowbbc']))
@@ -929,11 +928,11 @@ function template_editlink()
   </div>
 <table cellspacing="0" align="center" cellpadding="4" class="tborder" width="100%">
   <tr>
-    <td width="28%"   class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_ctitle'] . '</strong></span></td>
+    <td width="28%"   class="windowbg2"><strong>' . $txt['smflinks_ctitle'] . '</strong><</td>
     <td width="72%"   class="windowbg2"><input type="text" name="title" size="64" maxlength="100" value="' . $context['links_link']['title'] . '" /></td>
   </tr>
   <tr>
-    <td width="28%" class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_category'] . '</strong></span></td>
+    <td width="28%" class="windowbg2"><strong>' . $txt['smflinks_category'] . '</strong></td>
     <td width="72%" class="windowbg2"><select name="catid">';
 
 		foreach($context['links_cats'] as $row2)
@@ -944,11 +943,11 @@ echo '</select>
     </td>
   </tr>
   <tr>
-    <td width="28%"   class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_url'] . '</strong></span></td>
+    <td width="28%"   class="windowbg2"><strong>' . $txt['smflinks_url'] . '</strong></td>
     <td width="72%"   class="windowbg2"><input type="text" name="url" size="64" maxlength="250" value="' . $context['links_link']['url'] . '" /></td>
   </tr>
   <tr>
-    <td width="28%"   valign="top" class="windowbg2"><span class="gen"><strong>' . $txt['smflinks_description'] . '</strong></span></td>
+    <td width="28%"   valign="top" class="windowbg2"><strong>' . $txt['smflinks_description'] . '</strong></td>
     <td width="72%"   class="windowbg2">';
 
 	if (!empty($modSettings['smflinks_setallowbbc']))
@@ -1137,13 +1136,13 @@ echo '
 
 		  echo '</td>';
 		  echo '</tr>';
-          
-                    
+
+
             if ($styleClass == 'windowbg')
     		  $styleClass = 'windowbg2';
-    		else 
+    		else
     		  $styleClass = 'windowbg';
-          
+
 
 		 }
 
@@ -1180,12 +1179,7 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 </form>
 <br />
-			<table>
-				<tr>
-				<td>
-				<a href="https://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="http://www.smfhacks.com/chitika250x250.png" border="0"></a>
-				</td>
-				</table>
+
 	</td>
 	</tr>
 	</table>
@@ -1247,12 +1241,7 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 </form>
 <br />
-			<table>
-				<tr>
-				<td>
-				<a href="https://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="http://www.smfhacks.com/chitika250x250.png" border="0"></a>
-				</td>
-				</table>
+
 	</td>
 	</tr>
 
@@ -1263,7 +1252,7 @@ echo '
 
 function template_manage_cats()
 {
-	global $scripturl, $txt, $context;
+	global $scripturl, $txt, $context, $cat_sep;
 
 echo '
 	<div class="cat_bar">
@@ -1283,28 +1272,36 @@ echo '
 				<td class="titlebg">' . $txt['smflinks_options'] .'</td>
 			</tr>
 		';
-        
+
         $styleClass = 'windowbg';
+		$cat_sep = 0;
 		foreach($context['links_cats'] as $row)
 		{
 
-			$totallinks = GetLinkTotals($row['ID_CAT']);
+			if ($row['ID_PARENT'] == 0)
+			{
+				$totallinks = GetLinkTotals($row['ID_CAT']);
 
-			echo '<tr>';
+				echo '<tr>';
 
-			echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '">' . parse_bbc($row['title']) . '</a></td>';
-			echo '<td class="windowbg2">' . parse_bbc($row['description']) . '</td>';
-			echo '<td class="windowbg2">' . $totallinks . '</td>';
+				echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '">' . parse_bbc($row['title']) . '</a></td>';
+				echo '<td class="windowbg2">' . parse_bbc($row['description']) . '</td>';
+				echo '<td class="windowbg2">' . $totallinks . '</td>';
 
-			// Show Edit Delete and Order category
-			echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;sa=catperm;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txt_perm'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catup;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtup'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catdown;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdown'] .'</a></span>&nbsp;<a href="' . $scripturl . '?action=links;sa=editcat;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtedit'] .'</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=deletecat;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
-			echo '</tr>';
-            
-                    
-            if ($styleClass == 'windowbg')
-    		  $styleClass = 'windowbg2';
-    		else 
-    		  $styleClass = 'windowbg';
+				// Show Edit Delete and Order category
+				echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;sa=catperm;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txt_perm'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catup;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtup'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catdown;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdown'] . '</a></span>&nbsp;<a href="' . $scripturl . '?action=links;sa=editcat;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtedit'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=deletecat;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
+				echo '</tr>';
+
+
+				if ($styleClass == 'windowbg')
+					$styleClass = 'windowbg2';
+				else
+					$styleClass = 'windowbg';
+				$cat_sep = 1;
+				GetManageSubCats($row['ID_CAT'],$context['links_cats']);
+				$cat_sep = 0;
+
+			}
 		}
 
 		echo '<tr><td class="windowbg2" colspan="4" align="center">
@@ -1329,12 +1326,7 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 </form>
 <br />
-			<table>
-				<tr>
-				<td>
-				<a href="https://chitika.com/publishers/apply.php?refid=vbgamer46"><img src="http://www.smfhacks.com/chitika250x250.png" border="0"></a>
-				</td>
-				</table>
+
 	</td>
 	</tr>
 	</table>';
@@ -1425,10 +1417,10 @@ function template_catperm()
 
 				echo '<td><a href="' . $scripturl . '?action=links;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
-                
+
                 if ($styleClass == 'windowbg')
         		  $styleClass = 'windowbg2';
-        		else 
+        		else
         		  $styleClass = 'windowbg';
 
 			}
@@ -1445,10 +1437,10 @@ function template_catperm()
 				echo '<td>' . ($row['dellink'] ? $txt['smflinks_perm_allowed'] : $txt['smflinks_perm_denied']) . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=links;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
-                
+
                 if ($styleClass == 'windowbg')
         		  $styleClass = 'windowbg2';
-        		else 
+        		else
         		  $styleClass = 'windowbg';
 			}
 
@@ -1464,10 +1456,10 @@ function template_catperm()
 				echo '<td>' . ($row['dellink'] ? $txt['smflinks_perm_allowed'] : $txt['smflinks_perm_denied']) . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=links;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
-                
+
                 if ($styleClass == 'windowbg')
         		  $styleClass = 'windowbg2';
-        		else 
+        		else
         		  $styleClass = 'windowbg';
 			}
 
@@ -1519,11 +1511,11 @@ function template_catpermlist()
 				echo '<td>' . ($row['dellink'] ? $txt['smflinks_perm_allowed'] : $txt['smflinks_perm_denied']) . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=links;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
-                
-                                    
+
+
                 if ($styleClass == 'windowbg')
         		  $styleClass = 'windowbg2';
-        		else 
+        		else
         		  $styleClass = 'windowbg';
 
 			}
@@ -1542,11 +1534,11 @@ function template_catpermlist()
 
 				echo '<td><a href="' . $scripturl . '?action=links;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
-                
-                                    
+
+
                 if ($styleClass == 'windowbg')
         		  $styleClass = 'windowbg2';
-        		else 
+        		else
         		  $styleClass = 'windowbg';
 			}
 
@@ -1564,15 +1556,15 @@ function template_catpermlist()
 
 				echo '<td><a href="' . $scripturl . '?action=links;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
-                
-                    
+
+
                 if ($styleClass == 'windowbg')
         		  $styleClass = 'windowbg2';
-        		else 
+        		else
         		  $styleClass = 'windowbg';
-                
+
 			}
-            
+
 
 
 		echo '
@@ -1605,6 +1597,38 @@ function LinksCopyright()
 {
 	// The Copyright is required to remain or contact me to purchase link removal.
 	// http://www.smfhacks.com/copyright_removal.php
-	echo '<br /><div align="center"><span class="smalltext">Powered by: <a href="http://www.smfhacks.com" target="blank">SMF Links</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span></div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered by: <a href="https://www.smfhacks.com" target="blank">SMF Links</a> by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a></span></div>';
+
+}
+
+function GetManageSubCats($ID_PARENT,$categories)
+{
+	global $currentclass, $cat_sep, $scripturl, $txt, $context;
+
+		foreach ($categories as $i => $row)
+		{
+			if ($row['ID_PARENT'] == $ID_PARENT)
+			{
+
+				$totallinks = GetLinkTotals($row['ID_CAT']);
+				echo '<tr>';
+
+				echo '<td class="windowbg2">',str_repeat('-',$cat_sep),'<a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '">' . parse_bbc($row['title']) . '</a></td>';
+				echo '<td class="windowbg2">' . parse_bbc($row['description']) . '</td>';
+				echo '<td class="windowbg2">' . $totallinks . '</td>';
+
+				// Show Edit Delete and Order category
+				echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;sa=catperm;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txt_perm'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catup;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtup'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catdown;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdown'] . '</a></span>&nbsp;<a href="' . $scripturl . '?action=links;sa=editcat;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtedit'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=deletecat;cat=' . $row['ID_CAT'] . ';a=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
+				echo '</tr>';
+
+
+
+
+				$cat_sep++;
+				GetManageSubCats($row['ID_CAT'],$categories);
+				$cat_sep--;
+
+			}
+		}
 
 }

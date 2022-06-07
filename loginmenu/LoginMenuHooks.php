@@ -10,11 +10,6 @@ if (!defined('SMF'))
 	die('Hacking attempt...');
 
 
-
-
-
-
-
 function login_menu_buttons(&$menu_buttons)
 {
 	global $txt, $user_info, $context, $modSettings, $scripturl;
@@ -40,7 +35,15 @@ function login_menu_buttons(&$menu_buttons)
 						'sub_buttons' => array(
 						),
 					),   
-			  	
+                    'logout' => array(
+						'title' => $txt['logout'],
+						'href' => $scripturl . '?action=logout',
+						'show' => !$user_info['is_guest'],
+						'icon' => 'key_go.png',
+						'sub_buttons' => array(
+						),
+					),
+
 		    )
 	    ,$button_pos);
         
@@ -74,5 +77,10 @@ function login_array_insert(&$input, $key, $insert, $where = 'before', $strict =
 		);
 }
 
+function login_menu_integrate_load_theme()
+{
+    global $settings;
 
+    $settings['login_main_menu'] = true;
+}
 ?>

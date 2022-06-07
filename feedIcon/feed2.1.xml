@@ -17,14 +17,25 @@
 	</operation>
 	<operation>
 		<search position="before"><![CDATA[', $board['name'], ']]></search>
-		<add><![CDATA[&nbsp;<a href="' . $scripturl . '?action=.xml;board=' . $board['id'] . ';type=rss"><img src="' . $settings['images_url'] . '/rss.png" alt="rss" />]]></add>
+		<add><![CDATA[&nbsp;<a href="' . $scripturl . '?action=.xml;board=' . $board['id'] . ';type=rss"><img src="' . $settings['images_url'] . '/rss.png" alt="rss" /></a>]]></add>
 
 	</operation>
 </file>
 <file name="$themedir/MessageIndex.template.php">
 	<operation>
-		<search position="before"><![CDATA[', $board['name'], ']]></search>
-		<add><![CDATA[&nbsp;<a href="' . $scripturl . '?action=.xml;board=' . $board['id'] . ';type=rss"><img src="' . $settings['images_url'] . '/rss.png" alt="rss" />]]></add>
+		<search position="replace"><![CDATA[global $context, $scripturl, $txt;
+
+	echo '
+		<a class="subject mobile_subject" href="', $board['href'], '" id="b', $board['id'], '">
+			', $board['name'], '
+		</a>]]></search>
+		<add><![CDATA[global $context, $scripturl, $txt, $settings;
+
+	echo '
+		<a class="subject mobile_subject" href="', $board['href'], '" id="b', $board['id'], '">
+			', $board['name'], '
+		</a>
+		<a href="' . $scripturl . '?action=.xml;board=' . $board['id'] . ';type=rss"><img src="' . $settings['images_url'] . '/rss.png" alt="rss" /></a>]]></add>
 
 	</operation>
 </file>

@@ -1,9 +1,9 @@
 <?php
 /*
 Contact Page
-Version 2.0
+Version 7.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 function template_main()
 {
@@ -58,6 +58,7 @@ echo '
 
   </tr>
 </table>
+<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
 </form>
 ';
 

@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:quickban</id>
+<version>1.1</version>
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+	<search position="replace"><![CDATA[if ($context['can_delete_posts'])
+		{
+			echo '
+				<div>
+					<label for="deleteVotes">
+						<input type="checkbox" name="deleteVotes" id="deleteVotes" value="1"> ', $txt['deleteAccount_votes'], ':
+					</label><br>
+					<label for="deletePosts">
+						<input type="checkbox" name="deletePosts" id="deletePosts" value="1"> ', $txt['deleteAccount_posts'], ':
+					</label>
+					<select name="remove_type">
+						<option value="posts">', $txt['deleteAccount_all_posts'], '</option>
+						<option value="topics">', $txt['deleteAccount_topics'], '</option>
+					</select>';
+
+			if ($context['show_perma_delete'])
+				echo '
+					<br>
+					<label for="perma_delete"><input type="checkbox" name="perma_delete" id="perma_delete" value="1">', $txt['deleteAccount_permanent'], '</label>';
+
+			echo '
+				</div>';
+		}
+
+		echo '
+				<div>
+					<label for="deleteAccount"><input type="checkbox" name="deleteAccount" id="deleteAccount" value="1" onclick="if (this.checked) return confirm(\'', $txt['deleteAccount_confirm'], '\');"> ', $txt['deleteAccount_member'], '.</label>
+				</div>]]>
+	</search>
+	<add><![CDATA[if ($context['can_delete_posts'])
+		{
+			echo '
+				<div>
+					<label for="deleteVotes">
+						<input type="checkbox" name="deleteVotes" id="deleteVotes" value="1"> ', $txt['deleteAccount_votes'], ':
+					</label><br>
+					<label for="deletePosts">
+						<input type="checkbox" name="deletePosts" id="deletePosts" value="1"> ', $txt['deleteAccount_posts'], ':
+					</label>
+					<select name="remove_type">
+						<option value="posts">', $txt['deleteAccount_all_posts'], '</option>
+						<option value="topics" selected="selected">', $txt['deleteAccount_topics'], '</option>
+					</select>';
+
+
+	global $modSettings, $context;
+		echo '
+			<div>
+				<input type="checkbox" name="full_ban" id="full_ban" value="1" checked="checked" />&nbsp;&nbsp;<label for="full_ban">', $txt['ban_full_ban'], '</label><br />
+				
+			</div>
+';
+
+
+	if (!empty($context['ban_suggestions']))
+	{
+		echo '
+					<fieldset>
+						<legend>
+							', $txt['ban_triggers'], '
+						</legend>
+						<dl class="settings">
+							<dt>
+								<input type="checkbox" name="ban_suggestions[]" id="main_ip_check" checked="checked" value="main_ip" class="input_check" />
+								<label for="main_ip_check">', $txt['ban_on_ip'], '</label>
+							</dt>
+							<dd>
+								<input type="text" name="main_ip" value="', $context['ban_suggestions']['main_ip'], '" size="44" onfocus="document.getElementById(\'main_ip_check\').checked = true;" class="input_text" />
+							</dd>';
+
+		if (empty($modSettings['disableHostnameLookup']))
+			echo '
+							<dt>
+								<input type="checkbox" name="ban_suggestions[]" id="hostname_check" value="hostname" class="input_check" />
+								<label for="hostname_check">', $txt['ban_on_hostname'], '</label>
+							</dt>
+							<dd>
+								<input type="text" name="hostname" value="', $context['ban_suggestions']['hostname'], '" size="44" onfocus="document.getElementById(\'hostname_check\').checked = true;" class="input_text" />
+							</dd>';
+
+		echo '
+							<dt>
+								<input type="checkbox" name="ban_suggestions[]" id="email_check" value="email" class="input_check" checked="checked" />
+								<label for="email_check">', $txt['ban_on_email'], '</label>
+							</dt>
+							<dd>
+								<input type="text" name="email" value="', $context['ban_suggestions']['email'], '" size="44" onfocus="document.getElementById(\'email_check\').checked = true;" class="input_text" />
+							</dd>
+							<dt>
+								<input type="checkbox" name="ban_suggestions[]" id="user_check" value="user" class="input_check" checked="checked" />
+								<label for="user_check">', $txt['ban_on_username'], '</label>:
+							</dt>
+							<dd>';
+
+		if (empty($context['ban_suggestions']['member']['id']))
+			echo '
+								<input type="text" name="user" id="user" value="" size="44" class="input_text" />';
+		else
+			echo '
+								', $context['ban_suggestions']['member']['link'], '
+								<input type="hidden" name="bannedUser" value="', $context['ban_suggestions']['member']['id'], '" />';
+		echo '
+							</dd>';
+
+		if (!empty($context['ban_suggestions']['message_ips']))
+		{
+			echo '
+						</dl>
+						<div>', $txt['ips_in_messages'], ':</div>
+						<dl class="settings">';
+
+			foreach ($context['ban_suggestions']['message_ips'] as $ip)
+				echo '
+							<dt>
+								<input type="checkbox" name="ban_suggestions[ips][]" value="', $ip, '" class="input_check" />
+							</dt>
+							<dd>
+								', $ip, '
+							</dd>';
+		}
+
+		if (!empty($context['ban_suggestions']['error_ips']))
+		{
+			echo '
+						</dl>
+						<div>', $txt['ips_in_errors'], '</div>
+						<dl class="settings">';
+
+			foreach ($context['ban_suggestions']['error_ips'] as $ip)
+				echo '
+							<dt>
+								<input type="checkbox" name="ban_suggestions[ips][]" value="', $ip, '" class="input_check" />
+							</dt>
+							<dd>
+								', $ip, '
+							</dd>';
+		}
+
+		echo '
+							</dl>
+						</fieldset>';
+
+
+
+	}
+
+
+
+		if ($context['show_perma_delete'])
+				echo '
+					<br>
+					<label for="perma_delete"><input type="checkbox" name="perma_delete" id="perma_delete" value="1">', $txt['deleteAccount_permanent'], '</label>';
+
+			echo '
+				</div>';
+		}
+
+		echo '
+				<div>
+					<label for="deleteAccount"><input type="checkbox" name="deleteAccount" id="deleteAccount" value="1" onclick="if (this.checked) return confirm(\'', $txt['deleteAccount_confirm'], '\');"> ', $txt['deleteAccount_member'], '.</label>
+				</div>
+	]]>
+	</add>
+	</operation>
+
+</file>
+
+
+
+<file name="$sourcedir/Profile-Actions.php">
+	<operation>
+	<search position="replace"><![CDATA[// Now, have you been naughty and need your posts deleting?]]>
+	</search>
+	<add><![CDATA[
+	
+	// Quick Ban Code
+	if (allowedTo('admin_forum') && isset($_REQUEST['full_ban']))
+	{
+		global $db_prefix, $sourcedir, $scripturl;
+		include_once($sourcedir . "/ManageBans.php");
+		
+		$_POST['full_ban'] = 1;
+		
+		// Create ban name
+		$request = $smcFunc['db_query']('', "
+					SELECT member_name
+					FROM {db_prefix}members
+					WHERE ID_MEMBER = $memID
+			LIMIT 1");
+		$userRow = $smcFunc['db_fetch_assoc']($request);
+		$smcFunc['db_free_result']($request);
+		$_POST['user'] = $userRow['member_name'];
+		$_POST['ban_name'] = $_POST['user'] . date("d-m-Y");
+
+		$ban_info = array();
+
+		// Let's collect all the information we need
+		$ban_info['id'] = isset($_REQUEST['bg']) ? (int) $_REQUEST['bg'] : 0;
+		$ban_info['is_new'] = empty($ban_info['id']);
+		$ban_info['expire_date'] = !empty($_POST['expire_date']) ? (int) $_POST['expire_date'] : 0;
+		$ban_info['expiration'] = array(
+			'status' => isset($_POST['expiration']) && in_array($_POST['expiration'], array('never', 'one_day', 'expired')) ? $_POST['expiration'] : 'never',
+			'days' => $ban_info['expire_date'],
+		);
+		$ban_info['db_expiration'] = $ban_info['expiration']['status'] == 'never' ? 'NULL' : ($ban_info['expiration']['status'] == 'one_day' ? time() + 24 * 60 * 60 * $ban_info['expire_date'] : 0);
+		$ban_info['full_ban'] = empty($_POST['full_ban']) ? 0 : 1;
+		$ban_info['reason'] = !empty($_POST['reason']) ? $smcFunc['htmlspecialchars']($_POST['reason'], ENT_QUOTES) : '';
+		$ban_info['name'] = !empty($_POST['ban_name']) ? $smcFunc['htmlspecialchars']($_POST['ban_name'], ENT_QUOTES) : '';
+		$ban_info['notes'] = isset($_POST['notes']) ? $smcFunc['htmlspecialchars']($_POST['notes'], ENT_QUOTES) : '';
+		$ban_info['notes'] = str_replace(array("\r", "\n", '  '), array('', '<br>', '&nbsp; '), $ban_info['notes']);
+		$ban_info['cannot']['access'] = empty($ban_info['full_ban']) ? 0 : 1;
+		$ban_info['cannot']['post'] = !empty($ban_info['full_ban']) || empty($_POST['cannot_post']) ? 0 : 1;
+		$ban_info['cannot']['register'] = !empty($ban_info['full_ban']) || empty($_POST['cannot_register']) ? 0 : 1;
+		$ban_info['cannot']['login'] = !empty($ban_info['full_ban']) || empty($_POST['cannot_login']) ? 0 : 1;
+
+
+		// Adding a new ban group
+		if (empty($_REQUEST['bg']))
+			$ban_group_id = insertBanGroup($ban_info);
+
+
+		if (is_numeric($ban_group_id))
+		{
+			$ban_info['id'] = $ban_group_id;
+			$ban_info['is_new'] = false;
+		}
+
+		$context['ban'] = $ban_info;
+
+		if (isset($_POST['ban_suggestions']))
+			// @TODO: is $_REQUEST['bi'] ever set?
+			$saved_triggers = saveTriggers($_POST['ban_suggestions'], $ban_info['id'], isset($_REQUEST['u']) ? (int) $_REQUEST['u'] : 0, isset($_REQUEST['bi']) ? (int) $_REQUEST['bi'] : 0);
+
+
+		// No more caching, we have something new here.
+		updateSettings(array('banLastUpdated' => time()));
+		updateBanMembers();
+
+	}
+
+		// Now, have you been naughty and need your posts deleting?
+	]]>
+	</add>
+	</operation>
+</file>	
+
+<file name="$sourcedir/Profile-Actions.php">
+	<operation>
+	<search position="replace"><![CDATA[// Permissions for removing stuff...]]>
+	</search>
+	<add><![CDATA[
+		global $smcFunc, $sourcedir, $scripturl;
+		include_once($sourcedir . "/ManageBans.php");
+		loadlanguage("Admin");
+		
+
+			$context['ban'] = array(
+				'id' => 0,
+				'name' => '',
+				'expiration' => array(
+					'status' => 'never',
+					'days' => 0
+				),
+				'reason' => '',
+				'notes' => '',
+				'ban_days' => 0,
+				'cannot' => array(
+					'access' => true,
+					'post' => false,
+					'register' => false,
+					'login' => false,
+				),
+				'is_new' => true,
+			);
+			$context['ban_suggestions'] = array(
+				'main_ip' => '',
+				'hostname' => '',
+				'email' => '',
+				'member' => array(
+					'id' => 0,
+				),
+			);
+
+			// Overwrite some of the default form values if a user ID was given.
+			if (!empty($_REQUEST['u']))
+			{
+				$request = $smcFunc['db_query']('', '
+					SELECT id_member, real_name, member_ip, email_address
+					FROM {db_prefix}members
+					WHERE id_member = {int:current_user}
+					LIMIT 1',
+					array(
+						'current_user' => (int) $_REQUEST['u'],
+					)
+				);
+				if ($smcFunc['db_num_rows']($request) > 0)
+				{
+					list ($context['ban_suggestions']['member']['id'], $context['ban_suggestions']['member']['name'], $context['ban_suggestions']['main_ip'], $context['ban_suggestions']['email']) = $smcFunc['db_fetch_row']($request);
+					$context['ban_suggestions']['main_ip'] = inet_dtop($context['ban_suggestions']['main_ip']);
+				}
+				$smcFunc['db_free_result']($request);
+
+				if (!empty($context['ban_suggestions']['member']['id']))
+				{
+					$context['ban_suggestions']['href'] = $scripturl . '?action=profile;u=' . $context['ban_suggestions']['member']['id'];
+					$context['ban_suggestions']['member']['link'] = '<a href="' . $context['ban_suggestions']['href'] . '">' . $context['ban_suggestions']['member']['name'] . '</a>';
+
+					// Default the ban name to the name of the banned member.
+					$context['ban']['name'] = $context['ban_suggestions']['member']['name'];
+					// @todo: there should be a better solution...used to lock the "Ban on Username" input when banning from profile
+					$context['ban']['from_user'] = true;
+
+					// Would be nice if we could also ban the hostname.
+					if ((preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $context['ban_suggestions']['main_ip']) == 1 || isValidIPv6($context['ban_suggestions']['main_ip'])) && empty($modSettings['disableHostnameLookup']))
+						$context['ban_suggestions']['hostname'] = host_from_ip($context['ban_suggestions']['main_ip']);
+
+					$context['ban_suggestions']['other_ips'] = banLoadAdditionalIPs($context['ban_suggestions']['member']['id']);
+				}
+			}
+
+	// Permissions for removing stuff...
+	]]>
+	</add>
+	</operation>
+</file>
+
+</modification>

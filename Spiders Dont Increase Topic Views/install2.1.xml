@@ -29,7 +29,8 @@ $known_spiders = array(
             "archive.org","msnbot-media","verifying pingback","facebookexternalhit","XML-RPC","WordPress","XoviBot",
             "VigLink","Grapeshot","ADmantX","archive.org_bot","sfFeedReader","Pinterest","Twitterbot","AdsBot-Google","InternetSeer.com",
             "SemrushBot","HyperCrawl","Tapatalk CloudSearch","istellabot","SeznamBot","Cliqzbot","pingdom.com","SocialRankIOBot","Clickag","Mail.RU_Bot",
-            "The Knowledge AI"
+            "The Knowledge AI","CriteoBot","NetcraftSurveyAgent","serpstatbot","Barkrowler","UptimeRobot","linkfluence.com","Semanticbot","ubermetrics-technologies.com"
+
 	);
 
 	foreach($known_spiders AS $agent) {
@@ -43,26 +44,25 @@ $known_spiders = array(
 ]]></add>
 	</operation>
 	<operation>
-		<search position="replace"><![CDATA[		$smcFunc['db_query']('', '
+		<search position="replace"><![CDATA[$smcFunc['db_query']('', '
 			UPDATE {db_prefix}topics
 			SET num_views = num_views + 1
 			WHERE id_topic = {int:current_topic}',
 			array(
 				'current_topic' => $topic,
 			)
-		);
-]]></search>
+		);]]></search>
 			<add><![CDATA[
 		// ONLY INCREASE NUMBER OF TOPIC VIEWS IF NOT A SPIDER	
 		$is_spider = detect_spider();	
 		if(!$is_spider) {
 			$smcFunc['db_query']('', '
-			UPDATE {db_prefix}topics
-			SET num_views = num_views + 1
-			WHERE id_topic = {int:current_topic}',
-			array(
-				'current_topic' => $topic,
-			)
+						UPDATE {db_prefix}topics
+						SET num_views = num_views + 1
+						WHERE id_topic = {int:current_topic}',
+						array(
+							'current_topic' => $topic,
+						)
 		);
 		}
 ]]></add>

@@ -17,3 +17,14 @@ elseif (!defined('SMF'))
 
 add_integration_function('integrate_theme_include', '$sourcedir/hcaptcha.php', TRUE);
 add_integration_function('integrate_load_theme', 'load_hcaptcha', TRUE);
+
+
+
+// Insert the settings
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings
+	(variable, value)
+VALUES
+('hcaptcha_enabled', '0'),
+('hcaptcha_theme', 'light'),
+('hcaptcha_private_key', ''),
+('hcaptcha_public_key', '')");

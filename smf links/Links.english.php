@@ -153,3 +153,5 @@ $txt['smflinks_perm_allowed'] = 'Allowed';
 $txt['smflinks_perm_denied'] = 'Denied';
 
 $txt['smflinks_sub_cats'] = 'Sub Categories: ';
+
+$txt['smflinks_err_linkmuststart'] = 'Link must start with either http:// or https://';

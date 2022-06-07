@@ -5,7 +5,7 @@
 	<id>vbgamer45:ContactPage</id>
 	<name>Contact Page</name>
 	<type>modification</type>
-	<version>5.0.1a</version>
+	<version>7.0a</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
 		<readme>ReadMe.txt</readme>
@@ -38,10 +38,16 @@
 			<modification type="file">contact2.xml</modification>
 			<require-file name="Contact2.php" destination="$sourcedir" />
 			<require-file name="Contact2.template.php" destination="$themedir" />
+			<require-file name="contactHooks.php" destination="$sourcedir" />
+			<require-file name="contact.png" destination="$imagesdir" />
+			<redirect url="?action=admin;area=modsettings;sa=general" timeout="5" type="inline">Redirecting...</redirect>
+
+			<code>dohooks.php</code>
 		</install>
 	
 		<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 			<modification type="file" reverse="true">contact2.xml</modification>
+			<code>dohooks.php</code>
 			<code>UnInstall.php</code>
 	</uninstall>
 
@@ -56,6 +62,7 @@
 			<require-file name="Contact2.php" destination="$sourcedir" />
 			<require-file name="Contact2.template.php" destination="$themedir" />
 			<require-file name="contact.png" destination="$imagesdir" />
+		<redirect url="?action=admin;area=modsettings;sa=general" timeout="5" type="inline">Redirecting...</redirect>
 			<code>dohooks.php</code>
 		</install>
 

@@ -1,3 +1,24 @@
+7.0
++Added the Play Media Attachments mod by Dougiefresh to this mod as it is a related function.
+Allows audio  files MP3, WAV, WMA, AAC, and audio OGG files
+Allows video files  MP4, M4A, M4V, WebM, WMV, MOV, and video OGG files
+Requires uninstall of old version of this mod S.A.V.E. then install the new version to take affect.
+
+6.0.9
++Added support for embedding remote pdf files links that end in .pdf
+
+6.0.8
++Added support for YouTube Shorts
+
+6.0.7
++Added support for fb.watch
+
+6.0.6
++Added support for Instagram reel media type links
+
+6.0.5
++Added start time support for youtube videos
+
 6.0.4
 !Fixed xhtml validation issues for some sites
 

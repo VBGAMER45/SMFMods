@@ -1,7 +1,7 @@
 <?php
 /*
 Contact Page
-Version 3.2
+Version 6.0
 by:vbgamer45
 https://www.smfhacks.com
 */
@@ -35,11 +35,28 @@ function contact_load_permissions(&$permissionGroups, &$permissionList, &$leftPe
 
 function contact_settings(&$config_vars)
 {
-	global $txt;
+	global $txt, $smcFunc;
+
+    // Load the boards list
+    $boardList = array();
+    $boardList[0] = '';
+    $request = $smcFunc['db_query']('order_by_board_order', '
+		SELECT b.id_board, b.name AS board_name, c.name AS cat_name
+		FROM {db_prefix}boards AS b
+			LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
+		WHERE redirect = {string:empty_string}',
+        array(
+            'empty_string' => '',
+        )
+    );
+    while ($row = $smcFunc['db_fetch_assoc']($request))
+        $boardList[$row['id_board']] = $row['cat_name'] . ' - ' . $row['board_name'];
+    $smcFunc['db_free_result']($request);
 
 
 	$config_vars = array_merge($config_vars, array(
-		array('text', 'smfcontactpage_email')));
+		array('text', 'smfcontactpage_email'),
+        array('select', 'smfcontactpage_board', $boardList)));
 }
 
 function contact_menu_buttons(&$menu_buttons)
@@ -71,9 +88,6 @@ function contact_menu_buttons(&$menu_buttons)
 			    )	
 		    )
 	    ,$button_pos);
-        
- 
-
 
 }
 

@@ -18,12 +18,10 @@ Include:
 SMF Gallery
 SMF Store
 SMF Trader System
-SMF Archive
 SMF Staff
-Avatar Select
 SMF Classifieds
 Newsletter Pro
 Ad Seller Pro
 
 SMFHacks package server address is:
-http://www.smfhacks.com
+https://www.smfhacks.com

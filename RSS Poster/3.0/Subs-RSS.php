@@ -164,13 +164,15 @@ function verify_rss_url($url)
 function startElement2($parser, $name, $attrs)
 {
    global $depth;
-   @$depth[$parser]++;
+   if (isset($depth[$parser]))
+   	@$depth[$parser]++;
 }
 
 function endElement2($parser, $name)
 {
    global $depth;
-   @$depth[$parser]--;
+   if (isset($depth[$parser]))
+   	@$depth[$parser]--;
 }
 
 function UpdateRSSFeedBots()
@@ -515,7 +517,7 @@ function GetRSSData($url)
 			$sslhost = '';
 			$port = 80;
 			
-			if ($url_array['scheme'] = 'https')
+			if ($url_array['scheme'] == 'https')
 			{
 				$sslhost = 'ssl://';
 				$port = 443;

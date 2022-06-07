@@ -5,7 +5,7 @@
 	<id>vbgamer45:SigPost</id>
 	<name>Signature Option Post</name>
 	<type>modification</type>
-	<version>1.1.1</version>
+	<version>2.0</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
 		<readme>ReadMe.txt</readme>
@@ -30,5 +30,16 @@
 	</uninstall>
 
 
+	<install for="2.1 - 2.1.99">
+		<readme>ReadMe.txt</readme>
+		<redirect url="?action=admin;area=postsettings;sa=posts">redirect.txt</redirect>
 
+		<modification type="file">sig2.1.xml</modification>
+		<code>siginstall2.php</code>
+	</install>
+		
+	<uninstall for="2.1 - 2.1.99">
+		<modification type="file" reverse="true">sig2.1.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>	
 </package-info>

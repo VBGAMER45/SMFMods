@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:hcaptchaforsmf</id>
+	<name>hCaptcha Visual Verification Options</name>
+
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="replace"><![CDATA[if ($verify_context['show_visual'])]]></search>
+			<add><![CDATA[
+        if ($verify_context['can_hcaptcha'])
+        {
+        	global $modSettings;
+            // Render the hCaptcha Widget. Also, add a hidden form element so we pass back the "*_vv" values expected
+            //by some of the CAPTCHA-checking code in SMF to trigger the verification routines.
+            echo '<div class="h-captcha" data-sitekey="', $modSettings['hcaptcha_public_key'], '" data-theme="', $modSettings['hcaptcha_theme'] ,'"></div>
+              <input type="hidden" name="', $verify_id, '_vv[hcaptcha]" value="true">';
+        }
+		else if ($verify_context['show_visual'])
+]]></add>
+		</operation>
+
+	</file>
+
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="replace"><![CDATA[if ($i == 0 && ($verify_context['show_visual'] || $verify_context['can_recaptcha']))]]></search>
+			<add><![CDATA[if ($i == 0 && ($verify_context['show_visual'] || $verify_context['can_recaptcha'] || $verify_context['can_hcaptcha']))]]></add>
+		</operation>
+
+	</file>
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="replace"><![CDATA[$total_items = count($verify_context['questions']) + ($verify_context['show_visual'] || $verify_context['can_recaptcha'] ? 1 : 0);]]></search>
+			<add><![CDATA[$total_items = count($verify_context['questions']) + ($verify_context['show_visual'] || ($verify_context['can_recaptcha'] ? 1 : 0)  || ($verify_context['can_hcaptcha'] ? 1 : 0));]]></add>
+		</operation>
+
+	</file>
+	<file name="$sourcedir/Subs-Editor.php">
+	<operation>
+		<search position="replace"><![CDATA[if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['can_recaptcha']))]]></search>
+		<add><![CDATA[if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['can_recaptcha']) && empty($thisVerification['can_hcaptcha']))]]></add>
+	</operation>
+	</file>
+</modification>

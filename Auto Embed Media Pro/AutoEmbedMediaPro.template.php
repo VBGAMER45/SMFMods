@@ -29,8 +29,8 @@ function template_mediapro_settings()
 
 
 
-	
-	
+
+
 	// Check if cache folder is writable
 	if (!is_writable($boarddir . "/cache/"))
 	{
@@ -42,7 +42,7 @@ function template_mediapro_settings()
 
 	}
 
-	
+
 		echo '<tr>
 	    <td width="50%" colspan="2"  align="center" class="windowbg2"><strong>' . $txt['mediapro_txt_settings'] . '</strong>
 	    </td>
@@ -59,42 +59,42 @@ function template_mediapro_settings()
 	    	<br /><span class="smalltext">' .$txt['mediapro_txt_default_info'] . '</span>
 	    	</td>
 	    </tr>
-        
+
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_max_embeds'] .'</td>
 	    	<td class="windowbg2"><input type="text" size="5" name="mediapro_max_embeds" value="' . $modSettings['mediapro_max_embeds'] . '" />
 	    	</td>
-	    </tr>    
-	    
-	    
+	    </tr>
+
+
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_usecustomdiv'] .'</td>
 	    	<td class="windowbg2"><input type="checkbox" name="mediapro_usecustomdiv" ' . ($modSettings['mediapro_usecustomdiv'] ? ' checked="checked"' : '')  . ' />&nbsp;
 	    	' . $txt['mediapro_divclassname'] .'&nbsp;
-	    	
+
 	    	<input type="text" size="15" name="mediapro_divclassname" value="' . $modSettings['mediapro_divclassname'] . '" />
 	    	</td>
-	    </tr>  
-	    
+	    </tr>
+
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_disablemobile'] .'</td>
 	    	<td class="windowbg2"><input type="checkbox" name="mediapro_disablemobile" ' . ($modSettings['mediapro_disablemobile'] ? ' checked="checked"' : '')  . ' />
 	    	</td>
-	    </tr>  
-	    
+	    </tr>
+
 	    <tr>
 	    	<td class="windowbg2" align="right" valign="top">' . $txt['mediapro_showlink'] .'</td>
 	    	<td class="windowbg2"><input type="checkbox" name="mediapro_showlink" ' . ($modSettings['mediapro_showlink'] ? ' checked="checked"' : '')  . ' />
 	    	</td>
-	    </tr>  
-        
-        
+	    </tr>
+
+
 
 	    ';
 
-	
-    
-    
+
+
+
 	echo '<tr>
 	    <td width="50%" colspan="2"  align="center" class="windowbg2"><hr />
 	    </td>
@@ -125,7 +125,7 @@ function template_mediapro_settings()
 				$siteLevel = 0;
 			}
 		}
-		
+
 		if ($siteLevel == 1)
 		{
 			echo '
@@ -151,11 +151,11 @@ function template_mediapro_settings()
 	     <input type="hidden" name="sc" value="', $context['session_id'], '" />
 	    <input type="submit" name="addpage" value="',$txt['mediapro_save_settings'],'" /></td>
 	  </tr>
-	  
+
 	  <tr>
 	  	<td colspan="2" class="windowbg2" align="center">' . $txt['mediapro_customembed'] . '</td>
 	  </tr>
-	  
+
 	  </table>
   	</form>
 
@@ -179,11 +179,11 @@ function template_mediapro_settings()
 				}
 			}
 
-			// Override on the onload function
-			window.onload = function ()
-			{
-				MediaProCurrentVersion();
-			}
+
+		document.addEventListener(\'DOMContentLoaded\', function(event) {
+			MediaProCurrentVersion();
+			});
+
 			</script>
 
   ';
@@ -201,28 +201,28 @@ function template_mega()
 	    <td width="50%" colspan="2"  align="center" class="catbg">
 	    <b>', $txt['mediapro_megauploadsong'], '</b></td>
 	  </tr>
-	  
+
 	  <tr class="windowbg2">
 	  	<td align="center">
 	  	<iframe width="560" height="315" src="https://www.youtube.com/embed/o0Wvn-9BXVc" frameborder="0" allowfullscreen></iframe>
 	  	<br />
-	  	
+
 	  	',$txt['mediapro_dedication'], '</td>
 	  </tr>
-	  
-	  
+
+
 	  <tr>
 	    <td width="50%" colspan="2"  align="center" class="catbg">
 	    <b>', $txt['mediapro_megamegacopterandfire'], '</b></td>
 	  </tr>
-	 
+
 	  <tr class="windowbg2">
 	  	<td align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/x3mMY4QjefE" frameborder="0" allowfullscreen></iframe>
 	  	</td>
 	  </tr>
-	   
-	  
+
+
 	  <tr>
 	    <td width="50%" colspan="2"  align="center" class="catbg">
 	    <b>', $txt['mediapro_megaracer'], '</b></td>
@@ -230,32 +230,32 @@ function template_mega()
 	  	  <tr class="windowbg2">
 	  	<td align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/l-ltcCF_cAQ" frameborder="0" allowfullscreen></iframe>
-	  	
+
 	  	</td>
 	  </tr>
-	  
+
 	  </table>
 	  ';
 
-	
-	
+
+
 }
 
 function template_mediapro_copyright()
 {
 	global $txt, $scripturl, $context, $boardurl, $modSettings;
-	
-                    
+
+
     $modID = 36;
-    
-    $urlBoardurl = urlencode(base64_encode($boardurl));                
-                    
+
+    $urlBoardurl = urlencode(base64_encode($boardurl));
+
     	echo '
 	<form method="post" action="',$scripturl,'?action=mediapro;sa=copyright;save=1">
 <table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 		<tr class="titlebg">
 			<td colspan="2">', $txt['mediapro_txt_copyrightremoval'], '</td>
-		</tr>    
+		</tr>
 	<tr class="windowbg2">
 		<td valign="top" align="right">',$txt['mediapro_txt_copyrightkey'],'</td>
 		<td><input type="text" name="mediapro_copyrightkey" size="50" value="' . $modSettings['mediapro_copyrightkey'] . '" />
@@ -266,18 +266,18 @@ function template_mediapro_copyright()
     <tr class="windowbg2">
         <td colspan="2">' . $txt['mediapro_txt_copyremovalnote'] . '</td>
     </tr>
-    
-    
+
+
 	<tr class="windowbg2">
 		<td valign="top" colspan="2" align="center"><input type="submit" value="' . $txt['mediapro_save_settings'] . '" />
 		</td>
 		</tr>
 	</table>
 	</form>
-    
 
-    ';              
-                    
+
+    ';
+
 }
 
 ?>

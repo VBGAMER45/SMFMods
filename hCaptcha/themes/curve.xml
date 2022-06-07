@@ -37,5 +37,15 @@
 		elseif ($i == 0 && $verify_context['show_visual'])
 ]]></add>
 		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[$qIndex = $verify_context['show_visual'] ? $i - 1 : $i;]]></search>
+			<add><![CDATA[$qIndex = $verify_context['show_visual'] ? $i - 1 : $i;
+			if ($verify_context['use_hcaptcha'])
+			{
+				$qIndex = $verify_context['use_hcaptcha'] ? $i - 1 : $i;
+			}
+]]></add>
+		</operation>
 	</file>
 </modification>

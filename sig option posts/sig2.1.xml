@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SigPost/id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Sig Post Strings
+$txt['show_sig'] = 'Show Signature';
+$txt['sig_topic'] = 'Show Signature Checked?';
+//END Sig Post Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Sig Post Strings
+$txt['show_sig'] = 'Show Signature';
+$txt['sig_topic'] = 'Show Signature Checked?';
+//END Sig Post Strings	
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$themedir/Post.template.php">
+	<operation>
+		<search position="before"><![CDATA[<li><label for="check_smileys"><input type="checkbox" name="ns" id="check_smileys"', $context['use_smileys'] ? '' : ' checked', ' value="NS"> ', $txt['dont_use_smileys'], '</label></li>', ']]></search>
+		<add><![CDATA[
+		
+		<li><label for="check_sig"><input type="checkbox" name="showsig" id="check_sig"' . (!empty($modSettings['sig_topic']) ? ' checked="checked"' : '') . ' value="1" /> ' . $txt['show_sig'] . '</label></li>
+													
+		]]></add>
+	</operation>
+
+</file>
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="replace"><![CDATA[// Show the member's signature?
+	if (!empty($message['member']['signature']) && empty($options['show_no_signatures']) && $context['signature_enabled'])]]></search>
+		<add><![CDATA[// Show the member's signature?
+	if (!empty($message['member']['signature']) && empty($options['show_no_signatures']) && $context['signature_enabled'] && $message['showSIG'] == 1)]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[<span id="post_confirm_buttons">]]></search>
+		<add><![CDATA[<span id="post_confirm_buttons">
+		<label for="check_sig"><input type="checkbox" name="showsig" id="check_sig"' . (!empty($modSettings['sig_topic']) ? ' checked="checked"' : '') . ' value="1"  /> ' . $txt['show_sig'] . '</label><br>
+		]]></add>
+	</operation>
+
+
+</file>
+<file name="$sourcedir/Post.php">
+	<operation>
+		<search position="before"><![CDATA['smileys_enabled' => !isset($_POST['ns']),]]></search>
+		<add><![CDATA[
+'sig_enabled' => isset($_POST['showsig']) ? 1 : 0,
+]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/Subs-Post.php">
+	<operation>
+		<search position="before"><![CDATA[$msgOptions['smileys_enabled'] = !empty($msgOptions['smileys_enabled']);]]></search>
+		<add><![CDATA[
+$msgOptions['sig_enabled'] = empty($msgOptions['sig_enabled']) ? 0 : (int) $msgOptions['sig_enabled'];
+]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA['icon' => 'string-16', 'approved' => 'int',]]></search>
+		<add><![CDATA['icon' => 'string-16', 'approved' => 'int', 'showSIG' => 'int',]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[$msgOptions['icon'], $msgOptions['approved'],]]></search>
+		<add><![CDATA[$msgOptions['icon'], $msgOptions['approved'],$msgOptions['sig_enabled'],]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="before"><![CDATA[$messages_request = $smcFunc['db_query']('', '
+			SELECT
+				id_msg, icon, subject,]]></search>
+		<add><![CDATA[ showSIG,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['counter' => $counter,]]></search>
+		<add><![CDATA[
+		'showSIG' => $message['showSIG'],
+		]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/ManagePosts.php">
+	<operation>
+		<search position="before"><![CDATA[array('check', 'guest_post_no_email'),]]></search>
+		<add><![CDATA[
+		//Sig Option mod	
+		array('check', 'sig_topic'),]]></add>
+	</operation>
+</file>
+</modification>

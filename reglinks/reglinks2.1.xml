@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:RegLinks</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin Reg Links
+$txt['no_view_links'] = 'You are not allowed to view links.';
+$txt['txt_reg_links_register'] = 'Register';
+$txt['txt_reg_links_login'] = 'Login';
+$txt['txt_reg_links_or'] = 'or';
+
+//END Reg Links Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end"></search>
+		<add><![CDATA[
+//Begin Reg Links
+$txt['no_view_links'] = 'You are not allowed to view links.';
+$txt['txt_reg_links_register'] = 'Register';
+$txt['txt_reg_links_login'] = 'Login';
+$txt['txt_reg_links_or'] = 'or';
+
+//END Reg Links Text Strings	
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Subs.php">
+<operation>
+		<search position="after"><![CDATA[// Cache the output if it took some time...]]></search>
+		<add><![CDATA[
+		// Registered Links
+		if ($user_info['is_guest'])
+		{
+			$message = preg_replace('#<a href="(.*?)</a>#i', $txt['no_view_links'] . "\n" . ' <a href="' . $scripturl . '?action=signup">' . $txt['txt_reg_links_register'] . '</a>&nbsp;' . $txt['txt_reg_links_or'] . '&nbsp;<a href="' . $scripturl . '?action=login">' . $txt['txt_reg_links_login'] . '</a>', $message);
+		}
+
+		// End Registered Links
+]]></add>
+	</operation>		
+</file>
+</modification>

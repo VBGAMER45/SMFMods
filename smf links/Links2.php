@@ -1,9 +1,9 @@
 <?php
 /*
 SMF Links
-Version 2.5.3
+Version 4.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 if (!defined('SMF'))
@@ -11,9 +11,15 @@ if (!defined('SMF'))
 
 function LinksMain()
 {
+	global $context;
 	// Load the main links template
-	loadtemplate('Links2');
-
+	if (!function_exists("set_tld_regex"))
+		loadtemplate('Links2');
+	else
+	{
+		loadtemplate('Links2.1');
+		$context['show_bbc'] = 1;
+	}
 	// Load the language files
 	if (loadlanguage('Links') == false)
 		loadLanguage('Links','english');
@@ -52,10 +58,10 @@ function LinksMain()
 	if (!empty($_GET['sa']) && array_key_exists($_GET['sa'], $subActions))
 		call_user_func($subActions[$_GET['sa']]);
 	else
-		view();
+		ViewLinksMain();
 }
 
-function view()
+function ViewLinksMain()
 {
 	global $context, $mbname, $txt, $smcFunc, $scripturl, $modSettings;
 
@@ -507,7 +513,7 @@ function EditCat2()
 
 
 	if (empty($catid))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -701,11 +707,15 @@ function AddLink2()
 		$url = addslashes(trim($_POST['url']));
     else
         $url = '';
+
+
+	if (substr_count($url,"http://") == 0 && substr_count($url,"https://") == 0)
+		fatal_error($txt['smflinks_err_linkmuststart'],false);
         
 	if (!empty($_REQUEST['catid']))
 		$catid = (int) $_REQUEST['catid'];
    else
-    $catid = 0;
+    	$catid = 0;
 
  	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -914,7 +924,11 @@ function EditLink2()
 	if (!empty($_POST['url']))
 		$url = addslashes(trim($_POST['url']));
     else
-        $url = '';    
+        $url = '';
+
+	if (substr_count($url,"http://") == 0 && substr_count($url,"https://") == 0)
+		fatal_error($txt['smflinks_err_linkmuststart'],false);
+
         
 	if (!empty($_REQUEST['catid']))
 		$catid = (int) $_REQUEST['catid'];
@@ -1124,7 +1138,7 @@ function CatUp()
 	isAllowedTo('links_manage_cat');
 
 	// Get the cat id
-	if (!empty($_REQUEST['id']))
+	if (!empty($_REQUEST['cat']))
 		$cat = (int) $_REQUEST['cat'];
 
 	if (empty($cat))
@@ -1182,7 +1196,7 @@ function CatUp()
 			roworder = {int:row_order}
 		WHERE ID_CAT = {int:id_cat}',
 		array(
-			'row_order' => $old_row,
+			'row_order' => $oldrow,
 			'id_cat' => $row2['ID_CAT']
 		)
 	);
@@ -1608,11 +1622,12 @@ function LinksAdminCats()
 	DoLinksAdminTabs();
 	$context['sub_template']  = 'manage_cats';
 
-	// List all the catagories
+	// List all the categories
 	$dbresult = $smcFunc['db_query']('', '
-		SELECT ID_CAT, title, roworder, description
+		SELECT ID_CAT, title, roworder, description,  ID_PARENT 
 		FROM {db_prefix}links_cat
-		ORDER BY ID_CAT DESC, roworder ASC'
+	
+			ORDER BY roworder ASC'
 	);
 	$context['links_cats'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
@@ -1728,7 +1743,7 @@ function GetCatPermission($cat, $perm)
 
 function CatPermDelete()
 {
-	global $smcFunc;
+	global $smcFunc, $txt;
 	isAllowedTo('links_manage_cat');
 
 	if (!empty($_REQUEST['id']))
@@ -2121,7 +2136,7 @@ function ShowSubCats($cat, $g_manage)
 {
 	global $txt, $smcFunc, $scripturl, $subcats_linktree, $context;
 	
-	// List all the catagories
+	// List all the categories
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, roworder, description, image 
 		FROM {db_prefix}links_cat 
@@ -2133,14 +2148,27 @@ function ShowSubCats($cat, $g_manage)
 	);
 		
 	if ($smcFunc['db_affected_rows']() != 0)
-	{	
+	{
+
+		if (function_exists("set_tld_regex"))
+		echo '<table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="table_grid">
+		<thead>
+		<tr class="catbg">
+				<th scope="col" class="smalltext first_th" colspan="2">' . $txt['smflinks_ctitle'] . '</th>
+				<th scope="col" class="smalltext">' . $txt['smflinks_description'] .'</th>
+				<th scope="col" class="smalltext">' . $txt['smflinks_totallinks'] . '</th>',
+				$g_manage ? '<th scope="col" class="smalltext">' . $txt['smflinks_options'] . '</th>' : '', '
+			</tr>
+		</thead>';
+		else
 		echo '<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="tborder">
 			<tr>
 				<td class="titlebg" colspan="2">', $txt['smflinks_ctitle'], '</td>
 				<td class="titlebg">', $txt['smflinks_description'], '</td>
 				<td class="titlebg">', $txt['smflinks_totallinks'], '</td>
 				', $g_manage ? '<td class="titlebg">' . $txt['smflinks_options'] . '</td>' : '', '
-			</tr>';			
+			</tr>';
+
 			while($row = $smcFunc['db_fetch_assoc']($dbresult))
 			{
 				$totallinks = GetLinkTotals($row['ID_CAT']);
@@ -2152,14 +2180,14 @@ function ShowSubCats($cat, $g_manage)
 					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '"><img src="' . $row['image'] . '" border="0" alt="" /></a></td>';
 					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '">' . parse_bbc($row['title']) . '</a></td><td class="windowbg2">' . parse_bbc($row['description']) . '</td>';
 				}
-				echo '<td class="windowbg2">' . $totallinks . '</td>';
+				echo '<td class="windowbg2" align="center">' . $totallinks . '</td>';
 				// Show Edit Delete and Order category
 				if ($g_manage)
 					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;sa=catup;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtup'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catdown;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdown'] . '</a></span>&nbsp;<a href="' . $scripturl . '?action=links;sa=catperm;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txt_perm'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=editcat;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtedit'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=deletecat;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
 				echo '</tr>';
 				if (!empty($subcats_linktree))
 				echo '<tr class="titlebg">
-						<td colspan="',($g_manage ? '5' : '4'),'">&nbsp;<span class="smalltext">',($subcats_linktree != '' ? $txt['smflinks_sub_cats'] . $subcats_linktree : ''),'</span></td>
+						<td  align="center" colspan="',($g_manage ? '5' : '4'),'">&nbsp;<span class="smalltext">',($subcats_linktree != '' ? $txt['smflinks_sub_cats'] . $subcats_linktree : ''),'</span></td>
 					</tr>';
 			}
 		echo '</table><br /><br />';

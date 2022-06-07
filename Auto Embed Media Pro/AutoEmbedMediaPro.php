@@ -1,7 +1,7 @@
 <?php
 /*
 Simple Audio Video Embedder
-Version 6.0
+Version 7.0
 by:vbgamer45
 https://www.smfhacks.com
 
@@ -21,7 +21,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '6.0.4';
+	$mediaProVersion = '7.0';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)

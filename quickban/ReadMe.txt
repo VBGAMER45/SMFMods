@@ -1,15 +1,15 @@
 *******************************
 Quick Ban on Account Delete
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x and SMF 1.1.x
+For SMF 2.1.x and SMF 2.0.x and SMF 1.1.x
 Adds delete triggers on delete account for admin. Helpful against spammers
 
 Other mods at 
-http://www.smfhacks.com
+https://www.smfhacks.com
 
 SMF Gallery
 SMF Store

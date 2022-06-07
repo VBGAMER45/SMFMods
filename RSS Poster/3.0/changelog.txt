@@ -1,3 +1,7 @@
+6.0.1
+!Fixes for PHP 8.1
+!Fixed fsockopen http/https check
+
 6.0
 !Fix broken link urls in atom based fields for SMF 2.0.x and SMF 2.1.x
 !Set SMF scheduled task to check every two minutes new installs only

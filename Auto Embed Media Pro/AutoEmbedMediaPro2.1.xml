@@ -15,27 +15,19 @@ $txt['mediapro_err_cache'] = 'Cache folder not writable must fix for performance
 $txt['mediapro_settings2'] = 'Settings and configuration for Simple Audio Video Embedder';
 $txt['mediapro_copyremove'] = 'Copyright Removal';
 $txt['mediapro_copyremove2'] = 'Remove the copyright for Simple Audio Video Embedder';
+$txt['mediapro_enablemediaattach'] = 'Enable Play Media Attachments';
+
+$txt['PMA_no_audio'] = 'Your browser does not support the audio element.';
+$txt['PMA_no_video'] = 'Your browser does not support the video element.';
+$txt['attachmentAudioPlayerWidth'] = 'Width of Audio Player element<div class="smalltext">NOTE: Set to <strong>0</strong> for browser default</div>';
+$txt['attachmentVideoPlayerWidth'] = 'Width of Video Player element<div class="smalltext">NOTE: Set to <strong>0</strong> for browser default</div>';
+$txt['attachment_redetect_mime'] = 'MIME Redetection';
+$txt['attachment_redetect_mime_desc'] = 'This function will redetect the MIME types on all detectable audio and video files stored in the attachments folder.';
 // END Auto Embed Media Pro  Text Strings			
 ]]></add>
 	</operation>
 </file>
 
-<file name="$languagedir/Modifications.english-utf8.php" error="skip">
-	<operation>
-		<search position="end" />
-		<add><![CDATA[
-// Begin Auto Embed Media Pro Text Strings
-$txt['mediapro_admin'] = 'Simple Audio Video Embedder';
-$txt['mediapro_settings'] = 'Settings';
-$txt['mediapro_save_settings'] = 'Save Settings';
-$txt['mediapro_err_cache'] = 'Cache folder not writable must fix for performance!';
-$txt['mediapro_settings2'] = 'Settings and configuration for Simple Audio Video Embedder';
-$txt['mediapro_copyremove'] = 'Copyright Removal';
-$txt['mediapro_copyremove2'] = 'Remove the copyright for Simple Audio Video Embedder';
-// END Auto Embed Media Pro  Text Strings			
-]]></add>
-	</operation>
-</file>
 
 <file name="$sourcedir/QueryString.php">
 		<operation>
@@ -93,12 +85,7 @@ function MediaProCheckInfo()
 	
 </file>
 
-
-
-
 <file name="$sourcedir/Subs.php">
-
-	
 <operation>
 		<search position="after"><![CDATA[// Cache the output if it took some time...]]></search>
 		<add><![CDATA[
@@ -115,6 +102,92 @@ function MediaProCheckInfo()
 		// End Auto Embed Media Pro
 ]]></add>
 	</operation>	
+</file>
+
+
+<file name="$sourcedir/Subs-Attachments.php">
+
+	<!-- Display function -->
+	<operation>
+		<search position="after"><![CDATA[a.width, a.height]]></search>
+		<add><![CDATA[a.mime_type, ]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ShowAttachments.php">
+	<operation>
+		<search position="after"><![CDATA[// Send the attachment headers.]]></search>
+		<add><![CDATA[
+		global $sourcedir;
+		require_once($sourcedir . '/Subs-MediaAttachments.php');
+
+]]></add>
+	</operation>
+	<!-- Download function -->
+	<operation>
+		<search position="after"><![CDATA[// Does this have a mime type?]]></search>
+		<add><![CDATA[// Is this an supported audio or video file?
+	elseif (!empty($mime_type) && (PMAt_CheckDownloadMime($mime_type)))
+		header('Content-Type: ' . $mime_type);
+
+	]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs-Attachments.php">
+
+
+
+	<!-- createAttachment function -->
+	<operation>
+		<search position="after"><![CDATA[require_once($sourcedir . '/Subs-Graphics.php');
+
+	// If this is an image we need to set a few additional parameters.]]></search>
+		<add><![CDATA[require_once($sourcedir . '/Subs-MediaAttachments.php');
+	]]></add>
+	</operation>
+
+	<!-- loadAttachmentContext function -->
+	<operation>
+		<search position="after"><![CDATA[$attachmentData[$i] = array(]]></search>
+		<add><![CDATA[$attachment['mime_type'] = !isset($attachment['mime_type']) ? '' : $attachment['mime_type'];
+			]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['is_approved' => $attachment['approved'],]]></search>
+		<add><![CDATA[
+				'is_audio' => !empty($attachment['mime_type']) && strpos($attachment['mime_type'], 'audio/') !== false,
+				'is_video' => !empty($attachment['mime_type']) && strpos($attachment['mime_type'], 'video/') !== false,
+				'is_application' => !empty($attachment['mime_type']) && strpos($attachment['mime_type'], 'application/') !== false,
+				'mime_type' => !empty($attachment['mime_type']) ? $attachment['mime_type'] : false,]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/Display.template.php">
+	<!-- template_main function -->
+	<operation>
+		<search position="after"><![CDATA[if ($attachment['is_image']]]></search>
+		<add><![CDATA[
+		global $sourcedir;
+		require_once($sourcedir . '/Subs-MediaAttachments.php');
+		PMAt_DisplayPlayer($attachment);
+
+				]]></add>
+	</operation>
+</file>
+<file name="$themedir/ManageAttachments.template.php">
+	<operation>
+		<search position="after"><![CDATA[<h3 class="catbg">', $txt['attachment_pruning'], '</h3>]]></search>
+		<add><![CDATA[<h3 class="catbg">', $txt['attachment_redetect_mime'], '</h3>
+		</div>
+		<div class="windowbg2 noup">
+				<form action="', $scripturl, '?action=admin;area=manageattachments;sa=r_redetect;', $context['session_var'], '=', $context['session_id'], '" method="post" accept-charset="', $context['character_set'], '">
+				<p>', $txt['attachment_redetect_mime_desc'], '</p>
+				<input type="submit" name="repair" value="', $txt['attachment_check_now'], '" class="button_submit">
+			</form>
+		</div>
+		<div class="cat_bar">
+			]]></add>
+	</operation>
 </file>
 
 

@@ -11,9 +11,13 @@
 
 function load_hcaptcha()
 {
-    global $context;
+    global $context, $modSettings;
 
-    $context['html_headers'] .= '<script src="https://hcaptcha.com/1/api.js" async defer></script>';
+
     loadLanguage('hcaptcha');
-    loadTemplate(false, 'hcaptcha');
+    if (!empty($modSettings['hcaptcha_enabled']))
+    {
+        $context['html_headers'] .= '<script src="https://js.hcaptcha.com/1/api.js" async defer></script>';
+        loadTemplate(false, 'hcaptcha');
+    }
 }

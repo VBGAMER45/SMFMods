@@ -24,6 +24,9 @@ function blockvpnproxy_register_check(&$regOptions, &$reg_errors)
 
 function is_UserProxyVPN($log = false) 
 {
+	// Cloudflare don't use this mod then!
+	if (isset($_SERVER['HTTP_CF_CONNECTING_IP']))
+		return false;
 
 	$headers = array('CLIENT_IP', 'USERAGENT_VIA', 'HTTP_PC_REMOTE_ADDR', 'XPROXY_CONNECTION', 'HTTP_XPROXY_CONNECTION', 'FORWARDED','FORWARDED_FOR','FORWARDED_FOR_IP','VIA','X_FORWARDED','X_FORWARDED_FOR','HTTP_CLIENT_IP','HTTP_FORWARDED','HTTP_FORWARDED_FOR','HTTP_FORWARDED_FOR_IP','HTTP_PROXY_CONNECTION','HTTP_VIA','HTTP_X_FORWARDED','HTTP_X_FORWARDED_FOR');
 

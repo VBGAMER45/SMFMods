@@ -1,9 +1,9 @@
 <?php
 /*
 SMF Links
-Version 2.5.3
+Version 4.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 if (!defined('SMF'))
@@ -1307,7 +1307,7 @@ function GetCatPermission($cat, $perm)
 
 function CatPermDelete()
 {
-	global $db_prefix;
+	global $db_prefix, $txt;
 	isAllowedTo('links_manage_cat');
 
 	if (!empty($_REQUEST['id']))

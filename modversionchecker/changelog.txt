@@ -1,0 +1,16 @@
+1.1
+!Fixed bug with scheduled task
+!Updates to style of check updates button thanks to  @rjen
+
+1.0.3
+!Fixed undefined SMF_VERSION in SMF 2.0.x uses $forum_version instead
+
+1.0.2
++Added dutch translation thanks to  @rjen
+!Extra spacing added in SMF 2.1.x version thanks to  @rjen
+
+1.0.1
+!Fixed bug with installed packages when upgrading SMF versions and not removing old mods thanks to @rjen
+
+1.0
+Initial Release!

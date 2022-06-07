@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Giphy</name>
+	<id>vbgamer45:giphy</id>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<require-file name="giphy.php" destination="$sourcedir" />
+		<require-file name="giphy.english.php" destination="$themedir/languages" />
+		<require-file name="giphy10.png" destination="$themedir/images/bbc" />
+		<require-file name="scegiphy.js" destination="$themedir/scripts" />
+		<code>add_remove_hooks.php</code>
+		<redirect url="?action=admin;area=modsettings;sa=general" timeout="5" type="inline">Redirecting...</redirect>
+	</install>
+	<uninstall for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<code>add_remove_hooks.php</code>
+		<remove-file name="$sourcedir/giphy.php" />
+		<remove-file name="$themedir/languages/giphy.english.php" />
+		<remove-file name="$themedir/images/bbc/giphy10.png" />
+		<remove-file name="$themedir/scripts/scegiphy.js" />
+	</uninstall>
+</package-info>

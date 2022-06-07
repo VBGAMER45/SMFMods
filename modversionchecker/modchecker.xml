@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:modversionchecker</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Mod Version Checker
+$txt['modvc_checkforupdates'] = 'Check For Modifications Updates';
+$txt['modvc_modificationsupdates'] = 'Modifications Updates';
+$txt['modvc_downloadupdate'] = '[Download Update]';
+$txt['modvc_oldversion'] = 'Installed Version';
+$txt['modvc_latestversion'] = 'Latest Version';
+$txt['modvc_modsitelink'] = 'Mod Site Link';
+$txt['modvc_visitmod'] = '[Visit Mod]';
+$txt['modvc_noupdatesfound'] = 'You are up to date! No modifications updates found!';
+$txt['scheduled_task_scheduled_modvercheck'] = 'Check for Modifications Updates';
+$txt['scheduled_task_desc_scheduled_modvercheck'] = 'Compares installed modifications versions with the latest versions of the modifications found on simplemachines.org';
+// END Mod Version Checker
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.dutch.php"  error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Mod Version Checker
+$txt['modvc_checkforupdates'] = 'Check op Modificatie updates';
+$txt['modvc_modificationsupdates'] = 'Modificatie updates';
+$txt['modvc_downloadupdate'] = '[Download update]';
+$txt['modvc_oldversion'] = 'Geïnstalleerde versie';
+$txt['modvc_latestversion'] = 'Nieuwste versie';
+$txt['modvc_modsitelink'] = 'Mod Site link';
+$txt['modvc_visitmod'] = '[Bekijk Mod]';
+$txt['modvc_noupdatesfound'] = 'Alles is up to date! Er zijn geen modificatie updates gevonden!';
+$txt['scheduled_task_scheduled_modvercheck'] = 'Controleer modificaties op updates';
+$txt['scheduled_task_desc_scheduled_modvercheck'] = 'Vergelijkt de geïnstalleerde modificatie versies met de nieuwste versies van de modificaties beschikbaar op simplemachines.org';
+// END Mod Version Checker
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ScheduledTasks.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+
+function scheduled_modvercheck()
+{
+	global $sourcedir;
+
+	require_once($sourcedir . '/Subs-ModVersionCheck.php');
+	CheckModsForUpdate();
+
+	return true;
+}
+
+			]]></add>
+		</operation>
+</file>
+
+
+<file name="$sourcedir/Packages.php">
+		<operation>
+			<search position="replace"><![CDATA[$context['page_title'] .= ' - ' . $txt['browse_packages'];]]></search>
+			<add><![CDATA[
+			global $sourcedir;
+			require_once($sourcedir . '/Subs-ModVersionCheck.php');
+
+			if (isset($_REQUEST['checkupdate']))
+			{
+				CheckModsForUpdate();
+			}
+
+			LoadModCheckDisplay();
+
+	$context['page_title'] .= ' - ' . $txt['browse_packages'];
+			]]></add>
+		</operation>
+	</file>
+
+<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="replace"><![CDATA[// Find all of this forum's administrators...]]></search>
+			<add><![CDATA[
+			global $sourcedir;
+			loadLanguage('Packages');
+			require_once($sourcedir . '/Subs-ModVersionCheck.php');
+			LoadModCheckDisplay();
+
+	// Find all of this forum's administrators...
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Packages.template.php">
+		<operation>
+			<search position="replace"><![CDATA[if ($context['available_packages'] == 0)]]></search>
+			<add><![CDATA[
+	// END Start Version Checker
+
+	echo '<div style="overflow:hidden; margin-bottom:0.5em;"><form action="', $scripturl, '?action=admin;area=packages;sa=browse;checkupdate=1" method="post">
+	<input type="submit" value="', $txt['modvc_checkforupdates'], '" name="go" class="button">
+	</form></div>';
+
+	if (!empty($context['modvc_modupates']))
+	{
+
+	echo '
+		<div class="cat_bar">
+			<h3 class="catbg">
+				',$txt['modvc_modificationsupdates'],'
+			</h3>
+		</div>
+		<table class="table_grid">
+			<thead>
+				<tr class="title_bar">
+					<th scope="col" class="mod_namemodification" style="width: 25%;">
+					',$txt['mod_name'],'
+					</th>
+					<th scope="col"  class="versionmodification">
+					',$txt['modvc_latestversion'],'
+					</th>
+					<th scope="col" class="time_installedmodification">
+					',$txt['modvc_oldversion'],'
+					</th>
+					<th scope="col"  class="operationsmodification">
+					</th>
+				</tr>
+			</thead>
+			<tbody>';
+
+		foreach($context['modvc_modupates'] as $mod)
+		{
+			echo '
+				<tr class="windowbg">
+					<td class="mod_namemodification">
+						',$mod['name'],'
+					</td>
+					<td class="mod_namemodification">
+						',$mod['version'],'
+					</td>
+					<td class="versionmodification">
+						',$mod['oldversion'],'
+					</td>
+					<td class="versionmodification">
+						<a href="', $scripturl, '?action=admin;area=packages;get;sa=download;server=1;package=',$mod['category'],'/',$mod['filename'],';', $context['session_var'], '=', $context['session_id'], '">',$txt['modvc_downloadupdate'],'</a> <a href="https://custom.simplemachines.org/index.php?',$mod['filename'],'" target="_blank">',$txt['modvc_visitmod'],'</a>
+					</td>
+				</tr>';
+
+		}
+
+		echo '</table><br>';
+
+	}
+	else
+	{
+			if (isset($_REQUEST['checkupdate']))
+			{
+				echo '<div class="infobox">',$txt['modvc_noupdatesfound'],'</div>';
+			}
+	}
+
+	// END Mod Version Checker
+
+	if ($context['available_packages'] == 0)]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Admin.template.php">
+		<operation>
+			<search position="replace"><![CDATA[// Is there an update available?]]></search>
+			<add><![CDATA[
+	// END Start Version Checker
+
+	if (!empty($context['modvc_modupates']))
+	{
+
+	echo '
+		<div class="cat_bar">
+			<h3 class="catbg">
+				',$txt['modvc_modificationsupdates'],'
+			</h3>
+		</div>
+		<table class="table_grid">
+			<thead>
+				<tr class="title_bar">
+					<th scope="col" class="mod_namemodification" style="width: 25%;">
+					',$txt['mod_name'],'
+					</th>
+					<th scope="col"  class="versionmodification">
+					',$txt['modvc_latestversion'],'
+					</th>
+					<th scope="col" class="time_installedmodification">
+					',$txt['modvc_oldversion'],'
+					</th>
+					<th scope="col"  class="operationsmodification">
+					</th>
+				</tr>
+			</thead>
+			<tbody>';
+
+		foreach($context['modvc_modupates'] as $mod)
+		{
+			echo '
+				<tr class="windowbg">
+					<td class="mod_namemodification">
+						',$mod['name'],'
+					</td>
+					<td class="mod_namemodification">
+						',$mod['version'],'
+					</td>
+					<td class="versionmodification">
+						',$mod['oldversion'],'
+					</td>
+					<td class="versionmodification">
+						<a href="', $scripturl, '?action=admin;area=packages;get;sa=download;server=1;package=',$mod['category'],'/',$mod['filename'],';', $context['session_var'], '=', $context['session_id'], '">',$txt['modvc_downloadupdate'],'</a> <a href="https://custom.simplemachines.org/index.php?',$mod['filename'],'" target="_blank">',$txt['modvc_visitmod'],'</a>
+					</td>
+				</tr>';
+
+
+		}
+
+		echo '</table><br>';
+
+	}
+	// END Mod Version Checker
+
+	// Is there an update available?]]></add>
+		</operation>
+	</file>
+</modification>

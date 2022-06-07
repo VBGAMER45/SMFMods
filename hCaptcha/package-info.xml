@@ -3,9 +3,9 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>vbgamer45:hcaptchaforsmf</id>
 	<name>hCaptcha for SMF</name>
-	<version>1.0.0</version>
+	<version>2.1</version>
 	<type>modification</type>
-	<install for="2.0*">
+	<install for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC">
 		<readme>README.md</readme>
 		<code>install.php</code>
 		<require-file name="files/hcaptcha.php" destination="$sourcedir" />
@@ -14,10 +14,7 @@
 		<modification>install.xml</modification>
 		<modification>themes/curve.xml</modification>
 	</install>
-	<install>
-		<readme type="inline">This package doesn't appear to support your SMF version.</readme>
-	</install>
-	<uninstall for="2.0*">
+	<uninstall for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC">
 		<code>uninstall.php</code>
 		<remove-file name="$sourcedir/hcaptcha.php" />
 		<remove-file name="$themedir/css/hcaptcha.css" />
@@ -27,26 +24,31 @@
 	</uninstall>
 	
 	
-	<install for="2.1*">
+	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
 		<readme>README.md</readme>
 		<code>install.php</code>
 		<require-file name="files/hcaptcha.php" destination="$sourcedir" />
+		<require-file name="files/hcaptchahooks.php" destination="$sourcedir" />
 		<require-file name="files/css/hcaptcha.css" destination="$themedir/css" />
 		<require-file name="files/language/hcaptcha.english.php" destination="$languagedir" />
-		<modification>install.xml</modification>
-		<modification>themes/curve.xml</modification>
+		<modification>install2.1.xml</modification>
+		<hook hook="integrate_spam_settings" function="hcaptcha_integrate_spam_settings" file="$sourcedir/hcaptchahooks.php"/>
+		<hook hook="integrate_create_control_verification_pre" function="hcaptcha_integrate_create_control_verification_pre" file="$sourcedir/hcaptchahooks.php"/>
+		<hook hook="integrate_integrate_create_control_verification_test" function="hcaptcha_integrate_create_control_verification_test" file="$sourcedir/hcaptchahooks.php"/>
+
+
 	</install>
-	<install>
-		<readme type="inline">This package doesn't appear to support your SMF version.</readme>
-	</install>
-	<uninstall for="2.1*">
+
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
 		<code>uninstall.php</code>
 		<remove-file name="$sourcedir/hcaptcha.php" />
+		<remove-file name="$sourcedir/hcaptchahooks.php" />
 		<remove-file name="$themedir/css/hcaptcha.css" />
 		<remove-file name="$languagedir/hcaptcha.english.php" />
-		<modification reverse="true">install.xml</modification>
-		<modification reverse="true">themes/curve.xml</modification>
+		<modification reverse="true">install2.1.xml</modification>
+		<hook hook="integrate_spam_settings" function="hcaptcha_integrate_spam_settings" file="$sourcedir/hcaptchahooks.php"  reverse="true" />
+		<hook hook="integrate_create_control_verification_pre" function="hcaptcha_integrate_create_control_verification_pre" file="$sourcedir/hcaptchahooks.php" reverse="true" />
+		<hook hook="integrate_integrate_create_control_verification_test" function="hcaptcha_integrate_create_control_verification_test" file="$sourcedir/hcaptchahooks.php" reverse="true" />
+
 	</uninstall>
-</package-info>
-	
 </package-info>

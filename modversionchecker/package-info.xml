@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:modversionchecker</id>
+	<name>Mod Version Checker</name>
+	<type>modification</type>
+	<version>1.1</version>
+	
+
+	<install for="2.1 - 2.1.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">modchecker.xml</modification>
+		<require-file name="Subs-ModVersionCheck.php" destination="$sourcedir" />
+		<database>install.php</database>
+	</install>
+	
+	<uninstall for="2.1 - 2.1.99">
+		<remove-file name="$sourcedir/Subs-ModVersionCheck.php" />
+		<modification type="file" reverse="true">modchecker.xml</modification>
+		<database>install.php</database>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">modchecker2.xml</modification>
+		<require-file name="Subs-ModVersionCheck.php" destination="$sourcedir" />
+		<database>install.php</database>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<remove-file name="$sourcedir/Subs-ModVersionCheck.php" />
+		<modification type="file" reverse="true">modchecker2.xml</modification>
+		<database>install.php</database>
+	</uninstall>
+
+</package-info>

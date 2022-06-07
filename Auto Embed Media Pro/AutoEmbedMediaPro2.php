@@ -1,7 +1,7 @@
 <?php
 /*
 Simple Audio Video Embedder
-Version 6.0
+Version 7.0
 by:vbgamer45
 https://www.smfhacks.com
 
@@ -20,7 +20,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '6.0.4';
+	$mediaProVersion = '7.0';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)
@@ -177,6 +177,7 @@ function MediaProSettings2()
 
 	$mediapro_max_embeds = (int) $_REQUEST['mediapro_max_embeds'];
 	$mediapro_showlink = isset($_REQUEST['mediapro_showlink']) ? 1 : 0;
+	$mediapro_enablemediaattach = isset($_REQUEST['mediapro_enablemediaattach']) ? 1 : 0;
 
 		updateSettings(
 	array(
@@ -188,6 +189,7 @@ function MediaProSettings2()
     'mediapro_divclassname' => $mediapro_divclassname,
 	'mediapro_max_embeds' => $mediapro_max_embeds,
 	'mediapro_showlink' => $mediapro_showlink,
+	'mediapro_enablemediaattach' => $mediapro_enablemediaattach
 	));
 
 	// Redirect to the admin area

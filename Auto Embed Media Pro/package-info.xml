@@ -4,7 +4,7 @@
 	<id>vbgamer45:autoembedmediapro</id>
 	<name>Simple Audio Video Embedder</name>
 	<type>modification</type>
-	<version>6.0.4</version>
+	<version>7.0</version>
 	
 	
 	<upgrade from="all" for="1.1 - 1.1.99">
@@ -56,12 +56,14 @@
 		<redirect url="?action=admin;area=mediapro;sa=settings">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<require-file name="AutoEmbedMediaPro2.php" destination="$sourcedir" />
+		<require-file name="Subs-MediaAttachments.php" destination="$sourcedir" />
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
 		<code>AutoEmbedMediaProInstall2.php</code>
+		<code>add_remove_hooks.php</code>
 		
 	</upgrade>
 
@@ -70,13 +72,14 @@
 		<readme>ReadMe.txt</readme>
 		<modification type="file">AutoEmbedMediaPro2.xml</modification>
 		<require-file name="AutoEmbedMediaPro2.php" destination="$sourcedir" />
+		<require-file name="Subs-MediaAttachments.php" destination="$sourcedir" />
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.english-utf8.php" destination="$themedir/languages" />
 		<require-file name="AutoEmbedMediaPro.french-utf8.php" destination="$themedir/languages" />
 		<require-dir name="videos" destination="$boarddir" />
-		
 		<code>AutoEmbedMediaProInstall2.php</code>
+		<code>add_remove_hooks.php</code>
 		
 	</install>
 	
@@ -84,12 +87,15 @@
 
 	<uninstall for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 		<remove-file name="$sourcedir/AutoEmbedMediaPro2.php" />
+		<remove-file  name="$sourcedir/Subs-MediaAttachments.php" />
 		<remove-file name="$themedir/AutoEmbedMediaPro2.template.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english-utf8.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.french-utf8.php" />
 		<modification type="file" reverse="true">AutoEmbedMediaPro2.xml</modification>
+		<code>add_remove_hooks.php</code>
 		<code>UnInstall.php</code>
+
 	</uninstall>
 	
 
@@ -98,6 +104,7 @@
 		<readme>ReadMe.txt</readme>
 		<modification type="file">AutoEmbedMediaPro2.1.xml</modification>
 		<require-file name="AutoEmbedMediaPro2.php" destination="$sourcedir" />
+		<require-file name="Subs-MediaAttachments.php" destination="$sourcedir" />
 		<require-file name="AutoEmbedMediaProHooks.php" destination="$sourcedir" />
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
@@ -107,6 +114,7 @@
 		
 		<code>AutoEmbedMediaProInstall2.php</code>
 		<code>dohooks.php</code>
+		<code>add_remove_hooks.php</code>
 		
 	</install>
 	
@@ -115,6 +123,7 @@
 		<redirect url="?action=admin;area=mediapro;sa=settings">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
 		<require-file name="AutoEmbedMediaProHooks.php" destination="$sourcedir" />
+		<require-file name="Subs-MediaAttachments.php" destination="$sourcedir" />
 		<require-file name="AutoEmbedMediaPro2.php" destination="$sourcedir" />
 		<require-file name="AutoEmbedMediaPro2.template.php" destination="$themedir" />
 		<require-file name="AutoEmbedMediaPro.english.php" destination="$themedir/languages" />
@@ -123,11 +132,13 @@
 		<require-dir name="videos" destination="$boarddir" />
 		<code>AutoEmbedMediaProInstall2.php</code>
 		<code>dohooks.php</code>
+		<code>add_remove_hooks.php</code>
 		
 	</upgrade>
 
 	<uninstall for="2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
 		<remove-file name="$sourcedir/AutoEmbedMediaPro2.php" />
+		<remove-file name="$sourcedir/Subs-MediaAttachments.php" />
 		<remove-file name="$sourcedir/AutoEmbedMediaProHooks.php" />
 		<remove-file name="$themedir/AutoEmbedMediaPro2.template.php" />
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.english.php" />
@@ -135,6 +146,7 @@
 		<remove-file name="$themedir/languages/AutoEmbedMediaPro.french-utf8.php" />
 		<modification type="file" reverse="true">AutoEmbedMediaPro2.1.xml</modification>
 		<code>dohooks.php</code>
+		<code>add_remove_hooks.php</code>
 		<code>UnInstall.php</code>
 	</uninstall>
 	

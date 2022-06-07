@@ -1,7 +1,7 @@
 <?php
 /*
 Contact Page
-Version 3.2
+Version 6.0
 by:vbgamer45
 https://www.smfhacks.com
 */
@@ -23,5 +23,8 @@ else
 
 foreach ($hook_functions as $hook => $function)
 	$call($hook, $function);
+
+// Install setting
+$smcFunc['db_query']('', "INSERT IGNORE INTO {db_prefix}settings VALUES ('smfcontactpage_board', '0')");
 
 ?>
