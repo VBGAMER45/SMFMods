@@ -50,9 +50,7 @@ $txt['autotwitter_blankid'] = 'Tweet error (blank ID)';
 		if (oTwitter.length > 0) {
 			oTwitter.each(function() {
 				var oHolder = $(this);
-				var sStr = $(this).attr(\'href\');
-				sStr = sStr.replace(/\/+$/, "");
-				sStr = sStr.substr(sStr.lastIndexOf(\'/\') + 1);
+				var sStr = this.href.match(/\/status(?:es)?\/(\d+)/)[1];
 				$.getJSON("' . $boardurl .'/tweet-cache.php?id=" + sStr, function(data) {
 					oHolder.before(data.html);
 				});
