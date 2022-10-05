@@ -49,4 +49,22 @@
 			<remove-file name="$themedir/languages/PostScheduler.english-utf8.php" />	
 	</uninstall>
 
+	<install for="2.1 - 2.1.99">
+			<redirect url="?action=admin;area=postscheduler">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<modification type="file">PostScheduler2.1.xml</modification>
+			<require-file name="PostScheduler2.php" destination="$sourcedir" />
+			<require-file name="cronpost.php" destination="$boarddir" />
+			<require-file name="PostScheduler2.template.php" destination="$themedir" />
+			<require-file name="PostScheduler.english.php" destination="$themedir/languages" />
+			<database>PostSchedulersql2.php</database>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+			<modification type="file" reverse="true">PostScheduler2.1xml</modification>
+			<remove-file name="$sourcedir/PostScheduler2.php" />
+			<remove-file name="$boarddir/cronpost.php" />
+			<remove-file name="$themedir/PostScheduler2.template.php" />
+			<remove-file name="$themedir/languages/PostScheduler.english.php" />
+	</uninstall>
 </package-info>

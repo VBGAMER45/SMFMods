@@ -3,7 +3,7 @@
 
 <modification xmlns="http://www.simplemachines.org/xml/modification">
 	<id>el:prettyurls</id>
-	<version>1.0</version>
+	<version>2.5.1</version>
 
 	<file name="$boarddir/index.php">
 		<operation>
@@ -44,33 +44,7 @@ $context += array('pretty' => array(
 		</operation>
 	</file>
 
-	<file name="$sourcedir/Admin.php">
-		<operation>
-			<search position="before"><![CDATA[				'theme' => array(
-					'label' => $txt['theme_admin'],
-					'file' => 'Themes.php',
-					'function' => 'ThemesMain',
-					'custom_url' => $scripturl . '?action=admin;area=theme',
-					'icon' => 'themes',
-					'subsections' => array(
-						'admin' => array($txt['themeadmin_admin_title']),
-						'list' => array($txt['themeadmin_list_title']),
-						'reset' => array($txt['themeadmin_reset_title']),
-						'edit' => array($txt['themeadmin_edit_title']),
-					),
-				),
-]]></search>
-			<add><![CDATA[
-				'pretty' => array(
-					'label' => (isset($txt['pretty_urls']) ? $txt['pretty_urls'] : 'Pretty URLs'),
-					'file' => 'PrettyUrls.php',
-					'function' => 'PrettyInterface',
-					'icon' => 'prettyurls.png',
- 					'custom_url' => $scripturl . '?action=admin;area=pretty',
-				),
-]]></add>
-		</operation>
-	</file>
+
 
 	<file name="$sourcedir/ManageErrors.php">
 		<operation>

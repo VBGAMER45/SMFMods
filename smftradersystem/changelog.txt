@@ -1,3 +1,6 @@
+3.0.2
+!If using SMF Classifieds only show the submit feedback link if they have completed a transaction either as a buyer or seller.
+
 3.0.1
 !Fixed PHP 7.4 error log
 

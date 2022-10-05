@@ -32,6 +32,8 @@ In your admin panel you will need to enable it, which implies your acceptance of
 Please use the member map thread for support with this modification.
 
 [color=blue][b][size=12pt][u]Changelog[/u][/size][/b][/color]
+[b]4.0[/b]
++Added support for SMF 2.1 thanks to Matthias
 
 [b]3.0.6 - [/b]
 !Fixed updating pins

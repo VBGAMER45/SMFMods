@@ -294,7 +294,7 @@ function BlogViewPost()
 function BlogTopic($topic = null, $num_replies = null, $start = null, $output_method = 'echo')
 {
 	global $scripturl, $smcFunc, $txt, $settings, $modSettings, $context;
-	global $memberContext;
+	global $memberContext, $user_info;
 
 	loadLanguage('Stats');
 
@@ -371,7 +371,7 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 			'link' => !empty($row['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['poster_name'] . '</a>' : $row['poster_name'],
 		),
 		// !!! Better way to do this?
-		'page_index' => constructPageIndex('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?start=%d', $start, $row['num_replies'], $num_replies, true),
+		'page_index' => constructPageIndex((empty($_SERVER['HTTPS'])  ?'http://' : '') . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?start=%d', $start, $row['num_replies'], $num_replies, true),
 		'replies' => array(),
 		
 	);
@@ -453,7 +453,7 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 			}
 			else
 			{
-				$memberContext[$row['id_member']]['can_view_profile'] = allowedTo('profile_view_any') || ($row['id_member'] == $id_member && allowedTo('profile_view_own'));
+				$memberContext[$row['id_member']]['can_view_profile'] = allowedTo('profile_view_any') || ($row['id_member'] == $user_info['id']  && allowedTo('profile_view_own'));
 				$memberContext[$row['id_member']]['is_topic_starter'] = $row['id_member'] == $return['poster']['id'];
 			}
 			$memberContext[$row['id_member']]['ip'] = $row['poster_ip'];

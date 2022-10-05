@@ -1,5 +1,8 @@
 <?php
-//	Version: 1.0RC; PrettyUrls
+/*
+Pretty Urls
+*/
+
 
 //	Pretty URLs chrome
 function template_pretty_chrome_above()
@@ -8,30 +11,14 @@ function template_pretty_chrome_above()
 
 	echo '
 <div id="chrome">
-	<h1>', $context['pretty']['chrome']['title'], '</h1>
 	<div id="chrome_main">';
 
 	if (isset($context['pretty']['chrome']['admin']))
 	{
-		//	The subactions menu
-		echo '
-		<ul id="chrome_menu">';
-		foreach ($context['pretty']['chrome']['menu'] as $id => $item)
-			echo '
-			<li><a href="', $item['href'], '" class="', $id, '" title="', $item['title'], '"><span>', $item['title'], '</span></a></li>';
-
-		//	Title and caption
-		echo '
-		</ul>
-		<h2>', $context['pretty']['chrome']['page_title'], '</h2>
-		<p id="chrome_caption">', $context['pretty']['chrome']['caption'], '</p>';
-
 		//	Any notices?
 		if (isset($context['pretty']['chrome']['notice']))
 			echo '
-		<p id="chrome_notice">', $context['pretty']['chrome']['notice'], '</p>';
-
-		echo '<b>Need More SEO and features check out <a href="https://www.smfhacks.com/prettyurls-seo-pro.php" target="_blank">Pretty Urls SEO Pro</a></b>';
+		<div class="infobox">', $context['pretty']['chrome']['notice'], '</div>';
 	}
 }
 
@@ -52,28 +39,27 @@ function template_pretty_install()
 		<p><a href="', $scripturl, '?action=admin;area=pretty">', $txt['pretty_install_continue'], '</a></p>';
 }
 
-//	Lets show some news (and more!)
-function template_pretty_news()
-{
-	global $txt;
-
-	echo '
-		<h3>', $txt['pretty_chrome_menu_news'], '</h3>
-		<div id="chrome_news">', $txt['ajax_in_progress'], '</div>
-		<h3>', $txt['pretty_version'], '</h3>
-		<p>', $txt['pretty_current_version'], ': 2.5.1</p>
-		<p>', $txt['pretty_latest_version'], ': <span id="chrome_latest">', $txt['ajax_in_progress'], '</span></p>';
-}
-
 //	It should be easy and fun to manage this mod
 function template_pretty_settings()
 {
-	global $context, $scripturl, $txt, $modSettings;
+	global $context, $scripturl, $txt, $modSettings, $prettyurlsVersion;
 
-	if (empty($modSettings['pretty_bufferusecache']))
-			$modSettings['pretty_bufferusecache']  = 0;
+	if (!isset($modSettings['pretty_bufferusecache']))
+		$modSettings['pretty_bufferusecache'] = 0;
 
 	echo '
+ <div class="cat_bar">
+		<h3 class="catbg">
+        ' . $txt['pretty_chrome_menu_settings'] .'
+        </h3>
+  </div>
+
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+
+	<tr>
+	    <td width="50%" colspan="2"  class="windowbg2">
+
 		<form action="', $scripturl, '?action=admin;area=pretty;sa=settings;save" method="post" accept-charset="', $context['character_set'], '">
 			<fieldset>
 				<legend>', $txt['pretty_core_settings'], '</legend>
@@ -88,13 +74,12 @@ function template_pretty_settings()
 
 				<br />
 				<label for="pretty_skipactions">', $txt['pretty_skipactions'], '</label>
-				<input type="text" name="pretty_skipactions" id="pretty_skipactions" value="', (isset($modSettings['pretty_skipactions']) ? $modSettings['pretty_skipactions'] : ''), '" />
+				<input type="text" name="pretty_skipactions" id="pretty_skipactions" value="', (isset($modSettings['pretty_skipactions']) ? $modSettings['pretty_skipactions'] : ''), '" size="50" />
 				<br />
 				<span class="smalltext">',$txt['pretty_skipactions_note'],'</span><br />
 				<label for="pretty_bufferusecache">', $txt['pretty_bufferusecache'], '</label>
 				<input type="checkbox" name="pretty_bufferusecache" id="pretty_bufferusecache"', ($modSettings['pretty_bufferusecache'] ? ' checked="checked"' : ''), ' />
-
-
+		
 			</fieldset>
 			<fieldset>
 				<legend>', $txt['pretty_filters'], '</legend>';
@@ -110,11 +95,19 @@ function template_pretty_settings()
 
 	echo '
 			</fieldset>
-
-			<fieldset>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="submit" value="', $txt['pretty_save'], '" />
-			</fieldset>
-		</form>';
+
+		</form>
+
+		</td>
+		</tr>
+		</table>
+
+		';
+
+
+
 }
 
 // Show a short list of rewritten test URLs
@@ -136,6 +129,18 @@ function template_pretty_maintenance()
 {
 	global $context, $scripturl, $txt;
 
+	echo ' <div class="cat_bar">
+		<h3 class="catbg">
+        ' . $txt['pretty_chrome_menu_maintenance'].'
+        </h3>
+  </div>
+  	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+	<tr>
+	    <td width="50%" colspan="2"  class="windowbg2">
+  ';
+
+
 	if (isset($context['pretty']['maintenance_tasks']))
 	{
 		echo '
@@ -149,6 +154,9 @@ function template_pretty_maintenance()
 	else
 		echo '
 		<p><a href="', $scripturl, '?action=admin;area=pretty;sa=maintenance;run">', $txt['pretty_run_maintenance'], '</a></p>';
+
+    echo '</table>';
+
 }
 
 //	To make it easier to edit that nasty filters array
@@ -162,5 +170,8 @@ function template_pretty_filters()
 			<input type="submit" value="', $txt['pretty_save'], '" />
 		</form>';
 }
+
+
+
 
 ?>

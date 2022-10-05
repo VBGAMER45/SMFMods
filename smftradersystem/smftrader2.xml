@@ -214,9 +214,13 @@ $txt['permissionhelp_smftrader_autorating'] = 'Ratings do not need to wait for a
 		
 		global $user_info;
 		if ($user_info['id'] != $context['member']['id'])
+		{
+
+			if (Trader_CanViewSubmitFeedbackLink() == true)
 		echo '
 		<dt class="clear"><a href="' . $scripturl .  '?action=trader&sa=submit&id=' . $context['member']['id'] . '">' . $txt['smftrader_submitfeedback'] . $context['member']['name'] . '</a></dt>
 	';
+		}
 	// END SMF Trader System
 	]]></add>
 	</operation>

@@ -3,8 +3,8 @@
 Post Scheduler
 Version 1.0
 by:vbgamer45
-http://www.smfhacks.com
-Copyright 2012-2014 http://www.samsonsoftware.com
+https://www.smfhacks.com
+Copyright 2012-2022 https://www.samsonsoftware.com
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -23,14 +23,14 @@ function PostSchedulerMain()
 
 	// Post Scheduler actions
 	$subActions = array(
-		'addpost' => 'AddPost',
-		'addpost2' => 'AddPost2',
-		'editpost' => 'EditPost',
-		'editpost2' => 'EditPost2',
-		'delpost' => 'DeletePost',
+		'addpost' => 'PA_AddPost',
+		'addpost2' => 'PA_AddPost2',
+		'editpost' => 'PA_EditPost',
+		'editpost2' => 'PA_EditPost2',
+		'delpost' => 'PA_DeletePost',
 		'admin' => 'PostSchedulerAdmin',
-		'saveset' => 'SaveSettings',
-		'bulkactions' => 'BulkActions',
+		'saveset' => 'PA_SaveSettings',
+		'bulkactions' => 'PA_BulkActions',
 	);
 
 
@@ -82,7 +82,7 @@ function PostSchedulerAdmin()
 	$context['page_title'] = $mbname . ' - ' . $txt['postscheduler_postlist'];
 }
 
-function AddPost()
+function PA_AddPost()
 {
 	global $txt, $mbname, $context, $smcFunc, $sourcedir, $modSettings;
 	
@@ -140,14 +140,14 @@ function AddPost()
 	
 }
 
-function AddPost2()
+function PA_AddPost2()
 {
 	global $smcFunc, $txt, $smcFunc, $sourcedir;
 	
 	checkSession('post');
 	
 	// If we came from WYSIWYG then turn it back into BBC regardless.
-	if (!empty($_REQUEST['message_mode']) && isset($_REQUEST['message']))
+	if (!empty($_REQUEST['message_mode']) && isset($_REQUEST['message'])  && !function_exists("set_tld_regex"))
 	{
 		require_once($sourcedir . '/Subs-Editor.php');
 
@@ -235,7 +235,7 @@ function AddPost2()
 	redirectexit('action=admin;area=postscheduler;sa=admin');
 }
 
-function EditPost()
+function PA_EditPost()
 {
 	global $txt, $mbname, $context, $smcFunc, $sourcedir, $modSettings;
 	
@@ -313,7 +313,7 @@ function EditPost()
 	
 }
 
-function EditPost2()
+function PA_EditPost2()
 {
 	global $txt, $smcFunc, $sourcedir;
 	
@@ -326,7 +326,7 @@ function EditPost2()
 		fatal_error($txt['postscheduler_nopostselected'], false);
 		
 	// If we came from WYSIWYG then turn it back into BBC regardless.
-	if (!empty($_REQUEST['message_mode']) && isset($_REQUEST['message']))
+	if (!empty($_REQUEST['message_mode']) && isset($_REQUEST['message'])  && !function_exists("set_tld_regex"))
 	{
 		require_once($sourcedir . '/Subs-Editor.php');
 
@@ -414,7 +414,7 @@ function EditPost2()
 	redirectexit('action=admin;area=postscheduler;sa=admin');
 }
 
-function DeletePost()
+function PA_DeletePost()
 {
 	global $txt;
 	
@@ -443,7 +443,7 @@ function DeletePostByID($id)
 	
 }
 
-function SaveSettings()
+function PA_SaveSettings()
 {
 	checkSession('post');
 
@@ -460,7 +460,7 @@ function SaveSettings()
 	redirectexit('action=admin;area=postscheduler;sa=admin');
 }
 
-function BulkActions()
+function PA_BulkActions()
 {
 
 	if (isset($_REQUEST['post']))

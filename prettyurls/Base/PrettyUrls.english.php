@@ -62,4 +62,8 @@ $txt['pretty_no_primary_warning'] = 'Warning, no primary URL!';
 $txt['pretty_numerical'] = 'Sorry, but as that URL is either a number or the same as a forum action the board ID had to be added as a suffix.';
 $txt['pretty_primary_url'] = 'Primary';
 
+$txt['pretty_chrome_menu_settings_description'] = 'Settings and configuration for Pretty Urls SEO Pro';
+$txt['pretty_chrome_menu_maintenance_description'] = 'Run any maintenance tasks for pretty urls';
+
+
 ?>

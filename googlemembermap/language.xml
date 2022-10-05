@@ -12,4 +12,13 @@ $txt['whoall_.kml'] = 'Viewing the Google Earth Feed.';
 	</operation>
 </file>
 
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end"></search>
+		<add><![CDATA[
+$txt['cannot_googleMap_view'] = 'Sorry, you are not allowed to view the Member Map.';
+
+]]></add>
+	</operation>
+</file>
 </modification>

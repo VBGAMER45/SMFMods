@@ -136,10 +136,10 @@ if ($row['total'] == 0)
 	   (time_offset, time_regularity, time_unit, disabled, task)
 	VALUES ('0', '1', 'h', '0', 'update_scheduleposts')"
     */
-    
+
     $smcFunc['db_insert']('',
 					'{db_prefix}scheduled_tasks',
-					array('time_offset' => 'int', 'time_regularity' => 'int', 'time_unit' => 'string','disabled' => 'int','update_scheduleposts' => 'string'),
+					array('time_offset' => 'int', 'time_regularity' => 'int', 'time_unit' => 'string','disabled' => 'int','task' => 'string'),
 					array(0,1,'h',0,'update_scheduleposts'),
 					array('id_task')
 				);

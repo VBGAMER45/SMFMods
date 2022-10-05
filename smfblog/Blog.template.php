@@ -15,7 +15,7 @@ function template_blog_below()
 	// permission is illegal!
 	echo '
 		<div style="text-align: center" class="smalltext">
-			Powered by <a href="http://www.smfhacks.com" title="A (very) simple blogging system for SMF">SMFBlog</a> by <a href="http://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a>
+			Powered by <a href="https://www.smfhacks.com" title="A (very) simple blogging system for SMF">SMFBlog</a> by <a href="https://www.createaforum.com" title="Forum Hosting">CreateAForum.com</a>
 		</div>';
 }
 

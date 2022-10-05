@@ -18,7 +18,7 @@ function template_postmain()
         </h3>
 </div>   
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg">
+		<tr class="windowbg2">
 			<td>
 				<form action="',$scripturl,'?action=postscheduler;sa=bulkactions" method="post">
 				<table width="95%" cellspacing="0" align="center" cellpadding="4" class="tborder">
@@ -50,19 +50,19 @@ function template_postmain()
 					}
 	
 	echo '
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td align="left" colspan="5">
 			', $txt['postscheduler_pages'], $context['page_index'],
 		'</td>
 	</tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 			<td colspan="5">' .$txt['postscheduler_withselected']  . '<select name="bulk">
 			<option value=""></option>
 			<option value="delete">' .$txt['postscheduler_delete']  . '</option>
 			</select> <input type="submit" value="' . $txt['postscheduler_go'] . '">
 			</td>
 		 </tr>	
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td colspan="5" align="center"><a href="', $scripturl, '?action=admin;area=postscheduler;sa=addpost">', $txt['postscheduler_addpost'], '</a></td>
 	</tr>
 	</table>
@@ -96,11 +96,11 @@ echo '
 </div>
 			<form method="post" action="', $scripturl, '?action=postscheduler;sa=addpost2" name="frmfeed"  id="frmfeed" onsubmit="submitonce(this);">
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-	<tr class="windowbg">>
+	<tr class="windowbg2">
 			 <td width="30%">', $txt['postscheduler_subject'], '</td>
 			 <td><input type="text" name="subject" size="50" /></td>
 	</tr>
-	<tr class="windowbg">>
+	<tr class="windowbg2">
 		<td width="30%">' .$txt['postscheduler_date'] .'</td>
 		<td>
 		<select name="month">
@@ -150,10 +150,10 @@ echo '
 		</select>
 		</td>
 	</tr>
-	<tr class="windowbg">>
+	<tr class="windowbg2">
 			<td width="30%">', $txt['postscheduler_topicid'], '</td><td><input type="text" name="topicid" size="10" value="0" /></td>
 	</tr>
-	<tr class="windowbg">>
+	<tr class="windowbg2">
 		<td width="30%">', $txt['postscheduler_forum'], '</td>
 		<td><select name="boardselect" id="boardselect">
   ';
@@ -162,7 +162,7 @@ echo '
 		 echo '<option value="', $key, '">', $option, '</option>';
 
 echo '</select></td></tr>
-	<tr class="windowbg">>
+	<tr class="windowbg2">
 		<td width="30%">', $txt['postscheduler_msg_icon'], '</td>
 		<td><select name="msgicon" id="msgicon" onchange="ChangeIconPic(this.value)">
   ';
@@ -179,7 +179,7 @@ echo '</select></td></tr>
 
 	foreach ($context['msg_icons'] as $key => $option)
 	{
-		echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . '.gif') ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename'] . '.gif') . '";';
+		echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . (!function_exists("set_tld_regex") ? '.gif' : '.png') ) ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename']  . (!function_exists("set_tld_regex") ? '.gif' : '.png')) . '";';
 	}
 
 echo '
@@ -193,10 +193,10 @@ echo '
 	// ]]></script>
 		</td>
 	</tr>
-	<tr class="windowbg">>
-		<td width="30%">', $txt['postscheduler_postername'], '</td><td><input type="text" name="postername" id="postername" /><a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a></td>
+	<tr class="windowbg2">
+		<td width="30%">', $txt['postscheduler_postername'], '</td><td><input type="text" name="postername" id="postername" /><a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/' . (!function_exists("set_tld_regex") ? 'assist.gif' : 'members.png') . '" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a></td>
 	</tr>
-	<tr class="windowbg">>
+	<tr class="windowbg2">
 		<td colspan="2" align="center">
 		<table>
    ';
@@ -265,8 +265,8 @@ echo '
 					</table>
 		</td>
 	</tr>
-	<tr class="windowbg">><td width="30%" align="right"><input type="checkbox" name="topiclocked" /></td><td>', $txt['postscheduler_topiclocked'], '</td></tr>
-	<tr class="windowbg">>
+	<tr class="windowbg2"><td width="30%" align="right"><input type="checkbox" name="topiclocked" /></td><td>', $txt['postscheduler_topiclocked'], '</td></tr>
+	<tr class="windowbg2">
 			<td colspan="2" align="center">
 				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="submit" name="addpost" value="', $txt['postscheduler_addpost'],  '" />
@@ -293,10 +293,10 @@ echo '
 
 			<form method="post" action="', $scripturl, '?action=postscheduler;sa=editpost2" name="frmfeed"  id="frmfeed" onsubmit="submitonce(this);">
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		  	<td width="30%">', $txt['postscheduler_subject'], '</td><td><input type="text" name="subject" size="50" value="' . $context['schedulepost']['subject'] . '" /></td>
 	</tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td width="30%">' .$txt['postscheduler_date'] .'</td>
 		<td>
 		';
@@ -358,9 +358,9 @@ echo '
 		</select>
 		</td>
 	</tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td width="30%">', $txt['postscheduler_topicid'], '</td><td><input type="text" name="topicid" size="10" value="' . $context['schedulepost']['ID_TOPIC'] . '" /></td></tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td width="30%">', $txt['postscheduler_forum'], '</td>
 		<td><select name="boardselect" id="boardselect">
   ';
@@ -368,7 +368,7 @@ echo '
 		 echo '<option value="', $key, ' " ', ($key == $context['schedulepost']['ID_BOARD'] ? ' selected="selected" ' : ''), '>', $option, '</option>';
 
 	echo '</select></td></tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td width="30%">', $txt['postscheduler_msg_icon'], '</td><td>
 			<select name="msgicon" id="msgicon"  onchange="ChangeIconPic(this.value)">
   ';
@@ -386,7 +386,7 @@ echo '
 
 	foreach ($context['msg_icons'] as $key => $option)
 	{
-		echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename'] . '.gif') ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename'] . '.gif') . '";';
+		echo ' selectIcons["', $option['filename'], '"] = "', ($settings[file_exists($settings['theme_dir'] . '/images/post/' . $option['filename']  . (!function_exists("set_tld_regex") ? '.gif' : '.png')) ? 'actual_images_url' : 'default_images_url'] . '/post/' . $option['filename']  . (!function_exists("set_tld_regex") ? '.gif' : '.png')) . '";';
 	}
 
 	echo '
@@ -400,11 +400,11 @@ echo '
 		// ]]></script>
 	</td>
 	</tr>
-	<tr class="windowbg">
-		<td width="30%">', $txt['postscheduler_postername'], '</td><td><input type="text" name="postername" id="postername" value="' . $context['schedulepost']['postername'] . '" /><a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/assist.gif" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a>
+	<tr class="windowbg2">
+		<td width="30%">', $txt['postscheduler_postername'], '</td><td><input type="text" name="postername" id="postername" value="' . $context['schedulepost']['postername'] . '" /><a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/' . (!function_exists("set_tld_regex") ? 'assist.gif' : 'members.png') . '" alt="', $txt['find_members'], '" /></a> <a href="', $scripturl, '?action=findmember;input=postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);">', $txt['find_members'], '</a>
 		</td>
 	</tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td colspan="2" align="center">
 		<table>
    ';
@@ -473,9 +473,9 @@ echo '
 					</table>
 		</td>
 	</tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td width="30%" align="right"><input type="checkbox" name="topiclocked" ', ($context['schedulepost']['locked'] ? ' checked="checked" ' : ''), ' /></td><td>', $txt['postscheduler_topiclocked'], '</td></tr>
-	<tr class="windowbg">
+	<tr class="windowbg2">
 		<td colspan="2" align="center">
 			<input type="hidden" name="id" value="', $context['schedulepost']['ID_POST'], '" />
 			<input type="submit" name="editpost" value="', $txt['postscheduler_editpost'],  '" />
@@ -493,7 +493,7 @@ echo '
 function schedulercopyright()
 {
 	// The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><a href="http://www.smfhacks.com" target="blank">Post Scheduler</a></div>';
+	echo '<br /><div align="center"><a href="https://www.smfhacks.com" target="blank">Post Scheduler</a></div>';
 }
 
 ?>

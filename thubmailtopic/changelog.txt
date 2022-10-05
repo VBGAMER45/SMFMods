@@ -1,3 +1,12 @@
+Version 4.2.1
+!Group by fixes for SMF 2.1.x
+
+Version 4.2
+!Fixes for image distortion and styling for SMF 2.1.X thanks to @rjen
+
+Version 4.1
+!Hide thumbnail column if users don't have permissions to view attachments
+
 Version 4.0
 !Fixed a case where if you are just using linked images the column for thumbnail topic will not appear
 
@@ -20,4 +29,4 @@ Version 1.1
 !Fixed showing an image if there was another attachment of a different type before it.
 !Also fixed issue with posts disappearing.
 
-Version 1.0 Intial Release
+Version 1.0 Initial Release

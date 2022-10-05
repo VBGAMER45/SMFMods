@@ -115,6 +115,8 @@ function pretty_manage_settings()
 		pretty_update_filters();
 		$modSettings['pretty_enable_filters'] = $enabled;
 
+		pretty_run_maintenance(false,true);
+
 		$_POST['pretty_skipactions'] = strtolower($_POST['pretty_skipactions']);
 		$_POST['pretty_skipactions'] = trim($_POST['pretty_skipactions']);
 

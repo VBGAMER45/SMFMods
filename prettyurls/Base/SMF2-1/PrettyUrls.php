@@ -19,15 +19,13 @@ function PrettyInterface()
 
 	//	Shiny chrome interface
 	$context['template_layers']['pretty_chrome'] = 'pretty_chrome';
+	/*
 	$context['html_headers'] .= '
 	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/pretty/chrome.css" media="screen,projection" />';
+	*/
 	$context['pretty']['chrome'] = array(
 		'admin' => true,
 		'menu' => array(
-			'news' => array(
-				'href' => $scripturl . '?action=admin;area=pretty',
-				'title' => $txt['pretty_chrome_menu_news'],
-			),
 			'settings' => array(
 				'href' => $scripturl . '?action=admin;area=pretty;sa=settings',
 				'title' => $txt['pretty_chrome_menu_settings'],
@@ -44,14 +42,13 @@ function PrettyInterface()
 	$subActions = array(
 		'filters' => 'pretty_edit_filters',
 		'maintenance' => 'pretty_maintenance',
-		'news' => 'pretty_news',
 		'settings' => 'pretty_manage_settings',
 		'test' => 'pretty_test_rewrites',
 	);
 	if (isset($_REQUEST['sa']) && isset($subActions[$_REQUEST['sa']]))
 		call_user_func($subActions[$_REQUEST['sa']]);
 	else
-		pretty_news();
+		pretty_manage_settings();
 }
 
 //	News and mod information
@@ -79,6 +76,8 @@ function pretty_news()
 function pretty_manage_settings()
 {
 	global $context, $modSettings, $sourcedir, $txt;
+	pretty_AdminTabs();
+
 
 /*
 	//	Core settings
@@ -114,6 +113,8 @@ function pretty_manage_settings()
 		$enabled = !empty($modSettings['pretty_enable_filters']);
 		pretty_update_filters();
 		$modSettings['pretty_enable_filters'] = $enabled;
+
+		pretty_run_maintenance(false,true);
 
 		$_POST['pretty_skipactions'] = strtolower($_POST['pretty_skipactions']);
 		$_POST['pretty_skipactions'] = trim($_POST['pretty_skipactions']);
@@ -196,6 +197,8 @@ function pretty_maintenance()
 {
 	global $context, $sourcedir, $txt;
 
+	pretty_AdminTabs();
+
 	//	Run the maintenance tasks
 	if (isset($_REQUEST['run']))
 	{
@@ -274,6 +277,31 @@ function pretty_edit_filters()
 		$context['pretty']['chrome']['notice'] = $_SESSION['pretty']['notice'];
 		unset($_SESSION['pretty']['notice']);
 	}
+}
+
+function pretty_AdminTabs($overrideSelected = '')
+{
+	global $context, $txt;
+
+	$tmpSA = '';
+	if (!empty($overrideSelected))
+		$_REQUEST['sa'] = $overrideSelected;
+
+	$context[$context['admin_menu_name']]['tab_data'] = array(
+			'title' => $txt['pretty_chrome_title'],
+			'description' => '',
+			'tabs' => array(
+				'settings' => array(
+					'description' => $txt['pretty_chrome_menu_settings_description'],
+					'label' => $txt['pretty_chrome_menu_settings'],
+				),
+				'maintenance' => array(
+					'description' => $txt['pretty_chrome_menu_maintenance_description'],
+					'label' => $txt['pretty_chrome_menu_maintenance'],
+				),
+			),
+		);
+
 }
 
 ?>

@@ -121,7 +121,7 @@ function pretty_generate_url($text)
 }
 
 //	URL maintenance
-function pretty_run_maintenance($installing = false)
+function pretty_run_maintenance($installing = false, $updateActionsOnly = false)
 {
 	global $boarddir, $context, $modSettings, $smcFunc;
 
@@ -139,7 +139,25 @@ function pretty_run_maintenance($installing = false)
 	{
 		$dummy = array();
 		call_integration_hook('integrate_actions', array(&$dummy));
-		$context['pretty']['action_array'] += array_keys($dummy);
+
+		if (!empty($dummy))
+		{
+			foreach($dummy as $key => $value)
+			{
+				$context['pretty']['action_array'][] = $key;
+			}
+
+		}
+	}
+
+	if ($updateActionsOnly == true)
+	{
+	//	Update the database
+		updateSettings(array(
+			'pretty_action_array' => serialize($context['pretty']['action_array']),
+		));
+
+		return;
 	}
 
 	$context['pretty']['maintenance_tasks'][] = 'Updating the array of actions';

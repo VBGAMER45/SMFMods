@@ -5,7 +5,7 @@
 	<id>vbgamer45:ThumbnailTopic</id>
 	<name>Thumbnail Topic Mod</name>
 	<type>modification</type>
-	<version>4.0</version>
+	<version>4.2.1</version>
 
 	<install for="1.1 - 1.1.99">
 		<readme>ReadMe.txt</readme>
@@ -17,7 +17,6 @@
 		<code>UnInstall.php</code>
 	</uninstall>
 
-	
 	<install for="2.0 RC2,2.0 RC3">
 			<readme>ReadMe.txt</readme>
 			<modification type="file">ThumbnailTopic2rc2.xml</modification>
@@ -40,5 +39,17 @@
 			<modification type="file" reverse="true">ThumbnailTopic2rc4.xml</modification>
 			<code>UnInstall.php</code>
 	</uninstall>
+
+	<install for="2.1 - 2.1.99">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">ThumbnailTopic2.1.xml</modification>
+			<code>db2.php</code>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+			<modification type="file" reverse="true">ThumbnailTopic2.1.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+
 
 </package-info>

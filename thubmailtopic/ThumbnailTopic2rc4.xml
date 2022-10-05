@@ -153,6 +153,16 @@
 
 <file name="$themedir/MessageIndex.template.php">
 	<operation>
+		<search position="replace"><![CDATA[// Are there actually any topics to show?]]></search>
+	<add><![CDATA[
+	// thumbnail topic mod
+	if (!allowedTo('view_attachments'))
+		$context['show_thumbnails'] = false;
+	//end thumbnail topic
+
+	// Are there actually any topics to show?]]></add>
+	</operation>
+	<operation>
 		<search position="replace"><![CDATA[<th scope="col" class="first_th" width="8%" colspan="2">&nbsp;</th>]]></search>
 	<add><![CDATA[<th scope="col" class="first_th" width="8%" colspan="', $context['show_thumbnails'] ? 3 : 2, '">&nbsp;</th>]]></add>
 	</operation>

@@ -381,7 +381,6 @@ function Submit2()
 
 		}
 	}
-
 	// Check Classifieds if you must have listing setting
 	if (isset($modSettings['class_set_trader_feedback']))
 	{
@@ -825,7 +824,10 @@ function IsClassifiedsInstalled()
 
 function CheckIfInClassifieds($ID_LISTING, $memid)
 {
-	global $smcFunc, $user_info;
+	global $smcFunc, $user_info, $modSettings;
+
+	if (empty($modSettings['class_set_trader_feedback']))
+		return true;
 
 	if (IsClassifiedsInstalled() == true)
 	{
@@ -879,6 +881,68 @@ function CheckIfInClassifieds($ID_LISTING, $memid)
 	}
 	else
 		return false;
+}
+
+function Trader_CanViewSubmitFeedbackLink()
+{
+	global $smcFunc,  $context, $user_info;
+	if (IsClassifiedsInstalled() == true)
+	{
+
+
+		// Gets any listed that is completed with bids
+		// WHERE the LIST OWNER = CURRENT VIEWER AND BIDDER = PROFILEID
+		$context['class_listings_trader'] = array();
+
+		$request = $smcFunc['db_query']('', "
+		SELECT
+			l.title, l.ID_LISTING, m.real_name, m.ID_MEMBER, f.feedbackid, f.FeedBackMEMBER_ID  
+		FROM ({db_prefix}class_listing as l, {db_prefix}class_bids  as b)
+			LEFT JOIN {db_prefix}members as m ON (m.ID_MEMBER = b.ID_MEMBER)
+			LEFT JOIN {db_prefix}feedback as f ON (l.ID_LISTING = f.ID_LISTING AND  f.FeedBackMEMBER_ID   = " . $user_info['id'] . ") 
+		WHERE b.ID_LISTING = l.ID_LISTING AND b.bid_accepted = 1 AND l.listingstatus = 2 AND l.ID_MEMBER = " . $user_info['id'] . "  ");
+
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+
+			if (empty($row['feedbackid']))
+				$context['class_listings_trader'][] = $row;
+
+		}
+		$smcFunc['db_free_result']($request);
+
+		// Gets any listed that is completed with bids
+		// WHERE the LIST OWNER =  PROFILEID  AND BIDDER = CURRENT VIEWER
+
+		$request = $smcFunc['db_query']('', "
+		SELECT
+			l.title, l.ID_LISTING, m.real_name, m.ID_MEMBER, f.feedbackid, f.FeedBackMEMBER_ID  
+		FROM ({db_prefix}class_listing as l, {db_prefix}class_bids  as b)
+			LEFT JOIN {db_prefix}members as m ON (m.ID_MEMBER = l.ID_MEMBER) 
+			LEFT JOIN {db_prefix}feedback as f ON (l.ID_LISTING = f.ID_LISTING AND f.FeedBackMEMBER_ID  = " . $user_info['id'] . ") 
+		WHERE b.ID_LISTING = l.ID_LISTING AND b.bid_accepted = 1 AND l.listingstatus = 2  AND b.ID_MEMBER = " . $user_info['id']);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+
+			if (empty($row['feedbackid']))
+				$context['class_listings_trader'][] = $row;
+		}
+		$smcFunc['db_free_result']($request);
+
+
+		if (empty($context['class_listings_trader']))
+			return false;
+		else
+			return true;
+
+
+	}
+	else
+	{
+		return true;
+	}
+
+
 }
 
 ?>

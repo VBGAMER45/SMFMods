@@ -340,8 +340,10 @@ function pretty_urls_actions_filter($urls)
 	if (isset($modSettings['pretty_skipactions']))
 		$skip_actions = explode(",",$modSettings['pretty_skipactions']);
 
-
 	$skip_actions[] = 'verificationcode';
+	$skip_actions[] = 'login';
+	$skip_actions[] = 'login2';
+	$skip_actions[] = 'logintfa';
 
 
 	$pattern = '`' . $scripturl . '(.*)action=([^;]+)`S';
@@ -355,6 +357,7 @@ function pretty_urls_actions_filter($urls)
 					if (in_array($matches[2],$skip_actions))
 						continue;
 
+				if (!empty($context['pretty']['action_array']))
 				if (in_array($matches[2], $context['pretty']['action_array']))
 					$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
 			}

@@ -10,7 +10,7 @@
 
 <package-info xmlns="http://www.simplemachines.org/xml/package-info">
 	<id>el:prettyurls</id>
-	<version>2.4</version>
+	<version>2.5.1b</version>
 	<name>Pretty URLs</name>
 	<type>modification</type>
 
@@ -92,10 +92,14 @@
 		<require-file name="SMF2-1/PrettyUrls-Filters.php" destination="$sourcedir" />
 		<require-file name="PrettyUrls-Tests.php" destination="$sourcedir" />
 		<require-file name="SMF2-1/Subs-PrettyUrls.php" destination="$sourcedir" />
-		<require-file name="PrettyUrls.template.php" destination="$themedir" />
+		<require-file name="SMF2-1/Subs-PrettyUrls-Hooks.php" destination="$sourcedir" />
+		<require-file name="SMF2-1/PrettyUrls.template.php" destination="$themedir" />
 		<require-file name="prettyurls.png" destination="$imagesdir/admin" />
 		<require-dir name="pretty" destination="$themedir" />
 		<require-file name="PrettyUrls.english.php" destination="$languagedir" />
+		<!-- Hooks -->
+		<hook hook="integrate_admin_areas" function="prettyurls_admin_areas" file="$sourcedir/Subs-PrettyUrls-Hooks.php"  />
+
 		<database>SMF2-1/install.php</database>
 	</install>
 	<uninstall for="2.1 - 2.1.99,2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3">
@@ -104,10 +108,14 @@
 		<modification reverse="true">SMF2-1/BoardsAndTopics.xml</modification>
 		<modification reverse="true">SMF2-1/Themes.xml</modification>
 		<modification reverse="true">Languages.xml</modification>
+		<!-- Hooks -->
+		<hook hook="integrate_admin_areas" function="prettyurls_admin_areas" file="$sourcedir/Subs-PrettyUrls-Hooks.php"  reverse="true"  />
+
 		<remove-file name="$sourcedir/PrettyUrls.php" />
 		<remove-file name="$sourcedir/PrettyUrls-Filters.php" />
 		<remove-file name="$sourcedir/PrettyUrls-Tests.php" />
 		<remove-file name="$sourcedir/Subs-PrettyUrls.php" />
+		<remove-file name="$sourcedir/Subs-PrettyUrls-Hooks.php" />
 		<remove-file name="$themedir/PrettyUrls.template.php" />
 		<remove-dir name="$themedir/pretty" />
 		<remove-file name="$languagedir/PrettyUrls.english.php" />

@@ -1,6 +1,6 @@
 **************************************
 SMF Trader System
-http://www.smfhacks.com
+https://www.smfhacks.com
 **************************************
 
 Contents:
@@ -22,13 +22,12 @@ Contents:
    Just keep the textlink to smfhacks.com in the files and the templates or buy copyright removal at https://www.smfhacks.com
 
 4. Contact
-   For support and more information visit http://www.smfhacks.com
+   For support and more information visit https://www.smfhacks.com
 
 Other Mods
 SMF Gallery
 SMF Store
 SMF Links
-Staff Page Mod
 SMF Classifieds
 SMF Store
 Newsletter Pro

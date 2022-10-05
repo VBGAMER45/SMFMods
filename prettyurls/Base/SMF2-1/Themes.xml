@@ -3,13 +3,13 @@
 
 <modification xmlns="http://www.simplemachines.org/xml/modification">
 	<id>el:prettyurls</id>
-	<version>1.0</version>
+	<version>2.5.1</version>
 
 	<file name="$themedir/ManageBoards.template.php">
 		<operation>
 			<search position="replace"><![CDATA[<a href="', $scripturl, '?action=admin;area=manageboards;sa=board;boardid=', $board['id'], '" class="button">', $txt['mboards_modify'], '</a>]]></search>
 			<add><![CDATA[<a href="', $scripturl, '?action=admin;area=manageboards;sa=board;boardid=', $board['id'], '" class="button">', $txt['mboards_modify'], '</a>
-							', allowedTo('admin_forum') ? '<a href="' . $scripturl . '?action=admin;area=manageboards;sa=pretty;boardid=' . $board['id'] . '">' . $txt['pretty_urls'] . '</a>' : '', '
+							', allowedTo('admin_forum') ? '<a href="' . $scripturl . '?action=admin;area=manageboards;sa=pretty;boardid=' . $board['id'] . '" class="button">' . $txt['pretty_urls'] . '</a>' : '', '
 ]]></add>
 		</operation>
 
