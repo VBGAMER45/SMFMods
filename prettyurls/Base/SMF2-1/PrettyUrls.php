@@ -55,6 +55,7 @@ function PrettyInterface()
 function pretty_news()
 {
 	global $context, $scripturl, $settings, $txt;
+	pretty_AdminTabs();
 
 	//	This page needs some extra javascript :)
 	$context['html_headers'] .= '
@@ -161,6 +162,7 @@ function pretty_manage_settings()
 function pretty_test_rewrites()
 {
 	global $context, $modSettings, $sourcedir, $txt;
+	pretty_AdminTabs();
 
 	//	Yes they work, so turn them on!
 	if (isset($_REQUEST['save']))
@@ -217,6 +219,7 @@ function pretty_maintenance()
 function pretty_edit_filters()
 {
 	global $context, $modSettings, $sourcedir, $txt;
+	pretty_AdminTabs();
 
 	//	Check the JSON extension is installed
 	if (!function_exists('json_encode'))
@@ -283,7 +286,6 @@ function pretty_AdminTabs($overrideSelected = '')
 {
 	global $context, $txt;
 
-	$tmpSA = '';
 	if (!empty($overrideSelected))
 		$_REQUEST['sa'] = $overrideSelected;
 

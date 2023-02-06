@@ -1,0 +1,12 @@
+2.0
++Added a setting to allow merging social logins with a normal account under profile
++Added option to use social login avatar/picture if is passed from the social provider if it is a new account registration
++New social networks/sites are also supported vkontakte,foursquare,paypal,digg
+!Fixed bug with standard activation not displaying error.
+!Friendly error screens with full template of the theme to display the error.
+!Allow the user to change the email address if is already existing for a member instead of error screen
+!Social Login database table entry cleared for an account if account is deleted
+
+1.1
+!Fixed bug that did not allow the account owner to edit the account information if they logged in with social login pro
++Added setting for you to disallow normal registration and only allow social login registration.

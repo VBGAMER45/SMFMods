@@ -1,3 +1,6 @@
+7.0.1
++Added support without .www for youtube shorts
+
 7.0
 +Added the Play Media Attachments mod by Dougiefresh to this mod as it is a related function.
 Allows audio  files MP3, WAV, WMA, AAC, and audio OGG files

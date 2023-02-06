@@ -726,7 +726,7 @@ VALUES
 (130, 'Facebook fb.watch','https://fb.watch',378,620, 'https://fb.watch/([A-Za-z0-9]*)/','" . '
 <iframe src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Ffb.watch%2F$1%2F&show_text=false&width=560&t=0" width="560" height="314" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>
 ' . "'),
-(131, 'YouTube Shorts','https://youtube.com',378,620, 'https://www.youtube.com/shorts/([A-Za-z0-9_-]*)','" . '
+(131, 'YouTube Shorts','https://youtube.com',378,620, 'https://www.youtube.com/shorts/([A-Za-z0-9_-]*)ZSPLITMZhttps://youtube.com/shorts/([A-Za-z0-9_-]*)','" . '
 <iframe width="480" height="600" src="//www.youtube.com/embed/$1?rel=0&amp;playsinline=1&amp;controls=1&amp;showinfo=0&amp;modestbranding=0" frameborder="0" allowfullscreen="true"></iframe>
 ' . "'),
  (132, 'PDF Files Remote', '', 340,640, 'htt(p|ps)://([^<>]+)" . '\\' .'\\' . ".pdf','" . '

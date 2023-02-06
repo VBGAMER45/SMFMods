@@ -149,7 +149,7 @@ function PrettyBoardUrls()
 ]]></search>
 			<add><![CDATA[
 	//	301 redirects
-	if ((isset($context['pretty']['oldschoolquery']) || $context['pretty']['query_string']['board'] != $context['pretty']['board_urls'][$board]) && $modSettings['pretty_enable_filters'])
+	if ((isset($context['pretty']['oldschoolquery']) || $context['pretty']['query_string']['board'] != $context['pretty']['board_urls'][$board]) && !empty($modSettings['pretty_enable_filters']))
 	{
 		$filterData = unserialize($modSettings['pretty_filters']);
 		if ($filterData['boards']['enabled'])

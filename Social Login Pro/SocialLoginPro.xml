@@ -1,0 +1,398 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:SocialLoginPro</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Social Login Pro  Text Strings
+$txt['slp_admin'] = 'Social Login Pro';
+$txt['slp_settings'] = 'Settings';
+$txt['slp_save_settings'] = 'Save Settings';
+
+$txt['slp_txt_latestversion'] = 'Latest Version: ';
+$txt['slp_txt_yourversion'] = 'Your Version: ';
+$txt['slp_txt_version_outofdate'] = 'Your Social Login Pro version is not up to date!';
+
+$txt['slp_txt_completeemail'] = 'Complete Registration - Enter Email Address';
+$txt['slp_txt_nickname'] = 'Nickname:';
+$txt['slp_enter_address'] = 'Enter Email Address';
+$txt['slp_txt_complete_reg'] = 'Complete Registration';
+$txt['slp_err_reg'] = 'An error occured on registration';
+$txt['slp_err_alreadyregistered'] = 'The email address is already a registered member';
+$txt['slp_login_social_networking'] = 'Or Login Using Social Network Account';
+$txt['slp_register_socail_networking'] = 'Or Register using your Social Networking Account Instead';
+$txt['slp_txt_getgigya'] = 'To get a Gigya API key and secert key signup on <a href="http://www.gigya.com" target="_blank">http://www.gigya.com</a>';
+$txt['slp_err_non_social_registration'] = 'Normal registration is disabled. Only social login registration is enabled';
+$txt['slp_txt_toregister'] = 'To register click on a social networking below and sign in using your account';
+$txt['slp_merge_account'] = 'Social Login Merge Account';
+$txt['slp_merge_addaccount'] = 'Social Login Add Account to this SMF login';
+$txt['slp_options'] = 'Options';
+$txt['slp_delete'] = 'Delete';
+$txt['slp_socialnetwork'] = 'Social Network';
+$txt['slp_account'] = 'Account';
+
+
+// Settings
+$txt['slp_apikey'] = 'Gigya API Key';
+$txt['slp_secretkey'] = 'Gigya Secret Key';
+$txt['slp_buttonsStyle'] = 'Button style';
+$txt['slp_enabledProviders'] = 'Enabled Login Providers';
+$txt['slp_loginheight'] = 'Login Box Height';
+$txt['slp_loginwidth'] = 'Login Box Width';
+$txt['slp_registerheight'] = 'Register Box Height';
+$txt['slp_registerwidth'] = 'Register Box Width';
+$txt['slp_disableregistration'] = 'Disable normal account registration';
+$txt['slp_allowaccountmerge'] = 'Allow merging SMF accounts with social logins';
+$txt['slp_importavatar'] = 'Use avatar from social networks if it exists';
+// END  Social Login Pro Text Strings	
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+
+// Begin Social Login Pro  Text Strings
+$txt['slp_admin'] = 'Social Login Pro';
+$txt['slp_settings'] = 'Settings';
+$txt['slp_save_settings'] = 'Save Settings';
+
+$txt['slp_txt_latestversion'] = 'Latest Version: ';
+$txt['slp_txt_yourversion'] = 'Your Version: ';
+$txt['slp_txt_version_outofdate'] = 'Your Social Login Pro version is not up to date!';
+
+$txt['slp_txt_completeemail'] = 'Complete Registration - Enter Email Address';
+$txt['slp_txt_nickname'] = 'Nickname:';
+$txt['slp_enter_address'] = 'Enter Email Address';
+$txt['slp_txt_complete_reg'] = 'Complete Registration';
+$txt['slp_err_reg'] = 'An error occured on registration';
+$txt['slp_err_alreadyregistered'] = 'The email address is already a registered member';
+$txt['slp_login_social_networking'] = 'Or Login Using Social Network Account';
+$txt['slp_register_socail_networking'] = 'Or Register using your Social Networking Account Instead';
+$txt['slp_txt_getgigya'] = 'To get a Gigya API key and secert key signup on <a href="http://www.gigya.com" target="_blank">http://www.gigya.com</a>';
+$txt['slp_txt_toregister'] = 'To register click on a social networking below and sign in using your account';
+$txt['slp_merge_account'] = 'Social Login Merge Account';
+$txt['slp_merge_addaccount'] = 'Social Login Add Account to this SMF login';
+$txt['slp_options'] = 'Options';
+$txt['slp_delete'] = 'Delete';
+$txt['slp_socialnetwork'] = 'Social Network';
+$txt['slp_account'] = 'Account';
+
+// Settings
+$txt['slp_apikey'] = 'Gigya API Key';
+$txt['slp_secretkey'] = 'Gigya Secret Key';
+$txt['slp_buttonsStyle'] = 'Button style';
+$txt['slp_enabledProviders'] = 'Enabled Login Providers';
+$txt['slp_loginheight'] = 'Login Box Height';
+$txt['slp_loginwidth'] = 'Login Box Width';
+$txt['slp_registerheight'] = 'Register Box Height';
+$txt['slp_registerwidth'] = 'Register Box Width';
+$txt['slp_disableregistration'] = 'Disable normal account registration';
+$txt['slp_allowaccountmerge'] = 'Allow merging SMF accounts with social logins';
+$txt['slp_importavatar'] = 'Use avatar from social networks if it exists';
+
+// END  Social Login Pro Text Strings	
+
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'editpoll2' => array('Poll.php', 'EditPoll2'),]]></search>
+		<add><![CDATA[
+		'slp' => array('SocialLoginPro.php', 'SocialLoginProMain'),
+		]]></add>
+	</operation>
+
+	
+</file>
+
+
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[// Admin area 'Forum'.]]></search>
+	<add><![CDATA[
+	// Social Login Pro
+	if (allowedTo(array('admin_forum')))
+	{
+		$context['admin_areas']['slp'] = array(
+			'title' => $txt['slp_admin'],
+			'areas' => array()
+		);
+
+		
+	 	$context['admin_areas']['slp']['areas']['slp_admin'] =  '<a href="' . $scripturl . '?action=slp;sa=settings;sesc=' . $sc . '">' . $txt['slp_settings'] . '</a>';
+	}
+
+	// End Social Login Pro
+	
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Load.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// Some basic information...
+	if (!isset($context['html_headers']))
+		$context['html_headers'] = '';]]></search>
+		<add><![CDATA[
+		// Some basic information...
+			if (!isset($context['html_headers']))
+		$context['html_headers'] = '';
+		
+		// Social Login Pro
+		$context['html_headers'] .= '<!-- socialize.js script should only be included once -->
+		<script type="text/javascript" src="http://cdn.gigya.com/js/socialize.js?apiKey=' . $modSettings['slp_apikey'] . '"></script>
+		<script type="text/javascript">
+		var conf=
+		{
+			APIKey: \'' . $modSettings['slp_apikey'] . '\'
+			,enabledProviders: \'' . $modSettings['slp_enabledProviders'] . '\'
+		}
+		</script>
+';
+// End Social Login Pro				
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/Register.template.php">
+	<operation>
+		<search position="before"><![CDATA[<tr>
+						<td width="40%">
+							<b>', $txt[82], ':</b>
+						</td>
+						<td>
+							<input type="password" name="passwrd2" size="30" tabindex="', $context['tabindex']++, '" />
+						</td>
+					</tr>';]]></search>
+		<add><![CDATA[
+
+	
+// Social Login Pro		
+global $boardurl, $modSettings;
+	if (!empty($modSettings['slp_apikey']) && !empty($modSettings['slp_enabledProviders']))
+				echo '
+			<tr><td colspan="2"><strong>' . $txt['slp_register_socail_networking'] . '</strong></td>
+			</tr>
+			<tr><td colspan="2">
+								<script type="text/javascript">
+var login_params=
+{
+	useHTML: \'true\'
+	,showTermsLink: \'false\'
+	,height: ' . $modSettings['slp_registerheight'] . '
+	,width: ' . $modSettings['slp_registerwidth'] . '
+	,containerID: \'componentDiv\'
+	,redirectURL: \'' . $boardurl. '/gigya.php\'
+}
+</script>
+<div id="componentDiv"></div>
+<script type="text/javascript">
+   gigya.services.socialize.showLoginUI(conf,login_params);
+</script>
+
+							</td>
+			</tr>';
+// End Social Login Pro				
+		
+		]]></add>
+	</operation>
+
+</file>
+
+<file name="$themedir/Login.template.php">
+	<operation>
+		<search position="replace"><![CDATA[<tr class="windowbg">
+					<td align="center" colspan="2" class="smalltext"><a href="', $scripturl, '?action=reminder">', $txt[315], '</a><br /><br /></td>
+				</tr>]]></search>
+		<add><![CDATA[<tr class="windowbg">
+					<td align="center" colspan="2" class="smalltext"><a href="', $scripturl, '?action=reminder">', $txt[315], '</a><br /><br /></td>
+				</tr>';
+				
+				
+				
+// Social Login Pro
+	global $boardurl, $modSettings;
+	if (!empty($modSettings['slp_apikey']) && !empty($modSettings['slp_enabledProviders']))				
+			echo '<tr class="windowbg">
+					<td align="center" colspan="2"><hr />
+<strong>' . $txt['slp_login_social_networking'] . '</strong>
+				</td>
+			</tr>
+<tr class="windowbg">
+					<td align="center" colspan="2">						
+							
+								<script type="text/javascript">
+var login_params=
+{
+	useHTML: \'true\'
+	,showTermsLink: \'false\'
+	,height: ' . $modSettings['slp_loginheight'] . '
+	,width: ' . $modSettings['slp_loginwidth'] . '
+	,containerID: \'componentDiv\'
+	,redirectURL: \'' . $boardurl. '/gigya.php\'
+}
+</script>
+<div id="componentDiv" align="center"></div>
+<script type="text/javascript">
+   gigya.services.socialize.showLoginUI(conf,login_params);
+</script>
+</td></tr>';				
+// End social login pro
+	
+	
+echo '				
+
+]]></add>
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/Profile.php">
+
+	<operation>
+		<search position="replace"><![CDATA[$context['require_password'] = in_array($context['menu_item_selected'], array('account'));]]></search>
+		<add><![CDATA[
+		$context['require_password'] = in_array($context['menu_item_selected'], array('account'));
+		// Modified social Login Pro
+		global $db_prefix;
+		
+		$result = db_query("
+			SELECT uid FROM
+			{$db_prefix}social_logins WHERE id_member = '$memID' AND merged = 0", __FILE__, __LINE__);
+		$userRow = mysql_fetch_assoc($result);
+		
+		if (!empty($userRow['uid']))
+			$context['require_password']  =  false;
+		
+// End Social Login Pro	
+
+		
+
+]]></add>
+	</operation>
+	
+	<operation>
+		<search position="replace"><![CDATA[if ($context['user']['is_owner'] && !empty($sa_allowed[$_REQUEST['sa']][3]))]]></search>
+		<add><![CDATA[
+		// Modified social Login Pro
+		global $db_prefix;
+		
+		$result = db_query("
+			SELECT uid FROM
+			{$db_prefix}social_logins WHERE id_member = '$memID'", __FILE__, __LINE__);
+		$userRow = mysql_fetch_assoc($result);
+
+// End Social Login Pro	
+		if ($context['user']['is_owner'] && !empty($sa_allowed[$_REQUEST['sa']][3]) && empty($userRow['uid']))
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Register.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// You can't register if it's disabled.]]></search>
+		<add><![CDATA[
+		
+// Modified social Login Pro
+global $modSettings;
+
+if (!empty($modSettings['slp_disableregistration']))
+	fatal_error($txt['slp_err_non_social_registration'],false);
+			
+		
+// End Social Login Pro	
+// You can't register if it's disabled.
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Register.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// Generate a visual verification code to make sure the user is no bot.]]></search>
+		<add><![CDATA[
+		
+// Modified social Login Pro
+global $modSettings;
+
+if (!empty($modSettings['slp_disableregistration']))
+{
+	loadtemplate('SocialLoginPro');
+	
+	$context['sub_template'] = 'slp_register';
+	
+	
+	return;
+}
+
+			
+		
+// End Social Login Pro	
+// Generate a visual verification code to make sure the user is no bot.
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Subs-Members.php">
+
+	<operation>
+		<search position="replace"><![CDATA[// Delete personal messages.]]></search>
+		<add><![CDATA[
+// Delete personal messages.
+
+// Modified social Login Pro
+		db_query("
+				DELETE FROM {$db_prefix}social_logins
+		WHERE ID_MEMBER $condition", __FILE__, __LINE__);
+		
+// End Social Login Pro	
+
+		
+
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Profile.php">
+
+	<operation>
+		<search position="replace"><![CDATA[$context['profile_areas']['edit_profile']['areas']['forumProfile'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=forumProfile">' . $txt['forumProfile'] . '</a>';]]></search>
+		<add><![CDATA[
+$context['profile_areas']['edit_profile']['areas']['forumProfile'] = '<a href="' . $scripturl . '?action=profile;u=' . $memID . ';sa=forumProfile">' . $txt['forumProfile'] . '</a>';
+// Modified Social Login Pro
+
+
+if (!empty($modSettings['slp_allowaccountmerge']))
+	$context['profile_areas']['edit_profile']['areas']['mergeaccount'] = '<a href="' . $scripturl . '?action=slp;sa=merge">' . $txt['slp_merge_account'] . '</a>';
+
+
+// End Social Login Pro	
+		]]></add>
+	</operation>
+</file>
+
+
+
+</modification>

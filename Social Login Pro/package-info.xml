@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:SocialLoginPro</id>
+	<name>Social Login Pro</name>
+	<type>modification</type>
+	<version>2.0</version>
+
+	<install for="1.1 - 1.1.99">
+		<redirect url="?action=slp">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">SocialLoginPro.xml</modification>
+		<require-file name="SocialLoginPro.php" destination="$sourcedir" />
+		<require-file name="SocialLoginPro.template.php" destination="$themedir" />
+		<require-file name="gigya.php" destination="$boarddir" />
+		<require-file name="gigyamerge.php" destination="$boarddir" />
+		<code>SocialLoginProsql.php</code>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">SocialLoginPro.xml</modification>
+	</uninstall>
+	
+
+	<install for="2.0 - 2.0.99, 2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
+		<redirect url="?action=admin;area=slp;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">SocialLoginPro2.xml</modification>
+		<require-file name="SocialLoginPro2.php" destination="$sourcedir" />
+		<require-file name="SocialLoginPro2.template.php" destination="$themedir" />
+		<require-file name="gigya2.php" destination="$boarddir" />
+		<require-file name="gigyamerge2.php" destination="$boarddir" />
+		<code>SocialLoginProsql2.php</code>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
+		<modification type="file" reverse="true">SocialLoginPro2.xml</modification>
+	</uninstall>
+</package-info>

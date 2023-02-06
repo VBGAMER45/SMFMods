@@ -1,4 +1,4 @@
-Changelog started November 2006; Currently at version 1.0
+Changelog started November 2006; Currently at version 2.5.1
 
 Legend:
 --------------------------------------------------------------------------------
@@ -8,6 +8,26 @@ Legend:
  + Feature addition or improvement.
  - Feature or option removal.
  % Development flag or note, such as branching.
+Pretty URLs 2.5.1                                               16  May 2022
+   ================================================================================  
+  !Fixes for handling actions loaded from hooks
+ 
+Pretty URLs 2.5                                               2  February 2022
+   ================================================================================  
+  !Fixes for SMF 2.1 for logins
+  +Redid the template for pretty urls settings area for SMF 2.1
+  +Now uses hooks for the main admin menu for SMF 2.1
+ 
+Pretty URLs 2.3.1                                            1  March 2020
+   ================================================================================  
+  !Fixes for tapatalk urls thanks to lazanet
+ 
+Pretty URLs 2.3.0                                            1  March 2020
+   ================================================================================  
+  !Fixes for urls for other character sets
+  !Minor code optimizations
+  !Improved session variable generation to 2.1 standards if not present.
+
 
 Pretty URLs 2.1.0                                            24  September 2018
    ================================================================================  
