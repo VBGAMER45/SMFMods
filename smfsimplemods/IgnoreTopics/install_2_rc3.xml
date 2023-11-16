@@ -1,0 +1,671 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<name>Ignore Topics</name>
+	<id>karlbenson:ignoretopics</id>
+	<version>2.3</version>
+	<homepage>http://www.simplemachines.org</homepage>
+
+<file name="$sourcedir/ManageBoards.php">
+	<operation>
+		<search position="before"><![CDATA[
+			array('check', 'allow_ignore_boards'),
+]]></search>
+		<add><![CDATA[
+			// Start of IgnoreTopics mod
+			array('check', 'allow_ignore_topics'),
+			array('int', 'limit_ignore_topics'),
+			// End of IgnoreTopics mod
+]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[// Needed for the settings template and inline permission functions.
+	require_once($sourcedir . '/ManagePermissions.php');
+	require_once($sourcedir . '/ManageServer.php');]]></search>
+		<add><![CDATA[
+	// Start of IgnoreTopics mod
+	// Show counter & empty functions
+	require_once($sourcedir . '/IgnoreTopics.php');
+	admin_ignore_topics();
+	// End of IgnoreTopics mod
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[
+	$context['non_guest_permissions'] = array(
+]]></search>
+		<add><![CDATA[
+		// Start of IgnoreTopics mod
+		'ignore_topics',
+		'unlimited_ignore_topics',
+		// End of IgnoreTopics mod
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[
+			'profile_remote_avatar' => array(false, 'profile', 'use_avatar'),
+]]></search>
+		<add><![CDATA[
+			// Start of IgnoreTopics mod
+			'ignore_topics' => array(false, 'general', 'view_basic_info'),
+			'unlimited_ignore_topics' => array(false, 'general', 'view_basic_info'),
+			// End of IgnoreTopics mod
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/MessageIndex.php">
+	<operation>
+		<search position="after"><![CDATA[// Only a few possible actions.
+	$possibleActions = array();]]></search>
+		<add><![CDATA[
+	// Start of IgnoreTopics mod
+	// Ignore that its mark read, we sent an ignore variable aswell.
+	if (isset($_REQUEST['qaction']) && $_REQUEST['qaction'] == "ignore")
+	{	
+		require_once($sourcedir . '/IgnoreTopics.php');
+		return IgnoreMultipleTopics();
+	}
+	// End of IgnoreTopics mod
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile.php">
+	<operation>
+		<search position="before"><![CDATA[
+				'ignoreboards' => array(
+					'label' => $txt['ignoreboards'],
+					'file' => 'Profile-Modify.php',
+					'function' => 'ignoreboards',
+					'enabled' => !empty($modSettings['allow_ignore_boards']),
+					'sc' => 'post',
+					'permission' => array(
+						'own' => array('profile_extra_any', 'profile_extra_own'),
+						'any' => array('profile_extra_any'),
+					),
+				),
+]]></search>
+		<add><![CDATA[
+				// Start of IgnoreTopics mod
+				'ignoretopics' => array(
+					'label' => $txt['ignoretopics'],
+					'file' => 'IgnoreTopics.php',
+					'function' => 'ignoretopics',
+					'enabled' => allowedTo('ignore_topics') && !empty($modSettings['allow_ignore_topics']),
+					'sc' => 'post',
+					'permission' => array(
+						'own' => array('ignore_topics'),
+						'any' => array('profile_extra_any'),
+					),
+				),
+				// End of IgnoreTopics mod
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile-Modify.php">
+	<operation>
+		<search position="after"><![CDATA[
+	// Here's where we sort out all the 'other' values...
+	if ($changeOther)
+]]></search>
+		<add><![CDATA[
+	// Start of IgnoreTopics mod
+	if (isset($_POST['sa']) && $_POST['sa'] == 'ignoretopics')
+	{
+		global $sourcedir;
+		require_once($sourcedir . '/IgnoreTopics.php');
+		return profile_unignore_topics($memID);
+	}
+	// End of IgnoreTopics mod
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Recent.php">
+	<!--// Edits related to action=recent //-->
+	<!--// Since editing queries, I'll group them together with comments, SMF changes have ruined by query line numbering though //-->
+	<operation>
+		<search position="after"><![CDATA[
+	// Find the 10 most recent messages they can *view*.
+	// !!!SLOW This query is really slow still, probably?
+]]></search>
+		<add><![CDATA[
+	// Ignore Topics - must be member, with permission, and mod enabled
+	$can_ignore = $context['user']['is_logged'] && allowedTo('ignore_topics') && !empty($modSettings['allow_ignore_topics']);
+]]></add>
+	</operation>
+	<!--// Query (254)//-->
+	<operation>
+		<search position="replace"><![CDATA[
+		SELECT m.id_msg
+		FROM {db_prefix}messages AS m
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
+		WHERE ' . $query_this_board . '
+			AND m.approved = {int:is_approved}
+		ORDER BY m.id_msg DESC
+		LIMIT {int:offset}, {int:limit}',
+		array_merge($query_parameters, array(
+			'is_approved' => 1,
+]]></search>
+		<add><![CDATA[
+		SELECT m.id_msg
+		FROM {db_prefix}messages AS m
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board)
+		'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = m.id_topic AND it.id_member = {int:current_member})' : '') .'
+		WHERE ' . $query_this_board . '
+			AND m.approved = {int:is_approved}
+			'. ( $can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '' ) .'
+		ORDER BY m.id_msg DESC
+		LIMIT {int:offset}, {int:limit}',
+		array_merge($query_parameters, array(
+			'is_approved' => 1,
+			'current_member' => ($context['user']['is_logged'] ? $user_info['id'] : 0 ),
+			
+]]></add>
+	</operation>
+	<!--// Query (281)//-->
+	<operation>
+		<search position="replace"><![CDATA[
+		WHERE m.id_msg IN ({array_int:message_list})
+		ORDER BY m.id_msg DESC
+		LIMIT ' . count($messages),
+		array(
+			'message_list' => $messages,
+		)
+]]></search>
+		<add><![CDATA[
+		'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = m.id_topic AND it.id_member = {int:current_member})' : '' ).'
+		WHERE m.id_msg IN ({array_int:message_list})
+			'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+		ORDER BY m.id_msg DESC
+		LIMIT ' . count($messages),
+		array(
+			'message_list' => $messages,
+			'current_member' => ($context['user']['is_logged'] ? $user_info['id'] : 0),
+		)
+]]></add>
+	</operation>
+	
+	<!--// Edits related to action=unread //-->
+	<operation>
+		<search position="after"><![CDATA[
+	// Parameters for the main query.
+	$query_parameters = array();
+]]></search>
+		<add><![CDATA[
+	// Ignore Topics - must be member, with permission, and mod enabled
+	$can_ignore = $context['user']['is_logged'] && allowedTo('ignore_topics') && !empty($modSettings['allow_ignore_topics']);
+]]></add>
+	</operation>
+	<!--// Query (703) //-->
+	<operation>
+		<search position="replace"><![CDATA[
+					SELECT MIN(id_msg)
+					FROM {db_prefix}log_topics
+					WHERE id_member = {int:current_member}',
+]]></search>
+		<add><![CDATA[
+					SELECT MIN(id_msg)
+					FROM {db_prefix}log_topics as lt
+					'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = lt.id_topic AND it.id_member = {int:current_member})' : '' ) .'
+					WHERE lt.id_member = {int:current_member}
+						'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : ''),
+]]></add>
+	</operation>
+	<!--// Query (736) //-->
+	<operation>
+		<search position="replace"><![CDATA[
+				INNER JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic)
+			WHERE lt.id_member = {int:current_member}
+				AND t.' . $query_this_board . (empty($earliest_msg) ? '' : '
+				AND t.id_last_msg > {int:earliest_msg}') . ($modSettings['postmod_active'] ? '
+				AND t.approved = {int:is_approved}' : ''),
+]]></search>
+		<add><![CDATA[
+				INNER JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic)
+				'. ($can_ignore ? 'INNER JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+			WHERE lt.id_member = {int:current_member}
+				'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+				AND t.' . $query_this_board . (empty($earliest_msg) ? '' : '
+				AND t.id_last_msg > {int:earliest_msg}') . ($modSettings['postmod_active'] ? '
+				AND t.approved = {int:is_approved}' : ''),
+]]></add>
+	</operation>
+
+	<!--// Query (760) //-->
+	<operation>
+		<search position="replace"><![CDATA[if ($context['showing_all_topics'] && $have_temp_table)
+	{
+		$request = $smcFunc['db_query']('', '
+			SELECT COUNT(*), MIN(t.id_last_msg)
+			FROM {db_prefix}topics AS t
+				LEFT JOIN {db_prefix}log_topics_unread AS lt ON (lt.id_topic = t.id_topic)
+				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})
+			WHERE t.' . $query_this_board . (!empty($earliest_msg) ? ']]></search>
+		<add><![CDATA[if ($context['showing_all_topics'] && $have_temp_table)
+	{
+		$request = $smcFunc['db_query']('', '
+			SELECT COUNT(*), MIN(t.id_last_msg)
+			FROM {db_prefix}topics AS t
+				LEFT JOIN {db_prefix}log_topics_unread AS lt ON (lt.id_topic = t.id_topic)
+				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})
+				'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+
+			WHERE t.' . $query_this_board . 
+				($can_ignore ? ' AND IFNULL(it.id_topic, 0) = 0' : '') .
+			(!empty($earliest_msg) ? ']]></add>
+	</operation>
+	
+	<!--// Query (808)//-->
+	<operation>
+		<search position="replace"><![CDATA[$request = $smcFunc['db_query']('substring', '
+			SELECT ' . $select_clause . '
+			FROM {db_prefix}messages AS ms
+				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ms.id_topic AND t.id_first_msg = ms.id_msg)
+				INNER JOIN {db_prefix}messages AS ml ON (ml.id_msg = t.id_last_msg)
+				LEFT JOIN {db_prefix}boards AS b ON (b.id_board = ms.id_board)
+				LEFT JOIN {db_prefix}members AS mems ON (mems.id_member = ms.id_member)
+				LEFT JOIN {db_prefix}members AS meml ON (meml.id_member = ml.id_member)
+				LEFT JOIN {db_prefix}log_topics_unread AS lt ON (lt.id_topic = t.id_topic)
+				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})
+			WHERE b.' . $query_this_board . '
+				AND t.id_last_msg >= {int:min_message}]]></search>
+		<add><![CDATA[$request = $smcFunc['db_query']('substring', '
+			SELECT ' . $select_clause . '
+			FROM {db_prefix}messages AS ms
+				INNER JOIN {db_prefix}topics AS t ON (t.id_topic = ms.id_topic AND t.id_first_msg = ms.id_msg)
+				INNER JOIN {db_prefix}messages AS ml ON (ml.id_msg = t.id_last_msg)
+				LEFT JOIN {db_prefix}boards AS b ON (b.id_board = ms.id_board)
+				LEFT JOIN {db_prefix}members AS mems ON (mems.id_member = ms.id_member)
+				LEFT JOIN {db_prefix}members AS meml ON (meml.id_member = ml.id_member)
+				LEFT JOIN {db_prefix}log_topics_unread AS lt ON (lt.id_topic = t.id_topic)
+				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})
+				'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+
+			WHERE b.' . $query_this_board . ($can_ignore ? ' AND IFNULL(it.id_topic, 0) = 0' : '') .'
+				AND t.id_last_msg >= {int:min_message}]]></add>
+	</operation>
+	
+	<!--// Query {836} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+			FROM {db_prefix}topics AS t' . (!empty($have_temp_table) ? '
+				LEFT JOIN {db_prefix}log_topics_unread AS lt ON (lt.id_topic = t.id_topic)' : '
+				LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic AND lt.id_member = {int:current_member})') . '
+				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})
+			WHERE t.' . $query_this_board . ($context['showing_all_topics'] && !empty($earliest_msg) ? '
+]]></search>
+		<add><![CDATA[
+			FROM {db_prefix}topics AS t' . (!empty($have_temp_table) ? '
+				LEFT JOIN {db_prefix}log_topics_unread AS lt ON (lt.id_topic = t.id_topic)' : '
+				LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic AND lt.id_member = {int:current_member})') . '
+				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})
+				'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+			WHERE t.' . $query_this_board .
+				($can_ignore ? ' AND IFNULL(it.id_topic, 0) = 0' : '') .
+				($context['showing_all_topics'] && !empty($earliest_msg) ? '
+]]></add>
+	</operation>
+	
+	<!--// Query {885} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+			WHERE t.' . $query_this_board . '
+				AND t.id_last_msg >= {int:min_message}
+				AND IFNULL(lt.id_msg, IFNULL(lmr.id_msg, 0)) < ml.id_msg' . ($modSettings['postmod_active'] ? '
+				AND ms.approved = {int:is_approved}' : '') . '
+]]></search>
+		<add><![CDATA[
+				'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+			WHERE t.' . $query_this_board . '
+				AND t.id_last_msg >= {int:min_message}
+				'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+				AND IFNULL(lt.id_msg, IFNULL(lmr.id_msg, 0)) < ml.id_msg' . ($modSettings['postmod_active'] ? '
+				AND ms.approved = {int:is_approved}' : '') . '
+]]></add>
+	</operation>
+
+	<!--// Query {937} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+					LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})' . (isset($sortKey_joins[$_REQUEST['sort']]) ? $sortKey_joins[$_REQUEST['sort']] : '') . '
+				WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
+					AND t.id_board = {int:current_board}' : '') . ($modSettings['postmod_active'] ? '
+					AND t.approved = {int:is_approved}' : '') . '
+]]></search>
+		<add><![CDATA[
+					LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})' . (isset($sortKey_joins[$_REQUEST['sort']]) ? $sortKey_joins[$_REQUEST['sort']] : '') . '
+					'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+				WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
+					AND t.id_board = {int:current_board}' : '') . ($modSettings['postmod_active'] ? '
+					AND t.approved = {int:is_approved}' : '') . '
+					'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+]]></add>
+	</operation>
+<operation>
+	<!--// Query {964} //-->
+		<search position="replace"><![CDATA[
+					FROM {db_prefix}log_topics AS lt
+						INNER JOIN {db_prefix}topics_posted_in AS pi ON (pi.id_topic = lt.id_topic)
+					WHERE lt.id_member = {int:current_member}',
+]]></search>
+		<add><![CDATA[
+					FROM {db_prefix}log_topics AS lt
+						INNER JOIN {db_prefix}topics_posted_in AS pi ON (pi.id_topic = lt.id_topic)
+						'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = pi.id_topic AND it.id_member = {int:current_member})' : '') .'
+					WHERE lt.id_member = {int:current_member}
+						'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : ''),
+]]></add>
+	</operation>
+	
+	<!--// Query {981} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+					LEFT JOIN {db_prefix}log_topics_posted_in AS lt ON (lt.id_topic = pi.id_topic)
+				WHERE pi.' . $query_this_board . '
+					AND IFNULL(lt.id_msg, pi.id_msg) < pi.id_last_msg',
+				array_merge($query_parameters, array(
+]]></search>
+		<add><![CDATA[
+					LEFT JOIN {db_prefix}log_topics_posted_in AS lt ON (lt.id_topic = pi.id_topic)
+					'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = pi.id_topic AND it.id_member = {int:current_member})' : '') .'
+				WHERE pi.' . $query_this_board . '
+					'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+					AND IFNULL(lt.id_msg, pi.id_msg) < pi.id_last_msg',
+				array_merge($query_parameters, array(
+					'current_member' => $user_info['id'],				
+]]></add>
+	</operation>
+	
+	<!--// Query {995} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+				WHERE t.' . $query_this_board . '
+					AND m.id_member = {int:current_member}
+]]></search>
+		<add><![CDATA[
+					'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+				WHERE t.' . $query_this_board . '
+					AND m.id_member = {int:current_member}
+					'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+]]></add>
+	</operation>
+
+	<!--// Query {1041} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+				WHERE t.' . $query_this_board . '
+					AND IFNULL(lt.id_msg, t.id_msg) < t.id_last_msg
+				ORDER BY {raw:order}
+				LIMIT {int:offset}, {int:limit}',
+				array_merge($query_parameters, array(
+]]></search>
+		<add><![CDATA[
+					'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = lt.id_topic AND it.id_member = {int:current_member})' : '') .'
+				WHERE t.' . $query_this_board . '
+					AND IFNULL(lt.id_msg, t.id_msg) < t.id_last_msg
+					'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+				ORDER BY {raw:order}
+				LIMIT {int:offset}, {int:limit}',
+				array_merge($query_parameters, array(
+					'current_member' => $user_info['id'],
+]]></add>
+	</operation>
+
+	<!--// Query {1056} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+				WHERE t.' . $query_this_board . '
+					AND t.id_last_msg >= {int:min_message}
+]]></search>
+		<add><![CDATA[
+					'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+				WHERE t.' . $query_this_board . '
+					AND t.id_last_msg >= {int:min_message}
+					'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+]]></add>
+	</operation>
+	
+	<!--// Query {1096} //-->
+	<operation>
+		<search position="replace"><![CDATA[
+			WHERE t.id_topic IN ({array_int:topic_list})
+]]></search>
+		<add><![CDATA[
+				'. ($can_ignore ? 'LEFT JOIN {db_prefix}ignore_topics AS it ON (it.id_topic = t.id_topic AND it.id_member = {int:current_member})' : '') .'
+			WHERE t.id_topic IN ({array_int:topic_list})
+				'. ($can_ignore ? 'AND IFNULL(it.id_topic, 0) = 0' : '') .'
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$themedir/Recent.template.php">
+	<operation>
+		<search position="before"><![CDATA[
+		// Generate the button strip.
+		$mark_read = array(
+			'markread' => array('text' => !empty($context['no_board_limits']) ? 'mark_as_read' : 'mark_read_short', 'image' => 'markread.gif', 'lang' => true, 'url' => $scripturl . '?action=markasread;sa=' . (!empty($context['no_board_limits']) ? 'all' : 'board' . $context['querystring_board_limits']) . ';' . $context['session_var'] . '=' . $context['session_id']),
+		);
+
+		if ($showCheckboxes)
+			$mark_read['markselectread'] = array(
+				'text' => 'quick_mod_markread',
+				'image' => 'markselectedread.gif',
+				'lang' => true,
+				'url' => 'javascript:document.quickModForm.submit();',
+			);
+]]></search>
+		<add><![CDATA[
+		if ($showCheckboxes && allowedTo('ignore_topics') && !empty($modSettings['allow_ignore_topics']))
+			$mark_read['markselectignored'] = array(
+				'custom' => 'title="'. $txt['ignore_topics'].'"',
+				'text' => 'ignore_topics',
+				'image' => 'ignore.gif',
+				'lang' => true,
+				'url' => 'javascript:document.quickModForm.qaction.value=\'ignore\';document.quickModForm.submit();',
+			);
+]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[
+		$mark_read = array(
+			'markread' => array('text' => 'mark_as_read', 'image' => 'markread.gif', 'lang' => true, 'url' => $scripturl . '?action=markasread;sa=unreadreplies;topics=' . $context['topics_to_mark'] . ';' . $context['session_var'] . '=' . $context['session_id']),
+		);
+
+		if ($showCheckboxes)
+			$mark_read['markselectread'] = array(
+				'text' => 'quick_mod_markread',
+				'image' => 'markselectedread.gif',
+				'lang' => true,
+				'url' => 'javascript:document.quickModForm.submit();',
+			);
+]]></search>
+		<add><![CDATA[
+		if ($showCheckboxes && allowedTo('ignore_topics') && !empty($modSettings['allow_ignore_topics']))
+			$mark_read['markselectignored'] = array(
+				'custom' => 'title="'. $txt['ignore_topics'].'"',
+				'text' => 'ignore_topics',
+				'image' => 'ignore.gif',
+				'lang' => true,
+				'url' => 'javascript:document.quickModForm.qaction.value=\'ignore\';document.quickModForm.submit();',
+			);
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+function template_ignoretopics()
+{
+	global $context, $txt, $settings, $scripturl, $modSettings;
+	// The main containing header.
+	echo '
+	<script language="JavaScript" type="text/javascript"><!--//
+		function selectTopics(ids)
+		{
+			var toggle = true;
+
+			for (i = 0; i < ids.length; i++)
+				toggle = toggle & document.forms.creator["ignore_topic" + ids[i]].checked;
+
+			for (i = 0; i < ids.length; i++)
+				document.forms.creator["ignore_topic" + ids[i]].checked = !toggle;
+		}
+	//--></script>
+
+	<table border="0" width="100%" cellspacing="0" cellpadding="4" align="center" class="tborder">
+		<tr class="titlebg">
+			<td height="26">
+				&nbsp;<img src="', $settings['images_url'], '/icons/profile_sm.gif" alt="" align="top" />&nbsp;
+				', $txt['ignoretopics'], '
+			</td>
+		</tr><tr class="windowbg">
+			<td class="smalltext" style="padding: 2ex;">
+				', $txt['ignoretopics_info'] ,'<br />
+				<br /><a href="', $scripturl ,'?action=profile;area=ignoretopics;u=', $context['id_member'] ,';empty" style="font-weight:bold">', $txt['ignoretopics_empty'] ,'</a>
+			</td>
+		</tr>';
+	
+	// Users who are limited in the no. of ignore topics allowed, need explanation and counter.
+	if(!empty($modSettings['limit_ignore_topics']) && !allowedTo('unlimited_ignore_topics'))
+		echo '
+		<tr class="windowbg">
+			<td class="smalltext" style="padding: 2ex;">
+				', sprintf($txt['ignoretopics_info_limited'], (int) $context['topic_ignore_list']['total_num_items'], $modSettings['limit_ignore_topics']), '
+			</td>
+		</tr>';
+	
+	
+	echo '</table><br />';
+
+	template_show_list('topic_ignore_list');
+}
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english.php">
+<!--// Adds the language strings used by this modification //-->
+	<operation>
+		<search position="end" />
+			<add><![CDATA[
+$txt['ignoretopics_empty'] = 'Un-Ignore all my ignored topics';
+$txt['permissionname_ignore_topics'] = 'Ignore Topics';
+$txt['permissionhelp_ignore_topics'] = 'Whether this user group is allowed to ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.';
+$txt['permissionname_unlimited_ignore_topics'] = 'Allow unlimited ignored Topics';
+$txt['permissionhelp_unlimited_ignore_topics'] = 'Users granted this permission are excluded from any limit placed on how many topics each user can ignore.';
+$txt['date_ignored'] = 'Date Ignored';
+$txt['ignore_topics_none'] = 'There are no topics currently ignored';
+$txt['ignoretopicsdisallowed'] = 'Ignore Topics Disallowed';
+$txt['ignoretopics'] = 'Ignore Topics Options';
+$txt['ignore_topics'] = 'Ignore Topics';
+$txt['unignore_topics'] = 'Un-Ignore Topics';
+$txt['ignoretopics_info'] = 'You can ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.<br />
+However they will still show in the BoardIndex and MessageIndex and you will still be able to access the topics.';
+$txt['topics_not_found'] = 'No topics were found';
+$txt['unignored_all_topics'] = 'Successfully un-ignored all my ignored topics.';
+$txt['ignored_topics_updated'] = 'Updated un-ignored topics successfully';
+$txt['allow_ignore_topics'] = 'Enable Ignore-Topics mod<div class="smalltext">Currently %d ignored topics, with %d entries, by %d users</div>
+<br /><div class="smalltext">(<a href="%s">Empty All</a> - This cannot be undone)</div>';
+$txt['limit_ignore_topics'] = 'Max no. of ignored topics per user<div class="smalltext">Excludes users with unlimited permission.</div>';
+$txt['ignoretopics_info_limited'] = 'You have <strong>%d</strong> ignored topics. You are limited to a maximum %d ignored topics. When ignoring more topics than your limit, the oldest ones get replaced (So that you never exceed the limit).';
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+<!--// Adds the language strings used by this modification //-->
+	<operation>
+		<search position="end" />
+			<add><![CDATA[
+$txt['ignoretopics_empty'] = 'Un-Ignore all my ignored topics';
+$txt['permissionname_ignore_topics'] = 'Ignore Topics';
+$txt['permissionhelp_ignore_topics'] = 'Whether this user group is allowed to ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.';
+$txt['permissionname_unlimited_ignore_topics'] = 'Allow unlimited ignored Topics';
+$txt['permissionhelp_unlimited_ignore_topics'] = 'Users granted this permission are excluded from any limit placed on how many topics each user can ignore.';
+$txt['date_ignored'] = 'Date Ignored';
+$txt['ignore_topics_none'] = 'There are no topics currently ignored';
+$txt['ignoretopicsdisallowed'] = 'Ignore Topics Disallowed';
+$txt['ignoretopics'] = 'Ignore Topics Options';
+$txt['ignore_topics'] = 'Ignore Topics';
+$txt['unignore_topics'] = 'Un-Ignore Topics';
+$txt['ignoretopics_info'] = 'You can ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.<br />
+However they will still show in the BoardIndex and MessageIndex and you will still be able to access the topics.';
+$txt['topics_not_found'] = 'No topics were found';
+$txt['unignored_all_topics'] = 'Successfully un-ignored all my ignored topics.';
+$txt['ignored_topics_updated'] = 'Updated un-ignored topics successfully';
+$txt['allow_ignore_topics'] = 'Enable Ignore-Topics mod<div class="smalltext">Currently %d ignored topics, with %d entries, by %d users</div>
+<br /><div class="smalltext">(<a href="%s">Empty All</a> - This cannot be undone)</div>';
+$txt['limit_ignore_topics'] = 'Max no. of ignored topics per user<div class="smalltext">Excludes users with unlimited permission.</div>';
+$txt['ignoretopics_info_limited'] = 'You have <strong>%d</strong> ignored topics. You are limited to a maximum %d ignored topics. When ignoring more topics than your limit, the oldest ones get replaced (So that you never exceed the limit).';
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english_british.php" error="skip">
+<!--// Adds the language strings used by this modification //-->
+	<operation>
+		<search position="end" />
+			<add><![CDATA[
+$txt['ignoretopics_empty'] = 'Un-Ignore all my ignored topics';
+$txt['permissionname_ignore_topics'] = 'Ignore Topics';
+$txt['permissionhelp_ignore_topics'] = 'Whether this user group is allowed to ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.';
+$txt['permissionname_unlimited_ignore_topics'] = 'Allow unlimited ignored Topics';
+$txt['permissionhelp_unlimited_ignore_topics'] = 'Users granted this permission are excluded from any limit placed on how many topics each user can ignore.';
+$txt['date_ignored'] = 'Date Ignored';
+$txt['ignore_topics_none'] = 'There are no topics currently ignored';
+$txt['ignoretopicsdisallowed'] = 'Ignore Topics Disallowed';
+$txt['ignoretopics'] = 'Ignore Topics Options';
+$txt['ignore_topics'] = 'Ignore Topics';
+$txt['unignore_topics'] = 'Un-Ignore Topics';
+$txt['ignoretopics_info'] = 'You can ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.<br />
+However they will still show in the BoardIndex and MessageIndex and you will still be able to access the topics.';
+$txt['topics_not_found'] = 'No topics were found';
+$txt['unignored_all_topics'] = 'Successfully un-ignored all my ignored topics.';
+$txt['ignored_topics_updated'] = 'Updated un-ignored topics successfully';
+$txt['allow_ignore_topics'] = 'Enable Ignore-Topics mod<div class="smalltext">Currently %d ignored topics, with %d entries, by %d users</div>
+<br /><div class="smalltext">(<a href="%s">Empty All</a> - This cannot be undone)</div>';
+$txt['limit_ignore_topics'] = 'Max no. of ignored topics per user<div class="smalltext">Excludes users with unlimited permission.</div>';
+$txt['ignoretopics_info_limited'] = 'You have <strong>%d</strong> ignored topics. You are limited to a maximum %d ignored topics. When ignoring more topics than your limit, the oldest ones get replaced (So that you never exceed the limit).';
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english_british-utf8.php" error="skip">
+<!--// Adds the language strings used by this modification //-->
+	<operation>
+		<search position="end" />
+			<add><![CDATA[
+$txt['ignoretopics_empty'] = 'Un-Ignore all my ignored topics';
+$txt['permissionname_ignore_topics'] = 'Ignore Topics';
+$txt['permissionhelp_ignore_topics'] = 'Whether this user group is allowed to ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.';
+$txt['permissionname_unlimited_ignore_topics'] = 'Allow unlimited ignored Topics';
+$txt['permissionhelp_unlimited_ignore_topics'] = 'Users granted this permission are excluded from any limit placed on how many topics each user can ignore.';
+$txt['date_ignored'] = 'Date Ignored';
+$txt['ignore_topics_none'] = 'There are no topics currently ignored';
+$txt['ignoretopicsdisallowed'] = 'Ignore Topics Disallowed';
+$txt['ignoretopics'] = 'Ignore Topics Options';
+$txt['ignore_topics'] = 'Ignore Topics';
+$txt['unignore_topics'] = 'Un-Ignore Topics';
+$txt['ignoretopics_info'] = 'You can ignore particular topics so that they will not appear in Unread/UnreadReplies nor the recent.<br />
+However they will still show in the BoardIndex and MessageIndex and you will still be able to access the topics.';
+$txt['topics_not_found'] = 'No topics were found';
+$txt['unignored_all_topics'] = 'Successfully un-ignored all my ignored topics.';
+$txt['ignored_topics_updated'] = 'Updated un-ignored topics successfully';
+$txt['allow_ignore_topics'] = 'Enable Ignore-Topics mod<div class="smalltext">Currently %d ignored topics, with %d entries, by %d users</div>
+<br /><div class="smalltext">(<a href="%s">Empty All</a> - This cannot be undone)</div>';
+$txt['limit_ignore_topics'] = 'Max no. of ignored topics per user<div class="smalltext">Excludes users with unlimited permission.</div>';
+$txt['ignoretopics_info_limited'] = 'You have <strong>%d</strong> ignored topics. You are limited to a maximum %d ignored topics. When ignoring more topics than your limit, the oldest ones get replaced (So that you never exceed the limit).';
+]]></add>
+	</operation>
+</file>
+
+</modification>

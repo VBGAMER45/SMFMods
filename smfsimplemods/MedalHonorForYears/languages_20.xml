@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:MedalHonorForYears</id>
+	<name>Medal Honor For Years</name>
+	<version>1.0</version>
+
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'With us since:';
+$txt['mhfyenabled'] = 'Show the date of registration:';
+$txt['mhfyenabledtext'] = 'Text to show in the profile area';
+$txt['mhfyenabledtextsub'] = 'Default is: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Show one medal for each year:';
+$txt['mhfyears'] = 'Years';
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'Con Nosotros Desde:';
+$txt['mhfyenabled'] = 'Mostrar la fecha del registro';
+$txt['mhfyenabledtext'] = 'Texto a mostrar en el perfil';
+$txt['mhfyenabledtextsub'] = 'Por defecto: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Mostrar una medalla por cada año:';
+$txt['mhfyears'] = 'Años';]]></add>
+		</operation>
+	</file>
+		<file name="$themedir/languages/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'Con Nosotros Desde:';
+$txt['mhfyenabled'] = 'Mostrar la fecha del registro';
+$txt['mhfyenabledtext'] = 'Texto a mostrar en el perfil';
+$txt['mhfyenabledtextsub'] = 'Por defecto: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Mostrar una medalla por cada año:';
+$txt['mhfyears'] = 'Años';]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'Con Nosotros Desde:';
+$txt['mhfyenabled'] = 'Mostrar la fecha del registro';
+$txt['mhfyenabledtext'] = 'Texto a mostrar en el perfil';
+$txt['mhfyenabledtextsub'] = 'Por defecto: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Mostrar una medalla por cada año:';
+$txt['mhfyears'] = 'Años';]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'Con Nosotros Desde:';
+$txt['mhfyenabled'] = 'Mostrar la fecha del registro';
+$txt['mhfyenabledtext'] = 'Texto a mostrar en el perfil';
+$txt['mhfyenabledtextsub'] = 'Por defecto: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Mostrar una medalla por cada año:';
+$txt['mhfyears'] = 'Años';]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.polish.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'Z nami od:';
+$txt['mhfyenabled'] = 'Pokaż datę rejestracji:';
+$txt['mhfyenabledtext'] = 'Tekst wyświetlany w profilu';
+$txt['mhfyenabledtextsub'] = 'Domyślny: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Pokaż medal za każdy rok:';
+$txt['mhfyears'] = 'lat';]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.polish-utf8.php.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['MedalHonorForYears'] = 'Z nami od:';
+$txt['mhfyenabled'] = 'Pokaż datę rejestracji:';
+$txt['mhfyenabledtext'] = 'Tekst wyświetlany w profilu';
+$txt['mhfyenabledtextsub'] = 'Domyślny: '.$txt['MedalHonorForYears'];
+$txt['mhfyenabledimgs'] = 'Pokaż medal za każdy rok:';
+$txt['mhfyears'] = 'lat';]]></add>
+		</operation>
+	</file>
+</modification>

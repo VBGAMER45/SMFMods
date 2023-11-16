@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vicram10:GoogAd</id>
+	<name>GoogAd Extra Langs v.1.4</name>
+	<version>1.4</version>	
+<file name="$languagedir/Modifications.russian.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+//Start GoogAd
+$txt['googad_title'] = 'GoogAd Mod';
+$txt['googad_description'] = 'C помощью этого мода можно размещать рекламу во всех собщениях каждой темы (или только в самом первом сообщении)';
+$txt['googad_title2'] = 'Настройки мода';
+$txt['googad_enable'] = 'Включить GoogAd Mod';
+$txt['googad_code'] = 'Введите код рекламного блока';
+$txt['googad_code_subtext'] = 'HTML разрешён <br />BBC-теги не обрабатываются';
+$txt['googad_guest'] = 'Показывать рекламу только гостям?';
+$txt['googad_guest_subtext'] = 'После включения этого параметра вашу рекламу будут видеть только гости';
+$txt['googad_float'] = 'Позиция объявления';
+$txt['googad_float_subtext'] = 'Вы можете выбрать один из двух типов размещения рекламного блока — в левой или в правой части сообщений.';
+$txt['googad_float_left'] = 'Слева';
+$txt['googad_float_right'] = 'Справа';
+$txt['googad_show'] = 'Показывать только в самом первом сообщении?';
+$txt['googad_show_subtext'] = 'Если хотите выводить рекламу только в первом сообщении каждой темы, включите эту опцию. В противном случае рекламные объявления будут отображаться в каждом сообщении.';
+//End GoogAd
+]]></add>
+	</operation>
+</file>
+
+</modification>

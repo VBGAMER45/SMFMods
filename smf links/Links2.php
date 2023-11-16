@@ -68,10 +68,13 @@ function ViewLinksMain()
 	// Check if the current user can view the links list
 	isAllowedTo('view_smflinks');
 
+	// To get Permissions text
+	loadLanguage('Admin');
+
 	// Load the main index links template
 	$context['sub_template']  = 'mainview';
 
-	// Setup Intial Link Tree
+	// Setup Initial Link Tree
 	$context['linktree'][] = array(
 		'url' => $scripturl . '?action=links',
 		'name' => $txt['smflinks_menu']
@@ -89,7 +92,7 @@ function ViewLinksMain()
 			fatal_error($txt['smflinks_nocatselected'], false);
 
 		GetCatPermission($cat, 'view');
-		// List all the catagories
+		// List all the categories
 		$dbresult = $smcFunc['db_query']('', '
 			SELECT title, ID_CAT
 			FROM {db_prefix}links_cat
@@ -183,7 +186,7 @@ function ViewLinksMain()
 			LEFT JOIN {db_prefix}members AS m ON (l.ID_MEMBER = m.ID_MEMBER) 
 			WHERE l.ID_CAT = {int:this_cat}
 				AND l.approved = {int:this_approved}
-			ORDER BY {string:this_sort} {string:this_sorto} LIMIT {int:this_start},{int:this_items_per_page}',
+			ORDER BY {raw:this_sort} {raw:this_sorto} LIMIT {int:this_start},{int:this_items_per_page}',
 			array(
 				'this_cat' => $cat,
 				'this_approved' => 1,
@@ -414,7 +417,7 @@ function EditCat()
 		$cat = (int) $_REQUEST['cat'];
 
 	if (empty($cat))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -550,7 +553,7 @@ function DeleteCat()
 		$catid = (int) $_REQUEST['cat'];
 
 	if (empty($catid))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
         
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -584,7 +587,7 @@ function DeleteCat2()
 		$catid = (int) $_REQUEST['catid'];
 
 	if (empty($catid))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
     
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -816,7 +819,7 @@ function EditLink()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
 
 	$context['link_id'] = $id;
 
@@ -834,7 +837,7 @@ function EditLink()
 	$context['links_link'] = $row;
 
 	if (!allowedTo('edit_links_any') && (!allowedTo('edit_links_own') || $row['ID_MEMBER'] != $user_info['id']))
-		fatal_error($txt['smflinks_perm_link_no_edit']);
+		fatal_error($txt['smflinks_perm_link_no_edit'],false);
 
 	GetCatPermission($row['ID_CAT'], 'editlink');
 
@@ -886,7 +889,7 @@ function EditLink2()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($_REQUEST['id']))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_MEMBER
@@ -936,7 +939,7 @@ function EditLink2()
         $catid = 0;
 
 	if (empty($catid))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
 
  	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -997,7 +1000,7 @@ function DeleteLink()
 	is_not_guest();
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_MEMBER
@@ -1012,7 +1015,7 @@ function DeleteLink()
 	$smcFunc['db_free_result']($dbresult);
 
 	if (!allowedTo('delete_links_any') && (!allowedTo('delete_links_own') || $row['ID_MEMBER'] != $user_info['id']))
-		fatal_error($txt['smflinks_perm_link_no_delete']);
+		fatal_error($txt['smflinks_perm_link_no_delete'],false);
 
 	$context['links_id'] = $id;
 
@@ -1048,7 +1051,7 @@ function DeleteLink2()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_MEMBER
@@ -1063,7 +1066,7 @@ function DeleteLink2()
 	$smcFunc['db_free_result']($dbresult);
 
 	if (!allowedTo('delete_links_any') && (!allowedTo('delete_links_own') || $row['ID_MEMBER'] != $user_info['id']))
-		fatal_error($txt['smflinks_perm_link_no_delete']);
+		fatal_error($txt['smflinks_perm_link_no_delete'],false);
 
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}links
@@ -1093,7 +1096,7 @@ function VisitLink()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
 
 	// Update site lists
 	$smcFunc['db_query']('', '
@@ -1120,7 +1123,7 @@ function VisitLink()
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
     if (empty($row['ID_LINK']))
-        fatal_error($txt['smflinks_nolinkselected']);
+        fatal_error($txt['smflinks_nolinkselected'],false);
     
 	$smcFunc['db_free_result']($dbresult);
 	header("Location: " . $row['url']);
@@ -1142,7 +1145,7 @@ function CatUp()
 		$cat = (int) $_REQUEST['cat'];
 
 	if (empty($cat))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 
@@ -1233,7 +1236,7 @@ function CatDown()
 		$cat = (int) $_REQUEST['cat'];
 
 	if (empty($cat))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
     
 	$dbresult = $smcFunc['db_query']('', "
 	SELECT 
@@ -1368,7 +1371,7 @@ function Approve()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
     
  	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_LINK
@@ -1382,7 +1385,7 @@ function Approve()
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
     if (empty($row['ID_LINK']))
-        fatal_error($txt['smflinks_nolinkselected']);  
+        fatal_error($txt['smflinks_nolinkselected'],false);
 
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}links
@@ -1409,7 +1412,7 @@ function NoApprove()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
     
  	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_LINK
@@ -1423,7 +1426,7 @@ function NoApprove()
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
     
     if (empty($row['ID_LINK']))
-        fatal_error($txt['smflinks_nolinkselected']);  
+        fatal_error($txt['smflinks_nolinkselected'],false);
 
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}links
@@ -1452,7 +1455,7 @@ function RateLink()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nolinkselected']);
+		fatal_error($txt['smflinks_nolinkselected'],false);
         
  	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_LINK
@@ -1466,7 +1469,7 @@ function RateLink()
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
     if (empty($row['ID_LINK']))
-        fatal_error($txt['smflinks_nolinkselected']);  
+        fatal_error($txt['smflinks_nolinkselected'],false);
 
 	//See if the user already rated the link.
 	$dbresult = $smcFunc['db_query']('', '
@@ -1750,7 +1753,7 @@ function CatPermDelete()
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
 
 	// Delete the Permission
 	$smcFunc['db_query']('', '
@@ -1773,7 +1776,7 @@ function CatPerm()
 	if (!empty($_REQUEST['cat']))
 		$cat = (int) $_REQUEST['cat'];
 	if (empty($cat))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
 
 	$dbresult1 = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title
@@ -1891,7 +1894,7 @@ function CatPerm2()
 		$cat = (int) $_REQUEST['cat'];
 
 	if (empty($cat))
-		fatal_error($txt['smflinks_nocatselected']);
+		fatal_error($txt['smflinks_nocatselected'],false);
     
 	$dbresult = $smcFunc['db_query']('', '
 		SELECT ID_CAT, title, description, image, ID_PARENT 

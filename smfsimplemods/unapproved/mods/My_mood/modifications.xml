@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:My_Mood</id>
+	<name>My Mood</name>
+	<version>1.0</version>
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="replace"><![CDATA[// Show the users signature.
+	if ($context['signature_enabled'] && !empty($context['member']['signature']))
+		echo '
+				<div class="signature">
+					<h5>', $txt['signature'], ':</h5>
+					', $context['member']['signature'], '
+				</div>';]]></search>
+				<add><![CDATA[// Show the users signature.
+	if ($context['signature_enabled'] && !empty($context['member']['signature']))
+		echo '
+				<div class="signature">
+					<h5>', $txt['signature'], ':</h5>
+					', $context['member']['signature'], '
+				</div>';
+	//MyMood Mod
+	if (!empty($modSettings['mymood_enabled']) && (!empty($context['last_moods']) || $context['user']['is_owner']))
+	{
+		echo '	
+				<div class="content">
+					<hr />
+					<h1 class="mood_title">', $txt['mymood_title'], '</h1>';
+					//Latest Moods
+					foreach ($context['last_moods'] as $moods)
+					{
+						echo '
+						<div class="mood_authorbox">
+								<div class="mood_avatar">
+									', $context['member']['avatar']['image'], '
+								</div>
+								<strong><a href="', $scripturl, '?action=profile;u=', $moods['id_member'], '">' , $moods['real_name'], '</a></strong>
+								<span class="mood_date">', $moods['date'], '</span><br />
+								<span class="mood_delete">', $moods['mood_delete'], '</span>
+								', $moods['mood_content'], '
+								<div class="clear"></div>
+						</div>';
+					}
+
+					if ($context['user']['is_owner'])
+					{
+						echo '
+						<form name="my_mood_form" method="post" action="', $scripturl, '?action=profile;area=summary" accept-charset="', $context['character_set'], '">
+							<div id="bbcBox_message"></div>
+							<div id="smileyBox_message"></div>
+							<input type="hidden" name="save" value="ok" />';
+
+						if (!empty($modSettings['mymood_allow_smileys']) && !empty($modSettings['mymood_allow_bbc']))
+							echo template_control_richedit($context['post_box_name'], 'smileyBox_message','bbcBox_message');
+
+						elseif (!empty($modSettings['mymood_allow_smileys']))
+							echo template_control_richedit($context['post_box_name'], 'smileyBox_message');
+
+						elseif (!empty($modSettings['mymood_allow_bbc']))
+							echo template_control_richedit($context['post_box_name'], null, 'bbcBox_message' );
+
+						else
+							echo template_control_richedit($context['post_box_name']);
+
+						echo '', template_control_richedit_buttons($context['post_box_name']) ,'
+					   </form>';
+					}
+			echo'
+				</div>';
+	}
+	//MyMood Mod End]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="before"><![CDATA[loadCustomFields($memID);]]></search>
+				<add><![CDATA[
+
+	if (!empty($modSettings['mymood_enabled']))
+		myMood($memID);]]></add>
+		</operation>
+	</file>
+</modification>

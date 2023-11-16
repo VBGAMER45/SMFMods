@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>karlbenson:areyouhuman</id>
+	<name>Anti Bot: Are You Human/Bot?</name>
+<version>3.0</version>
+<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="after"><![CDATA[// If OpenID is enabled, give the user a choice between password and OpenID.
+	if (!empty($modSettings['enableOpenID']))
+	{
+		echo '
+
+					<dl class="register_form" id="openid_group">]]></search>
+			<add><![CDATA[					
+	//Start MOD Are You Human?
+	if (!empty($modSettings['are_you_human_s']))
+		echo '
+					<dl class="register_form" id="password1_group">
+						<dt>
+							<strong>', $context['are_you_human_question'], ':</strong>
+							<span class="smalltext">', $txt['are_you_human_desc'], '</span>
+						</dt>
+						<dd>
+							<select name="', $_SESSION['are_you_human']['name'], '" tabindex="',  $context['tabindex']++, '" class="select">',
+								$context['are_you_human_answers'], '
+							</select>
+						</dd>.
+					</dl>';
+	//End MOD Are You Human?
+
+	]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Under age restrictions?]]></search>
+			<add><![CDATA[
+	## Start MOD Are You Human? - Generating Code
+	if (!empty($modSettings['are_you_human_s']))
+	{
+		// Generate Random field name
+		$_SESSION['are_you_human']['name'] = chr(mt_rand(97, 122)) . md5(mt_rand());
+		$_SESSION['are_you_human']['answer'] = chr(mt_rand(97, 122)) . md5(mt_rand());
+
+		// Choice the Question
+		$context['are_you_human_question'] = $modSettings['are_you_human_q'] >> 1
+				? $txt['are_you_human_q' . mt_rand(1, 2)]
+				: ($modSettings['are_you_human_q'] ? $txt['are_you_human_q2'] : $txt['are_you_human_q1']);
+
+		// Choice the Answer
+		$answer_correct = $context['are_you_human_question'] == $txt['are_you_human_q1']
+				? $txt['are_you_human_answers'][0] : $txt['are_you_human_answers'][1];
+
+		// Shuffle the Answers?
+		if ($modSettings['are_you_human_a'])
+			shuffle($txt['are_you_human_answers']);
+
+		// Create the Options
+		$context['are_you_human_answers'] = '';
+		foreach ($txt['are_you_human_answers'] as $value)
+			$context['are_you_human_answers'] .= '
+								<option value="' . ($value == $answer_correct ? $_SESSION['are_you_human']['answer'] : chr(mt_rand(97, 122)) . md5(mt_rand())) . '">' . $value . '</option>';
+		unset($answer_correct);
+
+		// This page should be reaload always
+		header('Cache-Control: no-store');
+	}
+	## End MOD Are You Human? - Generating Code
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+		// Are they under age, and under age users are banned?]]></search>
+			<add><![CDATA[
+		## Start MOD Are You Human? - Capturing Bots
+
+		// Backup & Deleting SuperGlobal
+		$session = isset($_SESSION['are_you_human']) ? $_SESSION['are_you_human'] : false;
+		unset($_SESSION['are_you_human']);
+
+		// Are You Human?
+		if (!empty($modSettings['are_you_human_s']))
+			if (empty($session) || empty($_POST[$session['name']]) || $_POST[$session['name']] != $session['answer'])
+				fatal_lang_error(empty($session) ? 'are_you_human_expired' : 'are_you_human_fail', false);
+
+		// Old way - spammers should be the only one trying this
+		if (isset($_POST['areyouhuman']))
+			fatal_lang_error('are_you_human_fail', false);
+
+		## End MOD Are You Human? - Capturing Bots
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageRegistration.php">
+		<operation>
+			<search position="before"><![CDATA[
+			array('text', 'coppaPhone'),]]></search>
+			<add><![CDATA[
+		'',
+	## MOD Are You Human?
+			array('check', 'are_you_human_s'),
+			array('select', 'are_you_human_q', array($txt['are_you_human_q_0'], $txt['are_you_human_q_1'], $txt['are_you_human_q_2'])),
+			array('check', 'are_you_human_a'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+		</file>
+
+</modification>

@@ -10,7 +10,6 @@
 * or FITNESS FOR A PARTICULAR PURPOSE.                                            *
 **********************************************************************************/
 
-/*	This file is a simplified database installer. It does what it is suppoed to. */
 
 // List settings here in the format: setting_key => default_value.  Escape any "s. (" => \")
 $mod_settings = array();

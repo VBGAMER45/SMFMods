@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:DisableFLoCTracking</id>
+	<name>Disable FLoC Tracking</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">floc2.xml</modification>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">floc2.xml</modification>
+	</uninstall>
+
+
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">floc2.1.xml</modification>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<modification type="file" reverse="true">floc2.1.xml</modification>
+	</uninstall>
+</package-info>

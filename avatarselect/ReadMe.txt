@@ -1,11 +1,11 @@
 *******************************
 Avatar Select
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x And SMF 1.1.x
+For SMF 2.1.x, 2.0.x And 1.1.x
 
 Adds a avatar select to the user registration page.
 

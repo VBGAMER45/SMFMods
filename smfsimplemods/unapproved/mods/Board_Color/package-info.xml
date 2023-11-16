@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:BoardColor</id>
+	<name>BoardColor</name>
+	<version>V1</version>
+
+	<type>modification</type>
+
+	<install for="2.0 - 2.99.99">
+		<modification type="file" format="xml">install.xml</modification>
+		<database type="file">database.php</database>
+		<readme parsebbc="true">readme.txt</readme>
+		<require-dir name="jscolor" destination="$themedir/scripts" />
+		<redirect url="$scripturl?action=admin;area=manageboards;" timeout="5000">Redirect.txt</redirect>
+	</install>
+	
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" format="xml" reverse="true">install.xml</modification>
+		<remove-dir name="$themedir/scripts/jscolor" />
+	</uninstall>
+</package-info>

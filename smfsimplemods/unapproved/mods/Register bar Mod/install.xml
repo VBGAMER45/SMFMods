@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Smfsimple:RegisterBarMod</id>
+	<name>Register Bar Mod By SMFSimple.com</name>
+	<version>V3</version>
+
+<file name="$themedir/index.template.php">
+        <operation>
+			<search position="replace"><![CDATA[// Output any remaining HTML headers. (from mods, maybe?)]]></search>
+			<add><![CDATA[
+	register_bar_mod_v3_scripts();
+	// Output any remaining HTML headers. (from mods, maybe?)
+  ]]></add>
+		</operation>
+		
+        <operation>
+			<search position="replace"><![CDATA[function template_body_above()
+{]]></search>
+			<add><![CDATA[function template_body_above()
+{
+register_bar_mod_v3_divs();
+  ]]></add>
+		</operation>		
+
+	</file>
+	
+<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+				// Register Bar Mod V3 by SmfSimple.com
+				'Register Bar Mod V3 By <a href="https://www.smfsimple.com">SMFSimple.com</a>',
+                array('check', 'registerbarv3_enable'),
+				array('text', 'registerbarv3bg', '10'),
+				array('text', 'registerbarv3color', '10'),
+				array('select', 'registerbarv3_position', array('top:0px;' => $txt['registerbarv3_position_top'], 'bottom:0px;' => $txt['registerbarv3_position_bottom'],)),
+                array('large_text', 'registerbarv3message', '3', 'subtext' => $txt['registerbarv3message_desc']),
+				array('check', 'registerbarv3_enable_close'),
+                // Register Bar Mod V3 By SmfSimple.com
+			]]></add>
+		</operation>
+		</file>		
+		
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+		</file>		
+
+<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Register Bar Mod V3 By SMFSimple.com INICIO
+function register_bar_mod_v3_scripts()
+{
+global $modSettings, $settings;
+echo'<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js" type="text/javascript"></script>';
+echo"<script type='text/javascript'>$(document).ready(function() {(function() {var fadeSpeed = 500, fadeTo = 0.5, topDistance = 30;var sibar = function() { $('#stickybar').fadeTo(fadeSpeed,1); }, stbar = function() { $('#stickybar').fadeTo(fadeSpeed,fadeTo); };var inside = false;$(window).scroll(function() {position = $(window).scrollTop();
+if(position > topDistance && !inside) {stbar();$('#stickybar').bind('mouseenter',sibar);$('#stickybar').bind('mouseleave',stbar);inside = true;}});$('#closebtn').live('click', function(event) {        $('#stickybar').toggle('show');});})();});</script>";
+echo'<style type="text/css">#stickybar {border-bottom:1px solid #ECF1EF;background: ', !empty($modSettings['registerbarv3bg']) ? $modSettings['registerbarv3bg'] : '#151715',' ;font-size:16px;color: #fff;padding:10px 20px;position:fixed;', @$modSettings['registerbarv3_position'] ,':0;left:0;z-index:2000;width:100%;text-align:center;}
+#stickybar a {color: ', !empty($modSettings['registerbarv3color']) ? $modSettings['registerbarv3color'] : '#fff',' ;text-decoration:none;}
+#closebtn {background:url(', $settings['default_theme_url'], '/images/x.png) top no-repeat;border:none;width: 10px;margin-left:15px;position:absolute;}</style>';
+}
+function register_bar_mod_v3_divs()
+{
+global $modSettings, $context, $scripturl, $txt;
+if (!empty($modSettings['registerbarv3_enable']) && $context['user']['is_guest']) {
+echo'<div id="stickybar"><a href="',  $scripturl ,'?action=register">', !empty($modSettings['registerbarv3message']) ? parse_bbc($modSettings['registerbarv3message']) : $txt['registerbarv3message_vac'] ,'</a>', !empty($modSettings['registerbarv3_enable_close']) ? '' : '<input type="button" id="closebtn" />' ,'</div>';}
+}
+// Register Bar Mod V3 By SMFSimple.com FIN
+]]></add>
+		</operation>
+		</file>				
+
+</modification>

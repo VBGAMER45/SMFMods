@@ -1,0 +1,743 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:SMFSimple_Rewards_System</id>
+	<name>SMFSimple Rewards System</name>
+	<version>3.0</version>
+
+<file name="$sourcedir/Load.php">
+    <operation><!-- Load points from each users and save in $profile-->
+		<search position="after"><![CDATA['id' => $profile['id_member'],]]></search>
+			<add><![CDATA[
+		'ssrs_points' => $profile['ssrs_points'],
+		'ssrs_points_day' => $profile['ssrs_points_day'],]]></add>
+	</operation>
+	<operation><!-- Load points from each users-->
+		<search position="after"><![CDATA[mem.time_offset, mem.show_online,]]></search>
+			<add><![CDATA[ mem.ssrs_points, mem.ssrs_points_day,]]></add>
+	</operation>
+	<operation><!-- Permissions Per Board Setup!-->
+		<search position="before"><![CDATA['description' => $row['description'],]]></search>
+			<add><![CDATA[
+				'ssrs_give_points_on' => !empty($row['ssrs_give_points_on']),]]></add>
+	</operation>
+	<operation><!-- Permissions Per Board Setup!-->
+		<search position="before"><![CDATA[, b.redirect,]]></search>
+			<add><![CDATA[ b.ssrs_give_points_on,]]></add>
+	</operation>
+	<operation><!-- Points Profile Edit!-->
+		<search position="before"><![CDATA['real_posts' => $profile['posts'],]]></search>
+			<add><![CDATA[
+		'ssrs_points' => $profile['ssrs_points'],
+		'ssrs_points_day' => $profile['ssrs_points_day'],]]></add>
+	</operation>
+	<operation><!-- Points Profile Edit!-->
+		<search position="before"><![CDATA[mem.id_theme, mem.buddy_list,]]></search>
+			<add><![CDATA[ mem.ssrs_points, mem.ssrs_points_day,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['ignoreusers' => !empty($user_settings['pm_ignore_list']) ? explode(',', $user_settings['pm_ignore_list']) : array(),]]></search>
+			<add><![CDATA[
+		'ssrs_points_day' => isset($user_settings['ssrs_points_day']) ? $user_settings['ssrs_points_day'] : '',]]></add>
+	</operation>
+	
+</file>
+
+<file name="$sourcedir/Subs-Members.php">
+    <operation>
+		<search position="before"><![CDATA['smiley_set' => '',]]></search>
+			<add><![CDATA[
+		'ssrs_points' => (!empty($modSettings['ssrs_points_per_registered'])) ? $modSettings['ssrs_points_per_registered'] : 0,]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile-Modify.php">
+	<operation><!-- Points Profile Edit!-->
+		<search position="after"><![CDATA[$disabled_fields = !empty($modSettings['disabled_profile_fields']) ? explode(',', $modSettings['disabled_profile_fields']) : array();]]></search>
+			<add><![CDATA[
+
+	if (!empty($modSettings['ssrs_points_enabled'])){
+	$profile_fields['ssrs_points'] = array(
+			'type' => 'int',
+			'label' => $txt['profile_ssrs_points'],
+			'subtext' => $txt['profile_ssrs_points_desc'],
+			'size' => 20,
+			'permission' => 'moderate_forum',
+			'input_validate' => create_function('&$value', '
+				$value = $value != \'\' ? strtr($value, array(\',\' => \'\', \'.\' => \'\', \' \' => \'\')) : 0;
+				return true;
+			'),
+		);
+	$profile_fields['ssrs_points_day'] = array(
+			'type' => 'int',
+			'label' => $txt['profile_ssrs_points_day'],
+			'subtext' => $txt['profile_ssrs_points_day_desc'],
+			'size' => 20,
+			'permission' => 'moderate_forum',
+			'input_validate' => create_function('&$value', '
+				$value = $value != \'\' ? strtr($value, array(\',\' => \'\', \'.\' => \'\', \' \' => \'\')) : 0;
+				return true;
+			'),
+		);
+	}
+
+	]]></add>
+	</operation>
+	<operation><!-- Points Profile Edit!-->
+		<search position="before"><![CDATA['date_registered', 'posts',]]></search>
+			<add><![CDATA[ 'ssrs_points', 'ssrs_points_day',]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Profile-Actions.php">
+    <operation>
+		<search position="before"><![CDATA[updateMemberData($memID, array('warning' => $_POST['warning_level']));]]></search>
+			<add><![CDATA[
+
+			//Start SSRS
+			if (!empty($modSettings['ssrs_points_enabled']) && !empty($modSettings['ssrs_points_per_warning']) && ($cur_profile['warning'] < $_POST['warning_level']))
+			{
+				require_once ($sourcedir . '/SsrsPoints.php');
+				$points = !empty($modSettings['ssrs_points_per_warning']) ? (int) -$modSettings['ssrs_points_per_warning'] : 0;	//You have warning, take away points from u
+				ssrsAddPointGeneric($points,$memID);
+			}
+			//END SSRS]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/RemoveTopic.php">
+	<operation>
+		<search position="after"><![CDATA[// Update the totals...]]></search>
+			<add><![CDATA[
+	//Start SSRS
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}ssrs_good_post
+		WHERE id_topic IN ({array_int:topics})',
+		array(
+			'topics' => $topics,
+		)
+	);
+	//END SSRS
+
+	]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Post.php">
+	<operation>
+		<search position="before"><![CDATA[id_last_msg, id_member_started, id_board]]></search>
+			<add><![CDATA[, num_replies]]></add>
+	</operation>
+    <operation>
+		<search position="before"><![CDATA[modifyPost($msgOptions, $topicOptions, $posterOptions);]]></search>
+			<add><![CDATA[
+
+		//Start SSRS
+		if (!empty($modSettings['ssrs_points_enabled']) && $board_info['ssrs_give_points_on'] )
+		{
+			require_once ($sourcedir . '/SsrsPoints.php');
+
+			//Points per sticky post
+			$pointsPerSticky = !empty($modSettings['ssrs_points_per_sticky']) ? (int) $modSettings['ssrs_points_per_sticky'] : 0;
+			if (!empty($modSettings['ssrs_points_per_sticky']) && !empty($topicOptions['sticky_mode']) && !empty($topic_info['id_member_started']))
+				ssrsAddPointGeneric($pointsPerSticky,$topic_info['id_member_started']);
+
+		}
+		//END SSRS]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[createPost($msgOptions, $topicOptions, $posterOptions);]]></search>
+			<add><![CDATA[
+		//Start SSRS
+		if (!empty($modSettings['ssrs_points_enabled']) && $board_info['ssrs_give_points_on'])
+		{
+			require_once ($sourcedir . '/SsrsPoints.php');
+
+			//Points per poll/topic/reply
+			if (!empty($modSettings['ssrs_points_per_post']) || !empty($modSettings['ssrs_points_per_reply']) || !empty($modSettings['ssrs_points_per_poll']))
+			{
+				$ssrsPoll = isset($topicOptions['poll']) ? true : false;
+				ssrsPerPost($newTopic, $ssrsPoll);
+			}
+
+			//Bonus for words and points per words
+			if ($newTopic && (!empty($modSettings['ssrs_points_per_word']) || (!empty($modSettings['ssrs_points_bonus_words']) && !empty($modSettings['ssrs_points_bonus_words'])))) //Add Points per word and bonus only if is a new topic!
+				ssrsPointPerLenghtMsg($_POST['message']);
+
+			//Points per replies
+			if (empty($newtopic) && (!empty($modSettings['ssrs_points_per_topic_replies']) && !empty($modSettings['ssrs_points_per_topic_replies_min'])) && !empty($topic_info['id_member_started']))
+			{
+				$num_replies = !empty($topic_info['num_replies']) ? $topic_info['num_replies'] + 1 : 1;
+				if ($num_replies == $modSettings['ssrs_points_per_topic_replies_min'])
+					ssrsAddPointGeneric($modSettings['ssrs_points_per_topic_replies'],$topic_info['id_member_started']);
+			}
+		}
+		//END SSRS]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Poll.php">
+    <operation>
+		<search position="after"><![CDATA[// Return to the post...]]></search>
+			<add><![CDATA[	//Start SSRS MOD
+	if (!empty($modSettings['ssrs_points_enabled']) && !empty($modSettings['ssrs_points_per_vote_poll']))
+	{
+		require_once ($sourcedir . '/SsrsPoints.php');
+
+		$pointVotePoll = (!empty($modSettings['ssrs_points_per_vote_poll'])) ? (int) $modSettings['ssrs_points_per_vote_poll'] : 0;
+		$userTo = $user_info['id'];
+		ssrsAddPointGeneric($pointVotePoll,$userTo);
+	}
+	//END SSRS MOD
+	]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="before"><![CDATA[t.is_sticky, t.id_poll,]]></search>
+			<add><![CDATA[ t.ssrs_points,]]></add>
+	</operation>
+    <operation>
+		<search position="after"><![CDATA[}
+
+// Callback for the message display.]]></search>
+			<add><![CDATA[	//SSRS MOD START
+	if (!empty($modSettings['ssrs_points_enabled']))
+	{
+		require_once($sourcedir . '/SsrsPoints.php');
+
+		if (!empty($modSettings['ssrs_points_show_givers_display']))
+			ssrsGiveWhoGive($context['current_topic']);
+
+		$context['give_points_display'] = ssrsGivePoints($context['topic_starter_id']);
+		$context['give_points_display_total'] = $topicinfo['ssrs_points'];
+
+		if (!empty($modSettings['ssrs_points_per_topic_views']) && !empty($modSettings['ssrs_points_per_topic_views_min']) && ($topicinfo['num_views'] == $modSettings['ssrs_points_per_topic_views_min']))
+			ssrsAddPointGeneric($modSettings['ssrs_points_per_topic_views'],$topicinfo['id_member_started']); //Give points if his post have X points
+	}
+	//SSRS MOD END
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/MessageIndex.php">
+	<operation><!-- Ordenar por puntos Start !-->
+		<search position="before"><![CDATA[, 'first_post', 'last_post']]></search>
+			<add><![CDATA[, 'ssrs_points']]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['subject' => 'mf.subject',]]></search>
+			<add><![CDATA[
+		'ssrs_points' => 't.ssrs_points',]]></add>
+	</operation><!-- Ordenar por puntos END !-->
+    <operation>
+		<search position="before"><![CDATA[t.id_previous_board,]]></search>
+			<add><![CDATA[ t.ssrs_points,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['unapproved_posts' => $row['unapproved_posts'],]]></search>
+			<add><![CDATA[
+				'ssrs_points' => $row['ssrs_points'],]]></add>
+	</operation>
+</file>
+<file name="$themedir/MessageIndex.template.php">
+	<operation>
+		<search position="before"><![CDATA[function template_main()
+{]]></search>
+		<add><![CDATA[
+	global $board_info;]]></add>
+	</operation>
+    <operation>
+		<search position="after"><![CDATA[</span>', $topic['is_sticky'] ? '</strong>' : '';]]></search>
+			<add><![CDATA[ ',(!empty($modSettings['ssrs_points_points_on_messageindex']) && !empty($modSettings['ssrs_points_enabled'])  && !empty($board_info['ssrs_give_points_on'])) ? '('.$topic['ssrs_points'].' '.$txt['ssrs_points'].')' : '',']]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[<th scope="col" class="first_th" width="8%" colspan="2">&nbsp;</th>
+					<th scope="col" class="lefttext"><a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=subject', $context['sort_by'] == 'subject' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['subject'], $context['sort_by'] == 'subject' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a> / <a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=starter', $context['sort_by'] == 'starter' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['started_by'], $context['sort_by'] == 'starter' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a></th>
+					<th scope="col" width="14%"><a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=replies', $context['sort_by'] == 'replies' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['replies'], $context['sort_by'] == 'replies' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a> / <a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=views', $context['sort_by'] == 'views' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['views'], $context['sort_by'] == 'views' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a></th>';]]></search>
+			<add><![CDATA[<th scope="col" class="first_th" width="8%" colspan="2">&nbsp;</th>';
+					if(!empty($modSettings['ssrs_points_points_on_messageindex']) && !empty($modSettings['ssrs_points_enabled']) && !empty($board_info['ssrs_give_points_on']))
+					echo'
+					<th scope="col" class="lefttext"><a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=subject', $context['sort_by'] == 'subject' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['subject'], $context['sort_by'] == 'subject' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a> / <a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=starter', $context['sort_by'] == 'starter' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['started_by'], $context['sort_by'] == 'starter' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a> / <a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=ssrs_points', $context['sort_by'] == 'ssrs_points' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['ssrs_points'], $context['sort_by'] == 'ssrs_points' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a></th>';
+					else
+					echo'<th scope="col" class="lefttext"><a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=subject', $context['sort_by'] == 'subject' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['subject'], $context['sort_by'] == 'subject' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a> / <a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=starter', $context['sort_by'] == 'starter' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['started_by'], $context['sort_by'] == 'starter' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a></th>';
+					echo'<th scope="col" width="14%"><a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=replies', $context['sort_by'] == 'replies' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['replies'], $context['sort_by'] == 'replies' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a> / <a href="', $scripturl, '?board=', $context['current_board'], '.', $context['start'], ';sort=views', $context['sort_by'] == 'views' && $context['sort_direction'] == 'up' ? ';desc' : '', '">', $txt['views'], $context['sort_by'] == 'views' ? ' <img src="' . $settings['images_url'] . '/sort_' . $context['sort_direction'] . '.gif" alt="" />' : '', '</a></th>';]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManageMembergroups.php">
+    <operation> <!-- Que Grupos Podran Usar El MOD !-->
+		<search position="before"><![CDATA['group_type' => 'int',]]></search>
+			<add><![CDATA[ 'ssrs_points' => 'int',]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[, $_POST['group_type'],]]></search>
+			<add><![CDATA[ (!empty($_POST['ssrs_points']) ? (int) $_POST['ssrs_points'] : 0),]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[max_messages = {int:max_messages},
+						stars = {string:stars}]]></search>
+			<add><![CDATA[
+						ssrs_points = {int:ssrs_points}]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA['stars' => $group_info['stars'],]]></search>
+			<add><![CDATA[
+						'ssrs_points' => $group_info['ssrs_points'],]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[// Set variables to their proper value.]]></search>
+			<add><![CDATA[
+		$_POST['ssrs_points'] = isset($_POST['ssrs_points']) ? (int) $_POST['ssrs_points'] : 0;]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[, online_color = {string:online_color},]]></search>
+			<add><![CDATA[ ssrs_points = {int:ssrs_points},]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA['max_messages' => $_POST['max_messages'],]]></search>
+			<add><![CDATA[
+				'ssrs_points' => $_POST['ssrs_points'],]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[hidden, id_parent]]></search>
+			<add><![CDATA[, ssrs_points]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA['name' => $row['group_name'],]]></search>
+			<add><![CDATA[
+		'ssrs_points' => $row['ssrs_points'],]]></add>
+	</operation>
+</file>
+<file name="$themedir/ManageMembergroups.template.php">
+    <operation>
+		<search position="before"><![CDATA[<dd>
+							<input type="text" name="group_name" id="group_name_input" size="30" class="input_text" />
+						</dd>]]></search>
+			<add><![CDATA[
+						<dt>
+							<label for="ssrs_points_input"><strong>', $txt['membergroups_ssrs_points'], ':</strong></label>
+						</dt>
+						<dd>
+							<input type="text" name="ssrs_points" id="ssrs_points_input" size="30" class="input_text" />
+						</dd>]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[<input type="text" name="group_name" id="group_name_input" value="', $context['group']['editable_name'], '" size="30" class="input_text" />
+						</dd>]]></search>
+			<add><![CDATA[
+						<dt>
+							<label for="ssrs_points_input"><strong>', $txt['membergroups_ssrs_points'], ':</strong></label>
+						</dt>
+						<dd>
+							<input type="text" name="ssrs_points" id="ssrs_points" value="'.$context['group']['ssrs_points'].'" size="30" class="input_text" />
+						</dd>]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManageBoards.php">
+	<operation>
+		<search position="before"><![CDATA[// Checkboxes....]]></search>
+		<add><![CDATA[
+		$boardOptions['ssrs_give_points_on'] = isset($_POST['ssrs_give_points_on']);]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['count_posts' => 1,]]></search>
+		<add><![CDATA[
+			'ssrs_give_points_on' => 0,]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs-Boards.php">
+	<operation>
+		<search position="before"><![CDATA[// This setting is a little twisted in the database...]]></search>
+		<add><![CDATA[
+	if (isset($boardOptions['ssrs_give_points_on']))
+	{
+		$boardUpdates[] = 'ssrs_give_points_on = {int:ssrs_give_points_on}';
+		$boardUpdateParameters['ssrs_give_points_on'] = $boardOptions['ssrs_give_points_on'] ? 1 : 0;
+	}]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$boardOptions += array(]]></search>
+		<add><![CDATA[
+		'ssrs_give_points_on' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[b.description, b.child_level,]]></search>
+		<add><![CDATA[ b.ssrs_give_points_on,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['description' => $row['description'],]]></search>
+		<add><![CDATA[
+				'ssrs_give_points_on' => !empty($row['ssrs_give_points_on']),]]></add>
+	</operation>
+</file>
+<file name="$themedir/ManageBoards.template.php">
+    <operation>
+		<search position="after"><![CDATA[// Here the user can choose to force this board to use a theme other than the default theme for the forum.]]></search>
+			<add><![CDATA[	//SSRS MOD START
+	echo'
+						<dl class="settings">
+							<dt>
+								<strong>', $txt['admin_ssrs_points_enabled'], ':</strong><br />
+								<span class="smalltext">', $txt['admin_ssrs_points_enabled_desc'], '</span><br />
+							</dt>
+							<dd>
+								<input type="checkbox" name="ssrs_give_points_on" ', $context['board']['ssrs_give_points_on'] ? ' checked="checked"' : '', ' class="input_check" />
+							</dd>
+						</dl>';
+	//SSRS MOD END
+	]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Stats.php"> <!-- Show Stats Start-->
+	<operation>
+		<search position="before"><![CDATA[$user_info, $context, $smcFunc]]></search>
+		<add><![CDATA[, $sourcedir]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[// Board top 10.]]></search>
+		<add><![CDATA[
+	//SSRS MOD
+	if (!empty($modSettings['ssrs_points_enabled']))
+	{
+		require_once($sourcedir . '/SsrsPoints.php');
+		ssrsTopTenStats();
+			foreach ($context['top_ssrs_points'] as $i => $poster)
+				{
+					$context['top_ssrs_points'][$i]['post_percent'] = round(($poster['ssrs_points'] * 100) / $context['max_num_ssrs_points']);
+					$context['top_ssrs_points'][$i]['ssrs_points'] = comma_format($context['top_ssrs_points'][$i]['ssrs_points']);
+				}
+		ssrsTopTenTopicPointsStats();
+			foreach ($context['top_topics_ssrs_points'] as $i => $topic)
+				{
+					$context['top_topics_ssrs_points'][$i]['post_percent'] = round(($topic['ssrs_points'] * 100) / $context['max_num_ssrs_points_topics']);
+					$context['top_topics_ssrs_points'][$i]['ssrs_points'] = comma_format($context['top_topics_ssrs_points'][$i]['ssrs_points']);
+				}
+	}
+	//SSRS MOD
+
+	]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ScheduledTasks.php">
+    <operation>
+		<search position="end" />
+			<add><![CDATA[
+function scheduled_srss_addPoints()
+{
+	global $smcFunc;
+
+	$inforows = array();
+	$request = $smcFunc['db_query']('', "
+		SELECT mg.ssrs_points, mg.id_group, m.id_group, m.id_member, m.id_post_group
+		FROM {db_prefix}membergroups AS mg
+		INNER JOIN {db_prefix}members AS m ON (mg.id_group = CASE WHEN m.id_group = 0 THEN m.id_post_group ELSE m.id_group END)",
+		array()
+	);
+
+	while($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$inforows[$row['id_member']] = !empty($row['ssrs_points']) ? $row['ssrs_points'] : 0 ;
+	}
+	$smcFunc['db_free_result']($request);
+
+	foreach ($inforows as $id => $points)
+	{
+		$smcFunc['db_query']('', '
+		UPDATE {db_prefix}members
+		SET ssrs_points_day = {int:point}
+		WHERE id_member = {int:id_member}',
+		array(
+			'point' => $points,
+			'id_member' => $id,
+			)
+		);
+	}
+}
+]]></add>
+	</operation>
+</file>
+<file name="$themedir/Display.template.php">
+    <operation><!-- Show Points per Users in profile-->
+		<search position="after"><![CDATA[<li class="postcount">', $txt['member_postcount'], ': ', $message['member']['posts'], '</li>]]></search>
+			<add><![CDATA[', (!empty($modSettings['ssrs_points_enabled'])) ? '<li class="postcount">'. $txt['modifications_ssrs_points']. ' '. $message['member']['ssrs_points']. '</li>' : '' ,'
+								]]></add>
+	</operation>
+
+	 <operation>
+		<search position="after"><![CDATA[<hr class="post_separator" />';]]></search>
+			<add><![CDATA[';
+		if (!empty($modSettings['ssrs_points_enabled']) && $context['ssrs_give_points_on'])
+		{
+			if ($message['id'] == $context['topic_first_message'])
+			{
+				echo'
+				<span class="clear upperframe"><span></span></span>
+					<div class="roundframe"><div class="innerframe">';
+					echo'<table width="100%">
+							<tr>
+								<td>
+									<div id="give_point_space">
+										'.$context['give_points_display'].'
+									</div>
+								</td>
+								<td class="ssrs_point_im">
+									<div>
+										<img src="'.$settings['default_theme_url'].'/images/SSRS_images/point.png" alt="point" />
+										<span style="vertical-align: 5px;"><span id="total_points">'.$context['give_points_display_total'].'</span> '.$txt['modifications_ssrs_topic_points'].'</span>
+									</div>
+								</td>
+							</tr>
+						</table>';
+
+					if (!empty($modSettings['ssrs_points_show_givers_display']) && (($context['user']['is_guest'] && !empty($modSettings['ssrs_points_guests'])) || !$context['user']['is_guest']))
+					{
+					echo'<hr />
+						<div class="ssrs_letter_dio">
+							<table>
+								<tr>
+									<td>
+										<img style="margin-top:7.2px;" src="'.$settings['default_theme_url'].'/images/SSRS_images/',(!empty($context['usersgives'])) ? 'userpoint.png' : 'usernopoint.png','" alt="" />
+									</td>
+									<td style="padding-top:9px;">
+										<div id="show_givers">';
+											if (!empty($context['usersgives']))
+											{
+												echo ''.$txt['ssrs_message_users_pointings'].'';
+												foreach ($context['usersgives'] as $info)
+												{
+													// 0 = no show // 1 = Only Names // 2 = Names And Points
+													echo '', ($modSettings['ssrs_points_show_givers_display'] == 1) ? $info['href'] : $info['hrefAndPoints'] ,'&nbsp;';
+												}
+											}
+											else
+											echo ''.$txt['ssrs_message_users_no_pointings'].'
+										</div>';
+							echo	'</td>
+								</tr>
+							</table>
+						</div>';
+					}
+				echo'
+					</div></div>
+				<span class="lowerframe"><span></span></span>';
+			}
+			echo'
+			]]></add>
+	</operation>
+
+	 <operation>
+		<search position="before"><![CDATA[<hr class="post_separator" />';]]></search>
+			<add><![CDATA[
+		}
+		//END SSRS MOD!
+			]]></add>
+	</operation>
+</file>
+<file name="$themedir/Stats.template.php">
+    <operation>
+		<search position="after"><![CDATA[		<br class="clear" />
+		<div class="flow_hidden">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<span class="ie6_header floatleft">
+						<img src="', $settings['images_url'], '/stats_history.gif" class="icon" alt="" /> ', $txt['forum_history'], '
+					</span>
+				</h3>
+			</div>]]></search>
+			<add><![CDATA[';
+	if (!empty($modSettings['ssrs_points_enabled']))
+	{
+			echo'
+			<div class="flow_hidden">
+				<div id="top_posters">
+					<div class="title_bar">
+						<h4 class="titlebg">
+							<span class="ie6_header floatleft">
+								<img src="', $settings['images_url'], '/stats_posters.gif" class="icon" alt="" /> ', $txt['stats_ssrs_top_users_points'], '
+							</span>
+						</h4>
+					</div>
+						<div class="windowbg2">
+							<span class="topslice"><span></span></span>
+							<div class="content">
+								<dl class="stats">';
+
+		foreach ($context['top_ssrs_points'] as $points)
+		{
+			echo '
+									<dt>
+										', $points['link'], '
+									</dt>
+									<dd class="statsbar">';
+
+			if (!empty($points['post_percent']))
+				echo '
+										<div class="bar" style="width: ', $points['post_percent'] + 4, 'px;">
+											<div style="width: ', $points['post_percent'], 'px;"></div>
+										</div>';
+
+			echo '
+										<span class="righttext">', $points['ssrs_points'], '</span>
+									</dd>';
+		}
+
+		echo '
+								</dl>
+								<div class="clear"></div>
+							</div>
+							<span class="botslice"><span></span></span>
+						</div>
+				</div>
+				<div id="top_boards">
+					<div class="title_bar">
+						<h4 class="titlebg">
+							<span class="ie6_header floatleft">
+								<img src="', $settings['images_url'], '/stats_posters.gif" class="icon" alt="" /> ', $txt['stats_ssrs_top_topics_points'], '
+							</span>
+						</h4>
+					</div>
+						<div class="windowbg2">
+							<span class="topslice"><span></span></span>
+							<div class="content">
+								<dl class="stats">';
+
+		foreach ($context['top_topics_ssrs_points'] as $points)
+		{
+			echo '
+									<dt>
+										', $points['link'], '
+									</dt>
+									<dd class="statsbar">';
+
+			if (!empty($points['post_percent']))
+				echo '
+										<div class="bar" style="width: ', $points['post_percent'] + 4, 'px;">
+											<div style="width: ', $points['post_percent'], 'px;"></div>
+										</div>';
+			echo '
+										<span class="righttext">', $points['ssrs_points'], '</span>
+									</dd>';
+		}
+
+		echo '
+								</dl>
+								<div class="clear"></div>
+							</div>
+							<span class="botslice"><span></span></span>
+						</div>
+				</div>
+
+			';
+	}
+		echo'</div>]]></add>
+	</operation>
+</file> <!-- Show Stats END-->
+
+<file name="$themedir/Profile.template.php">
+	<operation><!-- Points Profile Edit!-->
+		<search position="before"><![CDATA[<dd>', $context['member']['posts'], ' (', $context['member']['posts_per_day'], ' ', $txt['posts_per_day'], ')</dd>';]]></search>
+			<add><![CDATA[
+
+	if (!isset($context['disabled_fields']['ssrs_points']) && !empty($modSettings['ssrs_points_enabled']))
+		echo '
+					<dt>', $txt['profile_ssrs_points'], ': </dt>
+					<dd>', $context['member']['ssrs_points'], '</dd>';]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/SSI.php">
+    <operation>
+		<search position="end" />
+			<add><![CDATA[
+//Start SSRS MOD!
+function ssi_topPoints($topNumber = 1, $output_method = 'echo')
+{
+	global $db_prefix, $scripturl, $smcFunc;
+
+	// Find the latest poster.
+	$request = $smcFunc['db_query']('', '
+		SELECT id_member, real_name, ssrs_points
+		FROM {db_prefix}members
+		ORDER BY ssrs_points DESC
+		LIMIT ' . $topNumber,
+		array(
+		)
+	);
+	$return = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$return[] = array(
+			'id' => $row['id_member'],
+			'name' => $row['real_name'],
+			'href' => $scripturl . '?action=profile;u=' . $row['id_member'],
+			'link' => '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['real_name'] . '</a>',
+			'ssrs_points' => $row['ssrs_points']
+		);
+	$smcFunc['db_free_result']($request);
+
+	// Just return all the top posters.
+	if ($output_method != 'echo')
+		return $return;
+
+	// Make a quick array to list the links in.
+	$temp_array = array();
+	foreach ($return as $member)
+		$temp_array[] = $member['link'];
+
+	echo implode(', ', $temp_array);
+}
+
+function ssi_topPointsTopic($topNumber = 1, $output_method = 'echo')
+{
+	global $db_prefix, $scripturl, $smcFunc;
+
+	$request = $smcFunc['db_query']('', '
+		SELECT m.subject, t.ssrs_points, t.id_topic
+		FROM {db_prefix}topics AS t
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
+		WHERE {query_see_board}
+		AND ssrs_points > {int:no_points}
+		ORDER BY t.ssrs_points DESC
+		LIMIT {int:top}',
+		array(
+			'no_points' => 0,
+		    'top' => $topNumber,
+		)
+	);
+
+	$return = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$return[] = array(
+			'link' => '<a href="' . $scripturl . '?topic=' . $row['id_topic'] . '.0">' . $row['subject'] . '</a>',
+			'ssrs_points' => $row['ssrs_points']
+		);
+	$smcFunc['db_free_result']($request);
+
+	// Just return all the top posters.
+	if ($output_method != 'echo')
+		return $return;
+
+	// Make a quick array to list the links in.
+	$temp_array = array();
+	foreach ($return as $board)
+		$temp_array[] = $board['link'];
+
+	echo implode(', ', $temp_array);
+}
+
+//END SSRS MOD!
+]]></add>
+	</operation>
+</file>
+</modification>

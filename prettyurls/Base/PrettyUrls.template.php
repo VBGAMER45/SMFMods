@@ -61,7 +61,7 @@ function template_pretty_news()
 		<h3>', $txt['pretty_chrome_menu_news'], '</h3>
 		<div id="chrome_news">', $txt['ajax_in_progress'], '</div>
 		<h3>', $txt['pretty_version'], '</h3>
-		<p>', $txt['pretty_current_version'], ': 2.5.1</p>
+		<p>', $txt['pretty_current_version'], ': 4.0</p>
 		<p>', $txt['pretty_latest_version'], ': <span id="chrome_latest">', $txt['ajax_in_progress'], '</span></p>';
 }
 
@@ -162,5 +162,15 @@ function template_pretty_filters()
 			<input type="submit" value="', $txt['pretty_save'], '" />
 		</form>';
 }
+
+function template_pretty_nginx()
+{
+	global $txt, $context;
+
+	echo '
+		<p>', $txt['pretty_nginix_note'],  '</p>
+		<p><textarea rows="20" cols="150">' . $context['pretty_nginx_rules'] . '</textarea></p>';
+}
+
 
 ?>

@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:smfgallery</id>
+	<name>SMF Gallery Lite</name>
+	<type>modification</type>
+	<version>7.1a</version>
+
+	<install for="1.0 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">smfgallery.xml</modification>
+		<require-file name="Gallery.php" destination="$sourcedir" />
+		<require-file name="Gallery.template.php" destination="$themedir" />
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="Gallery.english.php" destination="$themedir/languages" />
+		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Subs-ConvertAeva.php" destination="$sourcedir" />
+		<code>galleryinstall.php</code>
+		<redirect url="?action=gallery;sa=adminset;newstart=1" />
+	</install>
+
+	
+	<upgrade for="1.0 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">smfgallery.xml</modification>
+		<require-file name="Gallery.php" destination="$sourcedir" />
+		<require-file name="Gallery.template.php" destination="$themedir" />
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="Gallery.english.php" destination="$themedir/languages" />
+		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Subs-ConvertAeva.php" destination="$sourcedir" />
+		<code>galleryinstall.php</code>
+		<redirect url="?action=gallery;sa=adminset;newstart=1" />
+		
+	</upgrade>
+	
+	
+	<uninstall for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<modification type="file" reverse="true">smfgallery.xml</modification>
+		<remove-file name="$sourcedir/Gallery.php" />
+		<remove-file name="$themedir/Gallery.template.php" />
+		<remove-file name="$themedir/languages/Gallery.english.php" />
+		<remove-file name="$themedir/languages/Gallery.english-utf8.php" />
+		<remove-file name="$sourcedir/Subs-ConvertAeva.php" />
+		<code>GalleryUnInstall.php</code>
+	</uninstall>
+	
+	
+	
+	
+	
+	<install for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<readme>ReadMe.txt</readme>
+		<code>galleryinstall2.php</code>
+		<code>dohooks.php</code>
+		<modification type="file">smfgallery2.xml</modification>
+		<require-file name="Gallery2.php" destination="$sourcedir" />
+		<require-file name="Gallery2.template.php" destination="$themedir" />
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="GalleryHooks.php" destination="$sourcedir" />
+		<require-file name="Gallery.english.php" destination="$themedir/languages" />
+		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
+		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
+		
+		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
+		<redirect url="?action=admin;area=gallery;sa=adminset;newstart=1" />
+	</install>
+	
+	
+	<upgrade for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<readme>ReadMe.txt</readme>
+		<code>galleryinstall2.php</code>
+		<code>dohooks.php</code>
+		<modification type="file">smfgallery2.xml</modification>
+		<modification type="file">smfupgrade2.xml</modification>
+		<require-file name="Gallery2.php" destination="$sourcedir" />
+		<require-file name="Gallery2.template.php" destination="$themedir" />
+		<require-file name="GalleryHooks.php" destination="$sourcedir" />
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="Gallery.english.php" destination="$themedir/languages" />
+		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
+		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
+		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
+		<redirect url="?action=admin;area=gallery;sa=adminset;newstart=1" />
+		
+	</upgrade>
+	
+	
+
+	<uninstall for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">smfgallery2.xml</modification>
+		<remove-file name="$sourcedir/Gallery2.php" />
+		<remove-file name="$sourcedir/Subs-ConvertAeva2.php" />
+		<remove-file name="$sourcedir/GalleryHooks.php" />
+		<remove-file name="$themedir/Gallery2.template.php" />
+		<remove-file name="$themedir/languages/Gallery.english.php" />
+		<remove-file name="$themedir/languages/Gallery.portuguese.php" />
+		<remove-file name="$themedir/languages/Gallery.norwegian.php" />
+		<remove-file name="$themedir/languages/Gallery.english-utf8.php" />
+		<code>dohooks.php</code>
+		<code>GalleryUnInstall.php</code>
+	</uninstall>
+	
+	
+	
+	
+	
+	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<code>galleryinstall2.php</code>
+		
+		<require-file name="Gallery2.php" destination="$sourcedir" />
+		<require-file name="GalleryHooks.php" destination="$sourcedir" />
+		<require-file name="Gallery2.1.template.php" destination="$themedir" />
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="Gallery.english.php" destination="$themedir/languages" />
+		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
+		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
+		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
+		<require-file name="gallery.png" destination="$imagesdir" />
+		<require-file name="gallery.png" destination="$imagesdir/admin" />
+		<code>dohooks.php</code>
+		<redirect url="?action=admin;area=gallery;sa=adminset;newstart=1" />
+	</install>
+	<upgrade for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<code>galleryinstall2.php</code>
+		<require-file name="Gallery2.php" destination="$sourcedir" />
+		<require-file name="GalleryHooks.php" destination="$sourcedir" />
+		<require-file name="Gallery2.1.template.php" destination="$themedir" />
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="Gallery.english.php" destination="$themedir/languages" />
+		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
+		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
+		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
+		<require-file name="gallery.png" destination="$imagesdir" />
+		<require-file name="gallery.png" destination="$imagesdir/admin" />
+		
+		<code>dohooks.php</code>
+		<redirect url="?action=admin;area=gallery;sa=adminset;newstart=1" />
+		
+	</upgrade>
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<remove-file name="$sourcedir/Gallery2.php" />
+		<remove-file name="$sourcedir/Subs-ConvertAeva2.php" />
+		<remove-file name="$themedir/Gallery2.1.template.php" />
+		<remove-file name="$themedir/languages/Gallery.english.php" />
+		<remove-file name="$themedir/languages/Gallery.portuguese.php" />
+		<remove-file name="$themedir/languages/Gallery.norwegian.php" />
+		<remove-file name="$imagesdir/admin/gallery.png" />
+		<remove-file name="$imagesdir/gallery.png" />
+		<remove-file name="$themedir/languages/Gallery.english-utf8.php" />
+		<code>dohooks.php</code>
+		<code>GalleryUnInstall.php</code>
+	</uninstall>
+	
+</package-info>

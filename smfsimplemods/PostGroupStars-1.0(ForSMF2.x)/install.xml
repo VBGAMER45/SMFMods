@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>manix_10:PGS2</id>
+	<name>Post Group Stars</name>
+	<version>1.0</version>
+
+<!-- Sources/Load.php -->	
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA['is_guest' => false,]]></search>
+			<add><![CDATA[
+		'additional_group_stars' => $profile['post_group'],]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA['local_time' => timeformat(time() + ($profile['time_offset'] - $user_info['time_offset']) * 3600, false),
+	);]]></search>
+			<add><![CDATA[	
+
+	$context['membergroup']['id'] = !empty($modSettings['starsByGroup_array']) ? explode(',', $modSettings['starsByGroup_array'], 20) : '';
+	
+	$result_stars = $smcFunc['db_query']('', '
+		SELECT stars
+		FROM {db_prefix}membergroups
+		WHERE group_name = {string:group_name}
+		LIMIT 1',
+		array(
+			'group_name' => $memberContext[$user]['post_group'],
+		)
+	);
+	
+	while($row_stars = $smcFunc['db_fetch_assoc']($result_stars))
+	{
+		if (!empty($row_stars['stars']))				
+			$memberContext[$user]['additional_group_stars'] = str_repeat('<img src="' . str_replace('$language', $context['user']['language'], isset($row_stars['stars'][1]) ? $settings['images_url'] . '/' . substr($row_stars['stars'], 2, strlen($row_stars['stars'])) : '') . '" alt="*" border="0" />', empty($row_stars['stars'][0]) || empty($row_stars['stars'][1]) ? 0 : $row_stars['stars'][0]);
+	}
+	
+	$smcFunc['db_free_result']($result_stars);]]></add>
+		</operation>
+	</file>
+	
+<!-- Sources/ModSettings.php -->
+	<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[array('text', 'default_personal_text'),]]></search>
+			<add><![CDATA[ 
+			array('text', 'starsByGroup_array'),]]></add>
+		</operation>
+	</file>
+	
+<!-- default/Display.template.php -->
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="before"><![CDATA[<li class="membergroup">', $message['member']['group'], '</li>';]]></search>
+			<add><![CDATA[
+				
+		$context['membergroup']['id'] = !empty($modSettings['starsByGroup_array']) ? explode(',', $modSettings['starsByGroup_array'], 20) : '';
+		
+		if (!empty($context['membergroup']['id']) && in_array ($message['member']['group_id'], $context['membergroup']['id']))
+			echo '
+								<li class="membergroup">', $message['member']['additional_group_stars'], '</li>';]]></add>
+		</operation>
+	</file>
+
+
+<file name="$languagedir/Help.spanish_latin" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$helptxt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+
+]]></add>
+		</operation>
+</file>	
+
+<file name="$languagedir/Help.spanish_es" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$helptxt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+
+]]></add>
+		</operation>
+</file>	
+	
+<!-- default/languages/Help.spanish_latin-utf8.php -->
+<file name="$languagedir/Help.spanish_latin-utf8" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$helptxt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+
+]]></add>
+		</operation>
+	</file>
+	
+	<!-- default/languages/Help.spanish_es-utf8.php -->
+<file name="$languagedir/Help.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$helptxt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+
+]]></add>
+		</operation>
+	</file>	
+
+<!-- default/languages/Help.english-utf8.php -->
+<file name="$languagedir/Help.english-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$helptxt['starsByGroup_array'] = 'Arrange the group ID to show the post group stars.<div class="smalltext">(Must be separed by coma. ie: 1,3,7)</div>';
+
+]]></add>
+		</operation>
+	</file>
+	
+	
+<!-- default/languages/Help.english.php -->
+<file name="$languagedir/Help.english.php">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$helptxt['starsByGroup_array'] = 'Arrange the group ID to show the post group stars.<div class="smalltext">(Must be separed by coma. ie: 1,3,7)</div>';
+
+]]></add>
+		</operation>
+	</file>
+
+<file name="$languagedir/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$txt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+]]></add>
+		</operation>
+	</file>
+
+<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$txt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+]]></add>
+		</operation>
+	</file>	
+	
+<!-- default/languages/Modifications.spanish_latin-utf8.php  -->
+<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$txt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+]]></add>
+		</operation>
+	</file>
+	
+<!-- default/languages/Modifications.spanish_es-utf8.php  -->
+<file name="$languagedir/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$txt['starsByGroup_array'] = 'ID de los grupos que mostraran las estrellas.<div class="smalltext">(Deben estar separados por coma. ejemplo: 1,3,7)</div>';
+]]></add>
+		</operation>
+	</file>
+	
+		<!-- default/languages/Modifications.english-utf8.php  -->
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$txt['starsByGroup_array'] = 'Arrange the group ID to show the post stars.<div class="smalltext">(Must be separed by coma. ie: 1,3,7)</div>';
+]]></add>
+		</operation>
+	</file>
+	
+	
+			<!-- default/languages/Modifications.english.php  -->
+<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+$txt['starsByGroup_array'] = 'Arrange the group ID to show the post stars.<div class="smalltext">(Must be separed by coma. ie: 1,3,7)</div>';
+]]></add>
+		</operation>
+	</file>
+	
+</modification>

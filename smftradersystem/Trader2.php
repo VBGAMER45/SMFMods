@@ -3,7 +3,7 @@
 SMF Trader System
 Version 1.6
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 ini_set("display_errors",1);
 if (!defined('SMF'))
@@ -438,6 +438,7 @@ function Report2()
 	checkSession();
 
 	@$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
+	$comment = trim($comment);
 
 	if ($comment == '')
 		fatal_error($txt['smftrader_errnocomment'], false);
@@ -488,11 +489,13 @@ function ViewDetail()
 	global $context, $smcFunc, $txt;
 
 
-	$context['sub_template']  = 'detail';
 
 	@$feedid = (int) $_REQUEST['feedid'];
 	if (empty($feedid))
 		fatal_error($txt['smftrader_errnofeedselected'], false);
+
+	$context['sub_template']  = 'detail';
+
 
 	$context['page_title'] = $txt['smftrader_title'] . ' - ' . $txt['smftrader_detailedfeedback'] ;
 	$context['feedid'] = $feedid;
@@ -519,7 +522,9 @@ function ViewDetail()
 
 	$dbresult = $smcFunc['db_query']('', $result);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
-	
+
+	if (empty($row['feedbackid']))
+		fatal_error($txt['smftrader_errnofeedselected'], false);
 
 	
 	$smcFunc['db_free_result']($dbresult);

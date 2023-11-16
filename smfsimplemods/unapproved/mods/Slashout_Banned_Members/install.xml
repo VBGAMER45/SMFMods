@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:SlashoutBannedMembers</id>
+	<version>1.2</version>
+	<name>Slashout Banned Members</name>
+
+	<file name="$sourcedir/Subs-BoardIndex.php">
+		<operation>
+			<search position="before"><![CDATA[mods_mem.real_name AS mod_real_name]]></search>
+			<add><![CDATA[, mem.is_activated]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[. $row_board['real_name'] . '</a>']]></search>
+			<add><![CDATA[. ($row_board['is_activated'] < 10 ? $row_board['real_name'] : '<del>' . $row_board['real_name'] . '</del>') . '</a>']]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="before"><![CDATA[$memberContext[$message['id_member']]['is_topic_starter'] = $message['id_member'] == $context['topic_starter_id'];]]></search>
+			<add><![CDATA[
+			if ($memberContext[$message['id_member']]['is_banned'])
+			$memberContext[$message['id_member']]['link'] = '<a href="' . $scripturl . '?action=profile;u=' . $memberContext[$message['id_member']]['id'] . '" ><del>' . $message['poster_name'] . '</del></a>';
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/MessageIndex.php">
+
+		<operation>
+			<search position="before"><![CDATA[t.id_previous_board,]]></search>
+			<add><![CDATA[ meml.is_activated, memf.is_activated AS is_activated2,]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[' . $row['first_display_name'] . '</a>']]></search>
+			<add><![CDATA[' . ($row['is_activated2'] < 10 ? $row['first_display_name'] : '<del>' . $row['first_display_name'] . '</del>') . '</a>']]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[' . $row['last_display_name'] . '</a>']]></search>
+			<add><![CDATA[' . ($row['is_activated'] < 10 ? $row['last_display_name'] : '<del>' . $row['last_display_name'] . '</del>') . '</a>']]></add>
+		</operation>
+
+	</file>
+
+	<file name="$sourcedir/Load.php">
+
+		<operation>
+			<search position="before"><![CDATA[mem.last_login, mem.member_ip, mem.member_ip2, mem.lngfile, mem.id_group]]></search>
+			<add><![CDATA[, mem.is_activated]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[' . $profile['real_name'] . '</a>']]></search>
+			<add><![CDATA[' . ($profile['is_activated'] < 10 ? $profile['real_name'] : '<del>' . $profile['real_name'] . '</del>') . '</a>']]></add>
+		</operation>
+
+	</file>
+
+	<file name="$boarddir/SSI.php">
+
+		<operation>
+			<search position="before"><![CDATA[m.id_board, b.name AS board_name,]]></search>
+			<add><![CDATA[ mem.is_activated,]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA['link' => empty($row['id_member']) ? $row['poster_name'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['poster_name'] . '</a>']]></search>
+			<add><![CDATA['link' => empty($row['id_member']) ? $row['poster_name'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . ($row['is_activated'] < 10 ? $row['poster_name'] : '<del>' . $row['poster_name'] . '</del>') . '</a>']]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[m.id_msg, b.id_board, b.name AS board_name,]]></search>
+			<add><![CDATA[ mem.is_activated,]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA['link' => empty($row['id_member']) ? $row['poster_name'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['poster_name'] . '</a>']]></search>
+			<add><![CDATA['link' => empty($row['id_member']) ? $row['poster_name'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . ($row['is_activated'] < 10 ? $row['poster_name'] : '<del>' . $row['poster_name'] . '</del>') . '</a>']]></add>
+		</operation>
+
+
+		<operation>
+			<search position="before"><![CDATA[m.icon, m.subject, m.body, IFNULL(mem.real_name, m.poster_name) AS poster_name, m.poster_time,]]></search>
+			<add><![CDATA[ mem.is_activated,]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA['link' => !empty($row['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['poster_name'] . '</a>' : $row['poster_name']]]></search>
+			<add><![CDATA['link' => !empty($row['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . ($row['is_activated'] < 10 ? $row['poster_name'] : '<del>' . $row['poster_name'] . '</del>') . '</a>' : $row['poster_name']]]></add>
+		</operation>
+
+	</file>
+
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+		</file>
+</modification>

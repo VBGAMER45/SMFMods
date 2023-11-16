@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:nofollowsiglinks</id>
+	<name>No Follow Signature Links</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+
+	
+	<install for="1.1 - 1.1.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">nofollow.xml</modification>
+	</install>
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">nofollow.xml</modification>
+	</uninstall>
+	
+	
+	<install for="2.0-2.0.99">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">nofollow.xml</modification>
+	</install>
+
+	<uninstall for="2.0-2.0.99">
+		<modification type="file" reverse="true">nofollow.xml</modification>
+	</uninstall>
+	
+	<install for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<require-file name="nofollowsig.php" destination="$sourcedir" />
+		<hook hook="integrate_member_context" function="nofollowsig_member_context" file="$sourcedir/nofollowsig.php" />
+	</install>
+
+	<uninstall for="2.1-2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<hook hook="integrate_member_context" function="nofollowsig_member_context" file="$sourcedir/nofollowsig.php" reverse="true" />
+		<remove-file name="$sourcedir/nofollowsig.php" />
+	</uninstall>	
+	
+	
+	
+</package-info>

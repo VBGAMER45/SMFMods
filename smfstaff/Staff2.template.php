@@ -26,14 +26,12 @@ function template_main()
 			$totalcols++;
 				
 
-
+		if (!empty($context['smfstaff_groups']))
 		foreach ($context['smfstaff_groups']  as $id => $data)
 		{
 			if (empty($context['smfstaff_users'][$data['id']]))
 				continue;
 
-
-				
 				echo '<table border="0" cellspacing="0" cellpadding="2" width="100%">';
 				echo '<tr>';
 				echo '<td class="catbg2" width="30%">', $data['name'], '</td>';
@@ -53,8 +51,8 @@ function template_main()
 				echo '</tr>';
 				
 				
-
-				foreach (@$context['smfstaff_users'][$data['id']]  as $id => $row2)
+				if (!empty($context['smfstaff_users'][$data['id']]))
+				foreach ($context['smfstaff_users'][$data['id']]  as $id => $row2)
 				{
 	
 						
@@ -117,7 +115,7 @@ function template_main()
 				
 				echo '</table>';
 			
-			// Seperate the groups from the local mods.
+			// Separate the groups from the local mods.
 			echo '<br />';
 		} // End of Main staff listing
 
@@ -230,15 +228,18 @@ function template_adminset()
 {
 		global $scripturl, $modSettings, $txt, $context;
 
-echo '<table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="titlebg">
-			<td>', $txt['smfstaff_staffsetting'], '</td>
-		</tr>
+	echo '
+<div class="cat_bar">
+		<h3 class="catbg centertext">
+		' . $txt['smfstaff_staffsetting'] . '
+		</h3>
+  </div>
+<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
+
 		<tr class="windowbg">
 			<td>
 			<b>', $txt['smfstaff_staffsetting'], '</b><br />
 			<form method="post" action="', $scripturl, '?action=staff;sa=admin2">
-				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
 				<input type="checkbox" name="smfstaff_showavatar" ', ($modSettings['smfstaff_showavatar'] ? ' checked="checked" ' : '') . ' />', $txt['smfstaff_showavatar'], '<br />
 				<input type="checkbox" name="smfstaff_showlastactive" ', ($modSettings['smfstaff_showlastactive'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showlastactive'], '<br />
 				<input type="checkbox" name="smfstaff_showdateregistered" ', ($modSettings['smfstaff_showdateregistered'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showdateregistered'], '<br />
@@ -276,8 +277,6 @@ echo '
 	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
 </form>
 			</td>
-		</tr>
-</table></td>
 		</tr>
 </table>';
 

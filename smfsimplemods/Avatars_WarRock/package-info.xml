@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+   <name>WarRock Game Avatars</name>
+   <id>iKorp:WarRockAvatars</id>
+   <type>avatar</type>
+   <version>1.0</version>
+
+   <install>
+
+      <require-dir name="warrock avatars" destination="$avatardir" />
+   </install>
+   
+   <uninstall>
+      <remove-dir name="$avatardir/warrock avatars" />
+   </uninstall>
+</package-info>

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:PMReaded</id>
+	<name>PM Readed</name>
+	<version>1.1</version>
+
+	<file name="$themedir/PersonalMessage.template.php">
+		<operation>
+			<search position="after"><![CDATA[$next_alternate = false;]]></search>
+			<add><![CDATA[
+	$pm_iconstext_readed = allowedTo('pm_see_read')
+			? array('pm_noread.gif', 'pm_readed.gif', $txt['pm_mod_unread'], $txt['pm_mod_read'])
+			: array('pm_received.gif', 'pm_received.gif', $txt['pm_read'], $txt['pm_read']);
+			]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+				', $message['is_replied_to'] ? '<img src="' . $settings['images_url'] . '/icons/pm_replied.gif" style="margin-right: 4px;" alt="' . $txt['pm_replied'] . '" />' : '<img src="' . $settings['images_url'] . '/icons/pm_read.gif" style="margin-right: 4px;" alt="' . $txt['pm_read'] . '" />', '</td>]]></search>
+			<add><![CDATA[
+				', $message['is_replied_to'] ? '<img src="' . $settings['images_url'] . '/icons/pm_replied2.gif" style="margin-right: 4px;" alt="' . $txt['pm_replied'] . '" title="' . $txt['pm_replied'] . '" />' : '<img src="' . $settings['images_url'] . '/icons/'. $pm_iconstext_readed[(bool)$message['is_read']] . '" style="margin-right: 4px;" alt="' . $pm_iconstext_readed[(bool)$message['is_read']+2] . '" title="' . $pm_iconstext_readed[(bool)$message['is_read']+2] . '" />', '</td>]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/PersonalMessage.php">
+		<operation>
+			<search position="after"><![CDATA[
+			if ($row['id_member_to'] == $user_info['id'] && $context['folder'] != 'sent')]]></search>
+			<add><![CDATA[
+			$context[$row['id_pm']]['is_read'] = $row['is_read'];
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+			'is_unread' => &$context['message_unread'][$subject['id_pm']],]]></search>
+			<add><![CDATA[
+			'is_read' => &$context[$subject['id_pm']]['is_read'],]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+		'is_unread' => &$context['message_unread'][$message['id_pm']],]]></search>
+			<add><![CDATA[
+		'is_read' => &$context[$message['id_pm']]['is_read'],]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[
+			'pm_send' => array(false, 'pm', 'use_pm_system'),]]></search>
+			<add><![CDATA[
+			'pm_see_read' => array(false, 'pm', 'use_pm_system'),]]></add>
+		</operation>
+	</file>
+
+</modification>

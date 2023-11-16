@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:RulesOnPost</id>
+	<name>Rules On Post V1 Full Version</name>
+	<version>V1 Full Version</version>
+
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Rules On Post V1 Full Version
+$txt['rulesonpost_enable']='Enable Rules on Post';
+$txt['rulesonpost_message']='Message to be displayed to members in post area. <br />Can use Html or BBcode';
+$txt['rulesonpost_css']='You can use customized CSS for this block.';
+$txt['rop_no_boards']='Indicates the id of the forums where <b>NO!!</b> want to show the rules.';
+$txt['rop_no_boards_desc'] = '<b>You must separate the forums with commas.</b>';
+$txt['rop_rec'] = 'Remember to give permission to the range that you want to see the mod<br />Admin > Members > Permissions';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['rulesonpost_enable']='Activar Rules on Post';
+$txt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$txt['rulesonpost_css']='Utiliza codigo css para personalizar el bloque.';
+$txt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$txt['rop_no_boards_desc'] = '<b>Debes separar los foros con comas.</b>';
+$txt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/languages/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['rulesonpost_enable']='Activar Rules on Post';
+$txt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$txt['rulesonpost_css']='Utiliza codigo css para personalizar el bloque.';
+$txt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$txt['rop_no_boards_desc'] = '<b>Debes separar los foros con comas.</b>';
+$txt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['rulesonpost_enable']='Activar Rules on Post';
+$txt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$txt['rulesonpost_css']='Utiliza codigo css para personalizar el bloque.';
+$txt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$txt['rop_no_boards_desc'] = '<b>Debes separar los foros con comas.</b>';
+$txt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['rulesonpost_enable']='Activar Rules on Post';
+$txt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$txt['rulesonpost_css']='Utiliza codigo css para personalizar el bloque.';
+$txt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$txt['rop_no_boards_desc'] = '<b>Debes separar los foros con comas.</b>';
+$txt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>	
+
+	<file name="$themedir/languages/ManagePermissions.english.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_rop_view'] = 'Rules On Post Permit';
+$txt['permissiongroup_simple_rop_view'] = 'Rules On Post Permit';
+$txt['permissionname_rop_view'] = 'View rules when create post';
+$txt['permissionhelp_rop_view'] = 'This option enabled allows this group to show the rules in post';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/languages/ManagePermissions.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_rop_view'] = 'Rules On Post Permiso';
+$txt['permissiongroup_simple_rop_view'] = 'Rules On Post Permiso';
+$txt['permissionname_rop_view'] = 'Ver reglas al crear un post';
+$txt['permissionhelp_rop_view'] = 'Esta opcion activada permite mostrar a este grupo las reglas en los post.';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/ManagePermissions.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_rop_view'] = 'Rules On Post Permiso';
+$txt['permissiongroup_simple_rop_view'] = 'Rules On Post Permiso';
+$txt['permissionname_rop_view'] = 'Ver reglas al crear un post';
+$txt['permissionhelp_rop_view'] = 'Esta opcion permite ocultar a este grupo las reglas en los post.';
+]]></add>
+		</operation>
+	</file>		
+	
+	<file name="$themedir/languages/ManagePermissions.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_rop_view'] = 'Rules On Post Permiso';
+$txt['permissiongroup_simple_rop_view'] = 'Rules On Post Permiso';
+$txt['permissionname_rop_view'] = 'Ver reglas al crear un post';
+$txt['permissionhelp_rop_view'] = 'Esta opcion permite ocultar a este grupo las reglas en los post.';
+]]></add>
+		</operation>
+	</file>		
+	
+	<file name="$themedir/languages/ManagePermissions.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_rop_view'] = 'Rules On Post Permiso';
+$txt['permissiongroup_simple_rop_view'] = 'Rules On Post Permiso';
+$txt['permissionname_rop_view'] = 'Ver reglas al crear un post';
+$txt['permissionhelp_rop_view'] = 'Esta opcion permite ocultar a este grupo las reglas en los post.';
+]]></add>
+		</operation>
+	</file>		
+	
+<file name="$themedir/languages/Help.english.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$helptxt['rulesonpost_enable']='Enable or disable the mod with this option.';
+$helptxt['rulesonpost_message']='Messages to be displayed in the area of post.<br /> You can use html or bbcode.';
+$helptxt['rulesonpost_css']='You can use css in this style.<br />examples:<br />background: # 000;<br />font-size: 20px;<br />color: # fff;<br />border-radius: 6px;.';
+$helptxt['rop_no_boards']='Indicates the id of the forums where <b>NO!</b> want to show the rules.<br />Example: 1,2,3<br /> Remember separated by commas.';
+$helptxt['rop_rec'] = 'Remember to give permission to the range that you want to see the mod<br />Admin > Members > Permissions.';
+]]></add>
+		</operation>
+	</file>		
+	
+<file name="$themedir/languages/Help.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$helptxt['rulesonpost_enable']='Activar Rules on Post';
+$helptxt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$helptxt['rulesonpost_css']='Puedes utilizar codigo css en este estilo.<br />Ejemplos:<br />background: # 000;<br />font-size: 20px;<br />color: # fff;<br />border-radius: 6px;.';
+$helptxt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$helptxt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>			
+	
+<file name="$themedir/languages/Help.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$helptxt['rulesonpost_enable']='Activar Rules on Post';
+$helptxt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$helptxt['rulesonpost_css']='Puedes utilizar codigo css en este estilo.<br />Ejemplos:<br />background: # 000;<br />font-size: 20px;<br />color: # fff;<br />border-radius: 6px;.';
+$helptxt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$helptxt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>				
+	
+<file name="$themedir/languages/Help.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$helptxt['rulesonpost_enable']='Activar Rules on Post';
+$helptxt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$helptxt['rulesonpost_css']='Puedes utilizar codigo css en este estilo.<br />Ejemplos:<br />background: # 000;<br />font-size: 20px;<br />color: # fff;<br />border-radius: 6px;.';
+$helptxt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$helptxt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>			
+	
+<file name="$themedir/languages/Help.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$helptxt['rulesonpost_enable']='Activar Rules on Post';
+$helptxt['rulesonpost_message']='Mensaje que se mostrara en el area de posteo.<br />Puedes utilizar html o bbcode.';
+$helptxt['rulesonpost_css']='Puedes utilizar codigo css en este estilo.<br />Ejemplos:<br />background: # 000;<br />font-size: 20px;<br />color: # fff;<br />border-radius: 6px;.';
+$helptxt['rop_no_boards']='Indica el id de los foros donde !!NO!! quieres que se muestren las reglas.';
+$helptxt['rop_rec'] = 'Recuerda dar permisos al rango que quieres que vea el mod<br />Administracion > control de los usuarios > Permisos';
+]]></add>
+		</operation>
+	</file>		
+	
+	
+</modification>

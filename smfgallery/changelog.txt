@@ -1,0 +1,151 @@
+SMF Gallery Lite
+7.1
+!Make main image display mobile friendly for SMF 2.1.x Thanks to Mick idesignsmf.com
+!Start support for webp
+
+7.0
++Top add picture button now detects if inside a category and will have that category preselected when adding a picture
+!Fix undefined show_bbc in SMF 2.1
+!Fixed who is viewing picture to handle ;pic too instead of just ;id=
+!Raised memory limits when adding/editing pictures.
+!Minor typo changes
+
+6.0d
+!Minor bug fix on index creation for SMF 2.0-SMF 2.1
+
+6.0
+!Fixed possible injection issue due to regression in category view. Must update.
+
+5.6.1
+!Minor fixes with Aeva converter handling apostrophes
+
+5.6
+!Fixed menu icon for SMF 2.1 Beta 2
+
+5.5.1
+!Delete temp file if not a valid picture file for disk space/security
+
+5.5
++Added support for SMF 2.1 Beta 1 now using hooks for most file edits for SMF 2.1 Beta 1!
+
+5.0.1
+!Fixed bug in error message SMF 2.0 for images that exceed max width/height
+
+5.0
++Built in Aeva Media Importer! You can now import your old Aeva Media Gallery and imports your gallery pictures, categories, comments, ratings, view log, if you wish to upgrade to SMF Gallery Pro to gain even more features for your gallery
++Added indexes to gallery picture table to key columns for better performance.
++Alt tags now include the picture title
++Added comment count to comment header on view picture/improved display in SMF 2.0
+!View picture layout SMF 2.0 expanded to 100%
+!Cleaned some old template code in SMF 2.0 version that only worked for SMF 1.0.x no longer used
+!Optimized top gallery buttons code in gallery.php/gallery2.php
+
+4.0
++Better linktree display in certain areas of the gallery
++Not filling in all the information/errors on add picture page now redirects back to the page with information already filled out instead of a fatal error. SMF 2.0 only.
+!Removed some @ error suppression in the code in a few places
+
+3.7
+!Fixed searching in other languages using special characters
++Better support for other languages characters thoughout the gallery
+
+3.6a
+!Fixed undefined string error in SMF 2.0 in the admin area issue was from 3.6 update
+
+3.6
++Added copyright removal system.
+
+3.5
++Updated styling for SMF 2.0 for main areas for a better experience
++Updated admin areas with alternating row styles to make reading easier
+
+3.1.4
+!Fixed top gallery bar layout issue in chrome for SMF 2.0
+
+3.1.3
++Added support for Badge Awards http://www.smfhacks.com/badgeawards.php  checking on add picture/comments
+!Fixed possible undefined error on search page that can be caused by search engine spiders
+
+3.1.2
+!Fixed database error if viewing a link of a delete picture. Normally occurred by search engines
+
+3.1.1
+!Fixed mod_security issue with previous/next links
+
+3.1
++Added next/previous links to the picture display
+!Allowed guests to leave comments
+
+3.0.5
++Added add picture link to main gallery button tab bar
+!Fixed bug with missing background on image_listing,search results if less than max items in a row
+
+3.0.3
++Added regenerate thumbnails option on a category level.
+
+3.0.2
++Added support for SMF 2.0 RC4
+
+3.0.1
+!Fixed error with adding a comment for SMF 1.1.x
+
+3.0
++Added setting to control the number of gallery items per row
++Added settings to control thumbnail height/width
++Added paging setting for SMF 1.1.x
+!Fixed hardcoded text Views on delete image
+
+2.2
++More curve style updates!
+
+2.1
++Added support for SMF 2.0 RC3
++Moved admin area for SMF 2.0 to its own location for better manage gallery support
++Updated the settings area with a better layouts
++Added more navigation in various areas of the gallery
++Using a better format size function to return different filesize values
+
+
+2.0.12
+!Fixed undefined error in SMF 2.0.x version on view picture
+
+2.0.11
+!Fixed mod_security issues with id in url for 1.1.x
+!Updated some function names to be  more unique
++Added BBC boxes to SMF 1.1.x for categories/pictures
++Using themebox for SMF 1.1.x for BBC boxes
+
+2.0.10
+!Fixed bug where a user could upload a picture to a category that does not exist if the request was altered thanks to atokar 
+
+2.0.9
+!Fixed duplicate navigation links in SMF 2.0 RC2!
+
+2.0.8
+!Fixed image approval listing in SMF 2.0
+
+2.0.7
+!Fixed bbc editor in SMF 2.0 not working in IE6/IE7
+!Better error handling if accessing invalid image id
+
+2.0.6
+!Fixed bug with who is viewing category/picture not displaying all members viewing that page
+!Moved all queries out of templates
+
+2.0.5 Released
+!Fixed bugs with SMF 2.0 using the WYSIWYG editor
++Added the editor component to the category and picture description area for SMF 2.0
++Added index.php to the gallery folder redirects to action=gallery
+
+1.9.4
+!Fixed an issue with handling of uploaded images. An image could be crafted leading to a security issue.
+
+1.9.3
+!Fixed issue on some hosts where it could not use getimagesize in the php temp folder.
+!Fixed the category theme link when viewing an image.
+!Fixed a Pretty Url filter bug with the add picture link
+
+1.9.1
+!Fixed issue with themes that do not have tabs uses text link in that case.
+!Fixed a couple broken tags on adding/editing picture.
++Added support for Pretty Url's modification! For categories and pictures.

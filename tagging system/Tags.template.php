@@ -1,7 +1,7 @@
 <?php
 /*
 Tagging System
-Version 1.0.1
+Version 4.0
 by:vbgamer45
 http://www.smfhacks.com
 */
@@ -26,7 +26,6 @@ function template_main()
 
 
  echo '
-
   	</td>
   	</tr>
   	</table>
@@ -74,7 +73,7 @@ echo '
   	';
 
 	// The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
 
 }
 
@@ -113,7 +112,7 @@ echo '
  ';
 
 	//The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
 
 }
 
@@ -143,7 +142,7 @@ function template_addtag()
 </form>
 ';
 	//The Copyright is required to remain or contact me to purchase link removal.
-echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
+echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
 
 }
 
@@ -164,6 +163,16 @@ function template_admin_settings()
 				<tr><td width="30%">' . $txt['smftags_set_mintaglength'] . '</td><td><input type="text" name="smftags_set_mintaglength" value="' .  $modSettings['smftags_set_mintaglength'] . '" /></td></tr>
 				<tr><td width="30%">' . $txt['smftags_set_maxtaglength'] . '</td><td><input type="text" name="smftags_set_maxtaglength" value="' .  $modSettings['smftags_set_maxtaglength'] . '" /></td></tr>
 				<tr><td width="30%">' . $txt['smftags_set_maxtags'] . '</td><td><input type="text" name="smftags_set_maxtags" value="' .  $modSettings['smftags_set_maxtags'] . '" /></td></tr>
+				
+				<tr><td width="30%">' . $txt['smftags_set_msgindex'] . '</td><td><input type="checkbox" name="smftags_set_msgindex" ' .  ($modSettings['smftags_set_msgindex'] ? ' checked="checked"' : '') . '" /></td></tr>
+				
+				<tr><td width="30%">' . $txt['smftags_set_msgindex_max_show'] . '</td><td><input type="text" name="smftags_set_msgindex_max_show" value="' .  $modSettings['smftags_set_msgindex_max_show'] . '" /></td></tr>
+				<tr><td width="30%">' . $txt['smftags_set_use_css_tags'] . '</td><td><input type="checkbox" name="smftags_set_use_css_tags" ' .  ($modSettings['smftags_set_use_css_tags'] ? ' checked="checked"' : '') . '" /></td></tr>
+				
+				<tr><td width="30%">' . $txt['smftags_set_css_tag_background_color'] . '</td><td><input type="text" name="smftags_set_css_tag_background_color" value="' .  $modSettings['smftags_set_css_tag_background_color'] . '" /></td></tr>
+				<tr><td width="30%">' . $txt['smftags_set_css_tag_font_color'] . '</td><td><input type="text" name="smftags_set_css_tag_font_color" value="' .  $modSettings['smftags_set_css_tag_font_color'] . '" /></td></tr>
+
+				
 				<tr>
 				<td clospan="2"><b>',$txt['smftags_tagcloud_settings'],'</b></td>
 				</tr>
@@ -194,7 +203,7 @@ function template_admin_settings()
 </table>';
 
 	//The Copyright is required to remain or contact me to purchase link removal.
-echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
+echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
 }
 
 function template_suggesttag()
@@ -221,6 +230,6 @@ function template_suggesttag()
 </table>
 </form>';
 	//The Copyright is required to remain or contact me to purchase link removal.
-	echo '<br /><div align="center"><span class="smalltext">Powered By <a href="http://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered By <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
 }
 ?>

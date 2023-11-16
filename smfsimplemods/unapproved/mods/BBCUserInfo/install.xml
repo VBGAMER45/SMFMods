@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:BBC_User_Info</id>
+	<version>2.1</version>
+	<name>BBC User Info</name>
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="before"><![CDATA[$topic = $topicOptions['id'];]]></search>		
+			<add><![CDATA[
+
+		//BbcUserInfo Start
+		if (!empty($modSettings['uic_enable']))
+		{		
+			$userpattern = "/\[user\](.*?)\[\/user\]/s";
+			$msgText = $msgOptions['body'];
+			
+			preg_match_all($userpattern,$msgText,$aMatch);
+							
+			if (!empty($aMatch[1]))
+			{
+				$context['toSendPm'] = array();
+				$request = $smcFunc['db_query']('', "
+					SELECT id_member
+					FROM {db_prefix}members
+					WHERE real_name IN ({array_string:user})",
+					array(
+						'user' => $aMatch[1],
+					)
+				);
+
+				while($row = $smcFunc['db_fetch_assoc']($request))		
+					$context['toSendPm'][] = $row['id_member'];		
+
+				$smcFunc['db_free_result']($request);
+
+				foreach ($context['toSendPm'] as $user)
+				{
+					if (!empty($user)) //Guests doesn't receive mp
+					{
+						global $scripturl;
+						loadLanguage('Userinfo');
+
+						$recipients = array(
+							'to' => array($user),
+							'bcc' => array()
+						);
+					
+						$subject = $txt['uic_pm_title'];
+						$message = $txt['uic_pm_body'].' [url='. $scripturl .'?topic='.$topic.']'.$msgOptions['subject'].'[/url]';
+						$outbox_store = false;
+						$from = array (
+							'id' => $user_info['id'],
+							'name' =>'',
+							'username' => '',
+						);
+						
+						if(!empty($message))
+							sendpm($recipients, $subject, $message, $outbox_store, $from);
+					}				
+				}
+			}
+		}
+		//BBCUserInfo END]]></add>
+		</operation>
+	</file>
+</modification>

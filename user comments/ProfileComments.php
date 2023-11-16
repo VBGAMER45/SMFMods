@@ -21,7 +21,6 @@ function CommentsMain()
 
 	// Profile Comments actions
 	$subActions = array(
-		'view' => 'ProfileCommentsview',
 		'admin' => 'CommentsAdmin',
 		'add' => 'ProfileCommentsAdd',
 		'add2' => 'ProfileCommentsAdd2',
@@ -36,12 +35,7 @@ function CommentsMain()
 	// Follow the sa or just go to administration.
 	if (!empty($subActions[$sa]))
 		$subActions[$sa]();
-	else
-		ProfileCommentsview();
-}
-function ProfileCommentsview()
-{
-	die(base64_decode('UG93ZXJlZCBieSBQcm9maWxlIENvbW1lbnRzIG1hZGUgYnkgdmJnYW1lcjQ1IGh0dHA6Ly93d3cuc21maGFja3MuY29t'));
+
 }
 
 function ProfileCommentsAdd()

@@ -1,0 +1,19 @@
+<?php
+$txt['fsb_admin'] = 'Fixed Social Bookmarks';
+$txt['fsb_admin_desc'] = 'From here you can configure Fixed Social Bookmarks mod.';
+$txt['allforum_fixed_enable'] = 'Show in All forum';
+$txt['display_fixed_enable'] = 'Show only topics forum';
+$txt['index_fixed_enable'] = 'Show only index forum';
+$txt['sb_zone_float'] = 'Position Of Bar';
+$txt['sb_show_left'] = 'Left';
+$txt['sb_show_right'] = 'Right';
+$txt['sbfacebook_enable'] = 'Facebook';
+$txt['sbtwitter_enable'] = 'Twitter';
+$txt['sbtechnorati_enable'] = 'Technorati';
+$txt['sbReddit_enable'] = 'Reddit';
+$txt['sbMySpace_enable'] = 'MySpace';
+$txt['sbLinkEdin_enable'] = 'LinkEdin';
+$txt['sbDelicious_enable'] = 'Delicious';
+$txt['sbDigg_enable'] = 'Digg';
+$txt['sbStum_enable'] = 'Stumbleupon';
+$txt['sbNewsVine_enable'] = 'NewsVine';

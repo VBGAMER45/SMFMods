@@ -1,0 +1,8 @@
+<div style="font-size:15px;font-weight:bold;" align="center">
+<span style="color:#DC3737;">Instalacion Existosa!</span><hr style="width:500px;" />
+<span style="color:#777;">Estas siendo redirigid@ hacia la administracion del MiniMod</span><br />
+Visitanos en www.smfsimple.com :)</div><br /><br />
+<div style="font-size:15px;font-weight:bold;" align="center">
+<span style="color:#DC3737;">Successfull installation!</span><hr style="width:500px;" />
+<span style="color:#777;">You will be redirected to the minimod configuration panel</span><br />
+Visit: www.smfsimple.com :)</div>

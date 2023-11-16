@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:smfgallerypro</id>
+<version>5.0</version>
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end"></search>
+		<add><![CDATA[
+//Begin SMF Gallery Text Strings
+$txt['smfgallery_title'] = 'Gallery For SMF';
+$txt['smfgallery_menu'] = 'Gallery';
+$txt['smfgallery_version'] = '6.1 Lite';
+$txt['smfgallery_admin'] = 'Gallery Configuration';
+$txt['gallery_txt_convertors'] = 'Converters';
+
+//Permissions
+$txt['permissiongroup_smfgallery'] = 'SMF Gallery';
+$txt['permissiongroup_simple_smfgallery'] = 'Use SMF Gallery.';
+
+$txt['permissionname_smfgallery_view'] = 'View SMF Gallery';
+$txt['permissionhelp_smfgallery_view'] = 'Allows the user to view the Gallery';
+$txt['cannot_smfgallery_view'] = 'You are not allowed to view the Gallery';
+
+$txt['permissionname_smfgallery_add'] = 'Add Picture';
+$txt['permissionhelp_smfgallery_add'] = 'Allows the user to add a picture.';
+$txt['cannot_smfgallery_add'] = 'You are not allowed to add a picture.';
+
+$txt['permissionname_smfgallery_edit'] = 'Edit own Picture';
+$txt['permissionhelp_smfgallery_edit'] = 'Allows the user to edit a picture.';
+$txt['cannot_smfgallery_edit'] = 'You are not allowed to edit a picture.';
+
+$txt['permissionname_smfgallery_delete'] = 'Delete own Picture';
+$txt['permissionhelp_smfgallery_delete'] = 'Allows the user to delete a picture.';
+$txt['cannot_smfgallery_delete'] = 'You are not allowed to delete a picture.';
+
+$txt['permissionname_smfgallery_comment'] = 'Leave Comments';
+$txt['permissionhelp_smfgallery_comment'] = 'Allows the user to leave comments on a picture.';
+$txt['cannot_smfgallery_comment'] = 'You are not allowed to leave comments.';
+
+$txt['permissionname_smfgallery_report'] = 'Report Pictures/Comments';
+$txt['permissionhelp_smfgallery_report'] = 'Allows the user to report pictures and comments.';
+$txt['cannot_smfgallery_report'] = 'You are not allowed to report content.';
+
+$txt['permissionname_smfgallery_autoapprove'] = 'Auto Approve Pictures';
+$txt['permissionhelp_smfgallery_autoapprove'] = 'Pictures do not need to wait for approval.';
+
+$txt['permissionname_smfgallery_manage'] = 'Manage Gallery';
+$txt['permissionhelp_smfgallery_manage'] = 'Allows the user to add/delete/edit all catagories. Delete Comments, Delete Pictures, Approve Pictures';
+$txt['cannot_smfgallery_manage'] = 'You are not allowed to manage gallery.';
+
+
+$txt['gallery_form_managecats'] = 'Manage Categories';
+$txt['gallery_form_approveimages'] = 'Approve Images';
+$txt['gallery_form_reportimages'] = 'Reported Images';
+$txt['gallery_text_settings'] = 'Settings';
+$txt['gallery_txt_copyrightremoval'] = 'Copyright Removal';
+
+//END SMF Gallery Text Strings	
+]]></add>
+	</operation>
+</file>
+
+
+
+
+
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="end"></search>
+		<add><![CDATA[
+// Begin SMF Gallery
+$txt['whoall_gallery'] = 'In the <a href="' . $scripturl . '?action=gallery">Gallery</a>';
+// END SMF Gallery Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/PrettyUrls-Filters.php" error="skip">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+//	Filter SMF Gallery Lite
+function pretty_smf_gallery_lite_filter($urls)
+{
+	global $boardurl, $scripturl;
+
+
+	// Do Gallery Index replacement
+	/*
+	$pattern = '~' . $scripturl . '(.*)page=([^;]+)~S';
+	$replacement = $boardurl . '/index.php?action=gallery';
+	foreach ($urls as $url_id => $url)
+		if (!isset($url['replacement']))
+			if (preg_match($pattern, $url['url']))
+				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
+	*/
+	
+	// Do Gallery Category Replacement
+	$pattern = '~' . $scripturl . '(.*)action=gallery;cat=([^;]+)~S';
+	$replacement = $boardurl . '/gallery/category/$2';
+	foreach ($urls as $url_id => $url)
+		if (!isset($url['replacement']))
+			if (preg_match($pattern, $url['url']))
+				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
+	
+	
+	// Do Gallery Picture Replacement
+	$pattern = '~' . $scripturl . '(.*)sa=view;id=([^;]+)~S';
+	$replacement = $boardurl . '/gallery/picture/$2/';
+	foreach ($urls as $url_id => $url)
+		if (!isset($url['replacement']))
+			if (preg_match($pattern, $url['url']))
+				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
+	
+	
+	
+	
+	return $urls;
+}
+]]></add>
+		</operation>
+	</file>
+</modification>

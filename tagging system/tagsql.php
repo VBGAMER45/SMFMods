@@ -45,4 +45,20 @@ db_query("INSERT IGNORE INTO {$db_prefix}settings VALUES ('smftags_set_cloud_min
 db_query("DELETE FROM {$db_prefix}package_servers WHERE url = 'http://www.smfhacks.com'", __FILE__, __LINE__);
 db_query("REPLACE INTO {$db_prefix}package_servers (name,url) VALUES ('SMFHacks.com Modification Site', 'http://www.smfhacks.com')", __FILE__, __LINE__);
 
+
+// Tagging System Updates
+if (!isset($modSettings['smftags_set_msgindex']))
+{
+
+	updateSettings(array(
+		'smftags_set_msgindex' => 1,
+		'smftags_set_msgindex_max_show' => 5,
+
+		'smftags_set_use_css_tags' => 1,
+		'smftags_set_css_tag_background_color' => '#71a0b7',
+		'smftags_set_css_tag_font_color' => 'white',
+	));
+}
+
+
 ?>

@@ -28,4 +28,15 @@
 			<code>UnInstall.php</code>
 	</uninstall>
 
+
+	<install for="2.1 - 2.1.99,2.0 RC2">
+			<readme>ReadMe.txt</readme>
+			<modification type="file">AvatarSelect2.1.xml</modification>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+			<modification type="file" reverse="true">AvatarSelect2.1.xml</modification>
+			<code>UnInstall.php</code>
+	</uninstall>
+
 </package-info>

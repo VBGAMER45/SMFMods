@@ -4,7 +4,7 @@
 <id>vbgamer45:SMFLinks</id>
 <name>SMF Links</name>
 <type>modification</type>
-<version>4.0.1</version>
+<version>4.1</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
 		<redirect url="?action=links;sa=admin">redirect.txt</redirect>
@@ -57,7 +57,6 @@
 
 
 		<install for="2.1 - 2.1.99">
-			<modification type="file">links2.1.xml</modification>
 			<redirect url="?action=admin;area=links;sa=admin">redirect.txt</redirect>
 			<readme>ReadMe.txt</readme>
 			<hook hook="integrate_actions" function="links_actions" file="$sourcedir/LinksHooks.php"  />
@@ -70,7 +69,6 @@
 			<require-file name="LinksHooks.php" destination="$sourcedir" />
 			<require-file name="Links2.1.template.php" destination="$themedir" />
 			<require-file name="Links.english.php" destination="$themedir/languages" />
-			<require-file name="Links.english-utf8.php" destination="$themedir/languages" />
 			<code>linksql2.php</code>
 		</install>
 		<uninstall for="2.1 - 2.1.99">
@@ -79,7 +77,6 @@
 			<hook hook="integrate_admin_areas" function="links_admin_areas" file="$sourcedir/LinksHooks.php" reverse="true" />
 			<hook hook="integrate_load_permissions" function="links_load_permissions" file="$sourcedir/LinksHooks.php" reverse="true" />
 
-			<modification type="file" reverse="true">links2.1.xml</modification>
 			<code>UnInstall.php</code>
 	</uninstall>
 

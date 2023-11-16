@@ -1,0 +1,10 @@
+Version 3.0.1
+!Hide unapproved topics/messages
+!Fix member group error when viewing a board
+
+Version 3.0
++Added support for SMF 2.1.x
+!Replaced text strings with language strings
+!Fixed paging calculation
++Added extra paging on view topic page on bottom
++Adds link now to lofi version in the footer

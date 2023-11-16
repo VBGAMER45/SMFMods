@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:Formspring Profile Field</id>
+	<version>1.1</version>
+	
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+
+            		<add><![CDATA[// Formspring Profile Field Modification
+$txt['formspring'] = 'Formspring';
+$txt['formspring_desc'] = 'Enter your Formspring username (E.x: http://formspring.me/lol123, put in: lol123)';
+
+]]></add>
+        	</operation>
+   	</file>
+</modification>

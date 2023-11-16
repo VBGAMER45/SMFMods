@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+    <name>Recent Activity</name>
+	<id>DIBILO:Recent Activity</id>
+	<type>modification</type>
+	<version>1.0</version>
+	<install for="2.0 - 2.0.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification type="file">install.xml</modification>
+		<modification>languages.xml</modification>
+	</install>	
+	
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">install.xml</modification>
+		<modification type="file" reverse="true">languages.xml</modification>
+		</uninstall>
+</package-info>

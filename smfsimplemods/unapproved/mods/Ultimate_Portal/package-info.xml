@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vicram10:UltimatePortal</id>
+	<name>Ultimate Portal By SMFSimple.com</name>
+	<type>modification</type>
+	<version>0.4</version>
+	<install for="2.0 - 2.99.99">
+		<redirect url="?action=admin;area=preferences">redirect.txt</redirect>
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>install.xml</modification>
+		<!-- Important files -->
+		<require-dir name="Sources" destination="$boarddir" />				
+		<require-dir name="Themes" destination="$boarddir" />				
+		<!-- Extra Folders -->
+		<require-dir name="up-blocks" destination="$boarddir" />				
+		<require-dir name="up-php-blocks" destination="$boarddir" />						
+		<require-dir name="up-attachments" destination="$boarddir" />						
+		<require-dir name="up-covers" destination="$boarddir" />						
+		<!-- DB install -->
+		<code>install_db.php</code>			
+	</install>
+	<uninstall for="2.0 - 2.99.99">
+		<readme parsebbc="true">uninstall_readme.txt</readme>
+		<modification type="file" reverse="true">install.xml</modification>
+		<!-- Extra Folders -->
+		<remove-dir name="$boarddir/up-covers" />		
+		<remove-dir name="$boarddir/up-attachments" />		
+		<remove-dir name="$boarddir/up-blocks" />		
+		<remove-dir name="$boarddir/up-php-blocks" />				
+		<remove-dir name="$themedir/up-editor" />	
+		<remove-dir name="$themedir/up-extras" />	
+		<!-- Important files -->
+		<remove-file name="$sourcedir/Subs-UltimatePortal.php" />		
+		<remove-file name="$sourcedir/Subs-UltimatePortal-Init-Blocks.php" />				
+		<remove-file name="$sourcedir/UltimatePortal.php" />		
+		<remove-file name="$sourcedir/UltimatePortal-BlocksMain.php" />		
+		<remove-file name="$sourcedir/UltimatePortalCP.php" />		
+		<remove-file name="$sourcedir/UltimatePortalModules.php" />		
+		<remove-file name="$sourcedir/UPNews.php" />				
+		<remove-file name="$sourcedir/UPUserPosts.php" />						
+		<remove-file name="$sourcedir/UPDownload.php" />						
+		<remove-file name="$sourcedir/UPInternalPage.php" />								
+		<remove-file name="$sourcedir/UPAboutUs.php" />								
+		<remove-file name="$sourcedir/UPFaq.php" />								
+		<!-- Templates -->
+		<remove-file name="$themedir/UltimatePortal.template.php" />		
+		<remove-file name="$themedir/UltimatePortal-BlocksMain.template.php" />		
+		<remove-file name="$themedir/UltimatePortalCP.template.php" />		
+		<remove-file name="$themedir/UltimatePortalModules.template.php" />		
+		<remove-file name="$themedir/UPNews.template.php" />				
+		<remove-file name="$themedir/UPUserPosts.template.php" />						
+		<remove-file name="$themedir/UPDownload.template.php" />						
+		<remove-file name="$themedir/UPInternalPage.template.php" />								
+		<remove-file name="$themedir/UPAboutUs.template.php" />								
+		<remove-file name="$themedir/UPFaq.template.php" />								
+		<remove-file name="$themedir/css/UltimatePortalCSS.css" />								
+		<!-- Language files english -->
+		<remove-file name="$languagedir/UltimatePortal.english.php" />			
+		<remove-file name="$languagedir/UltimatePortal-BlocksMain.english.php" />			
+		<remove-file name="$languagedir/UltimatePortalCP.english.php" />			
+		<remove-file name="$languagedir/UltimatePortalModules.english.php" />			
+		<remove-file name="$languagedir/UPNews.english.php" />			
+		<remove-file name="$languagedir/UPUserPosts.english.php" />					
+		<remove-file name="$languagedir/UPDownload.english.php" />					
+		<remove-file name="$languagedir/UPInternalPage.english.php" />							
+		<remove-file name="$languagedir/UPAboutUs.english.php" />							
+		<remove-file name="$languagedir/UPFaq.english.php" />		
+		<!-- lenguage files spanish_es-utf8 -->
+        <remove-file name="$languagedir/UltimatePortal.spanish_es-utf8.php" />			
+		<remove-file name="$languagedir/UltimatePortal-BlocksMain.spanish_es-utf8.php" />			
+		<remove-file name="$languagedir/UltimatePortalCP.spanish_es-utf8.php" />			
+		<remove-file name="$languagedir/UltimatePortalModules.spanish_es-utf8.php" />			
+		<remove-file name="$languagedir/UPNews.spanish_es-utf8.php" />			
+		<remove-file name="$languagedir/UPUserPosts.spanish_es-utf8.php" />					
+		<remove-file name="$languagedir/UPDownload.spanish_es-utf8.php" />					
+		<remove-file name="$languagedir/UPInternalPage.spanish_es-utf8.php" />							
+		<remove-file name="$languagedir/UPAboutUs.spanish_es-utf8.php" />							
+		<remove-file name="$languagedir/UPFaq.spanish_es-utf8.php" />	
+		<!-- lenguage files spanish_es -->
+        <remove-file name="$languagedir/UltimatePortal.spanish_es.php" />			
+		<remove-file name="$languagedir/UltimatePortal-BlocksMain.spanish_es.php" />			
+		<remove-file name="$languagedir/UltimatePortalCP.spanish_es.php" />			
+		<remove-file name="$languagedir/UltimatePortalModules.spanish_es.php" />			
+		<remove-file name="$languagedir/UPNews.spanish_es.php" />			
+		<remove-file name="$languagedir/UPUserPosts.spanish_es.php" />					
+		<remove-file name="$languagedir/UPDownload.spanish_es.php" />					
+		<remove-file name="$languagedir/UPInternalPage.spanish_es.php" />							
+		<remove-file name="$languagedir/UPAboutUs.spanish_es.php" />							
+		<remove-file name="$languagedir/UPFaq.spanish_es.php" />		
+		<!-- Extra Image -->
+        <remove-dir name="$imagesdir/ultimate-portal" />		
+		<remove-file name="$imagesdir/admin/up-admin.png" />				
+		<remove-file name="$imagesdir/admin/up-affiliates.png" />						
+		<remove-file name="$imagesdir/admin/up-blocks.png" />				
+		<remove-file name="$imagesdir/admin/up-boards-news.png" />				
+		<remove-file name="$imagesdir/admin/up-download.png" />				
+		<remove-file name="$imagesdir/admin/up-news.png" />				
+		<remove-file name="$imagesdir/admin/up-user-posts.png" />						
+		<remove-file name="$imagesdir/admin/up-aboutus.png" />								
+		<remove-file name="$imagesdir/admin/up-faq.png" />
+		<remove-file name="$imagesdir/admin/up-multiblock.png" />
+	</uninstall>
+</package-info>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF8 without BOM"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:Reason_For_Delete</id>
+	<name>Reason For Delete</name>
+	<version>1.0</version>
+	
+<file name="$languagedir/Modifications.Spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Reason For Delete! Start - Smfsimple.com
+$txt['rfd_menu_button'] = 'Reason For Delete';
+$txt['rfd_settings'] = 'Configuracion';
+$txt['rfd_description'] = 'Desde aqui puede configurar su mod';
+$txt['rfd_enabled'] = 'Activar Reason For Delete?';
+$txt['rfd_titleset'] = 'Titulos del MP <br /> <small>Dejar en blanco para usar titulo por defecto</small>';
+$txt['rfd_idusersend'] = 'Quien manda el MP!? <br /> <small>Solo poner ID</small> <br /> <small>Dejar en blanco si quien borra el topic es quien envia</small>';
+$txt['rfd_btn_save'] = 'guardar';
+$txt['rfd_AddProfiles'] = 'Agregar Perfiles de Razones';
+$txt['rfd_EditProfiles'] = 'Editar Perfiles de Razones';
+$txt['rfd_title'] = 'Titulo';
+$txt['description'] = 'Descripcion';
+$txt['rfd_default_text'] = 'Texto Por Defecto';
+$txt['rfd_id'] = 'Id';
+$txt['rfd_add'] = 'Agregar';
+$txt['rfd_edit'] = 'Editar';
+$txt['rfd_delete'] = 'Borrar';
+$txt['rfd_delete_topic'] = 'Post Borrado: ';
+$txt['rfd_PostedBy'] = 'Posteado Por: ';
+$txt['rfd_additional_info'] = 'Informacion Adicional: ';
+$txt['rfd_no_info'] = 'Opcion Sin Plantilla, Solo Agregue Informacion Adicional';
+$txt['rfd_choose_info'] = 'O elija un perfil de abajo';
+$txt['rfd_postRemoved'] = 'Post Borrado: ';
+$txt['rfd_variables'] = 'Puede usar BBCODE o estas variables:';
+$txt['rfd_poster_name'] = '-> Nombre del Usuario: ';
+$txt['rfd_subject_topic'] = '-> Titulo del Topic: ';
+$txt['rfd_error_noid'] = 'Debe seleccionar un tema para borrar';				
+
+]]></add>
+		</operation>
+</file>	
+	
+<file name="$languagedir/Modifications.Spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Reason For Delete! Start - Smfsimple.com
+$txt['rfd_menu_button'] = 'Reason For Delete';
+$txt['rfd_settings'] = 'Configuracion';
+$txt['rfd_description'] = 'Desde aqui puede configurar su mod';
+$txt['rfd_enabled'] = 'Activar Reason For Delete?';
+$txt['rfd_titleset'] = 'Titulos del MP <br /> <small>Dejar en blanco para usar titulo por defecto</small>';
+$txt['rfd_idusersend'] = 'Quien manda el MP!? <br /> <small>Solo poner ID</small> <br /> <small>Dejar en blanco si quien borra el topic es quien envia</small>';
+$txt['rfd_btn_save'] = 'guardar';
+$txt['rfd_AddProfiles'] = 'Agregar Perfiles de Razones';
+$txt['rfd_EditProfiles'] = 'Editar Perfiles de Razones';
+$txt['rfd_title'] = 'Titulo';
+$txt['description'] = 'Descripcion';
+$txt['rfd_default_text'] = 'Texto Por Defecto';
+$txt['rfd_id'] = 'Id';
+$txt['rfd_add'] = 'Agregar';
+$txt['rfd_edit'] = 'Editar';
+$txt['rfd_delete'] = 'Borrar';
+$txt['rfd_delete_topic'] = 'Post Borrado: ';
+$txt['rfd_PostedBy'] = 'Posteado Por: ';
+$txt['rfd_additional_info'] = 'Informacion Adicional: ';
+$txt['rfd_no_info'] = 'Opcion Sin Plantilla, Solo Agregue Informacion Adicional';
+$txt['rfd_choose_info'] = 'O elija un perfil de abajo';
+$txt['rfd_postRemoved'] = 'Post Borrado: ';
+$txt['rfd_variables'] = 'Puede usar BBCODE o estas variables:';
+$txt['rfd_poster_name'] = '-> Nombre del Usuario: ';
+$txt['rfd_subject_topic'] = '-> Titulo del Topic: ';
+$txt['rfd_error_noid'] = 'Debe seleccionar un tema para borrar';				
+
+]]></add>
+		</operation>
+</file>	
+
+	
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Reason For Delete! Start - Smfsimple.com
+$txt['rfd_menu_button'] = 'Reason For Delete';
+$txt['rfd_settings'] = 'Settings';
+$txt['rfd_description'] = 'From here you can setting your mod';
+$txt['rfd_enabled'] = 'Enabled Reason For Delete?';
+$txt['rfd_titleset'] = 'PM Title <br /> <small>Leave Blank to use default title</small>';
+$txt['rfd_idusersend'] = 'Who send PM!? <br /> <small>Put member ID only!!</small> <br /> <small>Leave blank if that is the sender deletes</small>';
+$txt['rfd_btn_save'] = 'Save';
+$txt['rfd_AddProfiles'] = 'Add Profiles Reasons';
+$txt['rfd_EditProfiles'] = 'Edit Profiles Reasons';
+$txt['rfd_title'] = 'Title';
+$txt['description'] = 'Description';
+$txt['rfd_default_text'] = 'Default Text';
+$txt['rfd_id'] = 'Id';
+$txt['rfd_add'] = 'Add';
+$txt['rfd_edit'] = 'Edit';
+$txt['rfd_delete'] = 'Delete';
+$txt['rfd_delete_topic'] = 'Delete Post: ';
+$txt['rfd_PostedBy'] = 'Posted By: ';
+$txt['rfd_additional_info'] = 'Additional Info: ';
+$txt['rfd_no_info'] = 'Default Option, Add only additional info';
+$txt['rfd_choose_info'] = 'Or choose a profile from below';
+$txt['rfd_postRemoved'] = 'Post Removed: ';
+$txt['rfd_variables'] = 'You can use BBCODE and this varibles:';
+$txt['rfd_poster_name'] = '-> Post Name: ';
+$txt['rfd_subject_topic'] = '-> Subject Topic: ';
+$txt['rfd_error_noid'] = 'You must select a topic to delete';
+]]></add>
+		</operation>
+</file>
+</modification>

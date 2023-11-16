@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:RulesOnPost</id>
+	<name>Rules On Post V1 Full Version</name>
+	<version>V1 Full Version</version>
+
+<file name="$themedir/Post.template.php">
+        <operation>
+			<search position="after"><![CDATA[// If the user wants to see how their]]></search>
+			<add><![CDATA[
+    rules_on_postV1();
+  ]]></add>
+		</operation>
+
+	</file>
+	
+<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+			array('check', 'rulesonpost_enable', 'subtext' => $txt['rop_rec']), 
+			array('text', 'rop_no_boards', '10', 'subtext' => $txt['rop_no_boards_desc']),
+			array('large_text', 'rulesonpost_message', '6'),
+			array('large_text', 'rulesonpost_css', '6'),
+			]]></add>
+		</operation>
+		</file>	
+		
+<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Rules On Post V1 Full Version By Smfsimple.com
+function rules_on_postV1()
+{
+global $board, $user_settings, $modSettings;
+
+	$boards = @$modSettings['rop_no_boards'];
+	$ex = explode(',',$boards);
+	if (@$modSettings['rulesonpost_enable']) {
+		if(allowedTo('rop_view')) {
+			if(!in_array($board,$ex)){ 
+			echo '<div class="description" style="', $modSettings['rulesonpost_css'] ,'">', parse_bbc($modSettings['rulesonpost_message']),'</div> ';
+			}
+	    }
+	}	
+}
+]]></add>
+		</operation>
+		</file>			
+		
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[	$groupLevels['global']['standard'] = array_merge($groupLevels['global']['restrict'], array(]]></search>
+		<add><![CDATA[
+		'rop_view',
+]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(]]></search>
+		<add><![CDATA[
+			'rop_view' => array(false, 'rop_view', 'rop_view'),
+]]></add>
+	</operation>
+</file>		
+			
+
+</modification>

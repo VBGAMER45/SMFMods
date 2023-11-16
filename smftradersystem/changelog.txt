@@ -1,3 +1,6 @@
+3.0.3
+!Minor PHP 8 fix for viewing feedbacks that do not exist/deleted.
+
 3.0.2
 !If using SMF Classifieds only show the submit feedback link if they have completed a transaction either as a buyer or seller.
 

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<theme-info xmlns="http://www.simplemachines.org/xml/theme-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Lean:Sunblox</id>
+	<version>2.0</version>
+	<name>Sunblox</name>
+	<author name="Lean">marafio@hotmail.com</author>
+	<website>https://www.smfsimple.com/</website>
+	<layers>html,body</layers>
+	<templates>index</templates>
+	<based-on></based-on>
+</theme-info>

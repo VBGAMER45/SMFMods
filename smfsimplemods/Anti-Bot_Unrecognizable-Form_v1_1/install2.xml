@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:unrecognizableform</id>
+	<name>Anti Bot: Unrecognizable Form</name>
+	<version>1.1</version>
+
+	<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	function checkAgree()
+	{
+		document.forms.creator.regSubmit.disabled =  (currentAuthMethod == "passwd" && (isEmptyText(document.forms.creator.smf_autov_pwmain) || isEmptyText(document.forms.creator.user) || isEmptyText(document.forms.creator.email))) || (currentAuthMethod == "openid" && isEmptyText(document.forms.creator.openid_url)) || !document.forms.creator.regagree.checked;
+		setTimeout("checkAgree();", 1000);
+	}]]></search>
+			<add><![CDATA[
+	function checkAgree()
+	{
+		document.forms.creator.regSubmit.disabled =  (currentAuthMethod == "passwd" && (isEmptyText(document.forms.creator.smf_autov_pwmain) || isEmptyText(document.forms.creator.', $_SESSION['antibotuf']['user'], ') || isEmptyText(document.forms.creator.', $_SESSION['antibotuf']['email'], '))) || (currentAuthMethod == "openid" && isEmptyText(document.forms.creator.openid_url)) || !document.forms.creator.regagree.checked;
+		setTimeout("checkAgree();", 1000);
+	}]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+	<table border="0" width="100%" cellpadding="3" cellspacing="0" class="tborder">]]></search>
+			<add><![CDATA[
+	<div style="display: none">
+		<input type="text" name="user" />
+		<input type="text" name="email" />
+		<input type="text" name="passwrd1" />
+		<input type="text" name="passwrd2" />
+	</div>]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+							<input type="text" name="user" id="smf_autov_username" size="30" tabindex="', $context['tabindex']++, '" maxlength="25" value="', isset($context['username']) ? $context['username'] : '', '" />]]></search>
+			<add><![CDATA[
+							<input type="text" name="', $_SESSION['antibotuf']['user'], '" id="smf_autov_username" size="30" tabindex="', $context['tabindex']++, '" maxlength="25" value="', isset($context['username']) ? $context['username'] : '', '" />]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+							<input type="text" name="email" id="smf_autov_reserve1" size="30" tabindex="', $context['tabindex']++, '" value="', isset($context['email']) ? $context['email'] : '', '" />]]></search>
+			<add><![CDATA[
+							<input type="text" name="', $_SESSION['antibotuf']['email'], '" id="smf_autov_reserve1" size="30" tabindex="', $context['tabindex']++, '" value="', isset($context['email']) ? $context['email'] : '', '" />]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+							<input type="password" name="passwrd1" id="smf_autov_pwmain" size="30" tabindex="', $context['tabindex']++, '" />]]></search>
+			<add><![CDATA[
+							<input type="password" name="', $_SESSION['antibotuf']['passwrd1'], '" id="smf_autov_pwmain" size="30" tabindex="', $context['tabindex']++, '" />]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+							<input type="password" name="passwrd2" id="smf_autov_pwverify" size="30" tabindex="', $context['tabindex']++, '" />]]></search>
+			<add><![CDATA[
+							<input type="password" name="', $_SESSION['antibotuf']['passwrd2'], '" id="smf_autov_pwverify" size="30" tabindex="', $context['tabindex']++, '" />]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Under age restrictions?]]></search>
+			<add><![CDATA[
+	## Start MOD Anti Bot: Unrecognizable Form - Generating Code
+	$form_names = array ('user', 'email', 'passwrd1', 'passwrd2');
+
+	foreach ($form_names as $value)
+		$_SESSION['antibotuf'][$value] = chr(mt_rand(97, 122)) . md5(mt_rand());
+	unset($form_names);
+
+	// This page should be reaload always
+	header('Cache-Control: no-store');
+
+	## End MOD Anti Bot: Unrecognizable Form - Generating Code
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+		// Are they under age, and under age users are banned?]]></search>
+			<add><![CDATA[
+		## Start Anti Bot: Unrecognizable Form - Capturing Bots
+
+		if (empty($_SESSION['antibotuf']))
+			fatal_lang_error('registration_disabled', false);		// Error for sidetrack
+
+		$form_names = array ('user', 'email', 'passwrd1', 'passwrd2');
+
+		foreach ($form_names as $value)
+		{
+			// Only a Bot use this
+			if (!empty($_POST[$value]))
+				fatal_lang_error('registration_disabled', false);		// Error for sidetrack
+
+			// Restoring Real Values
+			$_POST[$value] = $_POST[$_SESSION['antibotuf'][$value]];
+		}
+		unset($form_names, $_SESSION['antibotuf']);
+
+		## End MOD Anti Bot: Unrecognizable Form - Capturing Bots
+]]></add>
+		</operation>
+	</file>
+
+</modification>

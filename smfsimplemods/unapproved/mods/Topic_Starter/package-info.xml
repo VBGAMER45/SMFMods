@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:TopicStarterBBC</id>
+	<name>Topic Starter BBC</name>
+	<version>1.1</version>
+	<type>modification</type>
+	<install for="2.0 - 2.99.99">
+		<require-file name="sources/TopicStarterBBC.php" destination="$sourcedir" />		
+		<code>hooks.php</code>
+	</install>	
+	<uninstall for="2.0 - 2.99.99">
+		<remove-file name="$sourcedir/TopicStarterBBC.php" />			
+		<code>hooks.php</code>	
+	</uninstall>
+</package-info>

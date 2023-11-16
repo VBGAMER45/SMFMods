@@ -543,19 +543,19 @@ function pretty_profiles_filter($urls)
 	if (count($query_data) != 0)
 	{
 		$query = $smcFunc['db_query']('', '
-			SELECT id_member, member_name
+			SELECT id_member, real_name
 			FROM {db_prefix}members
 			WHERE id_member IN ({array_int:member_ids})',
 			array('member_ids' => $query_data));
 
 		$memberNames = array();
 		while ($row = $smcFunc['db_fetch_assoc']($query))
-			$memberNames[$row['id_member']] = rawurlencode($row['member_name']);
+			$memberNames[$row['id_member']] = rawurlencode($row['real_name']);
 		$smcFunc['db_free_result']($query);
 
 		//	Build the replacement URLs
 		foreach ($urls as $url_id => $url)
-			if (isset($url['profile_id']))
+			if ((isset($url['profile_id'])) && (isset($memberNames[$url['profile_id']])))
 				if (strpos($memberNames[$url['profile_id']], '%2F') !== false)
 					$urls[$url_id]['replacement'] = $boardurl . '/profile/' . $url['match1'] . 'user=' . $memberNames[$url['profile_id']] . $url['match3'];
 				else

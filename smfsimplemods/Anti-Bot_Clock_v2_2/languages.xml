@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>karlbenson:antibotclock</id>
+	<name>Anti Bot: Captcha Clock</name>
+	<version>2.2</version>
+
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Anti Bot: Captcha Clock
+$txt['abclock'] = 'What is the time on the Clock?';
+$txt['abclock_desc'] = 'Another Anti-Bot Measure';
+$txt['abclock_format1'] = 'Please enter the time in the format 00:00';
+$txt['abclock_format2'] = 'and to the nearest 5 minutes eg 04:25';
+$txt['abclock_expired'] = 'This page has expired. Please restart the <a href="' . $scripturl . '?action=register;">registration page</a>.';
+$txt['abclock_incomplete'] = 'You did not complete the anti-bot clock. Please try again.';
+$txt['abclock_incorrect'] = 'You incorrectly answered the anti-bot clock. Please try again.';
+$txt['abclock_howtoreadaclock'] = 'How to Read a Clock';
+
+$txt['abclock_s'] = 'Enable MOD Captcha Clock';
+$txt['abclock_n'] = 'Select Number Noises Lines';
+$txt['abclock_n_d'] = 'The same number for lines internal and external';
+$txt['abclock_r'] = 'Select Rotation in Clock';
+$txt['abclock_degrees'] = 'Range Rotation\'s. 0 for Disable';
+$txt['abclock_e'] = 'Enable effects (only for PHP5)';
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Anti Bot: Captcha Clock
+$txt['abclock'] = 'What is the time on the Clock?';
+$txt['abclock_desc'] = 'Another Anti-Bot Measure';
+$txt['abclock_format1'] = 'Please enter the time in the format 00:00';
+$txt['abclock_format2'] = 'and to the nearest 5 minutes eg 04:25';
+$txt['abclock_expired'] = 'This page has expired. Please restart the <a href="' . $scripturl . '?action=register;">registration page</a>.';
+$txt['abclock_incomplete'] = 'You did not complete the anti-bot clock. Please try again.';
+$txt['abclock_incorrect'] = 'You incorrectly answered the anti-bot clock. Please try again.';
+$txt['abclock_howtoreadaclock'] = 'How to Read a Clock';
+
+$txt['abclock_s'] = 'Enable MOD Captcha Clock';
+$txt['abclock_n'] = 'Select Number Noises Lines';
+$txt['abclock_n_d'] = 'The same number for lines internal and external';
+$txt['abclock_r'] = 'Select Rotation in Clock';
+$txt['abclock_degrees'] = 'Range Rotation\'s. 0 for Disable';
+$txt['abclock_e'] = 'Enable effects (only for PHP5)';
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Anti Bot: Captcha Clock
+$txt['abclock'] = '&iquest;Cu&aacute;l es la hora en el Reloj?';
+$txt['abclock_desc'] = 'Otra Medida Anti-Bot';
+$txt['abclock_format1'] = 'Por favor, introduzca la hora en formato 00:00';
+$txt['abclock_format2'] = 'y en rango de 5 minutos, ejemplo 04:25';
+$txt['abclock_expired'] = 'Esta p&aacute;gina ha expirado. Por favor, reinicie la <a href="' . $scripturl . '?action=register;">p&aacute;gina de registro</a>.';
+$txt['abclock_incomplete'] = 'Usted no llen&oacute; la casilla del Anti-Bot Clock. Por favor, intente de nuevo.';
+$txt['abclock_incorrect'] = 'Usted no pudo responder correstamente al Anti-Bot Clock. Por favor, intente de nuevo.';
+$txt['abclock_howtoreadaclock'] = '&iquest;C&oacute;mo leer el Reloj?';
+
+$txt['abclock_s'] = 'Activar MOD Captcha Clock';
+$txt['abclock_n'] = 'Seleccionar el N&uacute;mero de L&iacute;neas Ruido';
+$txt['abclock_n_d'] = 'Es el mismo n&uacute;mero para l&iacute;neas internas y externas';
+$txt['abclock_r'] = 'Selecciona la Rotaci&oacute; del Reloj';
+$txt['abclock_degrees'] = 'Rango de Rotaci&oacute;n. 0 para desactivar';
+$txt['abclock_e'] = 'Activar efectos (solo para PHP5)';
+]]></add>
+		</operation>
+	</file>
+</modification>

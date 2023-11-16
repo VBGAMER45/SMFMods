@@ -13,19 +13,21 @@ $ssi_guest_access = 1;
 require(dirname(__FILE__) . '/SSI.php');
 
 global $smcFunc;
-
+$url = trim($_GET['url']);
 $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_NUMBER_INT);
 $qv  = $_GET['id'];
+
+
 if (!empty($qv)) 
 {
-	check_cache($qv);
+	check_cache($qv,$url);
 } 
 else 
 {
 	echo '{"html":"<p style=\"color: #666; border: 1px dotted #666; padding: 5px; width: 490px;\">' . $txt['autotwitter_blankid'] . '</p>"}';
 }
 
-function check_cache($tweet)
+function check_cache($tweet,$url)
 {
 	global  $smcFunc;
 	
@@ -43,7 +45,7 @@ function check_cache($tweet)
 	
 	if ($smcFunc['db_num_rows']($request) == 0) 
 	{
-		add_cache($tweet);
+		add_cache($tweet,$url);
 	}
 	else 
 	{
@@ -54,13 +56,16 @@ function check_cache($tweet)
 	
 }
 
-function add_cache($tweet)
+function add_cache($tweet,$url)
 {
 	global $smcFunc, $txt, $sourcedir;
 
-	$twitterapi_url = "https://api.twitter.com/1.1/statuses/oembed.json?id=";
-	$twitterapi_url = $twitterapi_url . $tweet;
-    
+	$url = str_replace("https://x.com","https://twitter.com",$url);
+
+	$twitterapi_url = "https://publish.twitter.com/oembed?url=" . $url;
+
+
+
 	if (function_exists('curl_init'))
     {
         $curl = curl_init($twitterapi_url);
@@ -68,16 +73,26 @@ function add_cache($tweet)
     	curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, FALSE);
     	$response = curl_exec($curl);
     	curl_close($curl);
+
     }
     else
     {
         require_once($sourcedir . '/Subs-Package.php');
-        $response = fetch_web_data($twitterapi_url); 
+        $response = fetch_web_data($twitterapi_url);
+
     }
     
 	
 	$json_content = json_decode($response, true);
-	$json_content = preg_replace( "/\r|\n/", "", $json_content );
+	$json_content = preg_replace( "/\r|\n/", "", $json_content);
+	if (empty($json_content['html']))
+	{
+
+
+			echo '{"html":"<p style=\"color: #666; border: 1px dotted #666; padding: 5px; width: 490px;\">' . $txt['autotwitter_tweeterror'] . '</p>"}';
+
+		exit;
+	}
 	
 	$html = $json_content['html'];
 	if (!empty($html)) 

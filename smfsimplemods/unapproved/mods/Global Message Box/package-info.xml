@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>GlobalMessageMod</id>
+	<name>Global Message Box By Smfsimple.com</name>
+	<version>V1 Lite Version</version>
+    <type>modification</type>
+
+	
+	<install for="2.0 - 2.99.99">
+	    <redirect url="?action=admin;area=modsettings;sa=general">redirect.txt</redirect>
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>install.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="jquery.message.js" destination="$themedir/scripts" />	
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" reverse="true">install.xml</modification>
+		<modification type="file" reverse="true">languages.xml</modification>
+		<remove-file name="$themedir/scripts/jquery.message.js" />
+	</uninstall>
+	
+</package-info>

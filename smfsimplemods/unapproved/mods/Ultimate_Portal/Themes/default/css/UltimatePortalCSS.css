@@ -1,0 +1,448 @@
+/*-------------------------
+#General
+--------------------------*/
+h1, h2, h3, h4 {
+	font-size:10px;
+}
+
+#up_bk_table_main {
+	border-spacing:5px;
+	table-layout:fixed;
+	width:100%;
+}
+/*-------------------------
+#Site Top Menu
+--------------------------*/
+#up_top_menu {
+	float:right;margin:0;padding:1em 1em 1em 0;
+}
+
+/*-------------------------
+#Download Modules
+--------------------------*/
+.DownloadH3 {
+	background:transparent url(../images/ultimate-portal/download/bubbles.gif) no-repeat scroll 0 4px;
+	color:#597D9D;
+	font-family:arial,helvetica,sans-serif;
+	font-size:1.5em;
+	font-weight:bold;
+	margin:1em 0 0;
+	padding-left:23px;
+}
+
+#DownloadFront {
+	margin-bottom:1em;
+	overflow:auto;
+}
+
+#DownloadFront #Downloadbrowse {
+	float:left;
+	margin-top:1em;
+	padding-top:1em;
+	width:55%;
+}
+
+#DownloadFront #Downloadbrowse ul {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:1em 1em 1em 0em;
+	padding:0;
+}
+
+#DownloadFront #DownloadInfo {
+	float:right;
+	margin-top:2em;
+	width:45%;
+}
+/*
+Download more Popular
+*/
+#DownloadFront #DownloadPopular {
+	background:#F0F0F5 url(../images/ultimate-portal/download/download-popular.png) no-repeat scroll 112% -10px;
+	border:1px solid #CCCCCC;
+	font-size:0.9em;
+	margin:0 0 1em 1em;
+	padding:0 1em 1em;
+	color:#000;
+}
+
+#DownloadFront #DownloadPopular ol {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;
+	padding:0.7em 0 0.7em 1em;
+}
+
+#DownloadFront #DownloadPopular ol li {
+	font-size:1.2em;
+	margin:0;
+	padding:0.3em 0 0.3em 20px;
+}
+
+#DownloadFront #DownloadPopular ol li.num1 {
+	background:transparent url(../images/ultimate-portal/download/num1.png) no-repeat scroll 0 50%;
+}
+#DownloadFront #DownloadPopular ol li.num2 {
+	background:transparent url(../images/ultimate-portal/download/num2.png) no-repeat scroll 0 50%;
+}
+#DownloadFront #DownloadPopular ol li.num3 {
+	background:transparent url(../images/ultimate-portal/download/num3.png) no-repeat scroll 0 50%;
+}
+#DownloadFront #DownloadPopular ol li.num4 {
+	background:transparent url(../images/ultimate-portal/download/num4.png) no-repeat scroll 0 50%;
+}
+#DownloadFront #DownloadPopular ol li.num5 {
+	background:transparent url(../images/ultimate-portal/download/num5.png) no-repeat scroll 0 50%;
+}
+
+#DownloadFront #LastFiles {
+	background:#FBF8F4 url(../images/ultimate-portal/download/info_background.png) no-repeat scroll right top;
+	border:1px solid #CCCCCC;	
+	padding-right:4em;
+	font-size:0.9em;
+	margin:0 0 1em 1em;
+	padding:0 1em 1em;	
+	color:#000;	
+}
+/*
+End Download Popular
+*/
+form#DownloadSearch {
+	background:#F0F0F5 none repeat scroll 0 0;
+	border:1px solid #CCCCCC;
+	margin:1em 0 4px;
+	padding:1em;
+}
+
+/*
+Result Search
+*/
+#DownBrowsing {
+	padding-top:1em;
+}
+
+dl{
+	margin:0;
+	overflow:auto;
+	padding:0;
+}
+
+#DownBrowsing dt {
+	background:#F0F0F5 none repeat scroll 0 0;
+	border:1px solid #CCCCCC;
+	display:block;
+	font-size: 12px;
+	font-weight:bold;
+	padding:0.4em 0.7em 0.4em 30px;
+}
+
+#DownBrowsing dd {
+	display:block;
+	font-size:10px;
+	margin-bottom:1em;
+	padding:2px 0 0.5em;
+}
+
+#DownBrowsing dd p {
+	border-bottom:1px solid #DDDDDD;
+	display:block;
+	margin:0;
+	padding:0.4em 0.7em;
+}
+
+#DownBrowsing dd ul {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin-left:0;
+	padding-left:0;
+}
+
+#DownBrowsing dd li {
+	background:transparent url(../images/ultimate-portal/download/menu.png) no-repeat scroll 2px 50%;
+	padding-left:16px;
+}
+
+#DownBrowsing dt.not_approved {
+	background:#FFE8E8 none repeat scroll 0 0;
+}
+
+#DownBrowsing dd.not_approved {
+	background:#F3F3F3 none repeat scroll 0 0;
+}
+/*
+View File
+*/
+#DownloadSecondarybody {
+	margin-bottom:1em;
+	overflow:auto;	
+}
+
+.DownloadH2 {
+	color:#597D9D;
+	font-family:arial,helvetica,sans-serif;
+	font-size:1.5em;
+	font-weight:bold;
+	margin:1em 0 0;
+	padding-left:23px;
+}
+
+#download {
+	float:right;
+	width:52%;
+}
+#download h3 {
+	background:transparent none repeat scroll 0 0;
+	color:#597D9D;
+	margin-bottom:1em;
+	margin-top:0;
+	padding-bottom:0.5em;
+	padding-left:0;
+}
+
+#download ul.item {
+/*	background:#F8F8FD none repeat scroll 0 0;*/
+	border:1px solid #CCCCCC;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	padding:5px;
+}
+
+#download ul.item li {
+	margin:0;
+	padding:5px;
+}
+
+#displaydownload {
+	padding-top:1em;
+	width:52%;
+}
+
+#displaydownload dl {
+	padding:2em 1em;
+}
+
+#details dt {
+	float:left;
+	font-size:1em;
+	text-align:right;
+	width:11em;
+}
+
+#details dd {
+	font-size:1em;
+	margin-left:11em;
+	padding-left:1em;
+}
+
+#DownloadSecondarybody ul.snav {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+#DownloadSecondarybody ul.snav li {
+	float:left;
+	font-size:0.8em;
+	margin:1;
+	padding:0;
+}
+
+#DownloadSecondarybody ul.snav li a {
+	background:#EBF2F8 none repeat scroll 0 0;
+	border-left:2px solid white;
+	color:black;
+	display:block;
+	padding:1em;
+	margin-left: 2px;
+	font-size:10px;
+}
+
+#DownloadSecondarybody #descript {
+	clear:both;
+	margin-top:1em;
+	padding:2em;
+}
+
+#DownloadSecondarybody h3 {
+	background:transparent url(../images/ultimate-portal/download/bubbles.gif) no-repeat scroll 0 4px;
+	color:#597D9D;
+	font-family:arial,helvetica,sans-serif;
+	font-size:1.5em;
+	font-weight:bold;
+	margin:1em 0 0;
+	padding-left:23px;
+}
+
+#downloadsite #warning {
+	background:#FFE0E0 none repeat scroll 0 0;
+	height:30px;
+	padding:1em;
+}
+
+#downloadsite #warning img {
+	float:left;
+	margin-right:2em;
+}
+
+#downloadsite #warning p {
+	display:block;
+	font-size:1em;
+	font-weight:bold;
+}
+
+/**********************************
+INTERNAL PAGE
+***********************************/
+h2.titleipage {
+	font-size:17px;
+	font-weight:bold;
+	margin:0 0 0.3em;
+	padding:0;
+}
+.post-date {
+	background:transparent url(../images/ultimate-portal/internal-page/info-bar.png) no-repeat scroll left -75px;
+	float:left;
+	font-weight:bold;
+	padding-left:11px;
+	text-transform:uppercase;
+}
+.post-date p.day {
+	background:transparent url(../images/ultimate-portal/internal-page/info-bar.png) no-repeat scroll right -42px;
+	color:#FFFFFF;
+	height:33px;
+	line-height:31px;
+	margin:0;
+	padding:0 16px 0 0;
+}
+.post-info {
+	background:transparent url(../images/ultimate-portal/internal-page/info-bar.png) no-repeat scroll right top;
+	color:#BBBBBB;
+	height:42px;
+	margin-left:11px;
+	text-shadow:1px 1px 1px #FFFFFF;
+}
+.post-info p.author {
+	line-height:32px;
+	margin:0;
+	padding:0 0 0 6px;
+}
+.alignleft {
+	float:left;
+	margin-right:8px;
+}
+.post-info p.moderate {
+	line-height:32px;
+	margin:0;
+	padding:0 12px 0 0;
+}
+.alignright {
+	float:right;
+	margin-left:8px;
+}
+
+/*********************************
+	About Us Module
+*********************************/
+/* a descriptive style */
+.UPdescription
+{
+	padding: 0.5em 1em 1em 1em;
+	font-size: 0.9em;
+	line-height: 1.4em;
+	border: solid 1px #bbb;
+	background: #F5F5F0;
+	margin: 0 0 1em 0;
+	margin-top:10px;
+}
+
+/****************************
+	template_button_strip
+****************************/
+/* the page navigation area */
+.UPpagesection
+{
+	font-size: 0.9em;
+	padding: 0 0 0.3em 0;
+	overflow: hidden;
+	margin-bottom: 1px;
+}
+div.UPpagesection div.floatright input
+{
+	margin-top: 3px;
+}
+.UPbuttonlist ul
+{
+	z-index: 100;
+	padding: 5px;
+	margin: 0 0.3em 0 0;
+}
+.UPbuttonlist ul li
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	float: left;
+}
+.UPbuttonlist ul li a
+{
+	display: block;
+	font-size: 0.8em;
+	color: black;
+	background: url(../images/theme/menu_gfx.png) no-repeat 0 -60px;
+	padding: 0;
+	margin-left: 12px;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+.UPbuttonlist ul li a:hover
+{
+	background: url(../images/theme/menu_gfx.png) no-repeat 0 0;
+	color: #fff;
+	text-decoration: none;
+}
+.UPbuttonlist ul li a span
+{
+	background: url(../images/theme/menu_gfx.png) no-repeat 100% -60px;
+	display: block;
+	height: 24px;
+	line-height: 20px;
+	padding: 0 8px 0 0;
+	position: relative;
+	right: -8px;
+}
+.UPbuttonlist ul li a:hover span
+{
+	background: url(../images/theme/menu_gfx.png) no-repeat 100% 0;
+}
+/* the active one */
+.UPbuttonlist ul li a.active
+{
+	background: url(../images/theme/menu_gfx.png) no-repeat 0 -30px;
+	color: white;
+	font-weight: bold;
+}
+.UPbuttonlist ul li a.active span
+{
+	background: url(../images/theme/menu_gfx.png) no-repeat 100% -30px;
+}
+.UPbuttonlist ul li a.active
+{
+	font-weight: bold;
+}
+.UPbuttonlist ul li a.active:hover
+{
+	color: #ddf;
+}
+.align_top ul li a, .align_bottom ul li a
+{
+	margin: 0 12px 0 0;
+}
+h4.catbg span.left, h4.catbg2 span.left, h3.catbg span.left, h3.catbg2 span.left, .table_list tbody.header td span.left
+{
+    height: 33px !important;
+    background: url(../images/theme/main_block.png) no-repeat 5px -999px !important;
+}

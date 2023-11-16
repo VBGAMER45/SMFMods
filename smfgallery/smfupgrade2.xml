@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:smfgallerypro</id>
+<version>6.1</version>
+
+<file name="$sourcedir/Admin.php">
+
+	<operation error="ignore">
+		<search position="replace"><![CDATA['copyright' => array($txt['gallery_txt_copyrightremoval']),
+										
+									),]]></search>
+		<add><![CDATA['copyright' => array($txt['gallery_txt_copyrightremoval']),
+										'convert' => array($txt['gallery_txt_convertors']),
+										
+									),]]></add>
+	</operation>
+</file>
+
+
+</modification>

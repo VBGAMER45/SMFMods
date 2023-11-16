@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>ccbtimewiz:skype</id>
+	<version>2.1.2</version>
+		<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA['msn' => $profile['MSN'] !='' && (empty($modSettings['guest_hideContacts']) || !$user_info['is_guest']) ? array(
+			'name' => &$profile['MSN'],
+			'href' => 'http://members.msn.com/' . $profile['MSN'],
+			'link' => '<a href="http://members.msn.com/' . $profile['MSN'] . '" target="_blank"><img src="' . $settings['images_url'] . '/msntalk.gif" alt="' . $profile['MSN'] . '" border="0" /></a>',
+			'link_text' => '<a href="http://members.msn.com/' . $profile['MSN'] . '" target="_blank">' . $profile['MSN'] . '</a>'
+		) : array('name' => '', 'href' => '', 'link' => '', 'link_text' => ''),]]></search>
+
+			<add><![CDATA['skype' => $profile['skype'] !='' && (empty($modSettings['guest_hideContacts']) || !$user_info['is_guest']) ? array(
+			'name' => &$profile['skype'],
+			'href' => 'skype:'.$profile['skype'].'?userinfo',
+			'link' => '<a href="skype:' . $profile['skype'] . '?userinfo" target="_blank"><img src="' . (empty($settings['skype_image']) ? 'http://mystatus.skype.com/smallicon/' . $profile['skype'] : $settings['images_url'] . '/skype.png') . '" alt="S" border="0" /></a>',
+			'link_text' => '<a href="skype:' . $profile['skype'] . '?userinfo" target="_blank">' . $profile['skype'] . '</a>'
+		) : array('name' => '', 'href' => '', 'link' => '', 'link_text' => ''),]]></add>
+		</operation>
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[mem.birthdate, mem.memberIP, mem.memberIP2, mem.ICQ, mem.AIM, mem.YIM, mem.MSN, mem.posts, mem.lastLogin,]]></search>
+			
+			<add><![CDATA[mem.birthdate, mem.memberIP, mem.memberIP2, mem.ICQ, mem.AIM, mem.YIM, mem.MSN, mem.posts, mem.lastLogin, mem.skype,]]></add>
+		</operation>
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[mem.birthdate, mem.ICQ, mem.AIM, mem.YIM, mem.MSN, mem.posts, mem.lastLogin, mem.karmaGood,]]></search>
+			
+			<add><![CDATA[mem.birthdate, mem.ICQ, mem.AIM, mem.YIM, mem.MSN, mem.posts, mem.lastLogin, mem.karmaGood, mem.skype,]]></add>
+		</operation>
+		
+		</file>
+		
+	
+	<file name="$sourcedir/Memberlist.php">
+		
+		<operation>
+			
+			<search position="before"><![CDATA['MSN' => array(
+			'label' => $txt['MSN'],
+			'width' => '25'
+		),]]></search>
+			
+			<add>
+		<![CDATA['skype' => array(
+			'label' => $txt['skype'],
+			'width' => '25'
+		),]]></add>
+		
+		</operation>
+		
+		<operation>
+			
+			<search position="before"><![CDATA['MSN' => array(
+			'down' => 'LENGTH(mem.MSN) > 0 DESC, ISNULL(mem.MSN) ASC, mem.MSN ASC',
+			'up' => 'LENGTH(mem.MSN) > 0 ASC, ISNULL(mem.MSN) DESC, mem.MSN DESC'
+		),]]></search>
+			
+			<add><![CDATA['skype' => array(
+			'down' => 'LENGTH(mem.skype) > 0 DESC, ISNULL(mem.skype) ASC, mem.skype ASC',
+			'up' => 'LENGTH(mem.skype) > 0 ASC, ISNULL(mem.skype) DESC, mem.skype DESC'
+		),]]></add>
+			
+		</operation>
+		
+		</file>
+		
+		<file name="$sourcedir/News.php">
+		
+		<operation>
+			
+			<search position="before"><![CDATA[if ($profile['yim']['name'] != '' && !(!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']))
+			$data['yim'] = $profile['yim']['name'];]]></search>
+			
+			<add>
+		<![CDATA[if ($profile['skype']['name'] != '' && !(!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']))
+			$data['skype'] = $profile['skype']['name'];]]></add>
+		
+		</operation>
+		
+		</file>
+		
+		<file name="$sourcedir/Profile.php">
+		
+		<operation> 
+			
+		<search position="before"><![CDATA['msn' => array('name' => empty($user_profile[$memID]['MSN']) ? '' : $user_profile[$memID]['MSN']),]]></search>
+			
+		<add><![CDATA['skype' => array('name' => empty($user_profile[$memID]['skype']) ? '' : $user_profile[$memID]['skype']),]]></add>
+		</operation>
+		
+		<operation>
+			
+		<search position="before"><![CDATA['signature', 'personalText', 'avatar',]]></search> 
+			
+			<add><![CDATA['skype',]]></add> 
+		</operation> 
+		
+		<operation>
+			
+		<search position="before"><![CDATA[
+		'msn' => array(
+			'name' => empty($_POST['msn']) ? '' : stripslashes($_POST['MSN'])
+		),
+		]]></search>
+			
+		<add><![CDATA[
+		'skype' => array(
+			'name' => empty($_POST['skype']) ? '' : stripslashes($_POST['skype'])
+		),]]></add>
+		
+		</operation>
+		
+		</file>
+		
+		
+			<file name="$sourcedir/Subs-Members.php">
+		
+		<operation>
+			
+			<search position="before"><![CDATA['MSN' => "''",]]></search>
+			
+			<add>
+			<![CDATA['skype' => "''",]]></add>
+		</operation>
+		
+		</file>
+		
+		<file name="$themedir/Display.template.php">
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[', $message['member']['yim']['link'], '<br />';]]></search>
+			
+			<add>
+		<![CDATA[', $message['member']['yim']['link'], '
+				',$message['member']['skype']['link'],'<br />';]]></add>
+		</operation>
+
+		</file>
+		
+		<file name="$themedir/PersonalMessage.template.php">
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[', $message['member']['aim']['link'], '<br />';]]></search>
+			
+			<add>
+<![CDATA[', $message['member']['aim']['link'], '
+         ', $message['member']['skype']['link'],'<br />';]]></add>
+		</operation>
+
+		</file>
+	
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			
+			<search position="before"><![CDATA[<td>', $context['member']['yim']['link_text'], '</td>]]></search>
+			
+				<add><![CDATA[</tr><tr><td><b>', $txt['skype'], ': </b></td><td>', $context['member']['skype']['link_text'], '</td>]]></add>
+				
+		</operation> 
+
+			<operation>
+		<search position="replace"><![CDATA[<tr class="titlebg">
+				<td colspan="8" height="26">]]></search>
+			<add><![CDATA[<tr class="titlebg">
+				<td colspan="9" height="26">]]></add>
+		</operation>
+		
+		<operation>
+		
+			<search position="before"><![CDATA[<td align="center">', $txt['MSN'], '</td>]]></search>
+			
+			<add><![CDATA[<td align="center">', $txt['skype'], '</td>]]></add>
+			
+		</operation>
+		
+			<operation>
+			
+			<search position="replace"><![CDATA[if (empty($context['buddies']))
+		echo '
+			<tr class="windowbg">
+				<td colspan="8" align="center"><b>', $txt['no_buddies'], '</b></td>
+			</tr>';]]></search>
+			
+			<add><![CDATA[if (empty($context['buddies']))
+		echo '
+			<tr class="windowbg">
+				<td colspan="9" align="center"><b>', $txt['no_buddies'], '</b></td>
+			</tr>';]]></add>
+			
+		</operation>
+		
+	<operation>
+			<search position="before"><![CDATA[<td align="center">', $buddy['msn']['link'], '</td>]]></search>
+			<add><![CDATA[<td align="center">', $buddy['skype']['link'], '</td>]]></add>
+		</operation> 
+		
+		<operation>
+			<search position="before"><![CDATA[<td><input type="text" name="YIM" maxlength="32" size="24" value="', $context['member']['yim']['name'], '" /></td>]]></search>
+			<add><![CDATA[</tr><tr>
+			<td width="40%"><b>', $txt['skype'], ': </b><div class="smalltext">', $txt['skype_in'], '</div></td>
+			<td><input type="text" name="skype" maxlength="32" size="24" value="', $context['member']['skype']['name'], '" /></td>]]></add>
+		</operation>
+	</file>
+	
+		
+		
+			<file name="$themedir/Memberlist.template.php">
+		
+		<operation>
+			
+			<search position="before"><![CDATA[<td class="windowbg2">', $member['msn']['link'], '</td>]]></search>
+			
+			<add>
+<![CDATA[<td class="windowbg2">', $member['skype']['link'], '</td>]]></add>
+		</operation>
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[<tr>
+			<td colspan="12" class="windowbg">', $txt[170], '</td>
+		</tr>';]]></search>
+			
+			<add>
+<![CDATA[<tr>
+			<td colspan="13" class="windowbg">', $txt[170], '</td>
+		</tr>';]]></add>
+		</operation>
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[<tr class="titlebg">
+			<td colspan="12">';]]></search>
+			
+			<add>
+<![CDATA[<tr class="titlebg">
+			<td colspan="13">';]]></add>
+		</operation>
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[<tr>
+			<td colspan="12" class="', empty($settings['use_tabs']) ? 'catbg' : 'titlebg', '">';]]></search>
+			
+			<add>
+<![CDATA[<tr>
+			<td colspan="13" class="', empty($settings['use_tabs']) ? 'catbg' : 'titlebg', '">';]]></add>
+		</operation>
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[<tr>
+			<td class="titlebg" colspan="12">', $txt[139], ': ', $context['page_index'], '</td>
+		</tr>
+	</table>';]]></search>
+			
+			<add>
+<![CDATA[<tr>
+			<td class="titlebg" colspan="13">', $txt[139], ': ', $context['page_index'], '</td>
+		</tr>
+	</table>';]]></add>
+		</operation>
+
+		</file>
+		
+		<file name="$themedir/Settings.template.php">
+		
+		<operation>
+			
+			<search position="before"><![CDATA[array(
+			'id' => 'show_member_bar',
+			'label' => $txt[510],
+		),]]></search>
+			
+			<add><![CDATA[array(
+			'id' => 'skype_image',
+			'label' => $txt['skype_image'],
+		),]]></add>
+		</operation>
+
+		</file>
+		
+		<file name="$themedir/Who.template.php">
+		
+		<operation>
+			
+			<search position="replace"><![CDATA[', $member['icq']['link'], ' ', $member['msn']['link'], ' ', $member['yim']['link'], ' ', $member['aim']['link'], ']]></search>
+			
+			<add><![CDATA[', $member['icq']['link'], ' ', $member['msn']['link'], ' ', $member['yim']['link'], ' ', $member['aim']['link'], ' ',$member['skype']['link'], ']]></add>
+		</operation>
+
+		</file>
+
+</modification>

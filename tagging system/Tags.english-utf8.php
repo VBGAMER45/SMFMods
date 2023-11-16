@@ -59,4 +59,13 @@ $txt['smftags_views'] = 'Views';
 $txt['smftags_guest'] = 'Guest';
 
 $txt['smftags_topictag'] = 'Tag';
+
+
+$txt['smftags_set_msgindex'] =  'Show tags on message index underneath the topic';
+$txt['smftags_set_msgindex_max_show'] =   'Maximum number of tags to display under topic';
+
+$txt['smftags_set_use_css_tags'] =  'Use CSS Tags to display tags';
+$txt['smftags_set_css_tag_background_color'] = 'CSS Tag Background Color';
+$txt['smftags_set_css_tag_font_color'] = 'CSS Tag Font Color';
+
 ?>

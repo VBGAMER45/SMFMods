@@ -98,7 +98,7 @@ function pauseAttachmentSmushit($max_steps = 0)
 	// Have we already used our maximum time, don't want to just run forever.
 	if (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)) > 30)
 	{
-		$context['smushit_results'][9999999] = '|' . $txt['smushit_attachments_timeout'] . ' ' . array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start));
+		$context['smushit_results'][9999999] = '|' . $txt['smushit_attachments_timeout'] . ' ' . (array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)));
 
 		return;
 	}

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:TopicCountBasedGroups</id>
+	<name>Topic Count Based Groups</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="1.1.0 - 1.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification format="xml" type="file">install_1.xml</modification>
+		<redirect url="$scripturl?action=boardrecount" type="inline" timeout="1">Updating Membergroups...</redirect>
+	</install>
+
+	<uninstall for="1.1.0 - 1.99.99">
+		<modification format="xml" type="file" reverse="true">install_1.xml</modification>
+		<code type="file">unistall1.php</code>
+	</uninstall>
+
+	<install for="2.0 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification format="xml" type="file">install_2.xml</modification>
+		<redirect url="$scripturl?action=admin;area=maintain;sa=routine" type="inline" timeout="5">Now you should Recount all forum totals and statistics for Updating Membergroups...</redirect>
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification format="xml" type="file" reverse="true">install_2.xml</modification>
+		<code type="file">unistall2.php</code>
+	</uninstall>
+
+</package-info>

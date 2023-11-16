@@ -289,8 +289,11 @@ function CheckForSecureLoginLink($memberID)
 			
 			return false;
 		}
-		else 
+		else
+		{
+			$smcFunc['db_query']('', "UPDATE {db_prefix}login_security SET lockedaccountuntiltime = 0 WHERE ID_MEMBER = " . $memberID);
 			return true;
+		}
 				
 	}
 	else 

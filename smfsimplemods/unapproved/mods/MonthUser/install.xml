@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:MonthUser</id>
+	<name>Month User By Smfsimple.com</name>
+	<version>V1</version>
+
+<file name="$themedir/Display.template.php">
+        <operation>
+			<search position="after"><![CDATA[// Show avatars]]></search>
+			<add><![CDATA[
+			
+			// Start MOD - MonthUser v1 By Smfsimple.com
+			 $modSettings['monthUser_img'] = !empty($modSettings['monthUser_img']) ? $modSettings['monthUser_img'] : 'star.png';
+			$monthUser = !empty($modSettings['monthUser_user']) ? explode(',', $modSettings['monthUser_user']) : '';
+			if (!empty($monthUser) && in_array($message['member']['username'],$monthUser) && !empty($modSettings['monthUser_enable']) && !empty($modSettings['monthUser_img']) && !empty($modSettings['monthUser_txt']))	
+
+				echo '
+						<li class="membergroup"><img src="' . $settings['images_url'] . '/'.$modSettings['monthUser_img'].'" alt="' . $modSettings['monthUser_txt'] . '" title="' . $modSettings['monthUser_txt'] . '"/>'.$modSettings['monthUser_txt'].'</li>';
+						
+  ]]></add>
+		</operation>
+
+	</file>
+	
+<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+			array('check', 'monthUser_enable'), 
+			array('text', 'monthUser_img'),
+			array('text', 'monthUser_user'),
+			array('text', 'monthUser_txt'),
+			]]></add>
+		</operation>
+		</file>	
+			
+
+</modification>

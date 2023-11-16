@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>karlbenson:antibotclock</id>
+	<name>Anti Bot: Captcha Clock</name>
+	<version>2.2</version>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[
+	$actionArray = array(]]></search>
+			<add><![CDATA[
+		'abclock' => array('ABClock.php', 'GenerateClock'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Are there age restrictions in place?]]></search>
+			<add><![CDATA[
+	## Start MOD Anti Bot: Captcha Clock
+	if (!empty($modSettings['abclock_s']))
+		echo '
+					<tr valign="top">
+						<td width="40%" valign="top">
+							<b>', $txt['abclock'], ':</b>
+							<div class="smalltext">', $txt['abclock_desc'], '</div>
+						</td>
+						<td>
+							<img src="', $scripturl, '?action=abclock;rand=', md5(rand(0,100).time()) ,'" alt="', $txt['abclock'] ,'" style="margin-right:5px;float:left;width:150px;height:150px" />
+							<div class="smalltext">
+							', $txt['abclock_format1'], '<br />', $txt['abclock_format2'],'
+							</div>
+							<div>
+								<input type="text" name="', $_SESSION['abclock']['field'], '" value="" size="10" tabindex="', $context['tabindex']++, '" />
+							</div>
+							<div class="smalltext">
+								<a href="https://www.wikihow.com/Read-a-Clock" target="_blank" title="', $txt['abclock_howtoreadaclock'], '" rel="nofollow">', $txt['abclock_howtoreadaclock'], '</a>
+							</div>
+						</td>
+					</tr>';
+	## End MOD Anti Bot: Captcha Clock
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Under age restrictions?]]></search>
+			<add><![CDATA[
+	## Start MOD Anti Bot: Captcha Clock - Generating Code
+	if (!empty($modSettings['abclock_s']))
+	{
+		// Generate Random Data (Name & Asnwer)
+		$_SESSION['abclock']['hour'] = mt_rand(0, 11);
+		$_SESSION['abclock']['minu'] = mt_rand(0, 11);
+
+		// - Hour (remember were using 12  not 24 hr clock)
+		$answer['hour'] = $_SESSION['abclock']['hour'] ? ($_SESSION['abclock']['hour'] < 10 ? '0' : '') . $_SESSION['abclock']['hour'] : '12';
+		$answer['minu'] = ($_SESSION['abclock']['minu'] < 2 ? '0' : '') . ($_SESSION['abclock']['minu'] * 5);
+
+		$_SESSION['abclock']['field'] = chr(mt_rand(97, 122)) . md5(mt_rand());
+		$_SESSION['abclock']['answer'] = md5($answer['hour'] . ':' . $answer['minu']);
+		unset($answer);
+
+		// This page should be reaload always
+		header('Cache-Control: no-store');
+	}
+	## End MOD Anti Bot: Captcha Clock - Generating Code
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+		// Are they under age, and under age users are banned?]]></search>
+			<add><![CDATA[
+		## Start MOD Anti Bot: Captcha Clock - Capturing Bots
+
+		if (!empty($modSettings['abclock_s']))
+		{
+			// Backup & Deleting SuperGlobal
+			$session = isset($_SESSION['abclock']) ? $_SESSION['abclock'] : false;
+			unset($_SESSION['abclock']);
+			
+			// Incomplete - mandatory to complete
+			if (empty($session) || empty($_POST[$session['field']]))
+				fatal_lang_error(empty($session) ? 'abclock_expired' : 'abclock_incomplete', false);
+
+			$_POST[$session['field']] = trim($_POST[$session['field']]);
+
+			// This user doesn't read the instructions - No Problem
+			if (ereg('^[1-9]:[0-5][0-9]$', $_POST[$session['field']]))
+				$_POST[$session['field']] = '0' . $_POST[$session['field']];
+
+			// Validation Correct Time
+			if (!ereg('^(0[1-9]|1[0-2]):[0-5][0-9]$', $_POST[$session['field']]) || 
+				($session['answer'] != md5($_POST[$session['field']])))
+				fatal_lang_error('abclock_incorrect', false);
+		}
+
+		## End MOD Anti Bot: Captcha Clock - Capturing Bots
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageRegistration.php">
+		<operation>
+			<search position="before"><![CDATA[
+			array('text', 'coppaPhone'),]]></search>
+			<add><![CDATA[
+		'',
+	## MOD Anti Bot: Captcha Clock
+			array('check', 'abclock_s'),
+			array('int', 'abclock_n', 'subtext' => $txt['abclock_n_d']),
+			array('int', 'abclock_r', 'subtext' => $txt['abclock_degrees']),
+			array('check', 'abclock_e'),]]></add>
+		</operation>
+	</file>
+
+</modification>

@@ -97,7 +97,7 @@ $prettyFilters = array(
 		),
 		'rewrite' => array(
 			'priority' => 40,
-			'rule' => 'RewriteRule ^profile/([^/]+)/?$ ./index.php?pretty;action=profile;user=$1 [L,QSA]',
+			'rule' => 'RewriteRule ^profile/([^/]+)/?$ ./index.php?pretty;action=profile;user=$1 [L,QSA,B,BNP]',
 		),
 		'test_callback' => 'pretty_profiles_test',
 		'title' => 'Profiles',
@@ -112,7 +112,7 @@ updateSettings(array(
 	'pretty_filters' => serialize($prettyFilters),
 	'pretty_root_url' => $pretty_root_url,
 	'queryless_urls' => 0,
-	'pretty_bufferusecache' => 0,
+	'pretty_bufferusecache' => 1,
 ));
 
 //	Run maintenance

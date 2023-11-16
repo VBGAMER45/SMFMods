@@ -1,0 +1,55 @@
+.mood_delete{
+	float:right;
+}
+.mood_title{
+	font-size: 1.2em;
+	color: #888;
+	font: bold 300% 'PT Sans Narrow', sans-serif;
+	text-transform: uppercase;
+	line-height: 1;
+}
+.mood_authorbox {
+	margin: 0 0 15px 0;
+	padding: 10px;
+	border: 1px solid #e9e9e9;
+	width:100;
+}
+.mood_authorbox .mood_avatar img {
+	background: #fff;
+	float: left;
+	margin: 0 10px 0 0;
+	padding: 3px;
+	border: 1px solid #e9e9e9;
+	width: 48px;
+	height: 48px;
+}
+.mood_ticker ul {
+	width:100%;
+}
+.char_left{
+	font-size: 14px;
+	font-weight: bold;
+}
+ .char_counter{
+    min-width: 120px;
+    height: 35px;
+}
+ .char_counter.normal{
+     color: black;
+}
+ .char_counter.warning{
+    color: orange;
+	font-weight: 600;
+	font-size: 1.1em;
+}
+.char_counter.final{
+    color: red;
+	font-weight: 900;
+	font-size: 1.2em;
+}
+
+#mood_detailedinfo
+{
+	width: 79.5%;
+	float: right;
+}

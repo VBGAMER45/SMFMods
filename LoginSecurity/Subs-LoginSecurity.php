@@ -3,7 +3,7 @@
 Login Security
 Version 1.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 if (!defined('SMF'))
 	die('Hacking attempt...');
@@ -289,8 +289,11 @@ function CheckForSecureLoginLink($memberID)
 			
 			return false;
 		}
-		else 
+		else
+		{
+			db_query("UPDATE {$db_prefix}login_security SET lockedaccountuntiltime = 0 WHERE ID_MEMBER = " . $memberID, __FILE__, __LINE__);
 			return true;
+		}
 				
 	}
 	else 

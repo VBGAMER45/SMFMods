@@ -1,0 +1,26 @@
+<?php
+$txt['mymood_error_no_content'] = 'My mood field is empty';
+$txt['mymood_error_limit_chars'] = 'The mood has exceeded the maximum characters allowed';
+$txt['mymood_error_cant_delete'] = 'You cant delete this mood.';
+$txt['mymood_admin'] = 'My Moods';
+$txt['mymood_admin_desc'] = 'From here you can configure My Mood mod';
+$txt['mymood_enabled'] = 'Enable this mod';
+$txt['mymood_limit_in_profile'] = 'Show X moods in profile section';
+$txt['mymood_limit_chars'] = 'Chars limit per mood';
+$txt['mymood_limit_chars_desc'] = '0 for no limit';
+$txt['mymood_allow_bbc'] = 'Allow BBC';
+$txt['mymood_allow_smileys'] = 'Allow Smileys';
+$txt['mymood_show_on_boardindex'] = 'Show The Latest Moods in BoardIndex';
+$txt['mymood_boardindex_where'] = 'Show the box in the BoardIndex at';
+$txt['mymood_boardindex_where_top'] = 'Top of the page';
+$txt['mymood_boardindex_where_bottom'] = 'Bottom of the page';
+$txt['mymood_limit_in_board_total'] = 'Total of moods to show in BoardIndex';
+$txt['mymood_limit_in_board_view'] = 'Number of moods to show per refresh in BoardIndex';
+$txt['mymood_second_per_mood_board'] = 'Second to show each mood in BoardIndex';
+$txt['mymood_groups_excluded_board'] = 'Do not show the moods made by members in the following membergroups on the BoardIndex';
+$txt['mymood_groups_excluded_board_desc'] = 'Put the id of the groups separated by commas';
+$txt['mymood_publish'] = 'Publish';
+$txt['mymood_char_left'] = 'Characters left: ';
+$txt['mymood_title'] = 'My Moods: ';
+$txt['mymood_latestmoods_title'] = 'Latests Moods: ';
+$txt['mymood_delete_confirmation'] = 'Are you sure that you want delete this mood?';

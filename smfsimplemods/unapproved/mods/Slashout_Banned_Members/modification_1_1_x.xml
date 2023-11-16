@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:SlashoutBannedMembers</id>
+	<version>1.2</version>
+
+	<file name="$sourcedir/BoardIndex.php">
+		<operation>
+			<search position="replace"><![CDATA[	// Load the users online right now.
+	$result = db_query("
+		SELECT
+			lo.ID_MEMBER, lo.logTime, mem.realName, mem.memberName, mem.showOnline,
+			mg.onlineColor, mg.ID_GROUP, mg.groupName
+		FROM {$db_prefix}log_online AS lo
+			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = lo.ID_MEMBER)]]></search>
+			<add><![CDATA[	// Load the users online right now.
+	$result = db_query("
+		SELECT
+			lo.ID_MEMBER, lo.logTime, mem.realName, mem.memberName, mem.showOnline,
+			mg.onlineColor, mg.ID_GROUP, mg.groupName, mem.is_activated
+		FROM {$db_prefix}log_online AS lo
+			LEFT JOIN {$db_prefix}members AS mem ON (mem.ID_MEMBER = lo.ID_MEMBER)]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[		$context['users_online'][$row['logTime'] . $row['memberName']] = array(]]></search>
+			<add><![CDATA[		if ($row['is_activated'] >= 10)
+			$link = '<del>' . $link . '</del>';]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			IFNULL(mods_mem.ID_MEMBER, 0) AS ID_MODERATOR, mods_mem.realName AS modRealName
+		FROM {$db_prefix}boards AS b
+			LEFT JOIN {$db_prefix}categories AS c ON (c.ID_CAT = b.ID_CAT)]]></search>
+			<add><![CDATA[			IFNULL(mods_mem.ID_MEMBER, 0) AS ID_MODERATOR, mods_mem.realName AS modRealName,
+			mem.is_activated
+		FROM {$db_prefix}boards AS b
+			LEFT JOIN {$db_prefix}categories AS c ON (c.ID_CAT = b.ID_CAT)]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				'link' => $row_board['posterName'] != '' ? (!empty($row_board['ID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_board['ID_MEMBER'] . '">' . $row_board['realName'] . '</a>' : $row_board['realName']) : $txt[470],
+			),
+			'start' => 'msg' . $row_board['new_from'],
+			'topic' => $row_board['ID_TOPIC']
+		);
+
+		// Provide the href and link.
+		if ($row_board['subject'] != '')]]></search>
+			<add><![CDATA[				'link' => $row_board['posterName'] != '' ? (!empty($row_board['ID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_board['ID_MEMBER'] . '">' . ($row_board['is_activated'] < 10 ? $row_board['realName'] : '<del>' . $row_board['realName'] . '</del>') . '</a>' : $row_board['realName']) : $txt[470],
+			),
+			'start' => 'msg' . $row_board['new_from'],
+			'topic' => $row_board['ID_TOPIC']
+		);
+
+		// Provide the href and link.
+		if ($row_board['subject'] != '')]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Display.php">
+	
+		<operation>
+			<search position="replace"><![CDATA[				p.question, p.votingLocked, p.hideResults, p.expireTime, p.maxVotes, p.changeVote,
+				p.ID_MEMBER, IFNULL(mem.realName, p.posterName) AS posterName,
+				COUNT(DISTINCT lp.ID_MEMBER) AS total
+			FROM {$db_prefix}polls AS p]]></search>
+			<add><![CDATA[				p.question, p.votingLocked, p.hideResults, p.expireTime, p.maxVotes, p.changeVote,
+				p.ID_MEMBER, IFNULL(mem.realName, p.posterName) AS posterName,
+				COUNT(DISTINCT lp.ID_MEMBER) AS total, mem.is_activated
+			FROM {$db_prefix}polls AS p]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			'starter' => array(
+				'id' => $pollinfo['ID_MEMBER'],
+				'name' => $row['posterName'],
+				'href' => $pollinfo['ID_MEMBER'] == 0 ? '' : $scripturl . '?action=profile;u=' . $pollinfo['ID_MEMBER'],
+				'link' => $pollinfo['ID_MEMBER'] == 0 ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $pollinfo['ID_MEMBER'] . '">' . $row['posterName'] . '</a>'
+			)
+		);]]></search>
+			<add><![CDATA[			'starter' => array(
+				'id' => $pollinfo['ID_MEMBER'],
+				'name' => $row['posterName'],
+				'href' => $pollinfo['ID_MEMBER'] == 0 ? '' : $scripturl . '?action=profile;u=' . $pollinfo['ID_MEMBER'],
+				'link' => $pollinfo['ID_MEMBER'] == 0 ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $pollinfo['ID_MEMBER'] . '">' . ($row['is_activated'] < 10 ? $row['posterName'] : '<del>' . $row['posterName'] . '</del>') . '</a>'
+			)
+		);]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[		$memberContext[$message['ID_MEMBER']]['can_view_profile'] = allowedTo('profile_view_any') || ($message['ID_MEMBER'] == $ID_MEMBER && allowedTo('profile_view_own'));
+		$memberContext[$message['ID_MEMBER']]['is_topic_starter'] = $message['ID_MEMBER'] == $context['topic_starter_id'];]]></search>
+			<add><![CDATA[		$memberContext[$message['ID_MEMBER']]['can_view_profile'] = allowedTo('profile_view_any') || ($message['ID_MEMBER'] == $ID_MEMBER && allowedTo('profile_view_own'));
+		$memberContext[$message['ID_MEMBER']]['is_topic_starter'] = $message['ID_MEMBER'] == $context['topic_starter_id'];
+		if ($memberContext[$message['ID_MEMBER']]['is_banned'])
+			$memberContext[$message['ID_MEMBER']]['link'] = '<a href="' . $scripturl . '?action=profile;u=' . $memberContext[$message['ID_MEMBER']]['id'] . '" ><del>' . $message['posterName'] . '</del></a>';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/MessageIndex.php">
+	
+		<operation>
+			<search position="replace"><![CDATA[			IFNULL(mem.realName, m.posterName) AS realName, " . (!$user_info['is_guest'] ? "
+			(IFNULL(lb.ID_MSG, 0) >= b.ID_MSG_UPDATED) AS isRead," : "1 AS isRead,") . "
+			IFNULL(mem.ID_MEMBER, 0) AS ID_MEMBER, IFNULL(mem2.ID_MEMBER, 0) AS ID_MODERATOR,
+			mem2.realName AS modRealName]]></search>
+			<add><![CDATA[			IFNULL(mem.realName, m.posterName) AS realName, " . (!$user_info['is_guest'] ? "
+			(IFNULL(lb.ID_MSG, 0) >= b.ID_MSG_UPDATED) AS isRead," : "1 AS isRead,") . "
+			IFNULL(mem.ID_MEMBER, 0) AS ID_MEMBER, IFNULL(mem2.ID_MEMBER, 0) AS ID_MODERATOR,
+			mem2.realName AS modRealName, mem.is_activated]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[						'member' => array(
+							'id' => $row_board['ID_MEMBER'],
+							'username' => $row_board['posterName'] != '' ? $row_board['posterName'] : $txt[470],
+							'name' => $row_board['realName'],
+							'href' => !empty($row_board['ID_MEMBER']) ? $scripturl . '?action=profile;u=' . $row_board['ID_MEMBER'] : '',
+							'link' => $row_board['posterName'] != '' ? (!empty($row_board['ID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_board['ID_MEMBER'] . '">' . $row_board['realName'] . '</a>' : $row_board['realName']) : $txt[470],
+						),]]></search>
+			<add><![CDATA[						'member' => array(
+							'id' => $row_board['ID_MEMBER'],
+							'username' => $row_board['posterName'] != '' ? $row_board['posterName'] : $txt[470],
+							'name' => $row_board['realName'],
+							'href' => !empty($row_board['ID_MEMBER']) ? $scripturl . '?action=profile;u=' . $row_board['ID_MEMBER'] : '',
+							'link' => $row_board['posterName'] != '' ? (!empty($row_board['ID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row_board['ID_MEMBER'] . '">' . ($row_board['is_activated'] < 10 ? $row_board['realName'] : '<del>' . $row_board['realName'] . '</del>') . '</a>' : $row_board['realName']) : $txt[470],
+						),]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				t.ID_TOPIC, t.numReplies, t.locked, t.numViews, t.isSticky, t.ID_POLL,
+				" . ($user_info['is_guest'] ? '0' : 'IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1') . " AS new_from,]]></search>
+			<add><![CDATA[				t.ID_TOPIC, t.numReplies, t.locked, t.numViews, t.isSticky, t.ID_POLL,
+				meml.is_activated, memf.is_activated AS is_activated2,
+				" . ($user_info['is_guest'] ? '0' : 'IFNULL(lt.ID_MSG, IFNULL(lmr.ID_MSG, -1)) + 1') . " AS new_from,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[					'member' => array(
+						'username' => $row['firstMemberName'],
+						'name' => $row['firstDisplayName'],
+						'id' => $row['firstID_MEMBER'],
+						'href' => !empty($row['firstID_MEMBER']) ? $scripturl . '?action=profile;u=' . $row['firstID_MEMBER'] : '',
+						'link' => !empty($row['firstID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['firstID_MEMBER'] . '" title="' . $txt[92] . ' ' . $row['firstDisplayName'] . '">' . $row['firstDisplayName'] . '</a>' : $row['firstDisplayName']
+					),]]></search>
+			<add><![CDATA[					'member' => array(
+						'username' => $row['firstMemberName'],
+						'name' => $row['firstDisplayName'],
+						'id' => $row['firstID_MEMBER'],
+						'href' => !empty($row['firstID_MEMBER']) ? $scripturl . '?action=profile;u=' . $row['firstID_MEMBER'] : '',
+						'link' => !empty($row['firstID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['firstID_MEMBER'] . '" title="' . $txt[92] . ' ' . $row['firstDisplayName'] . '">' . ($row['is_activated2'] < 10 ? $row['firstDisplayName'] : '<del>' . $row['firstDisplayName'] . '</del>') . '</a>' : $row['firstDisplayName']
+					),]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[					'member' => array(
+						'username' => $row['lastMemberName'],
+						'name' => $row['lastDisplayName'],
+						'id' => $row['lastID_MEMBER'],
+						'href' => !empty($row['lastID_MEMBER']) ? $scripturl . '?action=profile;u=' . $row['lastID_MEMBER'] : '',
+						'link' => !empty($row['lastID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['lastID_MEMBER'] . '">' . $row['lastDisplayName'] . '</a>' : $row['lastDisplayName']
+					),]]></search>
+			<add><![CDATA[					'member' => array(
+						'username' => $row['lastMemberName'],
+						'name' => $row['lastDisplayName'],
+						'id' => $row['lastID_MEMBER'],
+						'href' => !empty($row['lastID_MEMBER']) ? $scripturl . '?action=profile;u=' . $row['lastID_MEMBER'] : '',
+						'link' => !empty($row['lastID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['lastID_MEMBER'] . '">' . ($row['is_activated'] < 10 ? $row['lastDisplayName'] : '<del>' . $row['lastDisplayName'] . '</del>') . '</a>' : $row['lastDisplayName']
+					),]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="$sourcedir/Load.php">
+		
+		<operation>
+			<search position="replace"><![CDATA[		$select_columns = '
+			mem.ID_MEMBER, mem.memberName, mem.realName, mem.emailAddress, mem.hideEmail, mem.dateRegistered,
+			mem.posts, mem.lastLogin, mem.memberIP, mem.memberIP2, mem.lngfile, mem.ID_GROUP';]]></search>
+			<add><![CDATA[		$select_columns = '
+			mem.ID_MEMBER, mem.memberName, mem.realName, mem.emailAddress, mem.hideEmail, mem.dateRegistered,
+			mem.posts, mem.lastLogin, mem.memberIP, mem.memberIP2, mem.lngfile, mem.ID_GROUP, mem.is_activated';]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[		'link' => '<a href="' . $scripturl . '?action=profile;u=' . $profile['ID_MEMBER'] . '" title="' . $txt[92] . ' ' . $profile['realName'] . '">' . $profile['realName'] . '</a>',
+		'email' => &$profile['emailAddress'],
+		'hide_email' => $profile['emailAddress'] == '' || (!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']) || (!empty($profile['hideEmail']) && !empty($modSettings['allow_hideEmail']) && !allowedTo('moderate_forum') && $ID_MEMBER != $profile['ID_MEMBER']),]]></search>
+			<add><![CDATA[		'link' => '<a href="' . $scripturl . '?action=profile;u=' . $profile['ID_MEMBER'] . '" title="' . $txt[92] . ' ' . $profile['realName'] . '">' . ($profile['is_activated'] < 10 ? $profile['realName'] : '<del>' . $profile['realName'] . '</del>') . '</a>',
+		'email' => &$profile['emailAddress'],
+		'hide_email' => $profile['emailAddress'] == '' || (!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']) || (!empty($profile['hideEmail']) && !empty($modSettings['allow_hideEmail']) && !allowedTo('moderate_forum') && $ID_MEMBER != $profile['ID_MEMBER']),]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="$boarddir/SSI.php">
+		
+		<operation>
+			<search position="replace"><![CDATA[m.posterTime, m.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, m.ID_BOARD, b.name AS bName,]]></search>
+			<add><![CDATA[m.posterTime, m.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, m.ID_BOARD, b.name AS bName, mem.is_activated,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>']]></search>
+			<add><![CDATA[				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . ($row['is_activated'] < 10 ? $row['posterName'] : '<del>' . $row['posterName'] . '</del>') . '</a>']]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[m.posterTime, ms.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, b.ID_BOARD, b.name AS bName,]]></search>
+			<add><![CDATA[m.posterTime, ms.subject, m.ID_TOPIC, m.ID_MEMBER, m.ID_MSG, b.ID_BOARD, b.name AS bName, mem.is_activated,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>']]></search>
+			<add><![CDATA[				'link' => empty($row['ID_MEMBER']) ? $row['posterName'] : '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . ($row['is_activated'] < 10 ? $row['posterName'] : '<del>' . $row['posterName'] . '</del>') . '</a>']]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[lo.ID_MEMBER, lo.logTime, mem.realName, mem.memberName, mem.showOnline,]]></search>
+			<add><![CDATA[lo.ID_MEMBER, lo.logTime, mem.realName, mem.memberName, mem.showOnline, mem.is_activated,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="after"><![CDATA[$return['users'][$row['logTime'] . $row['memberName']] = array(]]></search>
+			<add><![CDATA[			if ($row['is_activated'] >= 10)
+				$link = '<del>' . $link . '</del>';
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[m.icon, m.subject, m.body, IFNULL(mem.realName, m.posterName) AS posterName, m.posterTime,]]></search>
+			<add><![CDATA[m.icon, m.subject, m.body, IFNULL(mem.realName, m.posterName) AS posterName, m.posterTime, mem.is_activated,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				'link' => !empty($row['ID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . $row['posterName'] . '</a>' : $row['posterName']]]></search>
+			<add><![CDATA[				'link' => !empty($row['ID_MEMBER']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['ID_MEMBER'] . '">' . ($row['is_activated'] < 10 ? $row['posterName'] : '<del>' . $row['posterName'] . '</del>') . '</a>' : $row['posterName']]]></add>
+		</operation>
+		
+	</file>
+
+</modification>

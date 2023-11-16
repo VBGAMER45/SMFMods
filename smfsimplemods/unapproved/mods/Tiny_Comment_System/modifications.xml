@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>manix:Tiny_Comment_System</id>
+	<name>Tiny Comment System</name>
+	<version>1.0</version>
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA['description' => $row['description'],]]></search>
+				<add><![CDATA[
+					'tcs_board_on' => !empty($row['tcs_board_on']),]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[, b.redirect,]]></search>
+				<add><![CDATA[ b.tcs_board_on,]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="before"><![CDATA[$options, $user_info, $smcFunc]]></search>
+				<add><![CDATA[, $board_info]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[// Go to the last message if the given time is beyond the time of the last message.]]></search>
+				<add><![CDATA[
+		//Tiny Comment System MOD
+		if (!empty($modSettings['tcs_enabled']) && $board_info['tcs_board_on'])
+			$context['comments_on_topic'] = loadPostComments($messages);
+
+		]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA['can_see_ip' => allowedTo('moderate_forum') || ($message['id_member'] == $user_info['id'] && !empty($user_info['id'])),]]></search>
+				<add><![CDATA[
+		'comments' => (!empty($modSettings['tcs_enabled']) && $board_info['tcs_board_on'] && array_key_exists($message['id_msg'], $context['comments_on_topic'])) ? $context['comments_on_topic'][$message['id_msg']] : '',]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="before"><![CDATA[<hr class="post_separator" />';]]></search>
+				<add><![CDATA[
+
+		//Tiny Comment System Mod
+		global $board_info, $smcFunc;
+		if(($message['id'] != $context['first_message']) && !empty($modSettings['tcs_enabled']) && !empty($board_info['tcs_board_on']))
+		{
+			 //Mini template for TCS
+			$comment_template = '
+				<div class="comment count_[count] [status]" id="comment_[id]">
+					<div class="floatleft"><span class="tcs_avatar">[avatar]</span></div>
+						<div>
+							<span class="member"><a [group_color] href="'. $scripturl. '?action=profile;u=[member_id]">[member_name]</a></span>
+							<span class="smalltext">[date]</span>
+								[delete]
+							<div class="body">[body]</div>
+					   </div>
+					<br class="clear" />
+				</div>';
+			echo '
+				<div class="comments_container">';
+					echo '
+					 <div class="comments">';
+
+					if (!empty($message['comments']))
+					{
+							for ($i = 0; $i < count($message['comments']); $i ++)
+							{
+								$comment = $message['comments'][$i];
+								$status = ($i < $modSettings['tcs_initial_number']) ? 'tcs_actived' : 'tcs_hidden';
+								$output = str_replace('[status]', $status, $comment_template);
+								$output = str_replace('[delete]', (($context['user']['is_admin'] || ($context['user']['id'] == $comment['id_member'])) ? ' <a href="#" class="delete_comment" name="[id]">'.$txt['tcs_btn_delete'].'</a>' : ''), $output);
+								$output = str_replace('[date]', $comment['poster_time'], $output);
+								$output = str_replace('[count]', $i, $output);
+								$output = str_replace('[group_color]', $comment['group_color'], $output);
+								$output = str_replace('[member_id]', $comment['id_member'], $output);
+								$output = str_replace('[avatar]', $comment['member_avatar'], $output);
+								$output = str_replace('[body]', $comment['body'], $output);
+								$output = str_replace('[id]', $comment['id'], $output);
+								$output = str_replace('[member_name]', $comment['member_name'], $output);
+								echo $output;
+							}
+					}
+					echo '
+					</div>';  //.comments
+
+					if (count($message['comments']) > $modSettings['tcs_initial_number'])
+						echo '
+					<div>
+						<a href="#" class="show-more" rel="', $modSettings['tcs_initial_number'], '" name="', $modSettings['tcs_see_more_number'], '">', $txt['tcs_btn_show_more'], '</a>
+					</div>';
+
+					if (allowedTo('tcs_do_comments') && !$context['user']['is_guest']) //Check permissions!
+					{
+						echo '
+						<div class="replay_comment_container">
+							<input type="hidden" class="message_to_comment" name="message_to_comment" value="', $message['id'], '" />';
+							if (!$message['member']['is_guest'])
+								echo '<a class="new_comment_action" href="#">', $txt['tcs_btn_add_comment'], '</a>';
+							echo '
+							<span class="comment_error"></span>
+							<div class="comment_form"></div>
+						</div>';
+					}
+				echo '
+				</div>';
+		}
+		//Tiny Comment System Mod END
+		]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[<a id="lastPost"></a>';]]></search>
+				<add><![CDATA[
+
+	//Tiny Comment System Mod
+	if(!empty($modSettings['tcs_enabled']) && !empty($board_info['tcs_board_on']) && !empty($comment_template))
+	{
+		$comment_template =  $smcFunc['htmltrim'](preg_replace('/\s\s+/', ' ', $comment_template));
+		$limit_text = !empty($modSettings['tcs_characters_limit']) ? $modSettings['tcs_characters_limit'] : '';
+		 echo "
+		<script type=\"text/javascript\">
+			tcs(document).ready(function(){
+				tcs('.new_comment_action').csAddComment({
+					'comment_template' : '" . $comment_template . "',
+					'add_text' : '".$txt['tcs_btn_add_comment']."',
+					'undo_text' : '".$txt['tcs_btn_cancel']."',
+					'post_text' : '".$txt['tcs_btn_post']."',
+					'limit_text': '".$limit_text."',
+					'char_left_text': '".$txt['tcs_char_left']."',
+					'topic' : '" .$context['current_topic']. "',
+				});
+				tcs('.undo_comment_action').csUndoComment();
+				tcs('.sent_comment_action').csSendComment();
+				tcs('.delete_comment').csDeleteComment();
+				tcs('.show-more').csShowMore();
+				tcs('.comment_field').csCharCounter();
+			});
+		</script>";
+	}
+	//Tiny Comment System Mod END]]></add>
+		</operation>
+	</file>	
+	<file name="$sourcedir/RemoveTopic.php">
+		<operation>
+			<search position="after"><![CDATA[// Update the totals...]]></search>
+				<add><![CDATA[
+		//TinyCommentSystem
+		removeCommentIfPostDelete($topics);
+
+		]]></add>
+		</operation>
+	</file>
+</modification>

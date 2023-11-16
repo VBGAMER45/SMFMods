@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:BBC_User_Info</id>
+	<version>2.1</version>
+	<name>BBC User Info</name>
+	<type>modification</type>
+	<install for="2.0 - 2.0.99">		
+		<readme parsebbc="true">readme.txt</readme>
+		<redirect url="?action=admin;area=modsettings;sa=Userinfo" timeout="5000">Redirect.txt</redirect>
+		<modification>install.xml</modification>
+		<require-file name="sources/Userinfo.php" destination="$sourcedir" />
+		<require-file name="default/Userinfo.template.php" destination="$themedir" />
+		<require-dir name="default/scripts" destination="$themedir" />
+		<require-dir name="default/images" destination="$themedir" />
+		<require-dir name="default/css" destination="$themedir" />		
+		<require-dir name="default/languages" destination="$themedir" />		
+		<code>hooks.php</code>
+	</install>	
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">install.xml</modification>
+		<remove-file name="$imagesdir/bbc/userInfo.gif" />
+		<remove-file name="$themedir/css/jquery.qtip.css" />
+		<remove-file name="$themedir/css/user_info.css" />
+		<remove-file name="$imagesdir/sinAvatar.png" />
+		<remove-file name="$themedir/scripts/jquery.qtip.min.js" />
+		<remove-file name="$themedir/Userinfo.template.php" />		
+		<remove-file name="$sourcedir/Userinfo.php" />
+		<remove-file name="$languagedir/Userinfo.english.php" />	
+		<remove-file name="$languagedir/Userinfo.spanish_es.php" />	
+		<remove-file name="$languagedir/Userinfo.spanish_latin.php" />
+		<remove-file name="$languagedir/Userinfo.spanish_es-uft8.php" />	
+		<remove-file name="$languagedir/Userinfo.spanish_latin-utf8.php" />			
+		<code>hooks.php</code>	
+	</uninstall>
+</package-info>

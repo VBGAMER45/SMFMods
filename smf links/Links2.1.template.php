@@ -9,8 +9,7 @@ function template_mainview()
 {
 	global $scripturl, $context, $txt, $settings, $modSettings, $user_info, $subcats_linktree;
 
-	// To get Permissions text
-	loadLanguage('Admin');
+
 
 	// See if they can approve links
 	$a_links = allowedTo('approve_links');
@@ -36,9 +35,7 @@ function template_mainview()
 
 		';
 
-		$ratelink = allowedTo('rate_links');
-
-		// List all the catagories
+		// List all the categories
 		// Get category count
 		$cat_count = $context['cat_count'];
 
@@ -325,7 +322,7 @@ echo '
 			echo '
 
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="tborder">
-				<tr class="windowbg">
+				<tr class="windowbg2">
 					<td align="center">', $txt['smflinks_nolinks'],'</td>
 				</tr>
 

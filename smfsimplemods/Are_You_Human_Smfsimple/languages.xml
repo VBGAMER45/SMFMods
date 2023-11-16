@@ -1,0 +1,308 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>karlbenson:areyouhuman</id>
+	<name>Anti Bot: Are You Human/Bot?</name>
+<version>3.0</version>	
+<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Are You Human?';
+$txt['are_you_human_q2'] = 'Are You Bot?';
+$txt['are_you_human_desc'] = 'Another Anti-Bot Measure';
+$txt['are_you_human_answers'][0] = 'Yes';
+$txt['are_you_human_answers'][1] = 'No';
+$txt['are_you_human_answers'][2] = 'I don\'t know';
+$txt['are_you_human_answers'][3] = 'Maybe';
+$txt['are_you_human_answers'][4] = 'I think...';
+$txt['are_you_human_answers'][5] = 'Waits';
+$txt['are_you_human_answers'][6] = 'Hmm'; 			// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'This page has expired. Please restart the <a href="' . $scripturl . '?action=register;">registration page</a>.';
+$txt['are_you_human_fail'] = 'Please confirm that you are human in order to proceed with registration.<br />
+Bots are not allowed to register.';
+
+$txt['are_you_human_s'] = 'Enable MOD Are You Human';
+$txt['are_you_human_q'] = 'Select the Question';
+$txt['are_you_human_a'] = 'Order Rand the Answers';
+$txt['are_you_human_q_0'] = 'Are You Human?';
+$txt['are_you_human_q_1'] = 'Are You Bot?';
+$txt['are_you_human_q_2'] = 'Random Question';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Are You Human?';
+$txt['are_you_human_q2'] = 'Are You Bot?';
+$txt['are_you_human_desc'] = 'Another Anti-Bot Measure';
+$txt['are_you_human_answers'][0] = 'Yes';
+$txt['are_you_human_answers'][1] = 'No';
+$txt['are_you_human_answers'][2] = 'I don\'t know';
+$txt['are_you_human_answers'][3] = 'Maybe';
+$txt['are_you_human_answers'][4] = 'I think...';
+$txt['are_you_human_answers'][5] = 'Waits';
+$txt['are_you_human_answers'][6] = 'Hmm';			// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'This page has expired. Please restart the <a href="' . $scripturl . '?action=register;">registration page</a>.';
+$txt['are_you_human_fail'] = 'Please confirm that you are human in order to proceed with registration.<br />
+Bots are not allowed to register.';
+
+$txt['are_you_human_s'] = 'Enable MOD Are You Human';
+$txt['are_you_human_q'] = 'Select the Question';
+$txt['are_you_human_a'] = 'Order Rand the Answers';
+$txt['are_you_human_q_0'] = 'Are You Human?';
+$txt['are_you_human_q_1'] = 'Are You Bot?';
+$txt['are_you_human_q_2'] = 'Random Question';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_es.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = '&iquest;Eres humano?';
+$txt['are_you_human_q2'] = '&iquest;Eres un bot?';
+$txt['are_you_human_desc'] = 'Otra modificacion para evitar bots';
+$txt['are_you_human_answers'][0] = 'Si';
+$txt['are_you_human_answers'][1] = 'No';
+$txt['are_you_human_answers'][2] = 'No tengo idea';
+$txt['are_you_human_answers'][3] = 'Tal vez';
+$txt['are_you_human_answers'][4] = 'Podria ser';
+$txt['are_you_human_answers'][5] = 'Esperame..';
+$txt['are_you_human_answers'][6] = 'Mmm'; 
+
+// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'Está pagina ah expirado, porfavor vuelve al <a href="' . $scripturl . '?action=register">registro</a>.';
+$txt['are_you_human_fail'] = 'Error, debes confirmar si eres un bot o un humano.<br />
+Los bots no se pueden registrar.';
+
+$txt['are_you_human_s'] = 'Activar Are You Human';
+$txt['are_you_human_q'] = 'Seleccionar Pregunta';
+$txt['are_you_human_a'] = 'Orden de Preguntas';
+$txt['are_you_human_q_0'] = '&iquest;Eres humano?';
+$txt['are_you_human_q_1'] = '&iquest;Eres bot?';
+$txt['are_you_human_q_2'] = 'Pregunta al Azar';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/Modifications.spanish_es-utf8.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Eres humano?';
+$txt['are_you_human_q2'] = 'Eres un bot?';
+$txt['are_you_human_desc'] = 'Otra modificacion para evitar bots';
+$txt['are_you_human_answers'][0] = 'Si';
+$txt['are_you_human_answers'][1] = 'No';
+$txt['are_you_human_answers'][2] = 'No tengo idea';
+$txt['are_you_human_answers'][3] = 'Tal vez';
+$txt['are_you_human_answers'][4] = 'Podria ser';
+$txt['are_you_human_answers'][5] = 'Esperame..';
+$txt['are_you_human_answers'][6] = 'Mmm'; 
+
+// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'Esta pagina ah expirado, porfavor vuelve al <a href="' . $scripturl . '?action=register">registro</a>.';
+$txt['are_you_human_fail'] = 'Error, debes confirmar si eres un bot o un humano.<br />
+Los bots no se pueden registrar.';
+
+$txt['are_you_human_s'] = 'Activar Are You Human';
+$txt['are_you_human_q'] = 'Seleccionar Pregunta';
+$txt['are_you_human_a'] = 'Orden de Preguntas';
+$txt['are_you_human_q_0'] = 'Eres humano?';
+$txt['are_you_human_q_1'] = 'Eres bot?';
+$txt['are_you_human_q_2'] = 'Pregunta al Azar';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_latin.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+// Are You Human?
+$txt['are_you_human_q1'] = '&iquest;Eres humano?';
+$txt['are_you_human_q2'] = '&iquest;Eres un bot?';
+$txt['are_you_human_desc'] = 'Otra modificacion para evitar bots';
+$txt['are_you_human_answers'][0] = 'Si';
+$txt['are_you_human_answers'][1] = 'No';
+$txt['are_you_human_answers'][2] = 'No tengo idea';
+$txt['are_you_human_answers'][3] = 'Tal vez';
+$txt['are_you_human_answers'][4] = 'Podria ser';
+$txt['are_you_human_answers'][5] = 'Esperame..';
+$txt['are_you_human_answers'][6] = 'Mmm'; 
+
+// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'Está pagina ah expirado, porfavor vuelve al <a href="' . $scripturl . '?action=register;">registro</a>.';
+$txt['are_you_human_fail'] = 'Error, debes confirmar si eres un bot o un humano.<br />
+Los bots no se pueden registrar.';
+
+$txt['are_you_human_s'] = 'Activar Are You Human';
+$txt['are_you_human_q'] = 'Seleccionar Pregunta';
+$txt['are_you_human_a'] = 'Orden de Preguntas';
+$txt['are_you_human_q_0'] = '&iquest;Eres humano?';
+$txt['are_you_human_q_1'] = '&iquest;Eres bot?';
+$txt['are_you_human_q_2'] = 'Pregunta al Azar';]]></add>
+		</operation>
+	</file>
+		<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+// Are You Human?
+$txt['are_you_human_q1'] = '&iquest;Eres humano?';
+$txt['are_you_human_q2'] = '&iquest;Eres un bot?';
+$txt['are_you_human_desc'] = 'Otra modificacion para evitar bots';
+$txt['are_you_human_answers'][0] = 'Si';
+$txt['are_you_human_answers'][1] = 'No';
+$txt['are_you_human_answers'][2] = 'No tengo idea';
+$txt['are_you_human_answers'][3] = 'Tal vez';
+$txt['are_you_human_answers'][4] = 'Podria ser';
+$txt['are_you_human_answers'][5] = 'Esperame..';
+$txt['are_you_human_answers'][6] = 'Mmm'; 
+
+// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'Está pagina ah expirado, porfavor vuelve al <a href="' . $scripturl . '?action=register;">registro</a>.';
+$txt['are_you_human_fail'] = 'Error, debes confirmar si eres un bot o un humano.<br />
+Los bots no se pueden registrar.';
+
+$txt['are_you_human_s'] = 'Activar Are You Human';
+$txt['are_you_human_q'] = 'Seleccionar Pregunta';
+$txt['are_you_human_a'] = 'Orden de Preguntas';
+$txt['are_you_human_q_0'] = '&iquest;Eres humano?';
+$txt['are_you_human_q_1'] = '&iquest;Eres bot?';
+$txt['are_you_human_q_2'] = 'Pregunta al Azar';]]></add>
+		</operation>
+	</file><file name="$languagedir/Modifications.portuguese_pt.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q2'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_desc'] = 'Outra Medida Anti-Bot';
+$txt['are_you_human_answers'][0] = 'sim';
+$txt['are_you_human_answers'][1] = 'n&atilde;o';
+$txt['are_you_human_answers'][2] = 'Eu n&atilde;o sei';
+$txt['are_you_human_answers'][3] = 'talvez';
+$txt['are_you_human_answers'][4] = 'Eu acho...';
+$txt['are_you_human_answers'][5] = 'Espera';
+$txt['are_you_human_answers'][6] = 'Hmm';            // Voc&ecirc; pode adicionar mais Respostas para confundir os bots
+
+$txt['are_you_human_expired'] = 'Esta p&aacute;gina expirou. Por favor, reinicie a <a href="' . $scripturl . '?action=register;">p&aacute;gina de registo</a>.';
+$txt['are_you_human_fail'] = 'Por favor, confirme que voc&ecirc; &eacute; humano, para poder proceder o registo.<br />
+Bots n&atilde;o est&atilde;o autorizados a registar-se.';
+
+$txt['are_you_human_s'] = 'Activar o MOD Voc&ecirc; &eacute; Humano';
+$txt['are_you_human_q'] = 'Selecione a Quest&atilde;o';
+$txt['are_you_human_a'] = 'ordenar em Rand as respostas';
+$txt['are_you_human_q_0'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q_1'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_q_2'] = 'Pergunta aleatória';]]></add>
+        </operation>
+    </file><file name="$languagedir/Modifications.portuguese_pt-utf8.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q2'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_desc'] = 'Outra Medida Anti-Bot';
+$txt['are_you_human_answers'][0] = 'sim';
+$txt['are_you_human_answers'][1] = 'n&atilde;o';
+$txt['are_you_human_answers'][2] = 'Eu n&atilde;o sei';
+$txt['are_you_human_answers'][3] = 'talvez';
+$txt['are_you_human_answers'][4] = 'Eu acho...';
+$txt['are_you_human_answers'][5] = 'Espera';
+$txt['are_you_human_answers'][6] = 'Hmm';            // Voc&ecirc; pode adicionar mais Respostas para confundir os bots
+
+$txt['are_you_human_expired'] = 'Esta p&aacute;gina expirou. Por favor, reinicie a <a href="' . $scripturl . '?action=register;">p&aacute;gina de registo</a>.';
+$txt['are_you_human_fail'] = 'Por favor, confirme que voc&ecirc; &eacute; humano, para poder proceder o registo.<br />
+Bots n&atilde;o est&atilde;o autorizados a registar-se.';
+
+$txt['are_you_human_s'] = 'Activar o MOD Voc&ecirc; &eacute; Humano';
+$txt['are_you_human_q'] = 'Selecione a Quest&atilde;o';
+$txt['are_you_human_a'] = 'ordenar em Rand as respostas';
+$txt['are_you_human_q_0'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q_1'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_q_2'] = 'Pergunta aleatória';]]></add>
+        </operation>
+    </file><file name="$languagedir/Modifications.portuguese_brazilian.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q2'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_desc'] = 'Outra Medida Anti-Bot';
+$txt['are_you_human_answers'][0] = 'sim';
+$txt['are_you_human_answers'][1] = 'n&atilde;o';
+$txt['are_you_human_answers'][2] = 'Eu n&atilde;o sei';
+$txt['are_you_human_answers'][3] = 'talvez';
+$txt['are_you_human_answers'][4] = 'Eu acho...';
+$txt['are_you_human_answers'][5] = 'Espera';
+$txt['are_you_human_answers'][6] = 'Hmm';            // Voc&ecirc; pode adicionar mais Respostas para confundir os bots
+
+$txt['are_you_human_expired'] = 'Esta p&aacute;gina expirou. Por favor, reinicie a <a href="' . $scripturl . '?action=register;">p&aacute;gina de registo</a>.';
+$txt['are_you_human_fail'] = 'Por favor, confirme que voc&ecirc; &eacute; humano, para poder proceder o registo.<br />
+Bots n&atilde;o est&atilde;o autorizados a registar-se.';
+
+$txt['are_you_human_s'] = 'Activar o MOD Voc&ecirc; &eacute; Humano';
+$txt['are_you_human_q'] = 'Selecione a Quest&atilde;o';
+$txt['are_you_human_a'] = 'ordenar em Rand as respostas';
+$txt['are_you_human_q_0'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q_1'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_q_2'] = 'Pergunta aleatória';]]></add>
+        </operation>
+    </file><file name="$languagedir/Modifications.portuguese_brazilian-utf8.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q2'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_desc'] = 'Outra Medida Anti-Bot';
+$txt['are_you_human_answers'][0] = 'sim';
+$txt['are_you_human_answers'][1] = 'n&atilde;o';
+$txt['are_you_human_answers'][2] = 'Eu n&atilde;o sei';
+$txt['are_you_human_answers'][3] = 'talvez';
+$txt['are_you_human_answers'][4] = 'Eu acho...';
+$txt['are_you_human_answers'][5] = 'Espera';
+$txt['are_you_human_answers'][6] = 'Hmm';            // Voc&ecirc; pode adicionar mais Respostas para confundir os bots
+
+$txt['are_you_human_expired'] = 'Esta p&aacute;gina expirou. Por favor, reinicie a <a href="' . $scripturl . '?action=register;">p&aacute;gina de registo</a>.';
+$txt['are_you_human_fail'] = 'Por favor, confirme que voc&ecirc; &eacute; humano, para poder proceder o registo.<br />
+Bots n&atilde;o est&atilde;o autorizados a registar-se.';
+
+$txt['are_you_human_s'] = 'Activar o MOD Voc&ecirc; &eacute; Humano';
+$txt['are_you_human_q'] = 'Selecione a Quest&atilde;o';
+$txt['are_you_human_a'] = 'ordenar em Rand as respostas';
+$txt['are_you_human_q_0'] = 'Voc&ecirc; &eacute; humano?';
+$txt['are_you_human_q_1'] = 'Voc&ecirc; &eacute; Bot?';
+$txt['are_you_human_q_2'] = 'Pergunta aleatória';]]></add>
+        </operation>
+    </file><file name="$languagedir/Modifications.german.php" error="skip"><operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Are You Human?
+$txt['are_you_human_q1'] = 'Sind Sie ein Mensch?';
+$txt['are_you_human_q2'] = 'Sind Sie ein Roboter?';
+$txt['are_you_human_desc'] = 'Eine andere Anti-Roboter-Messung';
+$txt['are_you_human_answers'][0] = 'Ja';
+$txt['are_you_human_answers'][1] = 'Nein';
+$txt['are_you_human_answers'][2] = 'Keine Ahnung';
+$txt['are_you_human_answers'][3] = 'Vielleicht';
+$txt['are_you_human_answers'][4] = 'Ich glaube ...';
+$txt['are_you_human_answers'][5] = 'Warte';
+$txt['are_you_human_answers'][6] = 'Hmm'; 			// You can add more Answers for confused the bots
+
+$txt['are_you_human_expired'] = 'Die Zeit ist abgelaufen. Bitte die Seite neu aufrufen: <a href="' . $scripturl . '?action=register;">Registrierungs-Seite</a>.';
+$txt['are_you_human_fail'] = 'Bitte best&auml;tigen Sie, dass Sie ein Mensch sind.<br />
+Roboter d&uuml;rfen sich nicht registrieren..';
+
+$txt['are_you_human_s'] = 'Modifikation Are You Human anschalten';
+$txt['are_you_human_q'] = 'Frage ausw&auml;hlen';
+$txt['are_you_human_a'] = 'Reihenfolge';
+$txt['are_you_human_q_0'] = 'Sind Sie ein Mensch?';
+$txt['are_you_human_q_1'] = 'Sind Sie ein Roboter?';
+$txt['are_you_human_q_2'] = 'Mische Fragen';]]></add>
+        </operation>
+    </file>
+</modification>

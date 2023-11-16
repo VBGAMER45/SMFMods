@@ -1,0 +1,543 @@
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>jeremy:ads</id>
+	<version>3.1</version>
+
+<file name="$boarddir/index.php">
+<operation>
+	<search position="before"><![CDATA[		'admin' => array('Admin.php', 'AdminMain'),]]></search>
+<add><![CDATA[
+		'ads' => array('Ads.php', 'Ads'),]]></add>
+</operation>
+
+<operation>
+	<search position="before"><![CDATA[require_once($sourcedir . '/Security.php');]]></search>
+<add><![CDATA[
+if (file_exists($sourcedir . '/LoadAds.php'))
+	require_once($sourcedir . '/LoadAds.php');]]></add>
+</operation>
+
+<operation>
+	<search position="before"><![CDATA[// Check if the user should be disallowed access.]]></search>
+<add><![CDATA[
+
+	// Load all the ads up
+	if (function_exists("loadAds"))
+		loadAds();]]></add>
+</operation>
+
+</file>
+
+
+<file name="$sourcedir/Admin.php">
+<operation>
+	<search position="before"><![CDATA[	loadLanguage('Admin');]]></search>
+<add><![CDATA[	
+	loadLanguage('Ads');]]></add>
+</operation>
+
+<operation>
+	<search position="before"><![CDATA[				'theme' => array(
+					'label' => $txt['theme_admin'],
+					'file' => 'Themes.php',
+					'function' => 'ThemesMain',
+					'custom_url' => $scripturl . '?action=admin;area=theme;sa=admin',
+					'icon' => 'themes.gif',
+					'subsections' => array(
+						'admin' => array($txt['themeadmin_admin_title']),
+						'list' => array($txt['themeadmin_list_title']),
+						'reset' => array($txt['themeadmin_reset_title']),
+						'edit' => array($txt['themeadmin_edit_title']),
+					),
+				),]]></search>
+<add><![CDATA[
+				'ads' => array(
+					'label' => $txt['ad_management'],
+					'file' => 'Ads.php',
+					'function' => 'Ads',
+					'custom_url' => $scripturl . '?action=admin;area=ads;sa=main',
+					'icon' => 'themes.gif',
+					'subsections' => array(
+						'main' => array($txt['ad_management_main']),
+						'add' => array($txt['ad_management_add']),
+						'reports' => array($txt['ad_management_reports']),
+						'settings' => array($txt['ad_management_settings']),
+						'copyright' => array($txt['ads_txt_copyrightremoval']),
+						'credits' => array($txt['ad_management_credits']),
+					),
+				),
+]]>
+</add>
+</operation>
+</file>
+
+
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<add><![CDATA[
+			
+	// Start Ad Mod
+		// You can order copyright removal! From the mod settings cheap and helps support the mod author!
+		$showInfo = AdsCheckInfo();
+		    
+	    	if ($showInfo == true && !isset($adCopyright))
+	    	{
+			$buffer = preg_replace('~(, Simple Machines LLC</a>)~', ', Simple Machines LLC</a><br /><span class="smalltext"><a href="http://www.smfads.com" target="_blank">SMFAds</a> for <a href="http://www.createaforum.com" title="Forum Hosting">Free Forums</a></span>', $buffer);
+			$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext"><a href="http://www.smfads.com" target="_blank">SMFAds</a> for <a href="http://www.createaforum.com" title="Forum Hosting" target="_blank">Free Forums</a></span>', $buffer);
+			$adCopyright = 1;
+		}
+	// End Ad Mod
+			
+	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></add>
+	</operation>
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+
+function AdsCheckInfo()
+{
+    global $modSettings, $boardurl;
+    
+    if (isset($modSettings['ads_copyrightkey']))
+    {
+        $m = 35;
+        if (!empty($modSettings['ads_copyrightkey']))
+        {
+            if ($modSettings['ads_copyrightkey'] == sha1($m . '-' . $boardurl))
+            {
+                return false;
+            }
+            else
+                return true;
+        }
+    }
+    
+    return true;
+}
+		
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$themedir/BoardIndex.template.php">
+	<operation>
+		<search position="after"><![CDATA[	// Show some statistics if stat info is off.]]></search>
+
+<add><![CDATA[
+	//Display ads on the board index
+	if (function_exists("show_boardAds"))
+	{
+		$ads = show_boardAds();
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+]]></add>
+</operation>
+
+	<operation>
+		<search position="before"><![CDATA[<tbody class="divider">
+				<tr>
+					<td colspan="4"></td>
+				</tr>
+			</tbody>';]]></search>
+<add><![CDATA[
+	echo '<tbody><tr><td colspan="4">';
+	//Display ads Between cats
+	if (function_exists("show_category"))
+	{
+		$ads = show_category($category['id']);
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+	echo '			</td></tr></tbody>';
+]]></add>
+</operation>
+</file>
+
+
+
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="before"><![CDATA[	// Show the anchor for the top and for the first message. If the first message is new, say so.]]></search>
+
+<add><![CDATA[
+	//Display ads on the thread page
+	if (function_exists("show_threadAds"))
+	{
+		$ads = show_threadAds();	
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+		
+		$messageStorage = '';
+	}
+]]></add>
+</operation>
+
+<operation>
+	<search position="replace"><![CDATA[	// Get all the messages...
+	while ($message = $context['get_message']())
+	{]]></search>
+<add><![CDATA[	//Ad Counter
+	$adcounter =0;
+	// Get all the messages...
+	while ($message = $context['get_message']())
+	{
+		$adcounter++;]]></add>
+</operation>
+
+
+<operation>
+	<search position="replace"><![CDATA[	}
+
+	echo '
+				</form>
+			</div>
+			<a id="lastPost"></a>';]]>
+</search>
+<add><![CDATA[
+if (function_exists("show_posts"))
+{
+	$messageStorage = $message;
+	if ($adpost = show_posts($adcounter))
+	{
+		if($modSettings['ads_lookLikePosts'])
+		{
+			echo '
+				<div class="windowbg">
+					<span class="topslice"><span></span></span>
+							<div class="poster">
+								<h4>', $context['forum_name'], '</h4>
+							</div>
+							<div class="postarea">
+								<div class="flow_hidden">
+									<div class="keyinfo">
+										<div class="messageicon">
+											<img src="', $message['icon_url'] . '" alt="" border="0" />
+										</div>
+										<h5 id="subject_', $message['id'], '">
+											<a href="', $message['href'], '" rel="nofollow">', $message['subject'], '</a>
+										</h5>
+										<div class="smalltext">&#171; <strong>', !empty($message['counter']) ? $txt['reply_noun'] . ' #' . $message['counter'] : '', ' ', $txt['on'], ':</strong> ', $message['time'], ' &#187;</div>
+										<div id="msg_', $message['id'], '_quick_mod"></div>
+									</div>';
+	
+			// If this is the first post, (#0) just say when it was posted - otherwise give the reply #.
+			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+				echo '
+									<ul class="reset smalltext quickbuttons">';
+	
+			// Can they reply? Have they turned on quick reply?
+			if ($context['can_reply'] && !empty($options['display_quick_reply']))
+				echo '
+										<li class="quote_button"><a>', $txt['quote'], '</a></li>';
+	
+			// So... quick reply is off, but they *can* reply?
+			elseif ($context['can_reply'])
+				echo '
+										<li class="quote_button"><a>', $txt['quote'], '</a></li>';
+	
+			// Can the user modify the contents of this post?
+			if ($message['can_modify'])
+				echo '
+										<li class="modify_button"><a>', $txt['modify'], '</a></li>';
+	
+			// How about... even... remove it entirely?!
+			if ($message['can_remove'])
+				echo '
+										<li class="remove_button"><a>', $txt['remove'], '</a></li>';
+	
+			// What about splitting it off the rest of the topic?
+			if ($context['can_split'] && !empty($context['num_replies']))
+				echo '
+										<li class="split_button"><a>', $txt['split'], '</a></li>';
+	
+			// Can we restore topics?
+			if ($context['can_restore_msg'])
+				echo '
+										<li class="restore_button"><a>', $txt['restore_message'], '</a></li>';
+	
+			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+				echo '
+									</ul>';
+	
+			echo '
+								</div>';
+	
+	
+			// Show the post itself, finally!
+			echo '
+								<div class="post">';
+	
+			echo '
+									<div class="inner" id="msg_', $message['id'], '"', '>', $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']) ,'</div>
+								</div>';
+	
+	
+			echo '
+							</div>
+	
+	
+					<span class="botslice"><span></span></span>
+				</div>
+				<hr class="post_separator" />
+				';
+		}
+		else
+			echo '
+				<div class="windowbg">
+					<span class="topslice"><span></span></span>
+	
+					<div align="center">', $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']) ,'</div>
+	
+					<span class="botslice"><span></span></span>
+				</div>
+				<hr class="post_separator" />
+			';
+	}
+}
+	}
+	
+if(function_exists("show_lastpostAds") && function_exists("show_posts"))
+{
+	$message = $messageStorage;
+	if(($adpost = show_lastpostAds()) && !show_posts($adcounter))
+	{
+		if($modSettings['ads_lookLikePosts'])
+		{
+			echo '
+				<div class="windowbg">
+					<span class="topslice"><span></span></span>
+							<div class="poster">
+								<h4>', $context['forum_name'], '</h4>
+							</div>
+							<div class="postarea">
+								<div class="flow_hidden">
+									<div class="keyinfo">
+										<div class="messageicon">
+											<img src="', $message['icon_url'] . '" alt="" border="0" />
+										</div>
+										<h5 id="subject_', $message['id'], '">
+											<a href="', $message['href'], '" rel="nofollow">', $message['subject'], '</a>
+										</h5>
+										<div class="smalltext">&#171; <strong>', !empty($message['counter']) ? $txt['reply_noun'] . ' #' . $message['counter'] : '', ' ', $txt['on'], ':</strong> ', $message['time'], ' &#187;</div>
+										<div id="msg_', $message['id'], '_quick_mod"></div>
+									</div>';
+	
+			// If this is the first post, (#0) just say when it was posted - otherwise give the reply #.
+			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+				echo '
+									<ul class="reset smalltext quickbuttons">';
+	
+			// Can they reply? Have they turned on quick reply?
+			if ($context['can_reply'] && !empty($options['display_quick_reply']))
+				echo '
+										<li class="quote_button"><a>', $txt['quote'], '</a></li>';
+	
+			// So... quick reply is off, but they *can* reply?
+			elseif ($context['can_reply'])
+				echo '
+										<li class="quote_button"><a>', $txt['quote'], '</a></li>';
+	
+			// Can the user modify the contents of this post?
+			if ($message['can_modify'])
+				echo '
+										<li class="modify_button"><a>', $txt['modify'], '</a></li>';
+	
+			// How about... even... remove it entirely?!
+			if ($message['can_remove'])
+				echo '
+										<li class="remove_button"><a>', $txt['remove'], '</a></li>';
+	
+			// What about splitting it off the rest of the topic?
+			if ($context['can_split'] && !empty($context['num_replies']))
+				echo '
+										<li class="split_button"><a>', $txt['split'], '</a></li>';
+	
+			// Can we restore topics?
+			if ($context['can_restore_msg'])
+				echo '
+										<li class="restore_button"><a>', $txt['restore_message'], '</a></li>';
+	
+			if ($message['can_approve'] || $context['can_reply'] || $message['can_modify'] || $message['can_remove'] || $context['can_split'] || $context['can_restore_msg'])
+				echo '
+									</ul>';
+	
+			echo '
+								</div>';
+	
+	
+			// Show the post itself, finally!
+			echo '
+								<div class="post">';
+	
+			echo '
+									<div class="inner" id="msg_', $message['id'], '"', '>', $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']) ,'</div>
+								</div>';
+	
+	
+			echo '
+							</div>
+	
+	
+					<span class="botslice"><span></span></span>
+				</div>
+				<hr class="post_separator" />
+				';
+		}
+		else
+			echo '
+				<div class="windowbg">
+					<span class="topslice"><span></span></span>
+	
+					<div align="center">', $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']) ,'</div>
+	
+					<span class="botslice"><span></span></span>
+				</div>
+				<hr class="post_separator" />
+			';
+	}
+}
+
+	echo '
+				</form>
+			</div>
+			<a id="lastPost"></a>';
+]]>
+</add>
+</operation>
+</file>
+
+
+
+
+<file name="$themedir/MessageIndex.template.php">
+	<operation>
+		<search position="before"><![CDATA[	global $context, $settings, $options, $scripturl, $modSettings, $txt;]]></search>
+
+<add><![CDATA[
+	//Display Ads on the Message index
+	if (function_exists("show_threadindexAds"))
+	{
+		$ads = show_threadindexAds();
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+]]></add>
+</operation>
+
+<operation>
+	<search position="replace"><![CDATA[echo '
+				</tbody>
+			</table>
+		</div>
+	</div>';]]></search>
+
+<add><![CDATA[echo '
+				</tbody>
+			</table>
+		</div>
+	</div>';
+	//Display Ads on the Message index
+	if (function_exists("show_underchildren"))
+	{
+		$ads = show_underchildren();
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+	]]></add>
+</operation>
+</file>
+
+<file name="$themedir/index.template.php">
+
+	<operation  error="ignore">
+		<search position="before"><![CDATA[echo '
+					<input type="hidden" name="hash_passwrd" value="" /><input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				</form>';
+	}]]></search>
+		<add><![CDATA[
+// Begin Ad  management Location - Welcome Area/User Information Box
+
+	if (function_exists("show_welcomeAds"))
+	{
+		$ads = show_welcomeAds();
+		if(!empty($ads))
+		{
+			echo '<td class="windowbg2">';
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+			echo '</td>';
+		}
+		unset($ads);
+	}
+
+// End Ad  management Location - Welcome Area/User Information Box
+
+
+]]></add>
+</operation>
+
+	<operation  error="ignore">
+		<search position="before"><![CDATA[echo '
+					<input type="hidden" name="hash_passwrd" value="" />
+				</form>';
+	}]]></search>
+		<add><![CDATA[
+// Begin Ad  management Location - Welcome Area/User Information Box
+
+	if (function_exists("show_welcomeAds"))
+	{
+		$ads = show_welcomeAds();
+		if(!empty($ads))
+		{
+			echo '<td class="windowbg2">';
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+			echo '</td>';
+		}
+		unset($ads);
+	}
+
+// End Ad  management Location - Welcome Area/User Information Box
+
+
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ManagePermissions.php">
+<operation>
+<search position="before"><![CDATA[			'profile_remote_avatar' => array(false, 'profile', 'use_avatar'),]]>
+</search>
+<add><![CDATA[			'ad_manageperm' => array(false, 'ad_manage', 'administrate'),]]>
+</add>
+</operation>
+</file>
+
+</modification>

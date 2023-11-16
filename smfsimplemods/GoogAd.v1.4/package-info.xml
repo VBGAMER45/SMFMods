@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vicram10:GoogAd</id>
+	<name>GoogAd Mod v.1.4</name>
+	<type>modification</type>
+	<version>1.3</version>
+	<install for="2.0 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file">GoogAd.xml</modification>
+		<modification type="file">languages.xml</modification>
+		<modification type="file">russian-utf8.xml</modification>
+		<modification type="file">russian.xml</modification>
+	</install>
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" reverse="true">GoogAd.xml</modification>
+		<modification type="file" reverse="true">languages.xml</modification>
+		<modification type="file" reverse="true">russian-utf8.xml</modification>
+		<modification type="file" reverse="true">russian.xml</modification>
+	</uninstall>
+</package-info>

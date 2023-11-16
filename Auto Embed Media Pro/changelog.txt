@@ -1,3 +1,9 @@
+7.0.3
++Added support for Threads.net Posts
+
+7.0.2
++Added support for Threads.net
+
 7.0.1
 +Added support without .www for youtube shorts
 

@@ -57,6 +57,9 @@ function links_admin_areas(&$admin_areas)
    global $txt, $modSettings, $scripturl;
 
 
+	if (loadlanguage('Links') == false)
+		loadLanguage('Links','english');
+
 	$admin_areas['layout']['areas']['links'] = array(
 					'label' => $txt['smflinks_admin'],
 					'file' => 'Links2.php',
@@ -82,7 +85,10 @@ function links_menu_buttons(&$menu_buttons)
 
 	#You can use these settings to move the button around or even disable the button and use a sub button
 	#Main menu button options
-	
+
+	if (loadlanguage('Links') == false)
+		loadLanguage('Links','english');
+
 	if (!isset( $txt['smflinks_menu']))
 		 $txt['smflinks_menu'] = 'Links';
 		

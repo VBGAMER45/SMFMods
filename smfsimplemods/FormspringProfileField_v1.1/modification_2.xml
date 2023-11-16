@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:FormspringProfileField</id>
+	<version>1.0</version>
+	
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="after"><![CDATA[		'aim' => $profile['aim'] != '' && (empty($modSettings['guest_hideContacts']) || !$user_info['is_guest']) ? array(]]></search>
+			<add><![CDATA[		'formspring' => $profile['formspring'] !='' && (empty($modSettings['guest_hideContacts']) || !$user_info['is_guest']) ? array(
+			'name' => $profile['formspring'],
+			'href' => 'http://www.formspring.me/'.$profile['formspring'],
+			'link' => '<a href="http://www.formspring.me/' . $profile['formspring'] . '" target="_blank" title="' . $txt['formspring'] . ' - ' . $profile['formspring'] . '"><img src="' . $settings['images_url'] . '/formspring-logo.png" alt="' . $profile['formspring'] . '" border="0" /></a>',
+			'link_text' => '<a href="http://www.formspring.me/' . $profile['formspring'] . '" target="_blank" title="' . $txt['formspring'] . ' - ' . $profile['formspring'] . '">' . $profile['formspring'] . '</a>'
+		) : array('name' => '', 'href' => '', 'link' => '', 'link_text' => ''),			
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[mem.birthdate, mem.member_ip, mem.member_ip2, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login,]]></search>
+			<add><![CDATA[mem.formspring, mem.birthdate, mem.member_ip, mem.member_ip2, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[mem.birthdate, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login, mem.karma_good,]]></search>
+			<add><![CDATA[mem.formspring, mem.birthdate, mem.icq, mem.aim, mem.yim, mem.msn, mem.posts, mem.last_login, mem.karma_good,]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA['icq', 'msn', 'aim', 'yim']]></search>
+			<add><![CDATA['formspring', 'icq', 'msn', 'aim', 'yim']]></add>
+		</operation>		
+		
+	</file>
+	
+	<file name="$sourcedir/ManageMembers.php">
+	
+		<operation>
+			<search position="replace"><![CDATA['icq',]]></search>
+			<add><![CDATA['formspring', 'icq',]]></add>
+		</operation>
+		
+	</file>
+	
+	<file name="$sourcedir/ManageSettings.php">
+	
+		<operation>
+			<search position="replace"><![CDATA[// What about standard fields they can tweak?
+	$standard_fields = array(]]></search>
+			<add><![CDATA[// What about standard fields they can tweak?
+	$standard_fields = array('formspring', ]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[if ($standardFields)
+	{
+		$standard_fields = array(]]></search>
+			<add><![CDATA[if ($standardFields)
+	{
+		$standard_fields = array('formspring', ]]></add>
+		</operation>		
+		
+	</file>	
+	
+	<file name="$sourcedir/Register.php">
+	
+		<operation>
+			<search position="replace"><![CDATA['aim',]]></search>
+			<add><![CDATA['formspring', 'aim',]]></add>
+		</operation>
+		
+	</file>	
+	
+	<file name="$sourcedir/Memberlist.php">
+		<operation>
+			<search position="after"><![CDATA[		'icq' => array(
+			'label' => $txt['icq'],
+			'width' => '30'
+		),]]></search>
+			<add><![CDATA[		'formspring' => array(
+			'label' => $txt['formspring'],
+			'width' => '30'
+		),
+]]></add>
+		</operation>
+		
+		<operation>	
+			<search position="before"><![CDATA[		'aim' => array(
+			'down' => 'LENGTH(mem.aim) > 0 ASC, IFNULL(mem.aim, 1=1) DESC, mem.aim DESC',
+			'up' => 'LENGTH(mem.aim) > 0 DESC, IFNULL(mem.aim, 1=1) ASC, mem.aim ASC'
+		),]]></search>
+			<add><![CDATA[		'formspring' => array(
+			'down' => 'LENGTH(mem.formspring) > 0 ASC, IFNULL(mem.formspring, 1=1) DESC, mem.formspring DESC',
+			'up' => 'LENGTH(mem.formspring) > 0 DESC, IFNULL(mem.formspring, 1=1) ASC, mem.formspring ASC'
+		),
+]]></add>
+		</operation>
+		
+		<operation>	
+			<search position="replace"><![CDATA[$fields += array(3 =>]]></search>
+			<add><![CDATA[$fields += array(3 => 'formspring', ]]></add>
+		</operation>		
+		
+	</file>
+		
+	<file name="$sourcedir/News.php">
+		
+		<operation>	
+			<search position="after"><![CDATA[
+		if (!empty($profile['icq']['name']) && !(!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']))
+			$data['icq'] = $profile['icq']['name'];
+]]></search>
+			<add><![CDATA[
+		if ($profile['formspring']['name'] != '' && !(!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']))
+			$data['formspring'] = $profile['formspring']['name'];
+]]></add>
+		</operation>
+		
+	</file>
+		
+	<file name="$sourcedir/Profile-Modify.php">
+		
+		<operation> 	
+			<search position="after"><![CDATA[
+		'yim' => array(
+			'type' => 'text',
+			'label' => $txt['yim'],
+			'subtext' => $txt['your_yim'],
+			'size' => 24,
+			'input_attr' => array('maxlength="32"'),
+			'permission' => 'profile_extra',
+		),
+]]></search>
+			<add><![CDATA[
+		'formspring' => array(
+			'type' => 'text',
+			'label' => $txt['formspring'],
+			'subtext' => $txt['formspring_desc'],
+			'size' => 24,
+			'input_attr' => array('maxlength="32"'),
+			'permission' => 'profile_extra',
+		),
+]]></add>
+		</operation>
+			
+		<operation> 	
+			<search position="replace"><![CDATA['icq', 'aim',]]></search>
+			<add><![CDATA['formspring', 'icq', 'aim',]]></add>
+		</operation>
+		
+	</file>
+		
+		
+	<file name="$sourcedir/Subs-Members.php">
+		
+		<operation>
+			<search position="after"><![CDATA[
+		'icq' => '',
+]]></search>
+			<add><![CDATA[
+		'formspring' => '',
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[mem.id_member, mem.member_name, mem.real_name, mem.email_address,]]></search>
+			<add><![CDATA[mem.id_member, mem.member_name, mem.real_name, mem.email_address, mem.formspring,]]></add>
+		</operation>
+		
+	</file>
+		
+	<file name="$themedir/Display.template.php">
+		
+		<operation>
+			<search position="after"><![CDATA[										', !empty($message['member']['icq']['link']) ? '<li>' . $message['member']['icq']['link'] . '</li>' : '', ']]></search>
+			<add><![CDATA[								', !isset($context['disabled_fields']['formspring']) && !empty($message['member']['formspring']['link']) ? '<li>' . $message['member']['formspring']['link'] . '</li>' : '', ']]></add>
+		</operation>
+
+	</file>
+		
+	<file name="$themedir/PersonalMessage.template.php">
+		
+		<operation>
+			<search position="replace"><![CDATA[						<li>' . $message['member']['yim']['link'] . '</li>' : '', ']]></search>
+		<add><![CDATA[						<li>' . $message['member']['yim']['link'] . '</li>' : '', '
+									', $message['member']['formspring']['link'], '		
+]]></add>
+		</operation>
+
+	</file>
+	
+	<file name="$themedir/Profile.template.php">
+	
+		<operation>
+			<search position="after"><![CDATA[				<th align="center">', $txt['icq'], '</th>]]></search>
+			<add><![CDATA[				<th align="center">', $txt['formspring'], '</td>]]></add>
+		</operation> 
+		
+		<operation>
+			<search position="after"><![CDATA[				<td align="center">', $buddy['icq']['link'], '</td>]]></search>
+			<add><![CDATA[				<td align="center">', $buddy['formspring']['link'], '</td>]]></add>
+		</operation>	
+
+		<operation>
+			<search position="replace"><![CDATA[				', !isset($context['disabled_fields']['icq']) && !empty($context['member']['icq']['link']) ? '<li>' . $context['member']['icq']['link'] . '</li>' : '', ']]></search>
+			<add><![CDATA[				', !isset($context['disabled_fields']['formspring']) && !empty($context['member']['formspring']['link']) ? '<li>' . $context['member']['formspring']['link'] . '</li>' : '', '
+				', !isset($context['disabled_fields']['icq']) && !empty($context['member']['icq']['link']) ? '<li>' . $context['member']['icq']['link'] . '</li>' : '', ']]></add>
+		</operation> 		
+		
+	</file>
+	
+	<file name="$themedir/Memberlist.template.php">
+		
+		<operation>
+			<search position="before"><![CDATA[		// AIM?]]></search>
+			<add><![CDATA[		// Formspring?
+		if (!isset($context['disabled_fields']['formspring']))
+			echo '
+			<td class="windowbg2">', $member['formspring']['link'], '</td>';
+]]></add>
+		</operation>
+		
+	</file>
+		
+	<file name="$themedir/Who.template.php">
+		
+		<operation>
+			<search position="replace"><![CDATA[', $member['icq']['link'], ']]></search>
+			<add><![CDATA[', $member['formspring']['link'], ' ', $member['icq']['link'], ']]></add>
+		</operation>
+
+	</file>
+</modification>

@@ -15,7 +15,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl, $context, $smcFunc;
 	
 	// Current version of the article system
-	$currentVersion = '3.1';
+	$currentVersion = '3.1.1';
 	
 	$context['articles21beta'] = false;
 	
@@ -34,9 +34,6 @@ function ArticlesMain()
     else
         loadtemplate('Articles2');
 
-
-	
-	
 	// Load the language files
 	if (loadlanguage('Articles') == false)
 		loadLanguage('Articles', 'english');
@@ -2186,8 +2183,14 @@ function Search2()
 	{
 		$data = json_decode(base64_decode($_REQUEST['q']),true);
 		@$_REQUEST['cat'] = $data['cat'];
-		@$_REQUEST['searchtitle'] = $data['searchtitle'];
-		@$_REQUEST['searchdescription'] = $data['searchdescription'];
+
+		if (!empty($data['searchtitle']))
+			@$_REQUEST['searchtitle'] = $data['searchtitle'];
+
+		if (!empty($data['searchdescription']))
+			@$_REQUEST['searchdescription'] = $data['searchdescription'];
+
+
 		@$_REQUEST['daterange'] = $data['daterange'];
 		@$_REQUEST['pic_postername'] = $data['pic_postername'];
 		@$_REQUEST['searchfor'] = $data['searchfor'];
@@ -3044,7 +3047,7 @@ function ImportFAQ()
 		}
 		$smcFunc['db_free_result']($result);
 		
-		// Update cateogry totals
+		// Update category totals
 		UpdateCategoryTotals($cat);
 		
 		$modSettings['disableQueryCheck'] = 0;

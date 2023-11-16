@@ -3,7 +3,7 @@
 Profile Comments
 Version 2.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 if (!defined('SMF'))
@@ -21,7 +21,6 @@ function CommentsMain()
 
 	// Profile Comments actions
 	$subActions = array(
-		'view' => 'ProfileComments_view',
 		'admin' => 'ProfileComments_CommentsAdmin',
 		'add' => 'ProfileComments_Add',
 		'add2' => 'ProfileComments_Add2',
@@ -36,13 +35,6 @@ function CommentsMain()
 	// Follow the sa or just go to administration.
 	if (!empty($subActions[$sa]))
 		$subActions[$sa]();
-	else
-		ProfileComments_view();
-}
-
-function ProfileComments_view()
-{
-	die(base64_decode('UG93ZXJlZCBieSBQcm9maWxlIENvbW1lbnRzIG1hZGUgYnkgdmJnYW1lcjQ1IGh0dHA6Ly93d3cuc21maGFja3MuY29t'));
 }
 
 function ProfileComments_Add()
@@ -482,12 +474,6 @@ function ShowUserBox($memCommID, $onlineColor = '')
 								', $memberContext[$memCommID]['blurb'], '<br />
 								<br />';
 
-			// This shows the popular messaging icons.
-			echo '
-								', $memberContext[$memCommID]['icq']['link'], '
-								', $memberContext[$memCommID]['msn']['link'], '
-								', $memberContext[$memCommID]['aim']['link'], '
-								', $memberContext[$memCommID]['yim']['link'], '<br />';
 
 			// Show the profile, website, email address, and personal message buttons.
 			if ($settings['show_profile_buttons'])

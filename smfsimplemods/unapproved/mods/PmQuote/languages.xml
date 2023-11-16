@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:PMQUOTE</id>
+	<name>PM Quote</name>
+	<version>1.0</version>
+    <type>modification</type>
+
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['pm_quote'] = 'Personal Message Quote';
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['pm_quote'] = 'Citar Mensaje Privado';]]></add>
+		</operation>
+	</file>
+</modification>

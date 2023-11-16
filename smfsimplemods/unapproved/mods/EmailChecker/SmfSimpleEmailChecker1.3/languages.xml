@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>SMFSimple_Double_Email_Checker</id>
+	<version>1.3</version>
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" error="skip" />
+			<add><![CDATA[
+			
+// Check your Email in Registration SMFsimple.com	
+$txt['email_message_smfsimple'] = 'This for prevent write wrong your email.';
+$txt['check_smfsimple_email'] = 'Please, write your email again';
+$txt['Email_error_smfsimple'] = 'Error, please check if your email is written correctly';
+// Fin Check your Email in Registration SMFsimple.com
+
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish.php" error="skip">
+		<operation>
+			<search position="end" error="skip" />
+			<add><![CDATA[
+			
+// Check your Email in Registration SMFsimple.com
+$txt['email_message_smfsimple'] = 'Esta es una medida para que escribas bien tu correo.';
+$txt['check_smfsimple_email'] = 'Escribe de nuevo tu Email';
+$txt['Email_error_smfsimple'] = 'Error en el Email (Verifica tu Email)';
+// Fin Check your Email in Registration SMFsimple.com
+
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$languagedir/Modifications.latin.php" error="skip">
+		<operation>
+			<search position="end" error="skip" />
+			<add><![CDATA[
+			
+// Check your Email in Registration SMFsimple.com
+$txt['email_message_smfsimple'] = 'Esta es una medida para que escribas bien tu correo.';
+$txt['check_smfsimple_email'] = 'Escribe de nuevo tu Email';
+$txt['Email_error_smfsimple'] = 'Error en el Email (Verifica tu Email)';
+// Fin Check your Email in Registration SMFsimple.com
+
+]]></add>
+		</operation>
+	</file>	
+
+	<file name="$languagedir/Modifications.portuguese_pt.php" error="skip">
+		<operation>
+			<search position="end" error="skip" />
+			<add><![CDATA[
+			
+// Check your Email in Registration SMFsimple.com	
+$txt['email_message_smfsimple'] = 'Para evitar erros na introdução do seu endereço de e-mail';
+$txt['check_smfsimple_email'] = 'Por favor, volte a escrever o seu endereço de e-mail';
+$txt['Email_error_smfsimple'] = 'Houve um erro. Por favor, verifique se o seu endereço de e-mail foi escrito corretamente.';
+// Fim Check your Email in Registration SMFsimple.com
+
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.turkish.php" error="skip">
+		<operation>
+			<search position="end" error="skip" />
+			<add><![CDATA[
+			
+// Check your Email in Registration SMFsimple.com	
+$txt['email_message_smfsimple'] = 'Bu yanlış e-posta yazmanızı önlemek içindir.';
+$txt['check_smfsimple_email'] = 'E-Postanızı tekrar yazın';
+$txt['Email_error_smfsimple'] = 'Bir hata meydana geldi, lütfen e-postanızı doğru yazdığınızdan emin olun';
+// Fin Check your Email in Registration SMFsimple.com
+
+]]></add>
+		</operation>
+	</file>
+	
+	
+			<file name="$languagedir/Modifications.italian.php" error="skip">
+		<operation>
+			<search position="end" error="skip" />
+			<add><![CDATA[
+			
+// Check your Email in Registration SMFsimple.com	
+$txt['email_message_smfsimple'] = 'Questo per prevenire di scrivere male la tua e-mail.';
+$txt['check_smfsimple_email'] = 'Per favore, scrivi di nuovo la tua e-mail';
+$txt['Email_error_smfsimple'] = 'Errore, si prega di controllare se la vostra e-mail è scritta correttamente';
+// Fin Check your Email in Registration SMFsimple.com
+
+]]></add>
+		</operation>
+	</file>
+	
+	
+	
+
+</modification>

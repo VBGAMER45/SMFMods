@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>ProjectEvolution:FormspringProfileField</id>
+	<version>1.0</version>
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[<td>', $context['member']['yim']['link_text'], '</td>]]></search>
+			<add><![CDATA[</tr><tr>
+	<td><b>', $txt['formspring'], ': </b></td>
+<td>', !empty($context['member']['options']['formspring']) ? '<a href="http://www.formspring.me/' . $context['member']['options']['formspring'] . '" target="_blank">' . $context['member']['options']['formspring'] . '</a>'  : '', '</td>]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[<td><input type="text" name="YIM" maxlength="32" size="24" value="', $context['member']['yim']['name'], '" /></td>]]></search>
+			<add><![CDATA[</tr><tr><td><b>', $txt['formspring'], ':</b><div class="smalltext">', $txt['formspring_desc'], '</div></td>
+			<td><input type="text" name="default_options[formspring]" maxlength="25" size="24" value="', $context['member']['options']['formspring'], '" /></td>]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="before"><![CDATA[', $message['member']['yim']['link'],]]></search>
+			<add>
+				<![CDATA[			!empty($message['member']['options']['formspring']) ? '<a href="http://www.formspring.me/' . $message['member']['options']['formspring'] . '" target="_blank"><img border="0" src="' . $settings['images_url'] . '/formspring-logo.png" alt="' . $message['member']['options']['formspring'] . '"></a>' : '',
+			]]>
+			</add>
+		</operation>
+	</file>
+</modification>

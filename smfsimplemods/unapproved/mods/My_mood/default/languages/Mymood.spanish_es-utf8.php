@@ -1,0 +1,26 @@
+<?php
+$txt['mymood_error_no_content'] = 'Dejo vacio el campo de "estados de animo"';
+$txt['mymood_error_limit_chars'] = 'Su estado de animo excedio el limite de caracteres disponibles';
+$txt['mymood_error_cant_delete'] = 'Usted no puede eliminar estados de animo.';
+$txt['mymood_admin'] = 'Mis Estados de Animo';
+$txt['mymood_admin_desc'] = 'Desde aqui puede configurar el mod: My Mood';
+$txt['mymood_enabled'] = 'Habilitar My Mood mod';
+$txt['mymood_limit_in_profile'] = 'Mostrar X estados de animo en la seccion de perfil';
+$txt['mymood_limit_chars'] = 'Limite de caracteres por estado de animo';
+$txt['mymood_limit_chars_desc'] = '0 para no tener limite';
+$txt['mymood_allow_bbc'] = 'Permitir BBC';
+$txt['mymood_allow_smileys'] = 'Permitir Smileys';
+$txt['mymood_show_on_boardindex'] = 'Mostrar los ultimos estados de animo en el indice del foro';
+$txt['mymood_boardindex_where'] = 'Mostrar los ultimos estados de animo';
+$txt['mymood_boardindex_where_top'] = 'Arriba';
+$txt['mymood_boardindex_where_bottom'] = 'Abajo';
+$txt['mymood_limit_in_board_total'] = 'Total de estados de animo a mostrar en el indice del foro';
+$txt['mymood_limit_in_board_view'] = 'Numero de estados de animo a mostrar en cada actualizacion del bloque';
+$txt['mymood_second_per_mood_board'] = 'Cuantos segundos mostrar cada estado de animo en el indice del foro';
+$txt['mymood_groups_excluded_board'] = 'No mostrar estados de animo en el indice del foro si el autor pertenece a uno de estos grupos';
+$txt['mymood_groups_excluded_board_desc'] = 'Poner el ID de cada grupo separado por coma';
+$txt['mymood_publish'] = 'Publicar';
+$txt['mymood_char_left'] = 'Caracteres Restantes: ';
+$txt['mymood_title'] = 'Mis Estados de Animo: ';
+$txt['mymood_latestmoods_title'] = 'Ultimos Estados de Animo: ';
+$txt['mymood_delete_confirmation'] = 'Esta seguro que desea eliminar este estado de animo?';

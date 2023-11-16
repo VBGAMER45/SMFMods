@@ -199,6 +199,36 @@ function ob_sessrewrite($buffer)
 		</operation>
 	</file>
 
+
+	<file name="$sourcedir/Profile.php">
+		<operation>
+			<search position="replace"><![CDATA[// Did we get the user by name...]]></search>
+			<add><![CDATA[// Did we get the user by name...
+			// Pretty urls
+			if (isset($_REQUEST['user']))
+			{
+				$users = array($_REQUEST['user']);
+				$request = $smcFunc['db_query']('', '
+					SELECT mem.member_name
+					FROM {db_prefix}members AS mem
+					WHERE mem.member_name IN ({array_string:users}) OR mem.real_name IN ({array_string:users}) LIMIT 1',
+					array(
+						'users' => $users,
+						'users2' => $users,
+					)
+				);
+				$row = $smcFunc['db_fetch_assoc']($request);
+				if (!empty($row['member_name']))
+					$_REQUEST['user'] = $row['member_name'];
+
+			}
+			// end pretty urls
+
+]]></add>
+		</operation>
+	</file>
+
+
 	<file name="$sourcedir/Subs.php">
 
 

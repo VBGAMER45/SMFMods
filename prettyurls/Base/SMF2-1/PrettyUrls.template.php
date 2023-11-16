@@ -171,7 +171,25 @@ function template_pretty_filters()
 		</form>';
 }
 
+function template_pretty_nginx()
+{
+	global $txt, $context;
 
-
+	echo '
+<div class="cat_bar">
+		<h3 class="catbg">
+        ' . $txt['pretty_chrome_menu_nginx'].'
+        </h3>
+  </div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+	    <td width="50%" colspan="2"  class="windowbg2">
+		<p>', $txt['pretty_nginix_note'],  '</p>
+		<p><textarea rows="20" cols="150">' . $context['pretty_nginx_rules'] . '</textarea></p>
+		</td>
+		</tr>
+		</table>
+		';
+}
 
 ?>

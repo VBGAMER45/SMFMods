@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Smfsimple:RegisterBarMod</id>
+	<name>Register Bar Mod By SMFSimple.com</name>
+	<version>V3</version>
+
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Register Bar Mod V3 By SMFSimple.com
+$txt['registerbarv3_enable'] = 'Enable/Disable Register Bar Mod V3';
+$txt['registerbarv3bg'] = 'Choose the background color';
+$txt['registerbarv3color'] = 'Choose the color of the words';
+$txt['registerbarv3_position'] = 'Choose the position of the bar';
+$txt['registerbarv3_position_top'] = 'Top';
+$txt['registerbarv3_position_bottom'] = 'Bottom';
+$txt['registerbarv3message'] = 'Write your message here';
+$txt['registerbarv3message_desc'] = 'Can Use BBcode & HTML';
+$txt['registerbarv3_enable_close'] = 'Do not allow to close the bar';
+$txt['registerbarv3message_vac'] = 'Click here to register!!';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Register Bar Mod V3 By SMFSimple.com
+$txt['registerbarv3_enable'] = 'Activar/Desactivar Register Bar Mod V3';
+$txt['registerbarv3bg'] = 'Elige el color de fondo de la barra';
+$txt['registerbarv3color'] = 'Elige el color de las palabras del mensaje';
+$txt['registerbarv3_position'] = 'Elige la posicion de la barra';
+$txt['registerbarv3_position_top'] = 'Arriba';
+$txt['registerbarv3_position_bottom'] = 'Abajo';
+$txt['registerbarv3message'] = 'Escribe tu mensaje personalizado aqui';
+$txt['registerbarv3message_desc'] = 'Puedes utilizar BBcode & HTML';
+$txt['registerbarv3_enable_close'] = 'No permitir cerrar la barra';
+$txt['registerbarv3message_vac'] = 'Has click aqui para registrarte!!';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/languages/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Register Bar Mod V3 By SMFSimple.com
+$txt['registerbarv3_enable'] = 'Activar/Desactivar Register Bar Mod V3';
+$txt['registerbarv3bg'] = 'Elige el color de fondo de la barra';
+$txt['registerbarv3color'] = 'Elige el color de las palabras del mensaje';
+$txt['registerbarv3_position'] = 'Elige la posicion de la barra';
+$txt['registerbarv3_position_top'] = 'Arriba';
+$txt['registerbarv3_position_bottom'] = 'Abajo';
+$txt['registerbarv3message'] = 'Escribe tu mensaje personalizado aqui';
+$txt['registerbarv3message_desc'] = 'Puedes utilizar BBcode & HTML';
+$txt['registerbarv3_enable_close'] = 'No permitir cerrar la barra';
+$txt['registerbarv3message_vac'] = 'Has click aqui para registrarte!!';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Register Bar Mod V3 By SMFSimple.com
+$txt['registerbarv3_enable'] = 'Activar/Desactivar Register Bar Mod V3';
+$txt['registerbarv3bg'] = 'Elige el color de fondo de la barra';
+$txt['registerbarv3color'] = 'Elige el color de las palabras del mensaje';
+$txt['registerbarv3_position'] = 'Elige la posicion de la barra';
+$txt['registerbarv3_position_top'] = 'Arriba';
+$txt['registerbarv3_position_bottom'] = 'Abajo';
+$txt['registerbarv3message'] = 'Escribe tu mensaje personalizado aqui';
+$txt['registerbarv3message_desc'] = 'Puedes utilizar BBcode & HTML';
+$txt['registerbarv3_enable_close'] = 'No permitir cerrar la barra';
+$txt['registerbarv3message_vac'] = 'Has click aqui para registrarte!!';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Register Bar Mod V3 By SMFSimple.com
+$txt['registerbarv3_enable'] = 'Activar/Desactivar Register Bar Mod V3';
+$txt['registerbarv3bg'] = 'Elige el color de fondo de la barra';
+$txt['registerbarv3color'] = 'Elige el color de las palabras del mensaje';
+$txt['registerbarv3_position'] = 'Elige la posicion de la barra';
+$txt['registerbarv3_position_top'] = 'Arriba';
+$txt['registerbarv3_position_bottom'] = 'Abajo';
+$txt['registerbarv3message'] = 'Escribe tu mensaje personalizado aqui';
+$txt['registerbarv3message_desc'] = 'Puedes utilizar BBcode & HTML';
+$txt['registerbarv3_enable_close'] = 'No permitir cerrar la barra';
+$txt['registerbarv3message_vac'] = 'Has click aqui para registrarte!!';
+]]></add>
+		</operation>
+	</file>	
+	
+</modification>

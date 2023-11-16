@@ -1,0 +1,116 @@
+.buttonfixed, .buttonfixed_left {
+	display:block;
+	_display:none;
+	position:fixed;
+	z-index:1;
+	text-indent:-9999px;
+	overflow:hidden;
+	outline:none;
+	right:5px;
+}
+#delicious{
+	background:url(../images/fsb/delicious_1.png)	no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#delicious:hover{
+	background:url(../images/fsb/delicious_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#digg{
+	background:url(../images/fsb/digg_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#digg:hover{
+	background:url(../images/fsb/digg_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#facebook{
+	background:url(../images/fsb/facebook_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#facebook:hover{
+	background:url(../images/fsb/facebook_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#linkedin{
+	background:url(../images/fsb/linkedin_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#linkedin:hover{
+	background:url(../images/fsb/linkedin_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#myspace{
+	background:url(../images/fsb/myspace_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#myspace:hover{
+	background:url(../images/fsb/myspace_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#newsvine{
+	background:url(../images/fsb/newsvine_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#newsvine:hover{
+	background:url(../images/fsb/newsvine_2.png) no-repeat;
+	width:48px; 
+	height:48px;
+}
+#reddit{
+	background:url(../images/fsb/reddit_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#reddit:hover{
+	background:url(../images/fsb/reddit_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#stumbleupon{
+	background:url(../images/fsb/stumbleupon_1.png) no-repeat;
+	width:48px; 
+	height:48px;
+}
+#stumbleupon:hover{
+	background:url(../images/fsb/stumbleupon_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#technorati{
+	background:url(../images/fsb/technorati_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#technorati:hover{
+	background:url(../images/fsb/technorati_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#twitter{
+	background:url(../images/fsb/twitter_1.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+#twitter:hover{
+	background:url(../images/fsb/twitter_2.png) no-repeat; 
+	width:48px; 
+	height:48px;
+}
+.buttonfixed:hover {
+	right:8px !important;
+}
+.buttonfixed_left:hover {
+	left:8px !important;
+}

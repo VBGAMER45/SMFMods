@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vicram10:AutoRefreshWhoIndex</id>
+	<name>Auto Refresh Who Index</name>
+	<type>modification</type>
+	<version>1.1</version>	
+	<install for="2.0 - 2.0.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>Auto.Refresh.xml</modification>
+		<modification>Languages.xml</modification>
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">Auto.Refresh.xml</modification>
+		<modification type="file" reverse="true">Languages.xml</modification>
+	</uninstall>
+</package-info>

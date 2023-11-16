@@ -140,7 +140,7 @@ function Contact()
                 fatal_error($txt['smfcontact_errsubject'], false);
 
 			if (isset($_POST['message']))
-            	$message = $_POST['message'];
+            	$message = trim($_POST['message']);
 			else
 				$message = '';
 
@@ -154,6 +154,10 @@ function Contact()
 
             if ($email == '')
                 fatal_error($txt['smfcontact_erremail'], false);
+
+
+			if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+				fatal_error($txt['smfcontact_errbademail'], false);
 
             $subject = $smcFunc['htmlspecialchars']($subject, ENT_QUOTES);
             $message = $smcFunc['htmlspecialchars']($message, ENT_QUOTES);
@@ -262,8 +266,6 @@ function Contact()
 	}
 	else
 	{
-
-
 
 
 		// Set the page title

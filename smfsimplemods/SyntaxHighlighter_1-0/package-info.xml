@@ -1,0 +1,23 @@
+<?xml version="1.2"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>manix_10:SyntaxHighlighter</id>
+	<name>Syntax Highlighter</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<!-- SMF 1.1.x install -->
+	<install for="1.1 - 1.1.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification>install-1.x.xml</modification>
+		<require-dir name="SyntaxHighlighter" destination="$themedir" />
+	</install>
+	
+	<!-- SMF 1.1.x uninstall -->
+	<uninstall for="1.1 - 1.1.99">
+		<modification reverse="true">install-1.x.xml</modification>
+		<remove-dir name="$themedir/SyntaxHighlighter" />
+	</uninstall>
+
+	
+</package-info>

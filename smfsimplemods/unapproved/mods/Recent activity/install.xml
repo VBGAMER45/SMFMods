@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>DIBILO:RecentActivity</id>
+	<name>Recent Activity</name>
+	<version>1.0</version>
+	<file name="$sourcedir/ManageSettings.php">
+	<operation>
+			<search position="before"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+		//Recent activity SMFsimple.com - DIBILO
+		array('check', 'last_action_profile_enable'),
+		//Recent activity SMFsimple.com - DIBILO]]></add>
+	</operation>
+	</file>
+	<file name="$themedir/Profile.template.php">
+	<operation>
+			<search position="before"><![CDATA[<span class="topslice"><span></span></span>
+			<div class="content">
+				<dl>';]]></search>
+			<add><![CDATA[
+		//Ultima actividad en perfil BY; SMFsimple	
+	if (!empty($modSettings['last_action_profile_enable']) && !empty($context['member']['action']))		
+	echo '							
+		<dt>', $txt['last_action_profile'], ': </dt>
+		<dd>', $context['member']['action'] == strip_tags($txt['who_unknown']) ? $txt['who_unknown'] : $context['member']['action'], '</dd>'; 
+	//Ultima actividad en perfil BY; SMFsimple]]></add>
+	</operation>
+	</file>
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+		</file>	
+</modification>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Ad Managment</name>
+	<id>jeremy:ads</id>
+	<type>modification</type>
+	<version>3.3</version>
+
+	<install for="1.1 RC2, 1.1 RC3, 1.1, 1.1.1-1.1.99">
+		<readme type="file">readme.txt</readme>
+		<code>install.php</code>
+		<modification>install.xml</modification>
+		<require-file name="Ads.php" destination="$sourcedir" />
+		<require-file name="LoadAds.php" destination="$sourcedir" />
+		<require-file name="Ads.template.php" destination="$themedir" />
+		<require-file name="Ads.english.php" destination="$languagedir" />
+		<require-file name="Ads.english-utf8.php" destination="$languagedir" />
+	</install>
+	
+	<uninstall>
+		<modification reverse="true">install.xml</modification>
+		<remove-file name="$sourcedir/Ads.php" />
+		<remove-file name="$sourcedir/LoadAds.php" />
+		<remove-file name="$themedir/Ads.template.php" />
+		<remove-file name="$languagedir/Ads.english.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

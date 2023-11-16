@@ -7,8 +7,7 @@ if (!defined('SMF'))
 
 //	Rewrite the buffer with Pretty URLs!
 function pretty_rewrite_buffer($buffer)
-{
-	global $boardurl, $context, $db_prefix, $modSettings;
+{	global $boardurl, $context, $db_prefix, $modSettings;
 
 	if (isset($_REQUEST['action']))
 	{
@@ -501,18 +500,18 @@ function pretty_profiles_filter($urls)
 	{
 		$memberNames = array();
 		$query = db_query("
-			SELECT ID_MEMBER, memberName
+			SELECT ID_MEMBER, realName
 			FROM {$db_prefix}members
 			WHERE ID_MEMBER IN (" . implode(', ', $query_data) . ")", __FILE__, __LINE__);
 		while ($row = mysql_fetch_assoc($query))
-			$memberNames[$row['ID_MEMBER']] = rawurlencode($row['memberName']);
+			$memberNames[$row['ID_MEMBER']] = rawurlencode($row['realName']);
 		mysql_free_result($query);
 
 		//	Build the replacement URLs
 		foreach ($urls as $url_id => $url)
-			if (isset($url['profile_id']))
+			if ((isset($url['profile_id'])) && (isset($memberNames[$url['profile_id']])))
 				if (strpos($memberNames[$url['profile_id']], '%2F') !== false)
-					$urls[$url_id]['replacement'] = $boardurl . '/profile/' . $url['match1'] . 'user=' . $memberNames[$url['profile_id']] . $url['match3'];
+					$urls[$url_id]['replacement'] = $boardurl . '/profile/' . $url['realName'] . 'user=' . $memberNames[$url['profile_id']] . $url['match3'];
 				else
 				$urls[$url_id]['replacement'] = $boardurl . '/profile/' . $memberNames[$url['profile_id']] . '/' . $url['match1'] . $url['match3'];
 	}

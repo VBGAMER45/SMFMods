@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:SMFSimple_Rewards_System</id>
+	<name>SMFSimple Rewards System</name>
+	<version>3.0</version>
+	<file name="$languagedir/ManageScheduledTasks.english.php">
+			<operation>
+				<search position="end" />
+					<add><![CDATA[
+	$txt['scheduled_task_srss_addPoints'] = 'Add Ssrs Points';
+	$txt['scheduled_task_desc_srss_addPoints'] = 'Add daily points to users';
+	]]></add>
+			</operation>
+	</file>
+	<file name="$languagedir/ManageScheduledTasks.spanish_es.php" error="skip">
+			<operation>
+				<search position="end" />
+					<add><![CDATA[
+	$txt['scheduled_task_srss_addPoints'] = 'Agregar SSRS Points';
+	$txt['scheduled_task_desc_srss_addPoints'] = 'Agrega puntos diarios a los usuarios';
+	]]></add>
+			</operation>
+	</file>
+	<file name="$languagedir/ManageScheduledTasks.spanish_latin.php" error="skip">
+			<operation>
+				<search position="end" />
+					<add><![CDATA[
+	$txt['scheduled_task_srss_addPoints'] = 'Agregar SSRS Points';
+	$txt['scheduled_task_desc_srss_addPoints'] = 'Agrega puntos diarios a los usuarios';
+	]]></add>
+			</operation>
+	</file>
+	<file name="$languagedir/ManageScheduledTasks.spanish_es-utf8.php" error="skip">
+			<operation>
+				<search position="end" />
+					<add><![CDATA[
+	$txt['scheduled_task_srss_addPoints'] = 'Agregar SSRS Points';
+	$txt['scheduled_task_desc_srss_addPoints'] = 'Agrega puntos diarios a los usuarios';
+	]]></add>
+			</operation>
+	</file>
+	<file name="$languagedir/ManageScheduledTasks.spanish_latin-utf8.php" error="skip">
+			<operation>
+				<search position="end" />
+					<add><![CDATA[
+	$txt['scheduled_task_srss_addPoints'] = 'Agregar SSRS Points';
+	$txt['scheduled_task_desc_srss_addPoints'] = 'Agrega puntos diarios a los usuarios';
+	]]></add>
+			</operation>
+	</file>
+</modification>

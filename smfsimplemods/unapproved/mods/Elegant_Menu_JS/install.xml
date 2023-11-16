@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>PiPi2011:MenuElegante</id>
+	<name>Menu Elegante</name>
+	<version>1</version>	
+<file name="$themedir/index.template.php">
+    <operation>
+		<search position="before"><![CDATA[// Output any remaining HTML headers. (from mods, maybe?)]]></search>
+			<add><![CDATA[
+		if(!empty($settings['pipimenu_activa'])){
+	echo'
+	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/pipimenu_2.js"></script>
+	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/pipimenu.js"></script>
+	<script type="text/javascript">
+		window.addEvent(\'domready\', function() {
+			new pipimenu($E(\'ul.dropmenu\'), {
+				bgiframe: false,
+				delay: 900,
+				animate: {
+					props: [\'opacity\', \'width\', \'height\'],
+					opts: {
+						duration: ',empty($settings['pipimenu_segundo']) ? '900' : ''.$settings['pipimenu_segundo'].'', ',
+						fps: 100,
+						transition: Fx.Transitions.Expo.easeOut				
+				}
+			}
+		});
+		});
+	</script>';
+	}
+]]></add>
+	</operation>
+</file>	
+  
+  <file name="$themedir/Settings.template.php">
+    <operation>
+		<search position="replace"><![CDATA[
+		array(
+			'id' => 'smiley_sets_default',
+			'label' => $txt['smileys_default_set_for_theme'],
+			'options' => $context['smiley_sets'],
+			'type' => 'text',
+		),
+		]]></search>
+			<add><![CDATA[
+		'',
+		array(
+			'id' => 'pipimenu_activa',
+			'label' => $txt['pipimenu_activa'],
+			'type' => 'checkbox',
+		),
+		array(
+			'id' => 'pipimenu_segundo',
+			'label' => $txt['pipimenu_segundo'],
+			'type' => 'number',
+			'description' => $txt['pipimenu_desc'],
+		),
+		'',
+		array(
+			'id' => 'smiley_sets_default',
+			'label' => $txt['smileys_default_set_for_theme'],
+			'options' => $context['smiley_sets'],
+			'type' => 'text',
+		),
+		]]></add>
+	</operation>
+	</file>	
+	
+ 	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activate the animation in the menu';
+$txt['pipimenu_segundo'] = 'Miliseconds for the delay of the animation';
+$txt['pipimenu_desc'] = 'Activating this modification amending the menu animation. default is 0 = 900 milliseconds';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'Miliegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'MiliSegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'MiliSegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'MiliSegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'MiliSegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'MiliSegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Menu Elegante
+$txt['pipimenu_activa'] = 'Activar la animacion en el menu';
+$txt['pipimenu_segundo'] = 'MiliSegundos para la demora de la animacion';
+$txt['pipimenu_desc'] = 'Activando esta modificacion se modifica la animacion del menu. por defecto es 0 = a 900 milisegundos';
+// End Menu Elegante
+]]></add>
+		</operation>
+	</file>	
+	
+</modification>

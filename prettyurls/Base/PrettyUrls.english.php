@@ -11,6 +11,7 @@ $txt['pretty_chrome_title'] = 'Pretty URLs Administration';
 $txt['pretty_chrome_menu_news'] = 'News';
 $txt['pretty_chrome_menu_settings'] = 'Settings';
 $txt['pretty_chrome_menu_maintenance'] = 'Maintenance';
+$txt['pretty_chrome_menu_nginx'] = 'Nginx Rules';
 
 //	News page
 $txt['pretty_chrome_caption_news'] = 'The latest news and information live from the project website';
@@ -62,8 +63,10 @@ $txt['pretty_no_primary_warning'] = 'Warning, no primary URL!';
 $txt['pretty_numerical'] = 'Sorry, but as that URL is either a number or the same as a forum action the board ID had to be added as a suffix.';
 $txt['pretty_primary_url'] = 'Primary';
 
-$txt['pretty_chrome_menu_settings_description'] = 'Settings and configuration for Pretty Urls SEO Pro';
-$txt['pretty_chrome_menu_maintenance_description'] = 'Run any maintenance tasks for pretty urls';
+$txt['pretty_chrome_menu_settings_description'] = 'Settings and configuration for Pretty Urls';
+$txt['pretty_chrome_menu_maintenance_description'] = 'Run any maintenance tasks for Pretty Urls';
 
+$txt['pretty_chrome_menu_nginx_description'] = 'Generate Nginx rules for Pretty Urls. Only used if you use Nginx webserver!';
 
+$txt['pretty_nginix_note'] = 'If you use Nginx as a webserver here are the rules generated. Anytime you add a new mod or action you will need to update your Nginx rules.';
 ?>

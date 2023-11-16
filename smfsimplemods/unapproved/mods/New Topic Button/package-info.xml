@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Smfsimple:NewTopicButton</id>
+	<name>New Topic Button By Smfsimple.com</name>
+	<version>V1</version>
+	<type>modification</type>
+
+	
+	<install for="2.0 - 2.99.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>install.xml</modification>
+		<require-file name="Themes/default/images/newtopic.png" destination="$imagesdir" />
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" reverse="true">install.xml</modification>
+		<remove-file name="$imagesdir/newtopic.png" />
+	</uninstall>
+	
+</package-info>
+

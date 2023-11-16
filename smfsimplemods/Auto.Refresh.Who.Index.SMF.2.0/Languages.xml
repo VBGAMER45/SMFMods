@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vicram10:AutoRefreshWhoIndex</id>
+	<name>Auto Refresh Who Index</name>
+	<version>1.1</version>	
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'Set Timeout to AutoRefresh "Online Who" (seconds)
+							<br/>Default value: 10 seconds';
+
+]]></add>
+		</operation>
+	</file>	
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'Establecer tiempo de espera para Auto Refrescar el "Quien esta en Linea" (en segundos)
+							<br/>Valor por defecto: 10 segundos';
+
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'Establecer tiempo de espera para Auto Refrescar el "Quien esta en Linea" (en segundos)
+							<br/>Valor por defecto: 10 segundos';
+
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'Establecer tiempo de espera para Auto Refrescar el "Quien esta en Linea" (en segundos)
+							<br/>Valor por defecto: 10 segundos';
+
+]]></add>
+		</operation>
+	</file>	
+	<file name="$themedir/languages/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'Establecer tiempo de espera para Auto Refrescar el "Quien esta en Linea" (en segundos)
+							<br/>Valor por defecto: 10 segundos';
+
+]]></add>
+		</operation>
+	</file>		
+	<file name="$themedir/languages/Modifications.turkish.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = '"Kimler Çevrimiçi" listesi için otomatik yenileme periyodu (saniye)
+                     <br/>Normal Deger: 10 saniye';
+]]></add>
+		</operation>
+	</file>				
+	<file name="$themedir/languages/Modifications.german.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'AutoRefresh Sekunden auf der "Wer ist online" Seite
+                     <br/>Standardwert: 10 Sekunden';
+					 
+]]></add>
+		</operation>
+	</file>			
+	<file name="$themedir/languages/Modifications.italian.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[//AutoRefreshWho Mod
+$txt['autorefresh_timeout'] = 'Timeout impostato per Auto Refresh "Chi è Online" (in pochi secondi)
+							<br/>Valore predefinito: 10 secondi';
+
+]]></add>
+		</operation>
+	</file>	
+</modification>

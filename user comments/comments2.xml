@@ -114,9 +114,6 @@ $txt['pcomments_txt_profile_email'] = 'Email';
 					'custom_url' => $scripturl . '?action=admin;area=comment;sa=admin;sesc=' . $sc,
 					'icon' => 'server.gif',
 					'subsections' => array(),
-				
-						
-					
 				),
 ]]></add>
 	</operation>

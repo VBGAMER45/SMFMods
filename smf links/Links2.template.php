@@ -1,16 +1,13 @@
 <?php
 /*
 SMF Links
-Version 3.0
+Version 4.0
 by:vbgamer45
 http://www.smfhacks.com
 */
 function template_mainview()
 {
 	global $scripturl, $context, $txt, $settings, $modSettings, $user_info, $subcats_linktree;
-
-	// To get Permissions text
-	loadLanguage('Admin');
 
 	// See if they can approve links
 	$a_links = allowedTo('approve_links');
@@ -33,12 +30,10 @@ function template_mainview()
   </div>
   <br />
 
-
 		';
 
-		$ratelink = allowedTo('rate_links');
 
-		// List all the catagories
+		// List all the categories
 		// Get category count
 		$cat_count = $context['cat_count'];
 

@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:MedalHonorForYears</id>
+	<name>Medal Honor For Years</name>
+	<version>1.1</version>
+
+<file name="$themedir/Display.template.php">
+        <operation>
+			<search position="after"><![CDATA[// Show the website and email address buttons.]]></search>
+			<add><![CDATA[
+			// START - MedalHonorForYears - BY SMFSIMPLE.COM
+			if(!empty($context['countYearsSinceReg']))
+			{
+				if (!empty($context['countYearsSinceReg']['userRegistered']))
+					echo (!empty($modSettings['mhfyenabledtext']) ? $modSettings['mhfyenabledtext'] : $txt['MedalHonorForYears']) .' '.$context['countYearsSinceReg']['userRegistered'].'<br />';
+				if(!empty($context['mhfyimages']))
+					echo $context['mhfyimages'];
+			}
+			// ENDs - MedalHonorForYears - BY SMFSIMPLE.COM
+			]]></add>
+		</operation>
+</file>
+<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after"><![CDATA[// Is this user the message author?]]></search>
+				<add><![CDATA[
+	//Start - MedalHonorForYears - BY SMFSIMPLE.COM
+	$context['mhfyimages'] = '';
+	if (!empty($modSettings['mhfyenabled']) || !empty($modSettings['mhfyenabledimgs']))
+		$context['countYearsSinceReg'] = countYearsSinceReg($message['id_member']);
+	if (!empty($context['countYearsSinceReg']['cantStars']))
+		$context['mhfyimages'] = str_repeat('<img src="' . $settings['images_url'] . '/icons/gold_star.png" alt="'.$txt['mhfyears'].'" />', $context['countYearsSinceReg']['cantStars']);
+	// ENDs - MedalHonorForYears - BY SMFSIMPLE.COM
+	]]></add>
+		</operation>
+        <operation>
+			<search position="end" />
+				<add><![CDATA[
+function countYearsSinceReg($id)
+{
+	global $smcFunc, $modSettings, $memberContext;
+	
+	$id_mem = (int) $id;
+	$userRegistered = 0;
+	$cantStars = 0;
+	$countYearsSinceReg = array();
+	if(!empty($id_mem))
+	{		
+		loadMemberContext($id_mem);
+		$timeDays = $memberContext[$id_mem]['registered_timestamp'];	
+		$userRegistered = date("d/m/Y",$timeDays); //Date of the register
+		$cantStars =  (date("Y") - date("Y",$timeDays)); //One medal for one year.
+		if (!empty($modSettings['mhfyenabled']))
+		$countYearsSinceReg['userRegistered'] = !empty($userRegistered) ? $userRegistered : '';
+		if (!empty($modSettings['mhfyenabledimgs']))
+		$countYearsSinceReg['cantStars'] = !empty($cantStars) ? $cantStars : '';
+	}
+	return $countYearsSinceReg;
+}
+  ]]></add>
+		</operation>
+</file>
+<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+				<add><![CDATA[
+		array('check', 'mhfyenabled'),
+		array('text', 'mhfyenabledtext', '20', 'subtext' => $txt['mhfyenabledtextsub']),
+		array('check', 'mhfyenabledimgs'),]]></add>
+		</operation>
+</file>
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+</file>
+</modification>

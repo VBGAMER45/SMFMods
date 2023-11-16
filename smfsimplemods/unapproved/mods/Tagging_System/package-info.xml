@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:Tagging_System_SMFSIMPLE</id>
+	<name>Tagging System SMFSIMPLE</name>
+	<version>1.5</version>
+	<type>modification</type>	
+	<install for="2.0 - 2.0.99">
+		<redirect url="?action=admin;area=taggingsystem">redirect.txt</redirect>
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>modifications.xml</modification>
+		<require-file name="sources/TaggingSystem.php" destination="$sourcedir" />
+		<require-file name="sources/TaggingSystem-hooks.php" destination="$sourcedir" />
+		<require-file name="default/Tagging.template.php" destination="$themedir" />	
+		<require-dir name="default/languages" destination="$themedir" />
+		<require-dir name="default/scripts" destination="$themedir" />
+		<require-dir name="default/css" destination="$themedir" />
+		<require-dir name="default/images" destination="$themedir" />
+		<database>install_db.php</database>
+		<code>hooks.php</code>
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<code>hooks.php</code>
+		<modification type="file" reverse="true">modifications.xml</modification>		
+		<remove-file name="$sourcedir/TaggingSystem.php" />
+		<remove-file name="$themedir/Tagging.template.php" />
+		<remove-file name="$themedir/scripts/tags.js" />	
+		<remove-file name="$themedir/css/tags.css" />	
+		<remove-file name="$themedir/images/noavatar.png" />
+		<remove-file name="$languagedir/Tagging.english.php" />
+		<remove-file name="$languagedir/Tagging.spanish_es.php" />
+		<remove-file name="$languagedir/Tagging.spanish_latin.php" />
+		<remove-file name="$languagedir/Tagging.turkish.php" />
+		<remove-file name="$languagedir/Tagging.hungarian-utf8.php" />
+		<redirect url="?action=admin;area=packages;sa=browse" timeout="1000" />
+	</uninstall>
+</package-info>
+

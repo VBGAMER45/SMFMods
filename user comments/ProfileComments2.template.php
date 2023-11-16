@@ -285,9 +285,9 @@ function template_commentsadmin()
 				</tr>
 			';
 			
-
 			foreach($context['pcomments_list'] as $row)
 			{
+
 				echo '<td>',$row['subject'],'<br />',parse_bbc($row['comment']),'</td>';
 				echo '<td><a href="',$scripturl,'?action=profile;u='  . $row['ID_MEMBER'] . '">' . $row['real_name'],'</td>';
 				echo '<td><a href="',$scripturl,'?action=profile;u='  . $row['COMMENT_MEMBER_ID'] . '">' . $row['ProfileName'],'</td>';
@@ -298,7 +298,7 @@ function template_commentsadmin()
 			}
 	
 			
-			if ($total > 0)
+			if ($context['pcomments_count'] > 0)
 			{
 				echo '<tr class="titlebg">
 						<td align="left" colspan="5">

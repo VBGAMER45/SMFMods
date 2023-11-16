@@ -1,0 +1,121 @@
+[size=15pt][color=red]Ad Management mod V 2.3[/color][/size]
+
+[size=12pt][color=red]Language Files[/color][/size]
+http://www.smfads.com/forums/index.php?board=11.0
+
+*You must be logged in to be able to download the files*
+
+This version of the Ad Management mod brings a lot of new features to the table. Version 2.3 includes placement for “Skyscraper” ads as well as individual placement on threads and in between posts. You can also view reports on your ads to see how often they are getting displayed. New placements such as: in-between categories, after child board and after the last post have all been included
+It can be found in the Administration panel under the heading “Configuration”. There is a new link there called “Ad Management” .
+Clicking on this link will bring up the configuration screen for the Ad Management Mod. In here you will see 4 tabs, Edit ads, Add ads, Reports and Credits.
+
+[size=13pt][color=orange]Edit Tab[/color][/size]
+
+In this section you can modify the ad code, change the placement or delete the ad code. This is why you want to give your ad code a good name. You click the name of the ad code you want to edit, then the rest is the same as adding an ad code.
+
+[size=13pt][color=orange]Adding Ads[/color][/size]
+
+To add your ads in this version is quite simple. Go into the Admin panel of SMF and under the Configuration heading click on Ad Management then click on Add Ads. Under this tab you will see several sections, the first being Name. This should be filled in with what you want to call this particular ad. For example, if it's Google ads you might want to type “Google” (no quotes). This is done to identify the ad code so that you can easily edit it later on, or to see reports on your ad.
+Next is the content section, in here is where you place the ad code. In this version of the ad mod it can handle both HTML and PHP languages. Place your Google code in here or any other ad code you may have.
+After your ad code has been placed you come to a box that says “Which boards should this ad display in “. In this box you insert the number of the board you would like the ads to be displayed in. For example, if you have a board on your forum named “Rules” and it happens to be the first board on your forum, then clicking on it would give you a url of this:
+http://www.yourwebsite.com/index.php?board=1.0
+The board number is at the end of the url. So in that box should be put simply the number “1”  (no quotes). If you want to display this ad in multiple boards, you can put 1,2 (where 2 is the number of the second board) to display it in both boards 1 and 2. If you want to display your ad code on every board, simply leave this input box empty.
+The next option is “Display ads within posts”. This works the same way as our previous field, only here you are inputing were in between the posts you want the ads to be displayed. So if you want the ads to be displayed between the first and third posts, then in this field you would put “1,3” (no quotes). If you don’t want this ad to display inside any post, leave the input box empty. 
+Displaying ads after categories works much the same way. You need to put the category id in the input box of the category you want to display the ads after. If you hover over the link for the category you can find out what the ID is. If you want to display after multiple categories, put “1,2”(no quotes).
+The following option is “type'. You can choose between “HTML” or “PHP” (google ads display as HTML). The rest of the options under this tab are pretty much self explanatory. One thing that is very important to remember, when placing “Skyscraper” ads, you must get the appropriate code to fill in the “content” field under this tab. Horizontal ads will NOT work for vertical (Skyscraper) ads.
+Clicking the “Add” button at the bottom of this page will save your configuration for the ad.
+
+[size=13pt][color=orange]Report Tab[/color][/size]
+
+Clicking this tab will give you a short summary on what ads are placed and where they are placed on your forum, plus how many hits they are getting.
+
+[size=13pt][color=orange]Settings Tab[/color][/size]
+
+You can now have various settings on how your ads appear. The settings are:
+- Disable all ads if you are an admin
+- Disable all ads on a global scale
+- Disable reports
+- Make post ads either look like actual posts or not
+
+[size=13pt][color=orange]Permissions[/color][/size]
+
+Just like in the previous versions, you can have permissions on who is able to view the ads. By default everyone views the ads. To deny users from viewing ads, you go into Admin > Permissions > Modify (the group you want to change the permission for).
+You then look for the title "Enable ads" and either disallow or allow the ad code to display. 
+
+
+[size=15pt][color=red]Ad Management mod V 1.5[/color][/size]
+
+This mod will install ads on the top of your page right under the toolbar. You can either choose to have it display on all the pages on your forum, or on three sections of you board. On the board index, thread index, and the thread itself. This mod allows you to turn on and off your ads as you wish. It also allows you to input your ad code in the features and settings section.
+New features have been added so that you can install ads on the bottom of your forum and also after the first post. You are also able to disable ads on a per membergroup basis.
+
+When you add your code into the section, remember that you should always open and close any HTML tags properly. Otherwise you might have issues.
+
+Extra support can be found at: www.smfads.com
+
+[b][color=red]For SMF Version 1.1.X[/color][/b]
+Updated to work for both 1.1.9 and 2.0RC1-1
+
+Version 2.3 Jan 11, 2007
+- New setting: Disable ads for admins
+- New setting: Disable reports(one less query)
+- New setting: Disable all ads
+- New setting: Ability to make post ads not look like posts.
+- Added the ability to display ads between categories
+- Added the ability to display ads after the last post
+- Added the ability to display ads under child boards
+- Fixed issues about not finding functions(caused forums to crash)
+
+Version 2.0 Jun 13, 2006
+- Enabled per board ads
+- Ability to add multiple ads
+- HTML/PHP style ads
+- Ad reports
+- Disabled ads in certain sections of the admin panel
+- Many more minor improvments
+
+Version 1.5 Mar 19, 2006
+- Fixed an issue with the xml
+- Added the ability to display ads on to pof the menu on every page
+- Added help files
+- Revised some of the code in previous versions.
+
+Version 1.4.1 Feb 8, 2006
+- Resolved an issue with TinyPortal (now works when you have TinyPortal installed)
+
+Version 1.4 Feb 2, 2006
+- Added the ability to disable ads according to their membergroup.
+
+Version 1.3 Feb 1, 2006
+- Updated database settings so that they wont be removed on re-installation.
+- Added the ability to display ads on the bottom of every page.
+- Added the ability to display an ad after the first post. (Idea courtesy Joomlaspan)
+
+Version 1.2 Jan 30, 2006
+- Officially released on simplemachines.org. No official changes from previous version.
+
+Version 1.0 Jan 5, 2006
+- Not publicly released.
+- Displayed ads only under the menu bar.
+--------------------------------------------------------------------------------
+
+[b][color=red]For SMF Version 1.0.9[/color][/b]
+--------------------------------------------------------------------------------
+Version 1.0.2d October 30, 2006
+- Now installs on SMF Version 1.0.9
+
+Version 1.0.2c August 21, 2006
+- Now installs on SMF version 1.0.8
+
+Version 1.0.2b March 30, 2006
+- Now installs on SMF version 1.0.7
+
+Version 1.0.2 Feb 18, 2006
+- Updated database settings so that they wont be removed on re-installation.
+- Added the ability to display ads on the bottom of every page.
+- Added the ability to display an ad after the first post. (Idea courtesy Joomlaspan)
+- Added the ability to disable ads according to their membergroup.
+
+Version 1.0 Jan 5, 2006
+- Not publicly released.
+- Displayed ads only under the menu bar.
+--------------------------------------------------------------------------------

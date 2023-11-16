@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>[SiNaN]:Banlist</id>
+	<name>Ban List</name>
+	<version>2.0</version>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'ban' => array('ManageBans.php', 'Ban'),]]></search>
+			<add><![CDATA[
+		'banlist' => array('ManageBans.php', 'BanListView'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/index.template.php">
+		<operation>
+			<search position="before"><![CDATA[, 'login', 'help', 'pm']]></search>
+			<add><![CDATA[, 'banlist']]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+	// If the user is a guest, show [login] button.]]></search>
+			<add><![CDATA[
+	// The [banlist] list button
+	if ($context['allow_banlist'])
+		echo ($current_action == 'banlist' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'banlist' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=banlist">' , $txt['banlist_menu'] , '</a>
+				</td>' , $current_action == 'banlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+]]></add>
+		</operation>
+	</file>
+
+    <file name="$sourcedir/Subs.php">
+        <operation>
+            <search position="after"><![CDATA[
+	$context['allow_memberlist'] = allowedTo('view_mlist');]]></search>
+            <add><![CDATA[
+	$context['allow_banlist'] = allowedTo('view_banlist');]]></add>
+        </operation>
+	</file>
+
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[
+				'who_view' => false,]]></search>
+			<add><![CDATA[
+				'view_banlist' => false,]]></add>
+		</operation>
+	</file>
+
+<!-- BanList.php -->
+	<file name="$sourcedir/ManageBans.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Default the sort method to 'ban name']]></search>
+			<add><![CDATA[
+	// Deleted Data unnecessary
+	if (!empty($context['view_banlist']) && !allowedTo('manage_bans'))
+		unset($sort_methods['notes'], $sort_methods['num_entries'], $context['columns']['notes'], $context['columns']['num_entries'], $context['columns']['actions']);
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		$context['columns'][$col]['href'] = $scripturl . '?action=ban;sort=' . $col;]]></search>
+			<add><![CDATA[
+		$context['columns'][$col]['href'] = $scripturl . '?action=ban' . (empty($context['view_banlist']) ? '' : 'list') . ';sort=' . $col;]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+	$context['page_index'] = constructPageIndex($scripturl . '?action=ban;sort=' . $_REQUEST['sort']]]></search>
+			<add><![CDATA[
+	$context['page_index'] = constructPageIndex($scripturl . '?action=ban' . (empty($context['view_banlist']) ? '' : 'list') . ';sort=' . $_REQUEST['sort']]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		SELECT bg.ID_BAN_GROUP, bg.name, bg.ban_time, bg.expire_time, bg.reason, bg.notes, COUNT(bi.ID_BAN) AS num_entries
+		FROM {$db_prefix}ban_groups AS bg
+			LEFT JOIN {$db_prefix}ban_items AS bi ON (bi.ID_BAN_GROUP = bg.ID_BAN_GROUP)]]></search>
+			<add><![CDATA[
+		SELECT bg.ID_BAN_GROUP, bg.name, bg.ban_time, bg.expire_time, bg.reason" . (allowedTo('manage_bans') ? ", bg.notes, COUNT(bi.ID_BAN) AS num_entries
+		FROM {$db_prefix}ban_groups AS bg
+			LEFT JOIN {$db_prefix}ban_items AS bi ON (bi.ID_BAN_GROUP = bg.ID_BAN_GROUP)" : "
+		FROM {$db_prefix}ban_groups AS bg") . "]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		'notes' => $row['notes'],]]></search>
+			<add><![CDATA[
+		'notes' => empty($row['notes']) ? '' : $row['notes'],]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		'num_entries' => $row['num_entries'],]]></search>
+			<add><![CDATA[
+		'num_entries' => empty($row['num_entries']) ? '' : $row['num_entries'],]]></add>
+		</operation>
+
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// MOD Ban List - Lite List
+function BanListView()
+{
+	global $txt, $context;
+
+	// Make sure they can view the banlist.
+	isAllowedTo('view_banlist');
+
+	$context['view_banlist'] = true;
+
+	loadTemplate(allowedTo('manage_bans') ? 'ManageBans' : 'BanList');
+	loadLanguage('Admin');
+
+	$context['page_title'] = &$txt['ban_title'];
+
+	// Hi hacker =)
+	unset($_POST['removeBans'], $_POST['remove']);
+
+	BanList();
+}
+]]></add>
+		</operation>
+	</file>
+
+<!-- Whoonlie -->
+	<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'ban' => array('manage_bans'),]]></search>
+			<add><![CDATA[
+		'banlist' => array('view_banlist'),]]></add>
+		</operation>
+	</file>
+
+</modification>

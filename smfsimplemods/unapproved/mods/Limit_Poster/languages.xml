@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:LimitPosters</id>
+	<name>Limit Posters</name>
+	<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['membergroups_limit_posters'] = 'Number of topics per day';
+$txt['membergroups_limit_posters_note'] = '-1 = No Limit';
+$txt['limit_posters_error'] = 'The limit of responses for today has reached 0. <br />Please wait until tomorrow to post again.';
+$txt['profile_limit_post'] = 'Limits Posts Per Today';
+$txt['profile_limit_post_desc'] = 'How many topic can create this user, -1 = unlimited';
+$txt['profile_limit_post_unlimited'] = 'Unlimited';	
+]]></add>
+		</operation>
+</file>
+
+<file name="$languagedir/ManageScheduledTasks.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['scheduled_task_limit_posters'] = 'Add Limits Posters';
+$txt['scheduled_task_desc_limit_posters'] = 'Calculate and add the limit of messages specified by user groups';		
+]]></add>
+		</operation>
+</file>
+<file name="$languagedir/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['membergroups_limit_posters'] = 'Numero de Topics Por Dias';
+$txt['membergroups_limit_posters_note'] = '-1 = No tiene limite';
+$txt['limit_posters_error'] = 'El limite de respuestas y nuevos temas llego a 0. <br />Por favor espere a ma�ana para volver a postear';
+$txt['profile_limit_post'] = 'Limite de post para hoy';
+$txt['profile_limit_post_desc'] = 'Que cantidad de temas puede crear este usuario, -1 = ilimitado';
+$txt['profile_limit_post_unlimited'] = 'Ilimitado';	
+]]></add>
+		</operation>
+</file>
+
+<file name="$languagedir/ManageScheduledTasks.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['scheduled_task_limit_posters'] = 'Agregar limite de posts';
+$txt['scheduled_task_desc_limit_posters'] = 'Calcular y agregar el limite de post a cada grupo de usuarios';		
+]]></add>
+		</operation>
+</file>
+
+<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['membergroups_limit_posters'] = 'Numero de Topics Por Dias';
+$txt['membergroups_limit_posters_note'] = '-1 = No tiene limite';
+$txt['limit_posters_error'] = 'El limite de respuestas y nuevos temas llego a 0. <br />Por favor espere a ma�ana para volver a postear';
+$txt['profile_limit_post'] = 'Limite de post para hoy';
+$txt['profile_limit_post_desc'] = 'Que cantidad de temas puede crear este usuario, -1 = ilimitado';
+$txt['profile_limit_post_unlimited'] = 'Ilimitado';	
+]]></add>
+		</operation>
+</file>
+
+<file name="$languagedir/ManageScheduledTasks.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['scheduled_task_limit_posters'] = 'Agregar limite de posts';
+$txt['scheduled_task_desc_limit_posters'] = 'Calcular y agregar el limite de post a cada grupo de usuarios';		
+]]></add>
+		</operation>
+</file>
+
+
+
+
+	
+</modification>

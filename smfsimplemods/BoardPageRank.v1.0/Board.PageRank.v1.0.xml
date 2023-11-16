@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Vicram10:BoardPageRank</id>
+	<version>1.0</version>
+	<homepage>http://www.sharedownload.org</homepage>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="replace"><![CDATA[?>]]></search>
+			<add><![CDATA[
+			
+// Start of Board Pagerank mod functions
+// Modified from the original public domain code/api
+// Converts string to 32-bit integer
+function StrToNum($Str, $Check, $Magic)
+{
+    $Int32Unit = 4294967296;  // 2^32
+
+    $length = strlen($Str);
+    for ($i = 0; $i < $length; $i++) {
+        $Check *= $Magic; 	
+        if ($Check >= $Int32Unit) {
+            $Check = ($Check - $Int32Unit * (int) ($Check / $Int32Unit));
+            $Check = ($Check < -2147483648) ? ($Check + $Int32Unit) : $Check;
+        }
+        $Check += ord($Str{$i}); 
+    }
+    return $Check;
+}
+
+// Generate hash of the url
+function HashURL($String)
+{
+    $Check1 = StrToNum($String, 0x1505, 0x21);
+    $Check2 = StrToNum($String, 0, 0x1003F);
+
+    $Check1 >>= 2; 	
+    $Check1 = (($Check1 >> 4) & 0x3FFFFC0 ) | ($Check1 & 0x3F);
+    $Check1 = (($Check1 >> 4) & 0x3FFC00 ) | ($Check1 & 0x3FF);
+    $Check1 = (($Check1 >> 4) & 0x3C000 ) | ($Check1 & 0x3FFF);	
+	
+    $T1 = (((($Check1 & 0x3C0) << 4) | ($Check1 & 0x3C)) <<2 ) | ($Check2 & 0xF0F );
+    $T2 = (((($Check1 & 0xFFFFC000) << 4) | ($Check1 & 0x3C00)) << 0xA) | ($Check2 & 0xF0F0000 );
+	
+    return ($T1 | $T2);
+}
+
+//Generate checksum of the hash string
+function CheckHash($Hashnum)
+{
+    $CheckByte = 0;
+    $Flag = 0;
+
+    $HashStr = sprintf('%u', $Hashnum) ;
+    $length = strlen($HashStr);
+	
+    for ($i = $length - 1;  $i >= 0;  $i --) {
+        $Re = $HashStr{$i};
+        if (1 === ($Flag % 2)) {              
+            $Re += $Re;     
+            $Re = (int)($Re / 10) + ($Re % 10);
+        }
+        $CheckByte += $Re;
+        $Flag ++;	
+    }
+    $CheckByte %= 10;
+    if (0 !== $CheckByte) {
+        $CheckByte = 10 - $CheckByte;
+        if (1 === ($Flag % 2) ) {
+            if (1 === ($CheckByte % 2)) {
+                $CheckByte += 9;
+            }
+            $CheckByte >>= 1;
+        }
+    }
+    return '7'.$CheckByte.$HashStr;
+}
+
+//Returns the pagerank
+function getpagerank($url) {
+	
+	//  Fake the useragent array.
+	$agents = array(
+					'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30',
+					'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.9',
+					'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.8',
+				);
+
+	// Save current useragent, to restore later
+	$useragent = @ini_get('user_agent');
+	// Set fake useragent to random from the array
+	@ini_set('user_agent', $agents[array_rand($agents)]);
+
+	// Get checksum - Pagerank will be 0 unless we have a valid checksum
+	$ch = CheckHash(HashURL($url));
+	
+	// The URL to get the PR
+	$pr_url ="http://toolbarqueries.google.com/search?client=navclient-auto&ch=$ch&features=Rank&q=info:$url";	
+	
+	// Requires a function in a source folder far far away
+	global $sourcedir;
+	require_once($sourcedir .'/Subs-Package.php');
+	
+	// Get the PR using SMF's get data function
+	//Attempts to fetch data from a URL, regardless of PHP's allow_url_fopen setting
+	$data = fetch_web_data($pr_url);
+
+	// Reset the useragent now
+	@ini_set('user_agent', $useragent);
+	
+	// A valid rank string which contain Rank_
+	$pos = strpos($data, "Rank_");
+	if($pos !== false)
+	{
+		$pr = trim(substr($data, $pos + 9));
+		return str_replace("\n",'',$pr);
+	}
+	else
+		return 0;
+}
+
+// Loads/stores/shows the pagerank
+function pagerank($url)
+{
+	global $db_prefix, $settings, $txt;
+	
+	// Must not be empty
+	if(empty($url) || $url == 'http://' || $url == 'https://')
+		return;
+	
+	// Must contain link prefix
+	if(strpos($url, 'http://') === false && strpos($url, 'https://') === false)
+		return;
+	
+	// Md5 the url
+	$md5_url = md5($url);
+
+	// Check the db for a cached pagerank within the last 7 days
+	$request = db_query("
+		SELECT pr, timestamp
+		FROM {$db_prefix}pagerank
+		WHERE url = '".$md5_url."'
+		LIMIT 1
+	", __FILE__, __LINE__);
+	
+	// Found an cached entry
+	if (mysql_num_rows($request) == 1)
+	{
+		// Grab the row
+		$pagerank = mysql_fetch_assoc($request);
+		
+		// Entry older than 7 days?
+		if($pagerank['timestamp'] < (time() - 60*60*24*7))
+		{
+			// Where theres one old entry, theres more, so delete them
+			db_query("
+				DELETE
+				FROM {$db_prefix}pagerank
+				WHERE timestamp < ". (time() - 60*60*24*7) ."
+			", __FILE__, __LINE__);
+			
+			// Unset the data we found
+			unset($pagerank);
+		}
+		else
+			$pagerank = (int) $pagerank['pr'];
+	}
+	
+	// No valid cached pagerank so go get it.
+	if(!isset($pagerank))
+	{
+		// Grab PR
+		$pagerank = (int) getpagerank($url);
+		
+		// Store PR
+		db_query("
+				INSERT IGNORE
+				INTO {$db_prefix}pagerank (`url`, `pr`, `timestamp`)
+				VALUES ('". $md5_url ."', '". $pagerank ."',". time() .")
+			", __FILE__, __LINE__);
+	}
+
+	// Show PR
+	return $pagerank;
+}
+// End of Board Pagerank Mod
+
+?>
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/ManageBoards.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		// List through every board in the category, printing its name and link to modify the board.
+		foreach ($category['boards'] as $board)
+		{
+			$alternate = !$alternate;
+
+			echo '
+							<tr class="windowbg', $alternate ? '' : '2', '">
+								<td style="padding-left: ', 5 + 30 * $board['child_level'], 'px;', $board['move'] ? 'color: red;' : '', '">', $board['name'], !empty($modSettings['recycle_board']) && !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] == $board['id'] ? '&nbsp;&nbsp;&nbsp;<a href="' . $scripturl . '?action=manageboards;sa=settings"><img src="' . $settings['images_url'] . '/post/recycled.gif" alt="' . $txt['recycle_board'] . '" border="0" /></a>' : '', '</td>
+]]></search>
+			<add><![CDATA[
+		// List through every board in the category, printing its name and link to modify the board.
+		foreach ($category['boards'] as $board)
+		{
+			$alternate = !$alternate;
+			//Start BoPaR Mod 
+			$url= $scripturl.'?board='.$board['id'].'.0';
+			$separator= '<strong><span style="color: #006633;">=></span></strong>';
+			$pagerank = "<img src=\"".$settings['default_theme_url']."/images/board-pageranks/".getPageRank($url).".gif\" alt=\"BoardPageRank Mod\" />";			
+			if (getPageRank($url) == -1)
+			{$pagerank = '<strong>PR: <span style="color: #FF0000;">N/A</span></strong>';}
+			//End BoPaR Mod 			
+			echo '
+							<tr class="windowbg', $alternate ? '' : '2', '">
+								<td style="padding-left: ', 5 + 30 * $board['child_level'], 'px;', $board['move'] ? 'color: red;' : '', '">', $board['name'],'&nbsp;',$separator,'&nbsp;',$pagerank, !empty($modSettings['recycle_board']) && !empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] == $board['id'] ? '&nbsp;&nbsp;&nbsp;<a href="' . $scripturl . '?action=manageboards;sa=settings"><img src="' . $settings['images_url'] . '/post/recycled.gif" alt="' . $txt['recycle_board'] . '" border="0" /></a>' : '', '</td>
+
+]]></add>
+		</operation>
+	</file>
+</modification>

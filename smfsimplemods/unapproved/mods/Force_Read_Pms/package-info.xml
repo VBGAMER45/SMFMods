@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:Force_Read_Pms</id>
+	<name>Force Read Pms</name>
+	<version>1.0</version>
+	<type>modification</type>	
+	<install for="2.0 - 2.0.99">
+		<redirect url="?action=admin;area=modsettings;sa=forcereadpm">redirect.txt</redirect>
+		<require-file name="sources/ForceReadPms.php" destination="$sourcedir" />
+		<require-dir name="default/languages" destination="$themedir" />		
+		<code>hooks.php</code>
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<remove-file name="$sourcedir/ForceReadPms.php" />
+		<!--Language Files-->
+		<remove-file name="$languagedir/ForceReadPms.english.php" />
+		<remove-file name="$languagedir/ForceReadPms.spanish_latin.php" />
+		<remove-file name="$languagedir/ForceReadPms.spanish_es.php" />
+		<code>hooks.php</code>
+	</uninstall>
+</package-info>
+

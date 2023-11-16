@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:BoxBBCode</id>
+	<name>Box BBCode</name>
+	<version>1.2</version>
+
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insert Box';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insert Box';]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Modifications.spanish.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insertar Marco';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insertar Marco';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insertar Marco';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insertar Marco';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insertar Marco';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	Box BBCode
+$txt['box_bbcode'] = 'Insertar Marco';]]></add>
+		</operation>
+	</file>
+
+</modification>

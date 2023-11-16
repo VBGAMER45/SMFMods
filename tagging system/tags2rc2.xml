@@ -275,7 +275,12 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 		$_SESSION['last_read_topic'] = $topic;
 	}]]></search>
 	<add><![CDATA[
-	//Tagging System
+	// Tagging System
+
+	global $sourcedir;
+	require_once($sourcedir . '/Tags2.php');
+	LoadTagsCSS();
+
 	$dbresult= $smcFunc['db_query']('', "
 	SELECT 
 		t.tag,l.ID,t.ID_TAG 
@@ -302,26 +307,62 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 		
 		
 		// Tagging System
+
 			echo '
 			<div class="clearfix windowbg largepadding">
 
 
 				<b>', $txt['smftags_topic'], '</b>';
 
-
-
-				foreach ($context['topic_tags'] as $i => $tag)
+				if (empty($modSettings['smftags_set_use_css_tags']))
 				{
-					echo '<a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '">' . $tag['tag'] . '</a>&nbsp;';
-					if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
-					echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
+
+
+					foreach ($context['topic_tags'] as $i => $tag)
+					{
+						echo '<a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '" class="tag">' . $tag['tag'] . '</a>&nbsp;';
+						if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
+						echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
+
+
+
+					}
+
+					global $topic;
+					if(!$context['user']['is_guest'] && allowedTo('smftags_add'))
+					echo '
+					&nbsp;<a href="' . $scripturl . '?action=tags;sa=addtag;topic=',$topic, '">' . $txt['smftags_addtag'] . '</a>';
+
 
 				}
+				else
+				{
+					echo '<ul class="tags">';
 
-				global $topic;
-				if(!$context['user']['is_guest'] && allowedTo('smftags_add'))
-				echo '
-				&nbsp;<a href="' . $scripturl . '?action=tags;sa=addtag;topic=',$topic, '">' . $txt['smftags_addtag'] . '</a>';
+
+					foreach ($context['topic_tags'] as $i => $tag)
+					{
+						echo '<li><a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '" class="tag">' . $tag['tag'] . '</a>&nbsp;';
+						if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
+						echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
+
+						echo '</li>';
+
+					}
+
+					global $topic;
+					if(!$context['user']['is_guest'] && allowedTo('smftags_add'))
+					echo '
+					&nbsp;<li><a href="' . $scripturl . '?action=tags;sa=addtag;topic=',$topic, '">' . $txt['smftags_addtag'] . '</a></li>';
+
+
+					echo '</ul>';
+				}
+
+
+
+
+
 
 			echo '
 				</div>';
@@ -435,4 +476,118 @@ function AutoSuggest_Search_Tags()
 
 
 </file>
+
+
+
+<file name="$sourcedir/MessageIndex.php">
+	<operation>
+		<search position="before"><![CDATA[// For search engine effectiveness we'll link guests differently.]]></search>
+	<add><![CDATA[
+	// Tagging System
+
+
+	global $sourcedir;
+
+	$context['topic_tags'] = array();
+	if (!empty($modSettings['smftags_set_msgindex']))
+	{
+		require_once($sourcedir . '/Tags2.php');
+		LoadTagsCSS();
+
+
+		if (empty($topic_ids))
+		{
+			$dbresult = $smcFunc['db_query']('', "
+			SELECT
+				t.tag,l.ID,t.ID_TAG,l.ID_TOPIC
+			FROM ({db_prefix}tags_log as l, {db_prefix}tags as t)
+				LEFT JOIN {db_prefix}topics as b ON (l.ID_TOPIC = b.ID_TOPIC)
+			WHERE t.ID_TAG = l.ID_TAG AND b.ID_BOARD = $board");
+		}
+		else
+		{
+			$dbresult = $smcFunc['db_query']('', "
+		SELECT
+			t.tag,l.ID,t.ID_TAG,l.ID_TOPIC
+		FROM ({db_prefix}tags_log as l, {db_prefix}tags as t)
+		WHERE t.ID_TAG = l.ID_TAG AND FIND_IN_SET(l.id_topic, {string:find_set_topics})",
+				array(
+					'find_set_topics' => implode(',', $topic_ids),
+				));
+		}
+
+			 while($row = $smcFunc['db_fetch_assoc']($dbresult))
+				{
+					if (empty($context['topic_tags'][$row['ID_TOPIC']]))
+						$context['topic_tags'][$row['ID_TOPIC']] = array();
+
+					$context['topic_tags'][$row['ID_TOPIC']][] = array(
+					'ID' => $row['ID'],
+					'ID_TAG' => $row['ID_TAG'],
+					'tag' => $row['tag'],
+					);
+			}
+		$smcFunc['db_free_result']($dbresult);
+	}
+
+	//End Tagging System
+]]></add>
+	</operation>
+
+
+	<operation>
+		<search position="before"><![CDATA[// 'Print' the topic info.]]></search>
+	<add><![CDATA[
+	// Tagging System
+
+	if (!isset($context['topic_tags'][$row['id_topic']]))
+		$context['topic_tags'][$row['id_topic']] = array();
+	//End Tagging System
+]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA['views' => comma_format($row['num_views']),]]></search>
+	<add><![CDATA[
+	// Tagging System
+				'tags' => $context['topic_tags'][$row['id_topic']],
+	//End Tagging System
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/MessageIndex.template.php">
+	<operation>
+		<search position="before"><![CDATA[// Is this topic new? (assuming they are logged in!)]]></search>
+		<add><![CDATA[
+
+
+		// Tagging System
+
+
+				$count = 0;
+				if (!empty($topic['tags']))
+				{
+					foreach ($topic['tags'] as $i => $tag)
+					{
+						if ($count == 0)
+							echo '<br /><ul class="tags">';
+
+						$count++;
+						// Check tag limit
+						if ($count <= $modSettings['smftags_set_msgindex_max_show'])
+							echo '<li><a href="' . $scripturl . '?topic=' . $topic['id'] . '.0" class="tag">' . $tag['tag'] . '</a></li>';
+					}
+
+					echo '</ul>';
+				}
+		// End Tagging System
+
+
+
+		]]></add>
+	</operation>
+</file>
+
 </modification>

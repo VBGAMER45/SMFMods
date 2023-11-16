@@ -1,0 +1,31 @@
+ <?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:MedalHonorForYears</id>
+	<name>Medal Honor For Years</name>
+	<version>1.1</version>
+    <type>modification</type>
+		<install for="2.0 - 2.0.99">
+		<redirect url="?action=admin;area=modsettings;sa=general">redirect.txt</redirect>
+		<modification>install_20.xml</modification>
+		<modification>languages_20.xml</modification>
+		<require-file name="gold_star.png" destination="$imagesdir/icons" />
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">install_20.xml</modification>
+		<modification type="file" reverse="true">languages_20.xml</modification>
+		<remove-file name="$imagesdir/icons/gold_star.png" />
+	</uninstall>
+	
+	<install for="2.1 - 2.1.99">
+		<redirect url="?action=admin;area=modsettings;sa=general">redirect.txt</redirect>
+		<modification>install_21.xml</modification>
+		<modification>languages_21.xml</modification>
+		<require-file name="gold_star.png" destination="$imagesdir/icons" />
+	</install>
+	<uninstall for="2.1 - 2.1.99">
+		<modification type="file" reverse="true">install_21.xml</modification>
+		<modification type="file" reverse="true">languages_21.xml</modification>
+		<remove-file name="$imagesdir/icons/gold_star.png" />
+	</uninstall>
+</package-info>

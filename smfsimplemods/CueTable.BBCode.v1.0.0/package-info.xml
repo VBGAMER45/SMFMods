@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>CueTable.BBCode</name>
+	<id>Vicram10:CueTableBBCode</id>
+	<type>modification</type>
+	<version>1.0.0</version>
+	<install>
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file">CueTable.xml</modification>
+			<require-file name="cuetable.gif" destination="$imagesdir/bbc" />
+	</install>
+	<uninstall>
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file" reverse="true">CueTable.xml</modification>
+			<remove-file name="$imagesdir/bbc/cuetable.gif" />
+	</uninstall>
+</package-info>

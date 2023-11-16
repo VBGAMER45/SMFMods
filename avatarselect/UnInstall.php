@@ -1,8 +1,8 @@
 <?php
 /*
 by:vbgamer45
-http://www.smfhacks.com
-Copyright 2009 http://www.samsonsoftware.com
+https://www.smfhacks.com
+Copyright 2009 https://www.samsonsoftware.com
 */
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
@@ -14,14 +14,14 @@ echo '<iframe src ="https://www.smfhacks.com/uninstall.php?modname=' . $modName 
   <p>Your browser does not support iframes.</p>
 </iframe>
 Other modifications of interest<br>
-<a href="http://www.smfhacks.com/download-system-pro.php">Downloads System Pro</a> - A complete downloads system for SMF. With credits, paypal intergration and more!<br />
+<a href="https://www.smfhacks.com/download-system-pro.php">Downloads System Pro</a> - A complete downloads system for SMF. With credits, paypal intergration and more!<br />
 
-<a href="http://www.ezportal.com" target="_blank">EzPortal</a><br />
-<a href="http://www.smfhacks.com/smf-gallery-pro.php" target="_blank">SMF Gallery Pro</a><br />
-<a href="http://www.smfhacks.com/smf-store.php" target="_blank">SMF Store</a><br />
-<a href="http://www.smfhacks.com/smf-classifieds.php" target="_blank">SMF Classifieds</a><br />
-<a href="http://www.smfhacks.com/newsletter-pro.php" target="_blank">Newsletter Pro</a><br />
-<a href="http://www.smfhacks.com/ad-seller-pro.php" target="_blank">Ad Seller Pro</a><br />
+<a href="https://www.ezportal.com" target="_blank">EzPortal</a><br />
+<a href="https://www.smfhacks.com/smf-gallery-pro.php" target="_blank">SMF Gallery Pro</a><br />
+<a href="https://www.smfhacks.com/smf-store.php" target="_blank">SMF Store</a><br />
+<a href="https://www.smfhacks.com/smf-classifieds.php" target="_blank">SMF Classifieds</a><br />
+<a href="https://www.smfhacks.com/newsletter-pro.php" target="_blank">Newsletter Pro</a><br />
+<a href="https://www.smfhacks.com/ad-seller-pro.php" target="_blank">Ad Seller Pro</a><br />
 
 <br /><br />
 ';

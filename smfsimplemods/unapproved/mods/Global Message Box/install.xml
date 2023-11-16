@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>GlobalMessageMod</id>
+	<name>Global Message Box By Smfsimple.com</name>
+	<version>V1 Lite Version</version>
+
+<file name="$themedir/index.template.php">
+        <operation>
+			<search position="before"><![CDATA[// Output any remaining HTML headers. (from mods, maybe?)]]></search>
+			<add><![CDATA[
+	// Global Message Box V1 By Smfsimple.com
+	smfsimple_global_message_box();			
+    // Global Message Box V1 By Smfsimple.com		
+								
+  ]]></add>
+		</operation>
+		<operation>
+		<search position="before"><![CDATA[theme_linktree();]]></search>
+			<add><![CDATA[			
+	// Global Message Box By Smfsimple.com
+	smfsimple_global_message_box1();
+	// Global Message Box By Smfsimple.com
+  ]]></add>
+		</operation>
+
+</file>
+
+<file name="$themedir/css/index.css">
+        <operation>
+			<search position="end" />
+				<add><![CDATA[
+/* Global Message Box By Smfsimple.com */
+
+.message-dismiss {
+font-weight: normal;
+color: #999;
+}
+.message-container {
+padding: 0.5em;
+line-height: 1em;
+}
+.message-container p {
+padding: 0 1em;
+}
+.message-container p .ui-icon {
+margin-right: .3em;
+}			
+								
+  ]]></add>
+		</operation>
+		
+
+</file>
+
+<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="before"><![CDATA[// Mod authors, add any settings UNDER this line. Include a comma at the end of the line and don't remove this statement!!]]></search>
+			<add><![CDATA[
+		// Global Message Box By Smfsimple.com
+        array('check', 'globalmessagebox_enable'), 
+		array('large_text', 'globalmessagebox_text', '4', 'subtext' => $txt['globalmessagebox_text_desc']),
+		array('text', 'gmb_no_boards', '33', 'subtext' => $txt['gmb_no_boards_desc']),
+		array('select', 'globalmessagebox_style', array('dot-luv' => $txt['dot-luv'], 'vader' => $txt['vader'], 'eggplant' => $txt['eggplant'], 'ui-darkness' => $txt['ui-darkness'], 'redmond' => $txt['redmond'], 'sunny' => $txt['sunny'], 'flick' => $txt['flick'], 'trontastic' => $txt['trontastic'], 'black-tie' => $txt['black-tie'])),
+		// Global Message Box By Smfsimple.com
+		
+			]]></add>
+		</operation>
+		</file>		
+		
+<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Global Message Box By Smfsimple.com
+function smfsimple_global_message_box()
+{
+global $settings,$modSettings;
+echo'
+	 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/',!empty($modSettings['globalmessagebox_style']) ? $modSettings['globalmessagebox_style'] : $modSettings['globalmessagebox_style'],'/jquery-ui.css" rel="stylesheet" type="text/css" />';
+	 echo '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js" type="text/javascript"></script>
+     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+     <script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/jquery.message.js"></script>
+        
+        <script type="text/javascript">
+            $(document).ready(function()
+            {
+                $("#messageBoxSmfSimple").message();
+                
+            });
+        </script>';	
+}
+
+function smfsimple_global_message_box1()
+{
+global $settings,$modSettings,$txt,$board,$topic,$user_settings;
+
+    $boards = !empty($modSettings['gmb_no_boards']);
+	$ex = explode(',',$boards);
+	if (!empty($modSettings['globalmessagebox_enable'])) {
+	  if(allowedTo('gmb_view')) {
+	    if(!in_array($board,$ex) || (empty($board) && empty($topic) && empty($_REQUEST['action']))){ 
+	        echo '<div id="messageBoxSmfSimple">', 
+            !empty($modSettings['globalmessagebox_text']) ? parse_bbc($modSettings['globalmessagebox_text']) : $txt['globalmessagebox_none'] ,' 
+	</div>';}
+       }
+	 }  
+}
+// Global Message Box By Smfsimple.com
+]]></add>
+		</operation>
+		</file>		
+		
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+		</file>		
+
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[	$groupLevels['global']['standard'] = array_merge($groupLevels['global']['restrict'], array(]]></search>
+		<add><![CDATA[
+		'gmb_view',
+]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(]]></search>
+		<add><![CDATA[
+			'gmb_view' => array(false, 'gmb_view', 'gmb_view'),
+]]></add>
+	</operation>
+</file>				
+		
+</modification>

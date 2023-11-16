@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:TablePlusBBCodes</id>
+	<name>Table Plus BBCodes</name>
+	<version>1.2</version>
+
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+			'table' => array('code' => 'table', 'before' => '[table]', 'after' => '[/table]', 'description' => $txt[436]),
+			'tr' => array('code' => 'td', 'before' => '[tr]', 'after' => '[/tr]', 'description' => $txt[449]),
+			'td' => array('code' => 'td', 'before' => '[td]', 'after' => '[/td]', 'description' => $txt[437]),]]></search>
+			<add><![CDATA[
+			'tabletrtd' => array('code' => 'tabletrtd', 'before' => '[table]\n[tr]\n[td]', 'after' => '[/td][td][/td]\n[/tr]\n[/table]', 'description' => $txt[436]),
+			'tr' => array('code' => 'td', 'before' => '[tr]\n[td]', 'after' => '[/td][td][/td]\n[/tr]', 'description' => $txt[449]),
+			'td' => array('code' => 'td', 'before' => '[td]', 'after' => '[/td]', 'description' => $txt[437]),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="replace"><![CDATA[
+				'before' => '<table style="font: inherit; color: inherit;">',]]></search>
+			<add><![CDATA[
+				'before' => '<table style="font: inherit; color: inherit;" class="table_bbc">',]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/style.css">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+
+/* Table Plus BBCodes */
+.table_bbc	{ border-spacing: 2px; background: #88A6C0 url(images/catbg.jpg) repeat-x }
+.table_bbc td	{ padding: 5px; background: #E9F0F6 url(images/titlebg.jpg) repeat-x 0 -17px }
+]]></add>
+		</operation>
+	</file>
+
+</modification>

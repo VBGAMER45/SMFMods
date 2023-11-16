@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:Facebook_Likes_Hide</id>
+	<name>Facebook Likes Hide</name>
+	<version>1.5</version>
+	<type>modification</type>	
+	<install for="2.0 - 2.0.99">
+		<redirect url="?action=admin;area=modsettings;sa=Fblike">redirect.txt</redirect>
+		<modification>modifications.xml</modification>
+		<require-file name="sources/fblikesAjax.php" destination="$sourcedir" />
+		<require-file name="sources/Fblike-hooks.php" destination="$sourcedir" />		
+		<require-file name="default/Fblike.template.php" destination="$themedir" />		
+		<require-dir name="default/languages" destination="$themedir" />
+		<require-dir name="default/scripts" destination="$themedir" />
+		<require-dir name="default/images" destination="$themedir" />
+		<require-dir name="default/css" destination="$themedir" />
+		<database>install_db.php</database>
+		<code>hooks.php</code>
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">modifications.xml</modification>
+		<code>hooks.php</code>
+		<modification type="file" reverse="true">modifications.xml</modification>		
+		<remove-file name="$sourcedir/fblikesAjax.php.php" />
+		<remove-file name="$sourcedir/Fblike-hooks.php.php" />
+		<remove-file name="$languagedir/Fblike.english.php" />
+		<remove-file name="$themedir/scripts/fblikes.js" />	
+		<remove-file name="$themedir/css/fblike.css" />			
+		<remove-file name="$themedir/images/bbc/fblike.gif" />
+		<remove-file name="$themedir/Fblike.template.php" />
+	</uninstall>
+</package-info>
+

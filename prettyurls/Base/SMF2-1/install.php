@@ -53,6 +53,10 @@ $prettyFilters = array(
 				'RewriteRule ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/?$ ./index.php?pretty;board=$1.0 [L,QSA]',
 				'RewriteRule ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/([0-9]*)/?$ ./index.php?pretty;board=$1.$2 [L,QSA]',
 			),
+			'nginx' => array(
+				'rewrite ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/?$ "/index.php?pretty&board=$1.0" last;',
+				'rewrite ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/([0-9]*)/?$ "/index.php?pretty&board=$1.$2" last;',
+			),
 		),
 		'test_callback' => 'pretty_boards_test',
 		'title' => 'Boards',
@@ -69,6 +73,10 @@ $prettyFilters = array(
 			'rule' => array(
 				'RewriteRule ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/([-_!~*\'()$a-zA-Z0-9]+)/?$ ./index.php?pretty;board=$1;topic=$2.0 [L,QSA]',
 				'RewriteRule ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/([-_!~*\'()$a-zA-Z0-9]+)/([0-9]*|msg[0-9]*|new)/?$ ./index.php?pretty;board=$1;topic=$2.$3 [L,QSA]',
+			),
+			'nginx' => array(
+				'rewrite ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/([-_!~*\'()$a-zA-Z0-9]+)/?$ "/index.php?pretty&board=$1&topic=$2.0" last;',
+				'rewrite ^ROOTURL([-_!~*\'()$a-zA-Z0-9]+)/([-_!~*\'()$a-zA-Z0-9]+)/([0-9]*|msg[0-9]*|new)/?$ "/index.php?pretty&board=$1&topic=$2.$3" last;',
 			),
 		),
 		'test_callback' => 'pretty_topics_test',
@@ -97,7 +105,8 @@ $prettyFilters = array(
 		),
 		'rewrite' => array(
 			'priority' => 40,
-			'rule' => 'RewriteRule ^profile/([^/]+)/?$ ./index.php?pretty;action=profile;user=$1 [L,QSA]',
+			'rule' => 'RewriteRule ^profile/([^/]+)/?$ ./index.php?pretty;action=profile;user=$1 [L,QSA,B,BNP]',
+			'nginx' => 'rewrite ^profile/([^/]+)/?$ "/index.php?pretty;action=profile;user=$1" last;',
 		),
 		'test_callback' => 'pretty_profiles_test',
 		'title' => 'Profiles',
@@ -112,7 +121,7 @@ updateSettings(array(
 	'pretty_filters' => serialize($prettyFilters),
 	'pretty_root_url' => $pretty_root_url,
 	'queryless_urls' => 0,
-	'pretty_bufferusecache' => 0,
+	'pretty_bufferusecache' => 1,
 ));
 
 //	Run maintenance

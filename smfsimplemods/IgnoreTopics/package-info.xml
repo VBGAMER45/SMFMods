@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Ignore Topics</name>
+	<id>karlbenson:ignoretopics</id>
+	<type>modification</type>
+	<version>2.4</version>
+
+	<install for="2.0 RC5 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<database>install.php</database>
+		<modification>install_2.xml</modification>
+		<require-file name="IgnoreTopics.php" destination="$sourcedir" />
+		<redirect url="$scripturl?action=admin;area=manageboards;sa=settings;" timeout="3000">redirect.txt</redirect>
+	</install>
+
+	<uninstall for="2.0 RC5 - 2.99.99">
+		<modification reverse="true">install_2.xml</modification>
+		<remove-file name="$sourcedir/IgnoreTopics.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<!--// Install for SMF 2.0 RC2 (and above) versions only //-->
+	<install for="2.0 RC4, 2.0 RC5">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<code>install.php</code>
+		<modification>install_2_rc4.xml</modification>
+		<require-file name="IgnoreTopics.php" destination="$sourcedir" />
+		<redirect url="$scripturl?action=admin;area=manageboards;sa=settings;" timeout="3000">redirect.txt</redirect>
+	</install>
+	
+	<!--// Uninstall for SMF 2.0 RC2 (and above) versions only //-->
+	<uninstall for="2.0 RC4, 2.0 RC5">
+		<modification reverse="true">install_2_rc4.xml</modification>
+		<remove-file name="$sourcedir/IgnoreTopics.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<!--// Install for SMF 2.0 RC2 (and above) versions only //-->
+	<install for="SMF 2.0 RC3">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<code>install.php</code>
+		<modification>install_2_rc3.xml</modification>
+		<require-file name="IgnoreTopics.php" destination="$sourcedir" />
+		<redirect url="$scripturl?action=admin;area=manageboards;sa=settings;" timeout="3000">redirect.txt</redirect>
+	</install>
+	
+	<!--// Uninstall for SMF 2.0 RC2 (and above) versions only //-->
+	<uninstall for="SMF 2.0 RC3">
+		<modification reverse="true">install_2_rc3.xml</modification>
+		<remove-file name="$sourcedir/IgnoreTopics.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+
+</package-info>

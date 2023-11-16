@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:Reason_For_Delete</id>
+	<name>Reason For Delete</name>
+	<version>1.0</version>
+	<type>modification</type>
+	
+	<install for="2.0 - 2.0.99">
+		<redirect url="?action=admin;area=reasonfordelete">redirect.txt</redirect>
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>modifications.xml</modification>
+		<modification>languages.xml</modification>
+		<modification>languages-utf8.xml</modification>
+		<require-file name="Reasonfordelete.php" destination="$sourcedir" />
+		<require-file name="Reasonfordelete.template.php" destination="$themedir" />
+        <require-file name="del.png" destination="$imagesdir/buttons" />		
+		<require-file name="edit.png" destination="$imagesdir/buttons" />		
+		<database>install_db.php</database>				
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">modifications.xml</modification>
+		<modification type="file" reverse="true">languages.xml</modification>
+		<modification type="file" reverse="true">languages-utf8.xml</modification>
+		<remove-file name="$sourcedir/Reasonfordelete.php" />
+		<remove-file name="$themedir/Reasonfordelete.template.php" />		
+		<remove-file name="$imagesdir/buttons/del.png" />		
+		<remove-file name="$imagesdir/buttons/edit.png" />		
+	</uninstall>
+</package-info>
+

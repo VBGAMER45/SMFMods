@@ -1266,11 +1266,10 @@ echo '
 				}
 			}
 
-			// Override on the onload function
-			window.onload = function ()
-			{
-				ArticlesCurrentVersion();
-			}
+			document.addEventListener(\'DOMContentLoaded\', function(event) {
+			ArticlesCurrentVersion();
+			});
+
 			</script>
 
 			</td>

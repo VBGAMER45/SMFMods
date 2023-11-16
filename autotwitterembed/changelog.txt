@@ -1,3 +1,6 @@
+4.0.1
++Support x.com links
+
 3.0
 +Added support for twitter urls with data after the ? sign thanks to live627
 
@@ -11,4 +14,4 @@
 !Updated jquery library to use https
 
 1.0
-Intial Release!
+Initial Release!

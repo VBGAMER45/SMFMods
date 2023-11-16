@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vicram10:GoogAd</id>
+<version>1.4</version>
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="before"><![CDATA[// 'shout' => array($txt['shout']),]]></search>
+		<add><![CDATA[
+						'googad' => array($txt['googad_title']),
+						]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManageSettings.php">
+	<operation>
+		<search position="after"><![CDATA[// Mod authors, once again, if you have a whole section to add do it AFTER this line, and keep a comma at the end.]]></search>
+		<add><![CDATA['googad' => 'ShowGoogAd',		
+		]]></add>
+	</operation>
+		<operation>
+			<search position="before"><![CDATA[		'description' => $txt['modification_settings_desc'],
+		'tabs' => array(
+			'general' => array(
+			),
+]]></search>
+			<add><![CDATA[			'googad' => array(
+			),
+]]></add>
+		</operation>	
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Start Googad Mod
+function ShowGoogAd($return_config = false)
+{
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings, $boarddir, $sourcedir;
+
+	$config_vars = array(
+		array('check', 'googad_enable', 'subtext' => $txt['googad_description']),
+		array('large_text', 'googad_code', 'size' => 8, 'subtext' => $txt['googad_code_subtext']),
+		array('check', 'googad_guest', 'subtext' => $txt['googad_guest_subtext']),		
+		array('select', 'googad_float', 'subtext' => $txt['googad_float_subtext'], array('left' => $txt['googad_float_left'], 'right' => $txt['googad_float_right'])),		
+		array('check', 'googad_show', 'subtext' => $txt['googad_show_subtext']),				
+	);
+
+	if ($return_config)
+		return $config_vars;
+
+	$context['post_url'] = $scripturl . '?action=admin;area=modsettings;save;sa=googad';
+	$context['settings_title'] = $txt['googad_title2'];
+
+	// Saving?
+	if (isset($_GET['save']))
+	{
+		checkSession();
+		$save_vars = $config_vars;
+		saveDBSettings($save_vars);
+		redirectexit('action=admin;area=modsettings;sa=googad');
+	}
+
+	prepareDBSettingContext($config_vars);
+}
+//End Googad Mod
+
+]]></add>
+		</operation>			
+</file>
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="after"><![CDATA[// Compose the memory eat- I mean message array.]]></search>
+		<add><![CDATA[
+	//Start GoogAd
+	$can_view = !empty($modSettings['googad_guest']) ? $user_info['is_guest'] : ($user_info['is_guest'] || !$user_info['is_guest']);
+	if (!empty($modSettings['googad_enable']) && $can_view && (!isset($_REQUEST['wap']) && !isset($_REQUEST['wap2']) && !isset($_REQUEST['imode'])))
+	{
+		//only in first topic
+		if(!empty($modSettings['googad_show']))
+		{
+			if($message['id_msg'] == $context['first_message'])
+				$message['body'] = '<div style="padding-right:10px;float:'. $modSettings['googad_float'] .'">'. $modSettings['googad_code'] .'</div>'. $message['body'];
+		}else{
+			$message['body'] = '<div style="padding-right:10px;float:'. $modSettings['googad_float'] .'">'. $modSettings['googad_code'] .'</div>'. $message['body'];
+		}
+	}
+	//End GoogAd
+	
+]]></add>
+	</operation>
+</file>
+</modification>

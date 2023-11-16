@@ -5,7 +5,7 @@
 	<id>vbgamer45:LoginSecurity</id>
 	<name>Login Security</name>
 	<type>modification</type>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 
 	<install for="1.1 - 1.1.99">
 		<redirect url="?action=featuresettings;sa=loginsecurity">redirect.txt</redirect>

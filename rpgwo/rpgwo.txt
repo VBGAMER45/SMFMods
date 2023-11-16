@@ -1,0 +1,20 @@
+CREATE TABLE rpgwoforums.`rpgwo_servers` (
+  `ID_SERVER` int(11) NOT NULL AUTO_INCREMENT,
+  `title` tinytext,
+  `ID_MEMBER` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  
+  enabled tinyint(1) default 0,
+  server_ip varchar(25),
+  server_port int(5) default 0,
+  server_version tinyint(1) default 0,
+  server_updateurl varchar(255),
+  
+  server_players_online int(5) default 0,
+  server_api_key varchar(255),
+  
+
+
+  PRIMARY KEY (`ID_SERVER`),
+  KEY `ID_MEMBER` (`ID_MEMBER`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+

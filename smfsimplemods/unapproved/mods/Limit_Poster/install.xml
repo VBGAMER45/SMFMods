@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:LimitPosters</id>
+	<name>Limit Posters</name>
+	<version>1.0</version>
+    <type>modification</type>
+
+<file name="$sourcedir/ScheduledTasks.php">
+    <operation>
+		<search position="end" />
+			<add><![CDATA[
+function scheduled_limit_posters()
+{
+	global $txt, $sourcedir, $scripturl, $smcFunc;
+	
+	$inforows = array();
+	$request = $smcFunc['db_query']('', "
+					SELECT mg.limit_posters, mg.id_group, m.id_group, m.id_member, m.id_post_group
+					FROM {db_prefix}membergroups AS mg
+					INNER JOIN {db_prefix}members AS m ON (mg.id_group = CASE WHEN m.id_group = 0 THEN m.id_post_group ELSE m.id_group END)",
+					array()					
+					);
+		
+	 while($row = $smcFunc['db_fetch_assoc']($request))
+	 {
+		$id_member = $row['id_member'];
+		$limit_posters = !empty($row['limit_posters']) ? $row['limit_posters'] : -1 ; //Damos los puntos si tiene grupo especial por ese y sino por conteo :P
+		
+		$smcFunc['db_query']('', '
+		UPDATE {db_prefix}members
+		SET limit_posts = {int:limit}
+		WHERE id_member = {int:id_member}',
+		array(
+			'limit' => $limit_posters,
+			'id_member' => $id_member,
+			)
+		);
+	 }	 
+	$smcFunc['db_free_result']($request);
+			
+}
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/ManageMembergroups.template.php">
+    <operation>
+		<search position="before"><![CDATA[<input type="text" name="max_messages" id="max_messages_input" value="', $context['group']['id'] == 1 ? 0 : $context['group']['max_messages'], '" size="6"', $context['group']['id'] == 1 ? ' disabled="disabled"' : '', ' class="input_text" />
+						</dd>]]></search>
+			<add><![CDATA[
+						<dt>
+							<label for="limit_posters_input"><strong>', $txt['membergroups_limit_posters'], ':</strong></label><br />
+							<span class="smalltext">', $txt['membergroups_limit_posters_note'], '</span>
+						</dt>
+						<dd>
+							<input type="text" name="limit_posters" id="limit_posters" value="', $context['group']['id'] == 1 ? 0 : empty($context['group']['limit_posters']) ? -1 : $context['group']['limit_posters'], '" size="6"', $context['group']['id'] == 1 ? ' disabled="disabled"' : '', ' class="input_text" />
+						</dd>>]]></add>
+	</operation>
+	
+</file>
+
+<file name="$sourcedir/ManageMembergroups.php">
+    <operation> 
+		<search position="before"><![CDATA['group_type' => 'int',]]></search>
+			<add><![CDATA[ 'limit_posters' => 'int',]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA[, $_POST['group_type'],]]></search>
+			<add><![CDATA[ (!empty($_POST['limit_posters']) ? (int) $_POST['limit_posters'] : 0),]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA[max_messages = {int:max_messages},
+						stars = {string:stars}]]></search>
+			<add><![CDATA[,
+						limit_posters = {int:limit_posters}]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA['stars' => $group_info['stars'],]]></search>
+			<add><![CDATA[
+						'limit_posters' => $group_info['limit_posters'],]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA[// Set variables to their proper value.]]></search>
+			<add><![CDATA[
+		$_POST['limit_posters'] = isset($_POST['limit_posters']) ? (int) $_POST['limit_posters'] : 0;]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA[, online_color = {string:online_color},]]></search>
+			<add><![CDATA[ limit_posters = {int:limit_posters},]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA['max_messages' => $_POST['max_messages'],]]></search>
+			<add><![CDATA[
+				'limit_posters' => $_POST['limit_posters'],]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA[hidden, id_parent]]></search>
+			<add><![CDATA[, limit_posters]]></add>
+	</operation>
+	
+	<operation>
+		<search position="before"><![CDATA['name' => $row['group_name'],]]></search>
+			<add><![CDATA[
+		'limit_posters' => $row['limit_posters'],]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Load.php">
+    <operation>
+		<search position="before"><![CDATA['passwd' => isset($user_settings['passwd']) ? $user_settings['passwd'] : '',]]></search>
+			<add><![CDATA[
+		'limit_posts' => empty($user_settings['limit_posts']) ? 0 : $user_settings['limit_posts'],]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[mem.time_offset, mem.show_online,]]></search>
+			<add><![CDATA[ mem.limit_posts,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[mem.smiley_set, mem.show_online,]]></search>
+			<add><![CDATA[ mem.limit_posts,]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[mem.lngfile, mem.id_group';]]></search>
+			<add><![CDATA[mem.lngfile, mem.id_group, mem.limit_posts';]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['ip2' => htmlspecialchars($profile['member_ip2']),]]></search>
+			<add><![CDATA[
+		'limit_posts' => $profile['limit_posts'],]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Post.php">
+    <operation>
+		<search position="replace"><![CDATA[loadLanguage('Post');]]></search>
+			<add><![CDATA[loadLanguage('Post');
+
+	//Limit Posters Starts	
+	if($user_info['limit_posts'] == 0)
+	fatal_lang_error('limit_posters_error', false);
+	//Limit Posters End]]></add>
+	</operation>
+	
+	<operation>
+		<search position="replace"><![CDATA[		createPost($msgOptions, $topicOptions, $posterOptions);]]></search>
+			<add><![CDATA[		//Limit Posters Starts - More Security
+		if($user_info['limit_posts'] == 0)
+		fatal_lang_error('limit_posters_error', false);
+		//Limit Posters End - More Security
+		
+		createPost($msgOptions, $topicOptions, $posterOptions);]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[$topic = $topicOptions['id'];]]></search>
+			<add><![CDATA[$topic = $topicOptions['id'];
+		
+		//Limit Posters Starts - Msg Posted, -1 Limit
+		$smcFunc['db_query']('', "
+			UPDATE {db_prefix}members
+			SET limit_posts = limit_posts - 1
+			WHERE id_member = {int:user}
+			AND limit_posts NOT IN (-1, 0)
+			LIMIT 1",
+			array(
+				'user' => $user_info['id'],
+			));
+		//Limit Posters End	]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="before"><![CDATA[function template_main()
+{]]></search>
+			<add><![CDATA[
+	global $user_info;]]></add>
+		</operation>
+        <operation>
+			<search position="before"><![CDATA[if ($context['can_reply'] && !empty($options['display_quick_reply'])]]></search>
+			<add><![CDATA[ && $user_info['limit_posts'] != 0]]></add>
+		</operation>
+		  
+</file>
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+		<search position="before"><![CDATA[<dd>', $context['member']['posts'], ' (', $context['member']['posts_per_day'], ' ', $txt['posts_per_day'], ')</dd>';]]></search>
+			<add><![CDATA[
+
+	if ($context['user']['is_owner'] || $context['user']['is_admin'])
+		echo '
+					<dt>', $txt['profile_limit_post'], ': </dt>
+					<dd>', ($context['member']['limit_posts'] == -1) ? $txt['profile_limit_post_unlimited'] : $context['member']['limit_posts'], '</dd>';]]></add>
+	</operation>
+</file>	
+
+<file name="$sourcedir/Profile-Modify.php">
+	<operation>
+		<search position="after"><![CDATA['passwrd1' => array(]]></search>
+			<add><![CDATA[		
+		'limit_posts' => array(
+			'type' => 'int',
+			'label' => $txt['profile_limit_post'],
+			'subtext' => $txt['profile_limit_post_desc'],
+			'size' => 20,
+			'permission' => 'moderate_forum',
+			'input_validate' => create_function('&$value', '
+				$value = $value != \'\' ? strtr($value, array(\',\' => \'\', \'.\' => \'\', \' \' => \'\')) : 0;
+				return true;
+			'),
+		),
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['date_registered', 'posts',]]></search>
+			<add><![CDATA[ 'limit_posts', ]]></add>
+	</operation>
+</file>	
+
+</modification>

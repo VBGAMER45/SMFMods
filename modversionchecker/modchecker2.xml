@@ -43,6 +43,46 @@ $txt['scheduled_task_desc_scheduled_modvercheck'] = 'Vergelijkt de geÃ¯nstalle
 	</operation>
 </file>
 
+<file name="$languagedir/Modifications.russian.php"  error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Mod Version Checker
+$txt['modvc_checkforupdates'] = 'Проверить обновления модов';
+$txt['modvc_modificationsupdates'] = 'Обновления модов';
+$txt['modvc_downloadupdate'] = '[Загрузить обновление]';
+$txt['modvc_oldversion'] = 'Установленная версия';
+$txt['modvc_latestversion'] = 'Последняя версия';
+$txt['modvc_modsitelink'] = 'Ссылка';
+$txt['modvc_visitmod'] = '[Перейти]';
+$txt['modvc_noupdatesfound'] = 'Все моды актуальных версий! Обновлений не найдено!';
+$txt['scheduled_task_scheduled_modvercheck'] = 'Проверка обновлений модов';
+$txt['scheduled_task_desc_scheduled_modvercheck'] = 'Сравнение версий установленных модов с версиями указанными на simplemachines.org';
+// END Mod Version Checker
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.polish.php"  error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Mod Version Checker
+$txt['modvc_checkforupdates'] = 'Sprawdź aktualizacje modyfikacji';
+$txt['modvc_modificationsupdates'] = 'Aktualizacje modyfikacji';
+$txt['modvc_downloadupdate'] = '[Pobierz aktualizację]';
+$txt['modvc_oldversion'] = 'Zainstalowana wersja';
+$txt['modvc_latestversion'] = 'Najnowsza wersja';
+$txt['modvc_modsitelink'] = 'Link do strony modyfikacji';
+$txt['modvc_visitmod'] = '[Przejdź do modyfikacji]';
+$txt['modvc_noupdatesfound'] = 'Wszystkie modyfikacje są aktualne! Nie znaleziono aktualizacji modyfikacji!';
+$txt['scheduled_task_scheduled_modvercheck'] = 'Sprawdź aktualizacje modyfikacji';
+$txt['scheduled_task_desc_scheduled_modvercheck'] = 'Porównuje zainstalowane wersje modyfikacji z najnowszymi wersjami modyfikacji znalezionymi na simplemachines.org';
+// END Mod Version Checker
+]]></add>
+	</operation>
+</file>
+
 <file name="$sourcedir/ScheduledTasks.php">
 		<operation>
 			<search position="end" />

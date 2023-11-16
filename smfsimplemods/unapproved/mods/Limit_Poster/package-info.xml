@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:LimitPosters</id>
+	<name>Limit Posters</name>
+	<version>1.1</version>
+    <type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>install.xml</modification>
+		<modification>languages.xml</modification>	
+		<database>install_db.php</database>	
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">install.xml</modification>
+		<modification type="file" reverse="true">languages.xml</modification>
+		<database>unistall_db.php</database>	
+	</uninstall>
+	
+</package-info>

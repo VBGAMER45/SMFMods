@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+    <id>Cesar:Yellow</id>
+    <name>Yellow Emoticons</name>
+    <version>1.0</version>
+	<type>modification</type>
+	<install for="2.0 - 2.0.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+	    <require-dir name="yellow" destination="$smileysdir" />
+    </install>
+  
+    <uninstall for="2.0 - 2.0.99">
+        <remove-dir name="$smileysdir/yellow" />
+    </uninstall>  
+</package-info>

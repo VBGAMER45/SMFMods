@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:JumpToSelectBoard</id>
+	<name>JumpToSelectBoard By Smfsimple.com</name>
+	<version>1.1</version>	
+	<type>modification</type>
+	<install for="2.0 - 2.99.99">
+		<require-file name="sources/JumpToSelectBoard.php" destination="$sourcedir" />
+		<require-file name="default/JumpToSelectBoard.template.php" destination="$themedir" />
+		<code>hooks.php</code>
+	</install>
+	<uninstall for="2.0 - 2.99.99">
+		<remove-file name="$sourcedir/JumpToSelectBoard.php" />
+		<remove-file name="$themedir/JumpToSelectBoard.template.php" />
+		<code>hooks.php</code>
+	</uninstall>
+</package-info>
+

@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:ProfileComments'</id>
+<version>2.0</version>
+
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+
+//Begin Profile Comments Text Strings
+
+// Permissions
+$txt['permissiongroup_pcomments'] = 'Profile Comments';
+$txt['permissiongroup_simple_pcomments'] = 'Profile Comments';
+$txt['permissionname_pcomments_view'] = 'View Comments';
+$txt['permissionhelp_pcomments_view'] = 'If the user is allowed to view user comments.';
+$txt['permissionname_pcomments_add'] = 'Allow add Comments';
+$txt['permissionhelp_pcomments_add'] = 'If the user is allowed to enter comments in others profile.';
+$txt['permissionname_pcomments_edit_own'] = 'Edit own comment.';
+$txt['permissionhelp_pcomments_edit_own'] = 'Allows the user to edit their own comments.';
+$txt['permissionname_pcomments_edit_any'] = 'Edit any comment';
+$txt['permissionhelp_pcomments_edit_any'] = 'Allows the user to edit any comments.';
+$txt['permissionname_pcomments_delete_own'] = 'Delete own comment.';
+$txt['permissionhelp_pcomments_delete_own'] = 'Allows the user to delete their own comments.';
+$txt['permissionname_pcomments_delete_any'] = 'Delete any comment';
+$txt['permissionhelp_pcomments_delete_any'] = 'Allows the user to delete any comments.';
+$txt['permissionname_pcomments_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_pcomments_autocomment'] = 'Comments do not need to wait for approval.';
+$txt['cannot_pcomments_add'] = 'You are not allowed to add comments.';
+$txt['cannot_pcomments_edit_own'] = 'You are not allowed to edit your own comment.';
+$txt['cannot_pcomments_edit_any'] = 'You are not allowed to edit any comment.';
+$txt['cannot_pcomments_delete_own'] = 'You are not allowed to delete own comment.';
+$txt['cannot_pcomments_delete_any'] = 'You are not allowed to delete any comment.';
+$txt['pcomments_admin'] = 'Profile Comments';
+// Profile Comments Profile.template.php text strings
+$txt['pcomments_usercomments'] = 'User Comments';
+$txt['pcomments_editcomment'] = '[Edit Comment]';
+$txt['pcomments_delcomment'] = '[Delete Comment]';
+$txt['pcomments_addcomment'] = 'Add Comment';
+$txt['pcomments_text_pages'] = 'Pages: ';
+$txt['pcomments_text_guest'] = 'Guest';
+
+$txt['pcomments_txt_gender'] = 'Gender';
+$txt['pcomments_txt_posts'] = 'Posts';
+$txt['pcomments_txt_view_profile'] = 'View Profile';
+$txt['pcomments_txt_www'] = 'WWW';
+$txt['pcomments_txt_profile_email'] = 'Email';
+// END Profile Comments Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="after"><![CDATA[				'current_theme' => array(
+					'label' => $txt['theme_current_settings'],]]></search>
+		<add><![CDATA[
+				'comment' => array(
+					'label' => $txt['pcomments_admin'],
+					'file' => 'ProfileComments2.php',
+					'function' => 'CommentsMain',
+					'custom_url' => $scripturl . '?action=admin;area=comment;sa=admin',
+					'icon' => 'server.gif',
+					'subsections' => array(),
+
+
+
+				),
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$themedir/Profile.template.php">
+	<operation>
+	<search position="replace"><![CDATA[}
+
+// Template for showing all the posts of the user, in chronological order.]]></search>
+	<add><![CDATA[
+
+	// Start Profile Comments Mod
+	if (allowedTo('pcomments_view'))
+	{
+		echo '
+		<h3 class="catbg"><span class="left"></span><span class="right"></span>
+				',$txt['pcomments_usercomments'],'
+	</h3><div class="windowbg2"><table align="center" width="100%">';
+
+
+		global $sourcedir, $smcFunc;
+		require_once($sourcedir . '/ProfileComments2.php');
+		$context['start'] = (int) $_REQUEST['start'];
+
+		$dbresult = $smcFunc['db_query']('', "
+		SELECT
+			COUNT(*) AS total
+		FROM {db_prefix}profile_comments
+		WHERE COMMENT_MEMBER_ID = " . $context['member']['id'] . " AND approved = 1");
+		$row = $smcFunc['db_fetch_assoc']($dbresult);
+		$total =  $row['total'];
+
+		$smcFunc['db_free_result']($dbresult);
+
+
+		echo '<tr><td colspan="2" class="catbg"><a href="', $scripturl, '?action=comment;sa=add;u=' . $context['member']['id']  . '">',$txt['pcomments_addcomment'],'</a></td></tr>';
+		// Loop though all the comments
+		$dbresult = $smcFunc['db_query']('', "SELECT p.ID_COMMENT, p.ID_MEMBER, p.comment, p.subject, p.date, m.real_name, p.COMMENT_MEMBER_ID
+		FROM {db_prefix}profile_comments as p
+		LEFT JOIN {db_prefix}members AS m ON (p.ID_MEMBER = m.ID_MEMBER)
+		WHERE  p.COMMENT_MEMBER_ID = " . $context['member']['id'] . " AND p.approved = 1 ORDER BY p.ID_COMMENT DESC  LIMIT $context[start],10");
+		$comment_count = $smcFunc['db_affected_rows']();
+		while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+		{
+			echo '<tr class="catbg"><td colspan="2">' . $row['subject'] . ' | '  . timeformat($row['date']) . '</td></tr>';
+
+			echo '<tr>
+			<td width="15%" valign="top"  class="windowbg2">';
+
+			if ($row['real_name'] != '')
+			{
+
+				// Display the users avatar
+				 $memCommID = $row['ID_MEMBER'];
+				if ($row['real_name'])
+				{
+				 $memCommID = $row['ID_MEMBER'];
+				 loadMemberData($memCommID);
+				 loadMemberContext($memCommID);
+
+				ShowUserBox($memCommID);
+
+
+				 }
+			}
+			else
+				echo $txt['pcomments_text_guest'] . '<br />';
+
+			echo '</td>
+
+			<td  width="85%" valign="top"  class="windowbg">' . parse_bbc($row['comment']) . '<br />';
+			if (allowedTo('pcomments_edit_any') || (allowedTo('pcomments_edit_own') && $row['ID_MEMBER'] == $user_info['id']))
+			{
+				echo '<a href="', $scripturl, '?action=comment;sa=edit&id=' . $row['ID_COMMENT'] . '">',$txt['pcomments_editcomment'],'</a>';
+			}
+			if (allowedTo('pcomments_delete_any') || (allowedTo('pcomments_delete_own') && $row['ID_MEMBER'] == $user_info['id']))
+			{
+				echo '&nbsp;<a href="', $scripturl, '?action=comment;sa=delete&id=' . $row['ID_COMMENT'] . '">',$txt['pcomments_delcomment'],'</a>';
+			}
+
+
+			echo '</td>';
+			echo '</tr>';
+		}
+		$smcFunc['db_free_result']($dbresult);
+		if ($comment_count != 0)
+			echo '<tr><td colspan="2" class="catbg"><a href="', $scripturl, '?action=comment;sa=add;u=' . $context['member']['id']  . '">',$txt['pcomments_addcomment'],'</a></td></tr>';
+
+
+		if ($total > 0)
+		{
+			echo '<tr class="titlebg">
+					<td align="left" colspan="2">
+					' . $txt['pcomments_text_pages'];
+
+
+					$context['page_index'] = constructPageIndex($scripturl . '?action=profile;u=' . $context['member']['id'] , $_REQUEST['start'], $total, 10);
+
+					echo $context['page_index'];
+
+			echo '
+					</td>
+				</tr>';
+		}
+
+		echo '</table>
+		</div>';
+
+	}
+	// End Profile Comments Mod
+
+
+}
+
+// Template for showing all the posts of the user, in chronological order.]]></add>
+</operation>
+
+</file>
+
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'collapse' => array('BoardIndex.php', 'CollapseCategory'),]]></search>
+		<add><![CDATA[
+		'comment' => array('ProfileComments2.php', 'CommentsMain'),]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA[	$groupLevels['global']['standard'] = array_merge($groupLevels['global']['restrict'], array(]]></search>
+		<add><![CDATA[
+		'pcomments_view',
+		'pcomments_add',
+		'pcomments_edit_own',
+		'pcomments_edit_any',
+		'pcomments_delete_own',
+		'pcomments_delete_any',
+		'pcomments_autocomment',]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[	$permissionList = array(
+		'membergroup' => array(]]></search>
+		<add><![CDATA[
+			'pcomments_view' => array(false, 'pcomments', 'pcomments'),
+			'pcomments_add' => array(false, 'pcomments', 'pcomments'),
+			'pcomments_edit_own' => array(false, 'pcomments', 'pcomments'),
+			'pcomments_edit_any' => array(false, 'pcomments', 'pcomments'),
+			'pcomments_delete_own' => array(false, 'pcomments', 'pcomments'),
+			'pcomments_delete_any' => array(false, 'pcomments', 'pcomments'),
+			'pcomments_autocomment' => array(false, 'pcomments', 'pcomments'),]]></add>
+	</operation>
+</file>
+</modification>

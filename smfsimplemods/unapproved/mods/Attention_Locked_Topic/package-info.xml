@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:AttentionLockedTopic</id>
+	<name>Attention Locked Topic</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="2.0 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file" format="xml">install.xml</modification>
+		<modification type="file" format="xml">languages.xml</modification>
+
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" format="xml" reverse="true">install.xml</modification>
+		<modification type="file" format="xml" reverse="true">languages.xml</modification>
+	</uninstall>
+</package-info>

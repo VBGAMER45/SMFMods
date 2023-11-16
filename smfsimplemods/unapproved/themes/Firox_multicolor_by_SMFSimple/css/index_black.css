@@ -1,0 +1,19 @@
+.navigate_section ul li a {color: #1D1F1D;}
+.navigate_section ul li.last a {color: #1D1F1D;}
+
+#main_menu {background: #1D1F1D url(../images/theme/imgtit.png) no-repeat;	background-size: 100% 100%;}
+
+div.cat_bar {background: #1D1F1D url(../images/theme/imgtit.png) 100% 100%;}
+
+#footer_section {color: #111;}
+#footer_section a {color: #111;}
+
+table.table_grid thead tr.catbg th {background: url(../images/theme/imgtit.png) no-repeat scroll 0 0 / 100% 100% #1D1F1D;}
+
+div.title_bar { background: url(../images/theme/imgtit.png) no-repeat scroll 0 0 / 100% 100% #1D1F1D;}
+
+.titlebg, .titlebg2, tr.titlebg th, tr.titlebg td, tr.titlebg2 td { background: url(../images/theme/imgtit.png) no-repeat scroll 0 0 / 100% 100% #1D1F1D;}
+
+#admin_menu { background: url(../images/theme/imgtit.png) no-repeat scroll 0 0 / 100% 100% #1D1F1D;}
+
+#adm_submenus { background: url(../images/theme/imgtit.png) no-repeat scroll 0 0 / 100% 100% #1D1F1D;}

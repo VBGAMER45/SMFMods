@@ -1,0 +1,60 @@
+CueTableBBCode Mod v1.0.0
+-------------------------
+Author: vicram10
+
+Manual Installation / Instalacion Manual
+----------------------------------------
+
+En $sourcedir/Subs.php
+
+Search / Buscar:
+
+			array(
+				'tag' => 'white',
+				'before' => '<span style="color: white;">',
+				'after' => '</span>',
+			),
+
+
+Add After / Agregar Despues:
+
+			array(
+				'tag' => 'cuetable',
+				'type' => 'unparsed_equals',				
+				'before' => '<object classid="clsid:166B1BCA-3F9C-11CF-8075-444553540000" codebase="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm" width="900" height="540"><param name="src" value="http://cuetable.com/P/CueTable.dcr" /><param name="swRemote" value="swSaveEnabled="true" swVolume="false" swRestart="false" swPausePlay="false" swFastForward="false" swContextMenu="false" " /><param name="swStretchStyle" value="meet" /><param name="sw2" value="http://CueTable.com/P/?$1">',
+				'after' => '<param name="swStretchHAlign" value="Center" /><param name="swStretchVAlign" value="Top" /><embed src="http://cuetable.com/P/CueTable.dcr"  swstretchhalign="Center" swstretchvalign="Top"  width="900" height="540" sw2="http://CueTable.com/P/?$1" swremote="swSaveEnabled="true" swVolume="false" swRestart="false" swPausePlay="false" swFastForward="false" swContextMenu="false" " swstretchstyle="meet"
+ type="application/x-director" pluginspage="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"></embed>
+',
+			),
+
+			array(
+				'tag' => 'cuetable',
+				'type' => 'unparsed_content',
+				'content' => '<object classid="clsid:166B1BCA-3F9C-11CF-8075-444553540000" codebase="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm" width="900" height="540">  <param name="src" value="http://cuetable.com/P/CueTable.dcr" /><param name="swRemote" value="swSaveEnabled='.true.' swVolume='.false.' swRestart='.false.' swPausePlay='.false.' swFastForward='.false.' swContextMenu='.false.' " /><param name="swStretchStyle" value="meet" /><param name="sw2" value="$1"><param name="swStretchHAlign" value="Center" /><param name="swStretchVAlign" value="Top" /><embed src="http://cuetable.com/P/CueTable.dcr"  swstretchhalign="Center" swstretchvalign="Top"  width="900" height="540" sw2="$1" swremote="swSaveEnabled='.true.' swVolume='.false.' swRestart='.false.' swPausePlay='.false.' swFastForward='.false.' swContextMenu='.false.' " swstretchstyle="meet" type="application/x-director" pluginspage="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"></embed><NOEMBED><a href="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"><img src="http://cuetable.com/images/CueTableShockwaveMsg.jpg" width="900" height="540" border="0" /></a></NOEMBED>',
+			),
+
+
+En $themedir/Post.template.php
+
+Search / Buscar:
+
+			'list' => array('code' => 'list', 'before' => '[list]\n[li]', 'after' => '[/li]\n[li][/li]\n[/list]', 'description' => $txt[261]),
+
+Add After / Agrega Despues:
+
+			'cuetable' => array('code' => 'cuetable', 'before' => '[cuetable]', 'after' => '[/cuetable]', 'description' => $txt['cuetable']),			
+
+
+			En $themedir/languages/Modifications.TUIDIOMA.php
+
+Search / Buscar:
+
+?>
+
+Add Before / Agrega Antes:
+
+//Inicio Cuetable BBCode
+$txt['cuetable']= 'CueTable';
+//Fin Cuetable BBCode
+
+Upload / Subir cuetable.gif a Themes/tu_theme/images/bbc.

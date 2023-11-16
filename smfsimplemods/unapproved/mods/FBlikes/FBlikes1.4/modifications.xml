@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:Facebook_Likes_Hide</id>
+	<name>Facebook Likes Hide</name>
+	<version>1.4</version>
+<file name="$sourcedir/Post.php">
+	<operation>
+		<search position="before"><![CDATA[// Remove any nested quotes.]]></search>
+			<add><![CDATA[
+			//Facebook Likes Hide MOD START-
+			$row['body'] = preg_replace("/\[fblike\](.+?)\[\/fblike\]/i", "&nbsp;", $row['body']);
+			$row['body'] = preg_replace(array('~\n?\[fblike\].+?\[/fblike\]\n?~is', '~^\n~', '~\[/fblike\]~'), "&nbsp;", $row['body']);
+			//Facebook Likes Hide MOD END-]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$form_message = preg_replace('~<br ?/?' . '>~i', "\n", $form_message);]]></search>
+			<add><![CDATA[
+			//Facebook Likes Hide MOD START-
+			$form_message = preg_replace("/\[fblike\](.+?)\[\/fblike\]/i", "&nbsp;", $form_message);
+			$form_message = preg_replace(array('~\n?\[fblike\].+?\[/fblike\]\n?~is', '~^\n~', '~\[/fblike\]~'), "&nbsp;", $form_message);
+			//Facebook Likes Hide MOD END-]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/QueryString.php">
+	<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+	</operation>
+</file>
+</modification>

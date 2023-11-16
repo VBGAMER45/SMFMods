@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:TopicCountBasedGroups</id>
+	<name>Topic Count Based Groups</name>
+	<version>1.0</version>
+
+<!-- Change Post Count Based Groups to Topic Count Based Groups -->
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="after"><![CDATA[
+		updateMemberData($posterOptions['id'], array('posts' => '+'));]]></search>
+			<add><![CDATA[
+		$modSettings['postgroups_by_topic_abort_count'] = !$new_topic;]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[
+	case 'postgroups':]]></search>
+			<add><![CDATA[
+		// Abort recount with any "new post" (not new topic)
+		if (!empty($modSettings['postgroups_by_topic_abort_count']))
+			return;]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		// Set all membergroups from most posts to least posts.
+		$conditions = '';
+		foreach ($postgroups as $id => $min_posts)
+		{
+			$conditions .= '
+					WHEN posts >= ' . $min_posts . (!empty($lastMin) ? ' AND posts <= ' . $lastMin : '') . ' THEN ' . $id;
+			$lastMin = $min_posts;
+		}
+
+		// A big fat CASE WHEN... END is faster than a zillion UPDATE's ;).
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}members
+			SET id_post_group = CASE ' . $conditions . '
+					ELSE 0
+				END' . ($parameter1 != null ? '
+			WHERE ' . (is_array($parameter1) ? 'id_member IN ({array_int:members})' : 'id_member = {int:members}') : ''),
+			array(
+				'members' => $parameter1,
+			)
+		);]]></search>
+			<add><![CDATA[
+		// Set all membergroups from most posts to least posts.
+		$request = $smcFunc['db_query']('', '
+			SELECT t.id_member_started as id_member, COUNT(t.id_topic) AS topics
+			FROM {db_prefix}topics AS t
+				LEFT JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
+			WHERE b.count_posts = 0' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
+				AND t.id_board != {int:recycle_board}' : '') . ($parameter1 == null ? '
+				AND t.id_member_started <> 0' : '
+				AND t.id_member_started ' . (is_array($parameter1) ? 'IN ({array_int:members})' : '= {int:members}')) . '
+			GROUP BY t.id_member_started',
+			array('recycle_board' => $modSettings['recycle_board'], 'members' => $parameter1)
+		);
+		$conditions = '';
+		foreach ($postgroups as $id => $minPosts)
+		{
+			$conditions .= '
+					WHEN %1$d >= ' . $minPosts . (!empty($lastMin) ? ' AND %1$d <= ' . $lastMin : '') . ' THEN ' . $id;
+			$lastMin = $minPosts;
+		}
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			$conditions_t = sprintf($conditions, $row['topics']);
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}members
+				SET id_post_group = CASE ' . $conditions_t . '
+						ELSE 0
+					END
+				WHERE id_member = {int:members}',
+				array('members' => $row['id_member'])
+			);
+		}
+		$smcFunc['db_free_result']($request);]]></add>
+		</operation>
+	</file>
+
+<!-- Approve Post // for Recount the Groups Based only for Topics's author -->
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="before"><![CDATA[
+	$member_post_changes = array();]]></search>
+			<add><![CDATA[
+	$member_topic_changes = array();]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+			$topic_changes[$row['id_topic']]['approved'] = $approve ? 1 : 0;]]></search>
+			<add><![CDATA[
+			// Topic count for the user?
+			if ($row['id_member'] && empty($row['count_posts']))
+				$member_topic_changes[] = $row['id_member'];
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+			updateMemberData($id_member, array('posts' => 'posts ' . ($approve ? '+' : '-') . ' ' . $count_change));]]></search>
+			<add><![CDATA[
+		{
+			$modSettings['postgroups_by_topic_abort_count'] = !in_array($id_member, $member_topic_changes);
+			updateMemberData($id_member, array('posts' => 'posts ' . ($approve ? '+' : '-') . ' ' . $count_change));
+		}]]></add>
+		</operation>
+	</file>
+
+<!-- Update Topic Count Based Groups only for Topic's Starter -->
+	<file name="$sourcedir/MoveTopic.php">
+		<operation>
+			<search position="after"><![CDATA[
+			// The board we're moving from counted posts, but not to.]]></search>
+			<add><![CDATA[
+			// Update Topic Count Based Groups only for Topic's Starter
+			$modSettings['postgroups_by_topic_abort_count'] = $id_member_started != $id_member;]]></add>
+		</operation>
+	</file>
+
+<!-- Update Topic Count Based Groups only for Topic's Starter -->
+	<file name="$sourcedir/RemoveTopic.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// If the poster was registered and the board this message was on incremented]]></search>
+			<add><![CDATA[
+	// Update Topic Count Based Groups only for Topic's Starter
+	$modSettings['postgroups_by_topic_abort_count'] = $row['id_first_msg'] != $message;]]></add>
+		</operation>
+	</file>
+
+<!-- Maintenance // for Recount the Groups Based in Topics-->
+	<file name="$sourcedir/ManageMaintenance.php">
+		<operation>
+			<search position="before"><![CDATA[
+	updateStats('topic');]]></search>
+			<add><![CDATA[
+	updateStats('postgroups');]]></add>
+		</operation>
+	</file>
+
+<!-- Languaje // Auto, no change -->
+	<file name="$languagedir/ManageMembers.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$temp = array('membergroups_post', 'membergroups_new_board_post_groups', 'membergroups_group_type_post', 'membergroups_min_posts', 'membergroups_postgroups');
+
+foreach ($temp as $key)
+	if (isset($txt[$key]))
+		$txt[$key] = str_ireplace($txt['post'], $txt['topic'], $txt[$key]);
+
+unset($temp);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManageBoards.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$txt['mboards_groups_desc'] = str_ireplace($txt['post'], $txt['topic'], $txt['mboards_groups_desc']);
+$txt['mboards_groups_post_group'] = str_ireplace($txt['post'], $txt['topic'], $txt['mboards_groups_post_group']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManagePermissions.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$txt['permission_settings_enable_postgroups'] = str_ireplace($txt['post'], $txt['topic'], $txt['permission_settings_enable_postgroups']);
+$txt['permission_disable_postgroups_warning'] = str_ireplace($txt['post'], $txt['topic'], $txt['permission_disable_postgroups_warning']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Themes.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$txt['hide_post_group'] = str_ireplace($txt['post'], $txt['topic'], $txt['hide_post_group']);
+$txt['hide_post_group_desc'] = str_ireplace($txt['post'], $txt['topic'], $txt['hide_post_group_desc']);
+]]></add>
+		</operation>
+	</file>
+
+</modification>

@@ -25,6 +25,7 @@ $txt['smfcontact_errname'] = 'You need to enter your name.';
 $txt['smfcontact_errsubject'] = 'You need to enter a subject.';
 $txt['smfcontact_errmessage'] = 'You need to enter a message.';
 $txt['smfcontact_erremail'] = 'You need to enter your email address.';
+$txt['smfcontact_errbademail'] = 'You have not entered a valid email address.';
 $txt['smfcontact_titlesent'] = ' - Message sent.';
 $txt['smfcontact_form'] = 'Contact Page Form for ';
 $txt['smfcontact_formname'] = "Name: ";

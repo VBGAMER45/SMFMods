@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>SMFModdersTeam:IMGBBCBorderParameter</id>
+	<version>1.1</version>
+	<homepage>http://www.smfmodders.com/</homepage>
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[
+					'height' => array('optional' => true, 'value' => ' height="$1"', 'match' => '(\d+)'),
+]]></search>
+			<add><![CDATA[
+					// SMF Modders; IMG BBC Border Parameter
+					'border' => array('optional' => true, 'value' => ' style="border: $1px solid #000;"', 'match' => '(\d+)'),
+					// End SMF Modders; IMG BBC Border Parameter
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+				'content' => '<img src="$1" alt="{alt}"{width}{height} class="bbc_img resized" />',
+]]></search>
+			<add><![CDATA[
+				'content' => '<img src="$1" alt="{alt}"{width}{height}{border} class="resized" />',
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/css/index.css">
+		<operation>
+			<search position="before"><![CDATA[
+.bbc_img
+{
+	border: 0;
+}
+]]></search>
+			<add><![CDATA[
+.bbc_img
+{
+	/* border: 0; */
+}
+]]></add>
+		</operation>
+	</file>
+</modification>

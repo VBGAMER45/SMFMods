@@ -1,0 +1,146 @@
+/* Styles for SMFSimple Rewards System */
+#ssrs_cont {
+background:#111;
+width:70%;
+margin: 0 auto;
+padding:20px;
+border-radius:10px;
+box-shadow: 1px 1px 1px black;
+}
+
+.ssrs_title {
+font-size:18px;
+color:#B51616;
+}
+
+.ssrs_title2 {
+font-size:17px;
+color:#EAAA15;
+}
+
+.ssrs_hr {
+border-top:1px dashed #333;
+box-shadow: 5px 1px 10px #000;
+background:000;
+}
+
+.ssrs_letter_option {
+color:#c0c0c0;
+font-family: arial;
+font-size:13px;
+}
+
+.ssrs_letter_dio {
+color:#606060;
+font-family: arial;
+font-size:14px;
+}
+
+.ssrs_box_display {
+background: #000;
+padding: 5px;
+border-radius:6px;
+}
+
+.ssrs_no_points {
+color:#999;
+float:left;
+font-family:georgia;
+font-size:15px;
+}
+
+.ssrs_points_added {
+color:#4AC948;
+float:left;
+font-family:georgia;
+font-size:15px;
+}
+
+.ssrs_points_dar {
+color:#999;
+float:left;
+font-family:georgia;
+font-size:17px;
+}
+
+.ssrs_no_vot_you_mismo_tema {
+color:#C21212;
+float:left;
+font-family:georgia;
+font-size:15px;
+}
+
+
+.ssrs_point_style span:hover {
+color: #DC1F1F;
+
+}
+
+.ssrs_point_style {
+font-size:13px;
+padding: 4px 10px 4px 10px;
+text-decoration: none;
+color: #666;
+border-radius: 0px;
+cursor: pointer;
+background: #D1D1D1 url(../images/SSRS_images/fon_bot.png);
+background-size: 100% 100%;
+border-radius: 6px;
+margin: 1px;
+}
+
+.ssrs_point_style_dar {
+font-size:16px;
+background: #76211B;
+text-decoration: none;
+color: #EDE922;
+font-family:georgia;
+margin:1px;
+border-radius: 6px;
+}
+
+.ssrs_point_im {
+float:right;
+font-size:19px;
+font-weight: bold;
+font-family: georgia;
+}
+
+.ssrs_points_yes {
+color:#666;
+float:left;
+font-family:georgia;
+font-size:15px;
+}
+
+.ssrs_red_box {
+background: #E87373;
+border-radius:6px;
+width:90%;
+margin:0 auto;
+border: 2px dashed #E40C0C;
+padding: 10px;
+color: #f1f1f1;
+box-shadow: 5px 1px 10px #000;
+}
+
+.ssrs_red_box_title {
+color: #EEE720;
+font-size:15px;
+}
+
+.ssrs_pasos_box_red a {
+color: yellow;
+text-decoration: none;
+}
+
+#top_posters2 {
+	float: left;
+	width: 49.5%;
+}
+
+#top_boards2
+{
+	float: right;
+	width: 49.5%;
+}

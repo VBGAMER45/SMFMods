@@ -1,0 +1,2 @@
+Global Message Box V1 fue Instalado correctamente! The instalation was succesfull!!<br>
+SMFSimple.com!

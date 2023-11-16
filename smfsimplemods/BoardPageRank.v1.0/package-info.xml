@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>BoardPageRank</name>
+	<id>vicram10:BoardPageRank</id>
+	<type>modification</type>
+	<version>1.0</version>
+	<install>
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification type="file">Board.PageRank.v1.0.xml</modification>
+		<require-dir name="board-pageranks" destination="$imagesdir" />		
+		
+	</install>
+	<uninstall>
+		<modification type="file" reverse="true">Board.PageRank.v1.0.xml</modification>
+		<remove-dir name="$imagesdir/board-pageranks" />
+	</uninstall>
+</package-info>

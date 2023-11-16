@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:PMReaded</id>
+	<name>PM Readed</name>
+	<version>1.1</version>
+
+	<file name="$themedir/PersonalMessage.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+	$next_alternate = false;]]></search>
+			<add><![CDATA[
+	$pm_iconstext_readed = allowedTo('pm_see_read')
+			? array('pm_noread.gif', 'pm_readed.gif', $txt['pm_mod_unread'], $txt['pm_mod_read'])
+			: array('pm_received.gif', 'pm_received.gif', $txt['pm_read'], $txt['pm_read']);]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+			<td align="center" width="2%">', $message['is_replied_to'] ? '<img src="' . $settings['images_url'] . '/icons/pm_replied.gif" style="margin-right: 4px;" alt="' . $txt['pm_replied'] . '" />' : '<img src="' . $settings['images_url'] . '/icons/pm_read.gif" style="margin-right: 4px;" alt="' . $txt['pm_read'] . '" />', '</td>]]></search>
+			<add><![CDATA[
+			<td align="center" width="2%">', $message['is_replied_to'] ? '<img src="' . $settings['images_url'] . '/icons/pm_replied2.gif" style="margin-right: 4px;" title="' . $txt['pm_replied'] . '" alt="' . $txt['pm_replied'] . '" />' : '<img src="' . $settings['images_url'] . '/icons/'. $pm_iconstext_readed[(bool)$message['is_read']] . '" style="margin-right: 4px;" alt="' . $pm_iconstext_readed[(bool)$message['is_read']+2] . '" title="' . $pm_iconstext_readed[(bool)$message['is_read']+2] . '" />', '</td>]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Help.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+										<td align="center" width="2%"><img src="' . $settings['images_url'] . '/icons/pm_read.gif" style="margin-right: 4px;" alt="" /></td>]]></search>
+			<add><![CDATA[
+										<td align="center" width="2%"><img src="' . $settings['images_url'] . '/icons/pm_noread.gif" style="margin-right: 4px;" alt="" /></td>]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/PersonalMessage.php">
+		<operation>
+			<search position="after"><![CDATA[
+			if ($row['ID_MEMBER_TO'] == $ID_MEMBER && $context['folder'] != 'outbox')]]></search>
+			<add><![CDATA[
+			$context[$row['ID_PM']]['is_read'] = $row['is_read'];
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+		'is_replied_to' => &$context['message_replied'][$message['ID_PM']],]]></search>
+			<add><![CDATA[
+		'is_read' => &$context[$message['ID_PM']]['is_read'],]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[
+				'pm_send' => false,]]></search>
+			<add><![CDATA[
+				'pm_see_read' => false,]]></add>
+		</operation>
+	</file>
+
+</modification>

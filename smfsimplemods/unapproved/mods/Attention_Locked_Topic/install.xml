@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:AttentionLockedTopic</id>
+	<version>1.0</version>
+
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="after"><![CDATA[		echo '
+								<div class="inner" id="msg_', $message['id'], '"', '>', $message['body'], '</div>]]></search>
+		<add><![CDATA[				
+		if ($context['is_locked'])
+				{ 
+					echo'
+						<div class="errorbox"><p class="alert">!!</p>', $txt['attentionlockedtopic'] ,'</div>';
+				}
+				]]></add>
+	</operation>
+</file>
+
+</modification>

@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>GlobalMessageMod</id>
+	<name>Global Message Box By Smfsimple.com</name>
+	<version>V1 Lite Version</version>
+
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+				
+// Global Message Box By Smfsimple.com
+$txt['globalmessagebox_enable'] = '<span style="font-weight:bold;">Enable Global Message Box</span>';
+$txt['globalmessagebox_text'] = 'Write your Global message here';
+$txt['globalmessagebox_none'] = 'Remember to config your global message in the administration! <a href="'. $scripturl .'?action=admin;area=modsettings;sa=general">Click Here!</a>';
+$txt['globalmessagebox_text_desc'] = 'Can Use Html';
+$txt['globalmessagebox_style'] = '<span style="font-weight:bold;">Select the box style</span>';
+$txt['dot-luv'] = 'dot-luv';
+$txt['vader'] = 'vader';
+$txt['black-tie'] = 'black-tie';
+$txt['trontastic'] = 'trontastic';
+$txt['sunny'] = 'sunny';
+$txt['flick'] = 'flick';
+$txt['redmond'] = 'redmond';
+$txt['ui-darkness'] = 'ui-darkness';
+$txt['eggplant'] = 'eggplant';
+$txt['gmb_no_boards'] = '<span style="font-weight:bold;">Do not show the box in these boards</span>';
+$txt['gmb_no_boards_desc'] = 'Enter the id of the forums where you do NOT want to see the box.<br />Example: 1,4,12,20';
+// Global Message Box By Smfsimple.com
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Global Message Box By Smfsimple.com
+$txt['globalmessagebox_enable'] = '<span style="font-weight:bold;">Activar Global Message Box</span>';
+$txt['globalmessagebox_text'] = '<span style="font-weight:bold;">Escribe aqui tu mensaje global</span>';
+$txt['globalmessagebox_none'] = 'Recuerda configurar el mensaje global desde la administracion! <a href="'. $scripturl .'?action=admin;area=modsettings;sa=general">Has click aqui!</a>';
+$txt['globalmessagebox_text_desc'] = 'Puedes utilizar HTML y BBcode';
+$txt['globalmessagebox_style'] = '<span style="font-weight:bold;">Eligir Estilo del box</span>';
+$txt['dot-luv'] = 'dot-luv';
+$txt['vader'] = 'vader';
+$txt['black-tie'] = 'black-tie';
+$txt['trontastic'] = 'trontastic';
+$txt['sunny'] = 'sunny';
+$txt['flick'] = 'flick';
+$txt['redmond'] = 'redmond';
+$txt['ui-darkness'] = 'ui-darkness';
+$txt['eggplant'] = 'eggplant';
+$txt['gmb_no_boards'] = '<span style="font-weight:bold;">No mostrar el box en los siguientes foros</span>';
+$txt['gmb_no_boards_desc'] = 'Escribe el id de los foros donde NO quieres que se vea el box.<br />Ejemplo: 1,4,12,20';
+// Global Message Box By Smfsimple.com
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Global Message Box By Smfsimple.com
+$txt['globalmessagebox_enable'] = '<span style="font-weight:bold;">Activar Global Message Box</span>';
+$txt['globalmessagebox_text'] = '<span style="font-weight:bold;">Escribe aqui tu mensaje global</span>';
+$txt['globalmessagebox_none'] = 'Recuerda configurar el mensaje global desde la administracion! <a href="'. $scripturl .'?action=admin;area=modsettings;sa=general">Has click aqui!</a>';
+$txt['globalmessagebox_text_desc'] = 'Puedes utilizar HTML y BBcode';
+$txt['globalmessagebox_style'] = '<span style="font-weight:bold;">Eligir Estilo del box</span>';
+$txt['dot-luv'] = 'dot-luv';
+$txt['vader'] = 'vader';
+$txt['black-tie'] = 'black-tie';
+$txt['trontastic'] = 'trontastic';
+$txt['sunny'] = 'sunny';
+$txt['flick'] = 'flick';
+$txt['redmond'] = 'redmond';
+$txt['ui-darkness'] = 'ui-darkness';
+$txt['eggplant'] = 'eggplant';
+$txt['gmb_no_boards'] = '<span style="font-weight:bold;">No mostrar el box en los siguientes foros</span>';
+$txt['gmb_no_boards_desc'] = 'Escribe el id de los foros donde NO quieres que se vea el box.<br />Ejemplo: 1,4,12,20';
+// Global Message Box By Smfsimple.com
+]]></add>
+		</operation>
+	</file>		
+	
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Global Message Box By Smfsimple.com
+$txt['globalmessagebox_enable'] = '<span style="font-weight:bold;">Activar Global Message Box</span>';
+$txt['globalmessagebox_text'] = '<span style="font-weight:bold;">Escribe aqui tu mensaje global</span>';
+$txt['globalmessagebox_none'] = 'Recuerda configurar el mensaje global desde la administracion! <a href="'. $scripturl .'?action=admin;area=modsettings;sa=general">Has click aqui!</a>';
+$txt['globalmessagebox_text_desc'] = 'Puedes utilizar HTML y BBcode';
+$txt['globalmessagebox_style'] = '<span style="font-weight:bold;">Eligir Estilo del box</span>';
+$txt['dot-luv'] = 'dot-luv';
+$txt['vader'] = 'vader';
+$txt['black-tie'] = 'black-tie';
+$txt['trontastic'] = 'trontastic';
+$txt['sunny'] = 'sunny';
+$txt['flick'] = 'flick';
+$txt['redmond'] = 'redmond';
+$txt['ui-darkness'] = 'ui-darkness';
+$txt['eggplant'] = 'eggplant';
+$txt['gmb_no_boards'] = '<span style="font-weight:bold;">No mostrar el box en los siguientes foros</span>';
+$txt['gmb_no_boards_desc'] = 'Escribe el id de los foros donde NO quieres que se vea el box.<br />Ejemplo: 1,4,12,20';
+// Global Message Box By Smfsimple.com
+]]></add>
+		</operation>
+	</file>			
+	
+	<file name="$themedir/languages/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+// Global Message Box By Smfsimple.com
+$txt['globalmessagebox_enable'] = '<span style="font-weight:bold;">Activar Global Message Box</span>';
+$txt['globalmessagebox_text'] = '<span style="font-weight:bold;">Escribe aqui tu mensaje global</span>';
+$txt['globalmessagebox_none'] = 'Recuerda configurar el mensaje global desde la administracion! <a href="'. $scripturl .'?action=admin;area=modsettings;sa=general">Has click aqui!</a>';
+$txt['globalmessagebox_text_desc'] = 'Puedes utilizar HTML y BBcode';
+$txt['globalmessagebox_style'] = '<span style="font-weight:bold;">Eligir Estilo del box</span>';
+$txt['dot-luv'] = 'dot-luv';
+$txt['vader'] = 'vader';
+$txt['black-tie'] = 'black-tie';
+$txt['trontastic'] = 'trontastic';
+$txt['sunny'] = 'sunny';
+$txt['flick'] = 'flick';
+$txt['redmond'] = 'redmond';
+$txt['ui-darkness'] = 'ui-darkness';
+$txt['eggplant'] = 'eggplant';
+$txt['gmb_no_boards'] = '<span style="font-weight:bold;">No mostrar el box en los siguientes foros</span>';
+$txt['gmb_no_boards_desc'] = 'Escribe el id de los foros donde NO quieres que se vea el box.<br />Ejemplo: 1,4,12,20';
+// Global Message Box By Smfsimple.com
+]]></add>
+		</operation>
+	</file>			
+
+	<file name="$themedir/languages/ManagePermissions.english.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_gmb_view'] = 'Global Message Box Permit';
+$txt['permissiongroup_simple_gmb_view'] = 'Global Message Box Permit';
+$txt['permissionname_gmb_view'] = 'Show message box global';
+$txt['permissionhelp_gmb_view'] = 'This option allows the user group to see the global message box';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/languages/ManagePermissions.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissiongroup_simple_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissionname_gmb_view'] = 'Mostrar el box de mensaje global';
+$txt['permissionhelp_gmb_view'] = 'Esta opcion permite a este grupo de usuarios ver el box de mensaje global';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$themedir/languages/ManagePermissions.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissiongroup_simple_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissionname_gmb_view'] = 'Mostrar el box de mensaje global';
+$txt['permissionhelp_gmb_view'] = 'Esta opcion permite a este grupo de usuarios ver el box de mensaje global';
+]]></add>
+		</operation>
+	</file>		
+	
+	<file name="$themedir/languages/ManagePermissions.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissiongroup_simple_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissionname_gmb_view'] = 'Mostrar el box de mensaje global';
+$txt['permissionhelp_gmb_view'] = 'Esta opcion permite a este grupo de usuarios ver el box de mensaje global';
+]]></add>
+		</operation>
+	</file>		
+	
+	<file name="$themedir/languages/ManagePermissions.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['permissiongroup_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissiongroup_simple_gmb_view'] = 'Permiso Global Message Box';
+$txt['permissionname_gmb_view'] = 'Mostrar el box de mensaje global';
+$txt['permissionhelp_gmb_view'] = 'Esta opcion permite a este grupo de usuarios ver el box de mensaje global';
+]]></add>
+		</operation>
+	</file>			
+	
+</modification>

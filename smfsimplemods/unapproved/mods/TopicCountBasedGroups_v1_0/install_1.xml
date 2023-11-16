@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:TopicCountBasedGroups</id>
+	<name>Topic Count Based Groups</name>
+	<version>1.0</version>
+
+<!-- Change Post Count Based Groups to Topic Count Based Groups -->
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="after"><![CDATA[
+		updateMemberData($posterOptions['id'], array('posts' => '+'));]]></search>
+			<add><![CDATA[
+		$modSettings['postgroups_by_topic_abort_count'] = !$new_topic;]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[
+	case 'postgroups':]]></search>
+			<add><![CDATA[
+		// Abort recount with any "new post" (not new topic)
+		if (!empty($modSettings['postgroups_by_topic_abort_count']))
+			return;]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+		// Set all membergroups from most posts to least posts.
+		$conditions = '';
+		foreach ($postgroups as $id => $minPosts)
+		{
+			$conditions .= '
+					WHEN posts >= ' . $minPosts . (!empty($lastMin) ? ' AND posts <= ' . $lastMin : '') . ' THEN ' . $id;
+			$lastMin = $minPosts;
+		}
+
+		// A big fat CASE WHEN... END is faster than a zillion UPDATE's ;).
+		db_query("
+			UPDATE {$db_prefix}members
+			SET ID_POST_GROUP = CASE$conditions
+					ELSE 0
+				END" . ($parameter1 != null ? "
+			WHERE $parameter1" : ''), __FILE__, __LINE__);]]></search>
+			<add><![CDATA[
+		// Set all membergroups from most posts to least posts.
+		$parameter1 = preg_replace('~LIMIT \d+~', '', $parameter1);
+		$request = db_query("
+			SELECT t.ID_MEMBER_STARTED as id_member, COUNT(t.ID_FIRST_MSG) AS topics
+				FROM {$db_prefix}topics AS t
+					LEFT JOIN {$db_prefix}boards AS b ON (b.ID_BOARD = t.ID_BOARD)
+				WHERE b.countPosts = 0" . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
+					AND t.ID_BOARD != ' . (int) $modSettings['recycle_board'] : '') . ($parameter1 == null ? '
+					AND t.ID_MEMBER_STARTED <> 0' : '
+					AND ' . str_replace('ID_MEMBER', 't.ID_MEMBER_STARTED', $parameter1)) . '
+				GROUP BY t.ID_MEMBER_STARTED'
+				, __FILE__, __LINE__
+		);
+		$conditions = '';
+		foreach ($postgroups as $id => $minPosts)
+		{
+			$conditions .= '
+					WHEN %1$d >= ' . $minPosts . (!empty($lastMin) ? ' AND %1$d <= ' . $lastMin : '') . ' THEN ' . $id;
+			$lastMin = $minPosts;
+		}
+		while ($row = mysql_fetch_assoc($request))
+		{
+			$conditions_t = sprintf($conditions, $row['topics']);
+			db_query("
+				UPDATE {$db_prefix}members
+				SET ID_POST_GROUP = CASE{$conditions_t}
+						ELSE 0
+					END
+				WHERE ID_MEMBER = {$row['id_member']}", __FILE__, __LINE__);
+		}
+		mysql_free_result($request);]]></add>
+		</operation>
+	</file>
+
+<!-- Update Topic Count Based Groups only for Topic's Starter -->
+	<file name="$sourcedir/MoveTopic.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		// The board we're moving from counted posts, but not to.
+		if (empty($pcounter_from))
+			updateMemberData($posters, array('posts' => '-'));
+		// The reverse: from didn't, to did.
+		else
+			updateMemberData($posters, array('posts' => '+'));]]></search>
+			<add><![CDATA[
+		foreach ($posters as $id_member)
+		{
+			// Update Topic Count Based Groups only for Topic's Starter
+			$modSettings['postgroups_by_topic_abort_count'] = $ID_MEMBER_STARTED != $id_member;
+			// The board we're moving from counted posts, but not to.
+			if (empty($pcounter_from))
+				updateMemberData($id_member, array('posts' => '-'));
+			// The reverse: from didn't, to did.
+			else
+				updateMemberData($id_member, array('posts' => '+'));
+		}]]></add>
+		</operation>
+	</file>
+
+<!-- Update Topic Count Based Groups only for Topic's Starter -->
+	<file name="$sourcedir/RemoveTopic.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// If the poster was registered and the board this message was on incremented]]></search>
+			<add><![CDATA[
+	// Update Topic Count Based Groups only for Topic's Starter
+	$modSettings['postgroups_by_topic_abort_count'] = $row['ID_FIRST_MSG'] != $message;]]></add>
+		</operation>
+	</file>
+
+<!-- Maintenance // for Recount the Groups Based in Topics-->
+	<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="before"><![CDATA[
+	updateStats('topic');]]></search>
+			<add><![CDATA[
+	updateStats('postgroups');]]></add>
+		</operation>
+	</file>
+
+<!-- Languaje // Auto, no change -->
+	<file name="$languagedir/ManageMembers.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$temp = array('membergroups_post', 'membergroups_new_board_post_groups', 'membergroups_edit_post_group', 'membergroups_min_posts', 'membergroups_postgroups');
+
+foreach ($temp as $key)
+	if (isset($txt[$key]))
+		$txt[$key] = str_ireplace($txt[105], $txt[118], $txt[$key]);
+
+unset($temp);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManageBoards.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$txt['mboards_groups_desc'] = str_ireplace($txt[105], $txt[118], $txt['mboards_groups_desc']);
+$txt['mboards_groups_post_group'] = str_ireplace($txt[105], $txt[118], $txt['mboards_groups_post_group']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManagePermissions.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$txt['permission_settings_enable_postgroups'] = str_ireplace($txt[105], $txt[118], $txt['permission_settings_enable_postgroups']);
+$txt['permission_disable_postgroups_warning'] = str_ireplace($txt[105], $txt[118], $txt['permission_disable_postgroups_warning']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Themes.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Topic Count Based Groups
+$txt['hide_post_group'] = str_ireplace($txt[105], $txt[118], $txt['hide_post_group']);
+$txt['hide_post_group_desc'] = str_ireplace($txt[105], $txt[118], $txt['hide_post_group_desc']);
+]]></add>
+		</operation>
+	</file>
+
+</modification>

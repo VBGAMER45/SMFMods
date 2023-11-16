@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Vicram10:CueTableBBCode</id>
+	<version>1.0.0</version>
+	<homepage>http://www.sharedownload.org</homepage>
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[
+			array(
+				'tag' => 'white',
+				'before' => '<span style="color: white;">',
+				'after' => '</span>',
+			),
+]]></search>
+			<add><![CDATA[
+			array(
+				'tag' => 'cuetable',
+				'type' => 'unparsed_equals',				
+				'before' => '<div><object classid="clsid:166B1BCA-3F9C-11CF-8075-444553540000" codebase="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm" width="900" height="540"><param name="src" value="http://cuetable.com/P/CueTable.dcr" /><param name="swRemote" value="swSaveEnabled="true" swVolume="false" swRestart="false" swPausePlay="false" swFastForward="false" swContextMenu="false" " /><param name="swStretchStyle" value="meet" /><param name="sw2" value="http://CueTable.com/P/?$1">',
+				'after' => '<param name="swStretchHAlign" value="Center" /><param name="swStretchVAlign" value="Top" /><embed src="http://cuetable.com/P/CueTable.dcr"  swstretchhalign="Center" swstretchvalign="Top"  width="900" height="540" sw2="http://CueTable.com/P/?$1" swremote="swSaveEnabled="true" swVolume="false" swRestart="false" swPausePlay="false" swFastForward="false" swContextMenu="false" " swstretchstyle="meet"
+ type="application/x-director" pluginspage="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"></embed><NOEMBED><a href="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"><img src="http://cuetable.com/images/CueTableShockwaveMsg.jpg" width="900" height="540" border="0" /></a></NOEMBED></div>
+',
+			),
+
+			array(
+				'tag' => 'cuetable',
+				'type' => 'unparsed_content',
+				'content' => '<div><object classid="clsid:166B1BCA-3F9C-11CF-8075-444553540000" codebase="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm" width="900" height="540">  <param name="src" value="http://cuetable.com/P/CueTable.dcr" /><param name="swRemote" value="swSaveEnabled='.true.' swVolume='.false.' swRestart='.false.' swPausePlay='.false.' swFastForward='.false.' swContextMenu='.false.' " /><param name="swStretchStyle" value="meet" /><param name="sw2" value="$1"><param name="swStretchHAlign" value="Center" /><param name="swStretchVAlign" value="Top" /><embed src="http://cuetable.com/P/CueTable.dcr"  swstretchhalign="Center" swstretchvalign="Top"  width="900" height="540" sw2="$1" swremote="swSaveEnabled='.true.' swVolume='.false.' swRestart='.false.' swPausePlay='.false.' swFastForward='.false.' swContextMenu='.false.' " swstretchstyle="meet" type="application/x-director" pluginspage="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"></embed><NOEMBED><a href="http://cuetable.com/Support/Installing_Adobe_Shockwave.htm"><img src="http://cuetable.com/images/CueTableShockwaveMsg.jpg" width="900" height="540" border="0" /></a></NOEMBED></div>',
+			),
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/Post.template.php">
+		<operation>
+	                <search position="before"><![CDATA[array(),
+			'list' => array('code' => 'list', 'before' => '[list]\n[li]', 'after' => '[/li]\n[li][/li]\n[/list]', 'description' => $txt[261]),]]></search>
+
+			<add><![CDATA[
+			'cuetable' => array('code' => 'cuetable', 'before' => '[cuetable]', 'after' => '[/cuetable]', 'description' => $txt['cuetable']),			
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Inicio Cuetable BBCode
+$txt['cuetable']= 'CueTable';
+//Fin Cuetable BBCode]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Inicio Cuetable BBCode
+$txt['cuetable']= 'CueTable';
+//Fin Cuetable BBCode]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Inicio Cuetable BBCode
+$txt['cuetable']= 'CueTable';
+//Fin Cuetable BBCode]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//Inicio Cuetable BBCode
+$txt['cuetable']= 'CueTable';
+//Fin Cuetable BBCode]]></add>
+		</operation>
+	</file>
+</modification>

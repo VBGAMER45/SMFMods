@@ -1,0 +1,78 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:BoxBBCode</id>
+	<name>Box BBCode</name>
+	<version>1.2</version>
+
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+			'quote' => array('code' => 'quote', 'before' => '[quote]', 'after' => '[/quote]', 'description' => $txt[260]),]]></search>
+			<add><![CDATA[
+			'box' => array('code' => 'box', 'before' => '[box title=TitleBox]', 'after' => '[/box]', 'description' => $txt['box_bbcode']),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[
+			array(
+				'tag' => 'blue',
+				'before' => '<span style="color: blue;">',
+				'after' => '</span>',
+			),]]></search>
+			<add><![CDATA[
+			array(
+				'tag' => 'box',
+				'parameters' => array(
+					'class' => array('optional' => true, 'value' => ' $1', 'match' => '([\w-]+)'),
+				),
+				'before' => '<fieldset class="box_bbcode{class}">',
+				'after' => '</fieldset>',
+				'block_level' => true,
+			),
+			array(
+				'tag' => 'box',
+				'parameters' => array(
+					'title' => array('value' => '$1', 'match' => '([\w\s\x]{0,192}?)'),
+					'hlink' => array('value' => '$1', 'match' => '(http://[\w.]+/?\S*?)'),
+					'class' => array('optional' => true, 'value' => ' $1', 'match' => '([\w-]+)'),
+				),
+				'before' => '<fieldset class="box_bbcode{class}"><legend><a href="{hlink}" target="_blank">{title}</a></legend>',
+				'after' => '</fieldset>',
+				'block_level' => true,
+			),
+			array(
+				'tag' => 'box',
+				'parameters' => array(
+					'title' => array('optional' => true, 'value' => '$1', 'match' => '([\w\s\x]{0,192}?)'),
+					'link' => array('optional' => true, 'value' => ' <a href="$1" target="_blank">$1</a>', 'match' => '(http://[\w.]+/?\S*?)'),
+					'class' => array('optional' => true, 'value' => ' $1', 'match' => '([\w-]+)'),
+				),
+				'before' => '<fieldset class="box_bbcode{class}"><legend>{title}{link}</legend>',
+				'after' => '</fieldset>',
+				'block_level' => true,
+			),
+			array(
+				'tag' => 'box',
+				'before' => '<fieldset class="box_bbcode">',
+				'after' => '</fieldset>',
+				'block_level' => true,
+			),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/style.css">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+
+/* Box BBCode */
+.box_bbcode { margin: 10px 50px 10px 50px; border: 1px solid #ADADAD; }
+.box_bbcode legend {color: #476C8E }
+]]></add>
+		</operation>
+	</file>
+
+</modification>

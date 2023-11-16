@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>[SiNaN]:Banlist</id>
+	<name>Ban List</name>
+	<version>2.0</version>
+
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Ban List
+$txt['banlist_menu'] = 'Banlist';
+$txt['permissionname_view_banlist'] = 'View the Ban List';
+$txt['permissionhelp_view_banlist'] = 'The banlist shows all members that have are banned on your forum. The list can be sorted.'; 
+$txt['cannot_view_banlist'] = 'You can\'t view the banlist because you don\'t have permission to.';
+$txt['whoallow_banlist'] = 'Viewing <a href="' . $scripturl . '?action=banlist">Banlist</a>.';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Ban List
+$txt['banlist_menu'] = 'Banlist';
+$txt['permissionname_view_banlist'] = 'View the Ban List';
+$txt['permissionhelp_view_banlist'] = 'The banlist shows all members that have are banned on your forum. The list can be sorted.'; 
+$txt['cannot_view_banlist'] = 'You can\'t view the banlist because you don\'t have permission to.';
+$txt['whoallow_banlist'] = 'Viewing <a href="' . $scripturl . '?action=banlist">Banlist</a>.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Ban List
+$txt['banlist_menu'] = 'Banlist';
+$txt['permissionname_view_banlist'] = 'Ver Ban List';
+$txt['permissionhelp_view_banlist'] = 'La lista muestra todos los usuarios que fueron baneados del foro. La lista puede ser ordenada.'; 
+$txt['cannot_view_banlist'] = 'No puede ver la lista de baneados porque no tiene permisos';
+$txt['whoallow_banlist'] = 'Viendo <a href="' . $scripturl . '?action=banlist">Banlist</a>.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Ban List
+$txt['banlist_menu'] = 'Banlist';
+$txt['permissionname_view_banlist'] = 'Ver Ban List';
+$txt['permissionhelp_view_banlist'] = 'La lista muestra todos los usuarios que fueron baneados del foro. La lista puede ser ordenada.'; 
+$txt['cannot_view_banlist'] = 'No puede ver la lista de baneados porque no tiene permisos';
+$txt['whoallow_banlist'] = 'Viendo <a href="' . $scripturl . '?action=banlist">Banlist</a>.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Ban List
+$txt['banlist_menu'] = 'Banlist';
+$txt['permissionname_view_banlist'] = 'Ver Ban List';
+$txt['permissionhelp_view_banlist'] = 'La lista muestra todos los usuarios que fueron baneados del foro. La lista puede ser ordenada.'; 
+$txt['cannot_view_banlist'] = 'No puede ver la lista de baneados porque no tiene permisos';
+$txt['whoallow_banlist'] = 'Viendo <a href="' . $scripturl . '?action=banlist">Banlist</a>.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+//	Ban List
+$txt['banlist_menu'] = 'Banlist';
+$txt['permissionname_view_banlist'] = 'Ver Ban List';
+$txt['permissionhelp_view_banlist'] = 'La lista muestra todos los usuarios que fueron baneados del foro. La lista puede ser ordenada.'; 
+$txt['cannot_view_banlist'] = 'No puede ver la lista de baneados porque no tiene permisos';
+$txt['whoallow_banlist'] = 'Viendo <a href="' . $scripturl . '?action=banlist">Banlist</a>.';]]></add>
+		</operation>
+	</file>
+
+</modification>

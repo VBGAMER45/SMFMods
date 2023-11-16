@@ -1,3 +1,6 @@
+3.1.1
+!Fixed searching results for more than one page was displaying incorrect data if options on advanced search were uncheck
+
 3.1
 !Fixed bug with the manage categories link
 !Removed google+ code

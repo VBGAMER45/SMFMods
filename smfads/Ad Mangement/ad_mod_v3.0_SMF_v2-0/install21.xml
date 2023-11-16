@@ -1,0 +1,377 @@
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>jeremy:ads</id>
+	<version>3.1</version>
+
+<file name="$boarddir/index.php">
+<operation>
+	<search position="before"><![CDATA[require_once($sourcedir . '/Security.php');]]></search>
+<add><![CDATA[
+if (file_exists($sourcedir . '/LoadAds.php'))
+	require_once($sourcedir . '/LoadAds.php');]]></add>
+</operation>
+
+<operation>
+	<search position="before"><![CDATA[// Check if the user should be disallowed access.]]></search>
+<add><![CDATA[
+
+	// Load all the ads up
+	if (function_exists("loadAds"))
+		loadAds();]]></add>
+</operation>
+
+</file>
+
+
+
+
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<add><![CDATA[
+			
+	// Start Ad Mod
+		// You can order copyright removal! From the mod settings cheap and helps support the mod author!
+		$showInfo = AdsCheckInfo();
+		    
+	    	if ($showInfo == true && !isset($adCopyright))
+	    	{
+			$buffer = preg_replace('~(class="new_win">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext"><a href="http://www.smfads.com" target="_blank">SMFAds</a> for <a href="https://www.createaforum.com" title="Forum Hosting" target="_blank">Free Forums</a></span>', $buffer);
+			
+			$buffer = preg_replace('~(rel="noopener">Simple Machines</a>)~', 'class="new_win">Simple Machines</a><br /><span class="smalltext"><a href="http://www.smfads.com" target="_blank">SMFAds</a> for <a href="https://www.createaforum.com" title="Forum Hosting" target="_blank">Free Forums</a></span>', $buffer);
+			
+		
+			$adCopyright = 1;
+		}
+	// End Ad Mod
+			
+	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></add>
+	</operation>
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+
+function AdsCheckInfo()
+{
+    global $modSettings, $boardurl;
+    
+    if (isset($modSettings['ads_copyrightkey']))
+    {
+        $m = 35;
+        if (!empty($modSettings['ads_copyrightkey']))
+        {
+            if ($modSettings['ads_copyrightkey'] == sha1($m . '-' . $boardurl))
+            {
+                return false;
+            }
+            else
+                return true;
+        }
+    }
+    
+    return true;
+}
+		
+]]></add>
+	</operation>
+	
+</file>
+
+<file name="$themedir/BoardIndex.template.php">
+	<operation>
+		<search position="replace"><![CDATA[echo '
+	<div id="boardindex_table" class="boardindex_table">';]]></search>
+
+<add><![CDATA[echo '
+	<div id="boardindex_table" class="boardindex_table">';
+	
+	// Display ads on the board index
+	if (function_exists("show_boardAds"))
+	{
+		$ads = show_boardAds();
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+]]></add>
+</operation>
+
+	<operation  error="ignore">
+		<search position="before"><![CDATA[echo '
+			</div><!-- #category_[id]_boards -->
+		</div><!-- .main_container -->';]]></search>
+<add><![CDATA[
+	echo '<div class="main_container">
+			<div class="cat_bar">';
+	//Display ads Between cats
+	if (function_exists("show_category"))
+	{
+		$ads = show_category($category['id']);
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+	echo '</div></div>';
+]]></add>
+</operation>
+
+<operation  error="ignore">
+		<search position="replace"><![CDATA[echo '
+			</div>
+		</div>';
+	}
+
+	echo '
+	</div>';
+
+	// Show the mark all as read button?]]></search>
+<add><![CDATA[
+	echo '<div class="main_container">
+			<div class="cat_bar">';
+	//Display ads Between cats
+	if (function_exists("show_category"))
+	{
+		$ads = show_category($category['id']);
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+	echo '</div></div>';
+	
+echo '
+			</div>
+		</div>';
+	}
+
+	echo '
+	</div>';
+
+	// Show the mark all as read button?]]></add>
+</operation>
+
+
+
+
+</file>
+
+
+
+<file name="$themedir/Display.template.php">
+	<operation>
+		<search position="before"><![CDATA[	// Show the anchor for the top and for the first message. If the first message is new, say so.]]></search>
+
+<add><![CDATA[
+	//Display ads on the thread page
+	if (function_exists("show_threadAds"))
+	{
+		$ads = show_threadAds();	
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+		
+		$messageStorage = '';
+	}
+]]></add>
+</operation>
+
+<operation>
+	<search position="replace"><![CDATA[// Get all the messages...
+	while ($message = $context['get_message']())
+		template_single_post($message);]]></search>
+<add><![CDATA[	// Ad Counter
+	global $adcounter;
+	$adcounter = 0;
+	// Get all the messages...
+	while ($message = $context['get_message']())
+	{	
+		$adcounter++;
+		$message['adcounter'] = $adcounter;
+		template_single_post($message);
+	}	
+		]]></add>
+</operation>
+
+
+<operation>
+	<search position="replace"><![CDATA[<hr class="post_separator">';]]>
+</search>
+<add><![CDATA[<hr class="post_separator">';
+
+global $adcounter;				
+if (function_exists("show_posts") && empty($message['adpost']))
+{
+	
+	if ($adpost = show_posts($adcounter))
+	{
+		if($modSettings['ads_lookLikePosts'])
+		{
+			$message['adpost'] = 1;
+			$message['body'] = $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']);
+			template_single_post($message);
+
+		}
+		else
+		{
+			echo '
+				<div class="windowbg">
+					
+	
+					<div align="center">', $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']) ,'</div>
+	
+				
+				</div>
+				<hr class="post_separator" />
+			';
+		}
+	}
+}
+	
+if(function_exists("show_lastpostAds") && function_exists("show_posts") && empty($message['adpost'])  && ($context['topic_last_message'] == $message['id']   || ($message['counter']+1) % $context['messages_per_page'] == 0))
+{
+	if(($adpost = show_lastpostAds()) && !show_posts($adcounter))
+	{
+		if($modSettings['ads_lookLikePosts'])
+		{
+			$message['adpost'] = 1;
+			$message['body'] = $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']);
+			template_single_post($message);
+			
+
+		}
+		else
+			echo '
+				<div class="windowbg">
+					
+					<div align="center">', $adpost['type'] == 0 ? $adpost['content'] : eval($adpost['content']) ,'</div>
+	
+					
+				</div>
+				<hr class="post_separator" />
+			';
+	}
+}
+
+]]>
+</add>
+</operation>
+</file>
+
+
+
+
+<file name="$themedir/MessageIndex.template.php">
+	<operation>
+		<search position="before"><![CDATA[	global $context, $settings, $options, $scripturl, $modSettings, $txt;]]></search>
+
+<add><![CDATA[
+	//Display Ads on the Message index
+	if (function_exists("show_threadindexAds"))
+	{
+		$ads = show_threadindexAds();
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+]]></add>
+</operation>
+
+<operation>
+	<search position="replace"><![CDATA[// Finish off the form - again.]]></search>
+
+<add><![CDATA[
+	//Display Ads on the Message index
+	if (function_exists("show_underchildren"))
+	{
+		$ads = show_underchildren();
+		if(!empty($ads))
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+		unset($ads);
+	}
+	
+	// Finish off the form - again.
+	]]></add>
+</operation>
+</file>
+
+<file name="$themedir/index.template.php">
+
+	<operation  error="ignore">
+		<search position="before"><![CDATA[echo '
+					<input type="hidden" name="hash_passwrd" value="" /><input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				</form>';
+	}]]></search>
+		<add><![CDATA[
+// Begin Ad  management Location - Welcome Area/User Information Box
+
+	if (function_exists("show_welcomeAds"))
+	{
+		$ads = show_welcomeAds();
+		if(!empty($ads))
+		{
+			echo '<td class="windowbg2">';
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+			echo '</td>';
+		}
+		unset($ads);
+	}
+
+// End Ad  management Location - Welcome Area/User Information Box
+
+
+]]></add>
+</operation>
+
+	<operation  error="ignore">
+		<search position="before"><![CDATA[echo '
+					<input type="hidden" name="hash_passwrd" value="" />
+				</form>';
+	}]]></search>
+		<add><![CDATA[
+// Begin Ad  management Location - Welcome Area/User Information Box
+
+	if (function_exists("show_welcomeAds"))
+	{
+		$ads = show_welcomeAds();
+		if(!empty($ads))
+		{
+			echo '<td class="windowbg2">';
+			if($ads['type']==0)
+				echo $ads['content'];
+			else
+				eval($ads['content']);
+			echo '</td>';
+		}
+		unset($ads);
+	}
+
+// End Ad  management Location - Welcome Area/User Information Box
+
+
+]]></add>
+	</operation>
+</file>
+
+
+
+</modification>

@@ -32,6 +32,10 @@ function PrettyInterface()
 				'href' => $scripturl . '?action=admin;area=pretty;sa=settings',
 				'title' => $txt['pretty_chrome_menu_settings'],
 			),
+			'nginx' => array(
+				'href' => $scripturl . '?action=admin;area=pretty;sa=nginix',
+				'title' => $txt['pretty_chrome_menu_nginx'],
+			),
 			'maintenance' => array(
 				'href' => $scripturl . '?action=admin;area=pretty;sa=maintenance',
 				'title' => $txt['pretty_chrome_menu_maintenance'],
@@ -43,6 +47,7 @@ function PrettyInterface()
 	//	What can we do today?
 	$subActions = array(
 		'filters' => 'pretty_edit_filters',
+		'nginx' => 'pretty_nginx',
 		'maintenance' => 'pretty_maintenance',
 		'news' => 'pretty_news',
 		'settings' => 'pretty_manage_settings',
@@ -277,5 +282,83 @@ function pretty_edit_filters()
 		unset($_SESSION['pretty']['notice']);
 	}
 }
+
+function pretty_nginx()
+{
+	global $txt;
+	global $boarddir, $boardurl, $context, $modSettings, $smcFunc;
+
+	//	Get the settings
+	$prettyFilters = unserialize($modSettings['pretty_filters']);
+	$filterSettings = array();
+	$rewrites = array();
+	foreach ($prettyFilters as $id => $filter)
+		//	Get the important data from enabled filters
+		if ($filter['enabled'])
+		{
+			if (isset($filter['filter']))
+				$filterSettings[$filter['filter']['priority']] = $filter['filter']['callback'];
+			if (isset($filter['rewrite']))
+				$rewrites[$filter['rewrite']['priority']] = array(
+					'id' => $id,
+					'rule' => $filter['rewrite']['rule'],
+					'nginx' => $filter['rewrite']['nginx'],
+				);
+		}
+
+
+	$htaccess = '';
+
+	$base = dirname($_SERVER['SCRIPT_NAME']);
+	if (defined('DIRECTORY_SEPARATOR'))
+		$base = str_replace(DIRECTORY_SEPARATOR, '/', $base);
+	else
+		$base = str_replace("\\", '/', $base);
+	//if ($base != '.')
+	//	$htaccess .= "\nRewriteBase " . $base;
+
+	//	Output the rules
+	ksort($rewrites);
+	foreach ($rewrites as $rule)
+	{
+		if (!empty($rule['nginx']))
+		{
+			$htaccess .= "\n\n# Rules for: " . $rule['id'] . "\n";
+			if (is_array($rule['nginx']))
+				$htaccess .= implode("\n", $rule['nginx']);
+			else
+				$htaccess .= $rule['nginx'];
+		}
+	}
+
+	//	Fix the Root URL
+	if (preg_match('`' . $boardurl . '/(.*)`', $modSettings['pretty_root_url'], $match))
+		$htaccess = str_replace('ROOTURL', $match[1] . '/', $htaccess);
+	else
+		$htaccess = str_replace('ROOTURL', '', $htaccess);
+
+	//	Actions
+	$htaccess = str_replace("# Rules for: actions","",$htaccess);
+	$htaccess = trim($htaccess);
+
+		//	Put them in groups of 8
+		$action_array = str_replace('.', '\\.', $context['pretty']['action_array']);
+		$groups = array_chunk($action_array, 8);
+		//	Construct the rewrite rules
+		$lines = array();
+		foreach ($groups as $group)
+			$lines[] = 'rewrite ^('. implode('|', $group) .')/?$ "/index.php?pretty&action=$1" last;';
+		$actions_rewrite = implode("\n", $lines);
+		$htaccess .= "\n\n# Rules for: actions\n" . $actions_rewrite;
+
+	$context['pretty_nginx_rules'] = $htaccess;
+
+	//	Action-specific chrome
+	$context['page_title'] = $txt['pretty_chrome_menu_nginx'];
+	$context['sub_template'] = 'pretty_nginx';
+	$context['pretty']['chrome']['page_title'] = $txt['pretty_chrome_menu_nginx'];
+	$context['pretty']['chrome']['caption'] = $txt['pretty_chrome_menu_nginx_description'];
+}
+
 
 ?>

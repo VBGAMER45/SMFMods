@@ -8,6 +8,13 @@ Legend:
  + Feature addition or improvement.
  - Feature or option removal.
  % Development flag or note, such as branching.
+ Pretty URLs 3.0                                              29  June 2023
+    ================================================================================  
+  !Fixes for handling spaces in profile urls. SMF 2.1.x SMF 2.0.x 
+  !Use display name instead of username for profile urls  SMF 2.1.x, SMF 2.0.x, SMF 1.1.x
+  !Use caching instead of sql quries by default for url replacements
+ 
+ 
 Pretty URLs 2.5.1                                               16  May 2022
    ================================================================================  
   !Fixes for handling actions loaded from hooks

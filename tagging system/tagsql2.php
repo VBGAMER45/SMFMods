@@ -1,9 +1,9 @@
 <?php
 /*
 Tagging System
-Version 2.2
+Version 4.1
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
@@ -19,8 +19,21 @@ tag tinytext NOT NULL,
 approved tinyint(4) NOT NULL default '0',
 PRIMARY KEY  (id_tag))");
   
+// Upgrade the paratemeter select table
+$dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}tags");
+$approved =  1;
+while ($row = $smcFunc['db_fetch_row']($dbresult))
+{
+	if($row[0] == 'approved')
+		$approved =0;
 
+}
+$smcFunc['db_free_result']($dbresult);
 
+if ($approved)
+{
+	$smcFunc['db_query']('', "ALTER TABLE {db_prefix}tags ADD approved tinyint(4) NOT NULL default '0'");
+}
 
  // Create the tags Log
 $smcFunc['db_query']('', "
@@ -33,7 +46,7 @@ PRIMARY KEY  (id),
 KEY id_tag (id_tag),
 KEY id_topic (id_topic),
 KEY id_member (id_member)
-) Engine=MyISAM");
+)");
 
 // Insert the settings
 if (!isset($modSettings['smftags_set_mintaglength']))
@@ -56,6 +69,22 @@ if (!isset($modSettings['smftags_set_cloud_tags_per_row']))
 		'smftags_set_cloud_min_font_size_precent' => 100,
 	));
 }
+
+// Tagging System Updates
+if (!isset($modSettings['smftags_set_msgindex']))
+{
+
+	updateSettings(array(
+		'smftags_set_msgindex' => 1,
+		'smftags_set_msgindex_max_show' => 5,
+
+		'smftags_set_use_css_tags' => 1,
+		'smftags_set_css_tag_background_color' => '#71a0b7',
+		'smftags_set_css_tag_font_color' => 'white',
+	));
+}
+
+
 
 // Add Package Servers
 $smcFunc['db_query']('', "DELETE FROM {db_prefix}package_servers WHERE url = 'http://www.smfhacks.com'");

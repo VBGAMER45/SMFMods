@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:Broken_Links_List</id>
+	<name>Broken Links List</name>
+	<version>1.1</version>
+
+<file name="$sourcedir/Load.php">
+	<operation><!-- Permissions Per Board Setup!-->
+		<search position="before"><![CDATA['description' => $row['description'],]]></search>
+			<add><![CDATA[
+				'bll_enabled' => !empty($row['bll_enabled']),]]></add>
+	</operation>
+	<operation><!-- Permissions Per Board Setup!-->
+		<search position="before"><![CDATA[, b.redirect,]]></search>
+			<add><![CDATA[ b.bll_enabled,]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ManageBoards.php">
+	<operation>
+		<search position="before"><![CDATA[// Checkboxes....]]></search>
+		<add><![CDATA[
+		$boardOptions['bll_enabled'] = isset($_POST['bll_enabled']);]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['count_posts' => 1,]]></search>
+		<add><![CDATA[
+			'bll_enabled' => 0,]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Subs-Boards.php">
+	<operation>
+		<search position="before"><![CDATA[// This setting is a little twisted in the database...]]></search>
+		<add><![CDATA[
+	if (isset($boardOptions['bll_enabled']))
+	{
+		$boardUpdates[] = 'bll_enabled = {int:bll_enabled}';
+		$boardUpdateParameters['bll_enabled'] = $boardOptions['bll_enabled'] ? 1 : 0;
+	}]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$boardOptions += array(]]></search>
+		<add><![CDATA[
+		'bll_enabled' => false,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[b.description, b.child_level,]]></search>
+		<add><![CDATA[ b.bll_enabled,]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA['description' => $row['description'],]]></search>
+		<add><![CDATA[
+				'bll_enabled' => !empty($row['bll_enabled']),]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/ManageBoards.template.php">
+    <operation>
+		<search position="after"><![CDATA[// Here the user can choose to force this board to use a theme other than the default theme for the forum.]]></search>
+			<add><![CDATA[	
+				//Broken links list MOD START				
+	echo'				
+						<dl class="settings">
+							<dt>
+								<strong>', $txt['bll_board_permission_enabled'], ':</strong><br />
+								<span class="smalltext">', $txt['bll_board_permission_enabled_desc'], '</span><br />
+							</dt>
+							<dd>
+								<input type="checkbox" name="bll_enabled" ', $context['board']['bll_enabled'] ? ' checked="checked"' : '', ' class="input_check" />
+							</dd>
+						</dl>';
+	//Broken links list MOD END
+	]]></add>
+	</operation>	
+</file>
+
+<file name="$themedir/Display.template.php">
+    <operation>
+		<search position="before"><![CDATA[<div class="smalltext reportlinks">';]]></search>
+			<add><![CDATA[
+		//Mod Brokenlinklist
+		if (!empty($modSettings['bll_enabled']) && $context['bll_enabled'] && allowedTo('brokenlinklist'))
+		{
+			$member_id = $message['member']['id'];
+			echo'
+			<a href="', $scripturl, '?action=brokenlinkslist;sa=report;topic=', $context['current_topic'], ';msg=', $message['id'], ';member=',$member_id,'">', $txt['bll_report_links'], '</a> &nbsp;';
+		}
+		//End Brokenlinklist]]></add>
+	</operation>	
+</file>
+
+<file name="$sourcedir/Display.php">
+    <operation>
+		<search position="after"><![CDATA[}
+
+// Callback for the message display.]]></search>
+			<add><![CDATA[	
+	//Broken Links List
+	$context['bll_enabled'] = $board_info['bll_enabled'];
+	//Broken Links List
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ScheduledTasks.php"> 
+		<operation><!-- Check the status and change if is old report! -->
+			<search position="end" />
+			<add><![CDATA[
+function scheduled_bll_count_old_links()
+{
+	global $modSettings, $smcFunc;
+	if (!empty($modSettings['bll_enabled']) && !empty($modSettings['bll_warning_link_time']))
+	{
+		$timestamp = time() - ($modSettings['bll_warning_link_time'] * 86400);;
+			
+		$smcFunc['db_query']('',"
+			UPDATE {db_prefix}broken_links_list
+			SET	status = {int:statuswarn}
+			WHERE reported_time <= {int:timestamp} AND status <> {int:okstatus}",
+			array(
+				'timestamp' => $timestamp,
+				'statuswarn' => 1,
+				'okstatus' => 2,
+			)
+		);
+		return true;
+	}
+	return false;
+}
+]]></add>
+		</operation>
+	</file>
+<file name="$sourcedir/Subs.php">    
+	<operation>
+		<search position="before"><![CDATA[$current_action = 'moderate';]]></search>
+			<add><![CDATA[
+	elseif ($context['current_action'] == 'brokenlinkslist2')
+		$current_action = 'broken_link_list';]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[}
+
+// Generate a random seed and ensure it's stored in settings.]]></search>
+			<add><![CDATA[
+	global $sourcedir;			
+	require_once($sourcedir . '/BrokenLinksList.php');
+	countBrokenLinks();
+	if (!$user_info['is_guest'] && $context['broken_links_count'] > 0)
+	{
+		$context['menu_buttons']['broken_link_list']['alttitle'] = $context['menu_buttons']['broken_link_list']['title'] . ' [' . $context['broken_links_count'] . ']';
+		$context['menu_buttons']['broken_link_list']['title'] .= ' [<strong>' . $context['broken_links_count'] . '</strong>]';
+	}
+]]></add>
+	</operation>
+</file>	
+</modification>

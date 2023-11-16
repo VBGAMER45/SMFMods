@@ -10,12 +10,12 @@ function template_main()
 	global $txt, $context, $scripturl;
 
 	echo '
-	<table border="0" cellpadding="0" cellspacing="0" align="center" width="95%">
-  <tr>
-  	<td align="center"  class="catbg">',$txt['smftags_popular'], '
-
-  	</td>
-  	</tr>
+<div class="cat_bar">
+		<h3 class="catbg centertext">
+		', $txt['smftags_popular'], '
+		</h3>
+  </div>
+	<table border="0" cellpadding="0" cellspacing="0" align="center" width="100%">
   <tr>
   	<td align="center" class="windowbg2">';
 
@@ -29,14 +29,11 @@ function template_main()
   	</tr>
   	</table>
   	<br />
-  	<table border="0" cellpadding="0" cellspacing="0" align="center" width="95%">
-  <tr>
-  	<td align="center"  class="catbg">',$txt['smftags_latest'], '
-
-  	</td>
-  	</tr>
-  <tr>
-  	<td align="center" class="windowbg2">
+  	<div class="cat_bar">
+		<h3 class="catbg centertext">
+		', $txt['smftags_latest'], '
+		</h3>
+  </div>
   	<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
 					<tr>
 						<td class="catbg3">',$txt['smftags_subject'],'</td>
@@ -60,7 +57,6 @@ echo '
 
   	</tr>
   	</table>
-  	</td></tr></table>
 
   	<br />
   	';
@@ -72,12 +68,11 @@ function template_results()
 {
 	global $scripturl, $txt, $context;
 echo '
-	<table border="0" cellpadding="0" cellspacing="0"  align="center" width="95%">
-  <tr>
-  	<td align="center" class="catbg">' . $txt['smftags_resultsfor'] . $context['tag_search'] . '</td>
-  	</tr>
-  	<tr>
-  	<td>
+<div class="cat_bar">
+		<h3 class="catbg centertext">
+		' . $txt['smftags_resultsfor'] . $context['tag_search'] . '
+		</h3>
+  </div>
 		<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
 					<tr>
 						<td class="catbg3">',$txt['smftags_subject'],'</td>
@@ -99,7 +94,7 @@ echo '
 	<tr>
 	<td colspan="4">' . $txt['smftags_pages'] . $context['page_index'] . '</td>
   	</tr>
-  	</table></td></tr></table><br />
+  	</table><br />
   	';
 
 	TagsCopyright();
@@ -112,11 +107,12 @@ function template_addtag()
 
 	echo '
 <form method="post" action="', $scripturl, '?action=tags;sa=addtag2">
+<div class="cat_bar">
+		<h3 class="catbg centertext">
+        ',  $txt['smftags_addtag2'], '
+        </h3>
+</div>
 <table border="0" cellpadding="0" cellspacing="0" align="center" width="100%">
-  <tr>
-    <td width="50%" colspan="2"  align="center" class="catbg">
-    <b>', $txt['smftags_addtag2'], '</b></td>
-  </tr>
   <tr>
     <td width="28%"  class="windowbg2" align="right"><span class="gen"><b>', $txt['smftags_tagtoadd'], '</b></span></td>
     <td width="72%" class="windowbg2"><input type="text" name="tag" size="64" maxlength="100" /></td>
@@ -142,11 +138,13 @@ function template_admin_settings()
 	global $scripturl, $txt, $modSettings;
 
 	echo '
-	<table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="titlebg">
-			<td>', $txt['smftags_settings'], '</td>
-		</tr>
-		<tr class="windowbg">
+<div class="cat_bar">
+		<h3 class="catbg centertext">
+        ', $txt['smftags_settings'], '
+        </h3>
+</div>
+	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
+		<tr class="windowbg2">
 			<td>
 			<b>' . $txt['smftags_settings']. '</b><br />
 			<form method="post" action="' . $scripturl . '?action=tags;sa=admin2">
@@ -154,8 +152,18 @@ function template_admin_settings()
 				<tr><td width="30%">' . $txt['smftags_set_mintaglength'] . '</td><td><input type="text" name="smftags_set_mintaglength" value="' .  $modSettings['smftags_set_mintaglength'] . '" /></td></tr>
 				<tr><td width="30%">' . $txt['smftags_set_maxtaglength'] . '</td><td><input type="text" name="smftags_set_maxtaglength" value="' .  $modSettings['smftags_set_maxtaglength'] . '" /></td></tr>
 				<tr><td width="30%">' . $txt['smftags_set_maxtags'] . '</td><td><input type="text" name="smftags_set_maxtags" value="' .  $modSettings['smftags_set_maxtags'] . '" /></td></tr>
+				
+				
+				<tr><td width="30%">' . $txt['smftags_set_msgindex'] . '</td><td><input type="checkbox" name="smftags_set_msgindex" ' .  ($modSettings['smftags_set_msgindex'] ? ' checked="checked"' : '') . '" /></td></tr>
+				
+				<tr><td width="30%">' . $txt['smftags_set_msgindex_max_show'] . '</td><td><input type="text" name="smftags_set_msgindex_max_show" value="' .  $modSettings['smftags_set_msgindex_max_show'] . '" /></td></tr>
+				<tr><td width="30%">' . $txt['smftags_set_use_css_tags'] . '</td><td><input type="checkbox" name="smftags_set_use_css_tags" ' .  ($modSettings['smftags_set_use_css_tags'] ? ' checked="checked"' : '') . '" /></td></tr>
+				
+				<tr><td width="30%">' . $txt['smftags_set_css_tag_background_color'] . '</td><td><input type="text" name="smftags_set_css_tag_background_color" value="' .  $modSettings['smftags_set_css_tag_background_color'] . '" /></td></tr>
+				<tr><td width="30%">' . $txt['smftags_set_css_tag_font_color'] . '</td><td><input type="text" name="smftags_set_css_tag_font_color" value="' .  $modSettings['smftags_set_css_tag_font_color'] . '" /></td></tr>
+
 				<tr>
-				<td clospan="2"><b>',$txt['smftags_tagcloud_settings'],'</b></td>
+				<td colspan="2"><b>',$txt['smftags_tagcloud_settings'],'</b></td>
 				</tr>
 				<tr><td width="30%">' . $txt['smftags_set_cloud_tags_to_show'] . '</td><td><input type="text" name="smftags_set_cloud_tags_to_show" value="' .  $modSettings['smftags_set_cloud_tags_to_show'] . '" /></td></tr>
 				<tr><td width="30%">' . $txt['smftags_set_cloud_tags_per_row'] . '</td><td><input type="text" name="smftags_set_cloud_tags_per_row" value="' .  $modSettings['smftags_set_cloud_tags_per_row'] . '" /></td></tr>
@@ -218,7 +226,7 @@ function TagsCopyright()
 {
 	//The Copyright is required to remain or contact me to purchase link removal.
 	//http://www.smfhacks.com/copyright_removal.php
-	echo '<br /><div align="center"><span class="smalltext">Powered by: <a href="http://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
+	echo '<br /><div align="center"><span class="smalltext">Powered by: <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
 
 }
 ?>

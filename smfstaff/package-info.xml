@@ -5,7 +5,7 @@
 	<id>vbgamer45:SMFStaff</id>
 	<name>SMF Staff Page</name>
 	<type>modification</type>
-	<version>1.8</version>
+	<version>2.0</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
 		<redirect url="?action=staff;sa=admin">redirect.txt</redirect>
@@ -34,8 +34,7 @@
 		<modification type="file" reverse="true">SMF107/staff7.xml</modification>
 		<code>UnInstall.php</code>
 	</uninstall>
-	
-	
+
 	<install for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
 		<redirect url="?action=admin;area=staff;sa=admin">redirect.txt</redirect>
 		<readme>ReadMe.txt</readme>
@@ -52,5 +51,39 @@
 		<modification type="file" reverse="true">staff2.xml</modification>
 		<code>UnInstall.php</code>
 	</uninstall>
+
+
+	<install for="2.1 - 2.1.99">
+		<redirect url="?action=admin;area=staff;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Staff2.1.php" destination="$sourcedir" />
+		<require-file name="Staff2.1.template.php" destination="$themedir" />
+		<require-file name="Staff.english.php" destination="$themedir/languages" />
+		<require-file name="group.png" destination="$imagesdir/admin" />
+		<require-file name="group.png" destination="$imagesdir" />
+
+		<!-- Hooks -->
+		<hook hook="integrate_admin_areas" function="staff_admin_areas" file="$sourcedir/Staff2.1.php" />
+		<hook hook="integrate_menu_buttons" function="staff_menu_buttons" file="$sourcedir/Staff2.1.php" />
+		<hook hook="integrate_actions" function="staff_actions" file="$sourcedir/Staff2.1.php"  />
+		<hook hook="integrate_load_permissions" function="staff_load_permissions" file="$sourcedir/Staff2.1.php" />
+		<hook hook="integrate_who_allowed" function="staff_who_allowed" file="$sourcedir/Staff2.1.php"  />
+
+		<code>staffsql2.php</code>
+
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+
+		<!-- Hooks -->
+		<hook hook="integrate_admin_areas" function="staff_admin_areas" file="$sourcedir/Staff2.1.php" reverse="true" />
+		<hook hook="integrate_menu_buttons" function="staff_menu_buttons" file="$sourcedir/Staff2.1.php" reverse="true" />
+		<hook hook="integrate_actions" function="staff_actions" file="$sourcedir/Staff2.1.php" reverse="true" />
+		<hook hook="integrate_load_permissions" function="staff_load_permissions" file="$sourcedir/Staff2.1.php" reverse="true" />
+		<hook hook="integrate_who_allowed" function="staff_who_allowed" file="$sourcedir/Staff2.1.php" reverse="true"  />
+
+		<code>UnInstall.php</code>
+	</uninstall>
+
 
 </package-info>

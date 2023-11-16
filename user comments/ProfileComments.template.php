@@ -177,7 +177,7 @@ function template_commentsadmin()
 					<td>',$txt['pcomments_com_options'],'</td>
 				</tr>
 			';
-			
+
 			foreach($context['pcomments_list'] as $row)
 			{
 				echo '<td>',$row['subject'],'<br />',parse_bbc($row['comment']),'</td>';
@@ -190,7 +190,7 @@ function template_commentsadmin()
 			}
 
 			
-			if ($total > 0)
+			if ($context['pcomments_count'] > 0)
 			{
 				echo '<tr class="titlebg">
 						<td align="left" colspan="5">

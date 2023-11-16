@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:InfoBanExpireTime</id>
+	<name>InfoBan - Expire Time</name>
+	<version>1.0</version>
+
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	InfoBan - Expire Time
+$txt['your_ban_reason'] = 'Reason:';
+$txt['your_ban_expires'] = 'Your ban is set to expire %s.';
+$txt['your_ban_expires_never'] = 'Your ban is not set to expire.';]]></add>
+		</operation>
+	</file>
+	<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	InfoBan - Expire Time
+$txt['your_ban_reason'] = 'Reason:';
+$txt['your_ban_expires'] = 'Your ban is set to expire %s.';
+$txt['your_ban_expires_never'] = 'Your ban is not set to expire.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	InfoBan - Expire Time
+$txt['your_ban_reason'] = 'Razon:';
+$txt['your_ban_expires'] = 'Su ban expira en: %s.';
+$txt['your_ban_expires_never'] = 'Su ban no expira nunca.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	InfoBan - Expire Time
+$txt['your_ban_reason'] = 'Razon:';
+$txt['your_ban_expires'] = 'Su ban expira en: %s.';
+$txt['your_ban_expires_never'] = 'Su ban no expira nunca.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	InfoBan - Expire Time
+$txt['your_ban_reason'] = 'Razon:';
+$txt['your_ban_expires'] = 'Su ban expira en: %s.';
+$txt['your_ban_expires_never'] = 'Su ban no expira nunca.';]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//	InfoBan - Expire Time
+$txt['your_ban_reason'] = 'Razon:';
+$txt['your_ban_expires'] = 'Su ban expira en: %s.';
+$txt['your_ban_expires_never'] = 'Su ban no expira nunca.';]]></add>
+		</operation>
+	</file>
+
+</modification>

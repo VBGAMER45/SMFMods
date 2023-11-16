@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>PiPi2011:MenuElegante</id>
+	<name>Menu Elegante</name>
+	<type>modification</type>
+	<version>1</version>
+	<install for="2.0 - 2.99.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>install.xml</modification>
+		<!-- Important files -->				
+		<require-dir name="Themes" destination="$boarddir" />						
+	</install>
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" reverse="true">install.xml</modification>
+		<!-- Extra Folders -->				
+		<remove-dir name="$themedir/scripts/pipimenu.js" />
+		<remove-dir name="$themedir/scripts/pipimenu_2.js" />	
+	</uninstall>
+</package-info>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>ccbtimewiz:skype</id>
+	<name>Skype Integration</name>
+	<version>2.1.2</version>
+
+	<type>modification</type>
+
+	<install for="1.1 - 1.99.99">
+		<modification>install.xml</modification>
+		<modification>languages.xml</modification>
+		<require-dir name="images" destination="$themedir" />
+		<code>skype_settings.php</code>
+	</install>
+
+	<!-- Don't forget something to make it uninstallable! -->
+	<uninstall for="1.1 - 1.99.99">
+		<modification reverse="true">install.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$themedir/images/skype.png" />
+	</uninstall>
+	
+	<install for="2.0 RC2">
+		<modification>install2.xml</modification>
+		<modification>languages.xml</modification>
+		<require-dir name="images" destination="$themedir" />
+		<database>skype_settings.php</database>
+	</install>
+
+	<!-- Don't forget something to make it uninstallable! -->
+	<uninstall for="2.0 RC2">
+		<modification reverse="true">install2.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$themedir/images/skype.png" />
+	</uninstall>
+	
+		<install for="2.0 RC3">
+		<modification>install2r3.xml</modification>
+		<modification>languages.xml</modification>
+		<require-dir name="images" destination="$themedir" />
+		<database>skype_settings.php</database>
+	</install>
+
+	<!-- Don't forget something to make it uninstallable! -->
+	<uninstall for="2.0 RC3">
+		<modification reverse="true">install2r3.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$themedir/images/skype.png" />
+	</uninstall>
+</package-info>

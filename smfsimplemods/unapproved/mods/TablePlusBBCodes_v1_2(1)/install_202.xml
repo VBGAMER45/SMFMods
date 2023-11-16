@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>.LORD.:TablePlusBBCodes</id>
+	<name>Table Plus BBCodes</name>
+	<version>1.2</version>
+
+	<file name="$sourcedir/Subs-Editor.php">
+		<operation>
+			<search position="replace"><![CDATA[array(
+				'image' => 'table',
+				'code' => 'table',
+				'before' => '[table]\n[tr]\n[td]',
+				'after' => '[/td]\n[/tr]\n[/table]',
+				'description' => $txt['table']
+			),]]></search>
+			<add><![CDATA[array(
+				'image' => 'tabletrtd',
+				'code' => 'tabletrtd',
+				'before' => '[table]\n[tr]\n[td]',
+				'after' => '[/td][td][/td]\n[/tr]\n[/table]',
+				'description' => $txt['table']
+			),
+			array(
+				'image' => 'tr',
+				'code' => 'tr', 
+				'before' => '[tr]\n[td]', 
+				'after' => '[/td][td][/td]\n[/tr]', 
+				'description' => $txt['table_tr']
+			),
+			array(
+				'image' => 'td',
+				'code' => 'td', 
+				'before' => '[td]', 
+				'after' => '[/td]', 
+				'description' => $txt['table_td']
+			),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/css/index.css">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+
+/* Table Plus BBCodes */
+.bbc_table	
+{ 
+border-spacing: 2px;
+background: #88A6C0 url(images/catbg.jpg) repeat-x 
+}
+.bbc_table td
+{ 
+padding: 5px;
+background: #E9F0F6 url(images/titlebg.jpg) repeat-x 0 -17px 
+}
+]]></add>
+		</operation>
+	</file>
+
+</modification>

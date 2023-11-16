@@ -20,6 +20,7 @@ function prettyurls_admin_areas(&$admin_areas)
 		'custom_url' => $scripturl . '?action=admin;area=pretty',
 		'subsections' => array(
 			'settings' => array($txt['pretty_chrome_menu_settings']),
+			'nginx' => array($txt['pretty_chrome_menu_nginx']),
 			'maintenance' => array($txt['pretty_chrome_menu_maintenance']),
 		),
 	);

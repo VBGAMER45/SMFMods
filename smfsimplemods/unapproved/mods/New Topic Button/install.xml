@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Smfsimple:NewTopicButton</id>
+	<name>New Topic Button By Smfsimple.com</name>
+	<version>V1</version>
+	
+<file name="$themedir/BoardIndex.template.php">
+        <operation>
+			<search position="replace"><![CDATA[', $board['name'], '</a>]]></search>
+			<add><![CDATA[', $board['name'], '</a><a href="' . $scripturl . '?action=post;board=' . $board['id'] . '"><img src="' . $settings['images_url'] . '/newtopic.png" align="right" alt="', $txt['new_topic'] ,'" /></a>
+  ]]></add>
+		</operation>
+
+	</file>
+		
+<file name="$themedir/MessageIndex.template.php">
+        <operation>
+			<search position="replace"><![CDATA[', $board['name'], '</a>]]></search>
+			<add><![CDATA[', $board['name'], '</a><a href="' . $scripturl . '?action=post;board=' . $board['id'] . '"><img src="' . $settings['images_url'] . '/newtopic.png" align="right" alt="', $txt['new_topic'] ,'" /></a>
+  ]]></add>
+		</operation>
+
+	</file>				
+
+</modification>

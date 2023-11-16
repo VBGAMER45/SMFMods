@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Ad Management</name>
+	<id>jeremy:ads</id>
+	<type>modification</type>
+	<version>3.5d</version>
+
+	<install for="2.0-2.0.99, 2.0 RC4,2.0 RC5">
+		<code>install.php</code>
+		<modification>installrc4.xml</modification>
+		<require-file name="Ads.php" destination="$sourcedir" />
+		<require-file name="LoadAds.php" destination="$sourcedir" />
+		<require-file name="Ads.template.php" destination="$themedir" />
+		<require-file name="Ads.english.php" destination="$languagedir" />
+		<require-file name="Ads.english-utf8.php" destination="$languagedir" />
+	</install>
+	
+	<uninstall for="2.0-2.0.99, 2.0 RC4,2.0 RC5">
+		<modification reverse="true">installrc4.xml</modification>
+		<remove-file name="$sourcedir/Ads.php" />
+		<remove-file name="$sourcedir/LoadAds.php" />
+		<remove-file name="$themedir/Ads.template.php" />
+		<remove-file name="$languagedir/Ads.english.php" />
+		<remove-file name="$languagedir/Ads.english-utf8.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 RC2, 2.0 RC3">
+		<code>install.php</code>
+		<modification>install.xml</modification>
+		<require-file name="Ads.php" destination="$sourcedir" />
+		<require-file name="LoadAds.php" destination="$sourcedir" />
+		<require-file name="Ads.template.php" destination="$themedir" />
+		<require-file name="Ads.english.php" destination="$languagedir" />
+		<require-file name="Ads.english-utf8.php" destination="$languagedir" />
+	</install>
+	
+	<uninstall for="2.0 RC2, 2.0 RC3">
+		<modification reverse="true">install.xml</modification>
+		<remove-file name="$sourcedir/Ads.php" />
+		<remove-file name="$sourcedir/LoadAds.php" />
+		<remove-file name="$themedir/Ads.template.php" />
+		<remove-file name="$languagedir/Ads.english.php" />
+		<remove-file name="$languagedir/Ads.english-utf8.php" />
+		<code>UnInstall.php</code>
+	</uninstall>
+	
+	
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<code>install.php</code>
+		<modification>install21.xml</modification>
+		<require-file name="Ads.php" destination="$sourcedir" />
+		<require-file name="LoadAds.php" destination="$sourcedir" />
+		<require-file name="smf21/Ads.template.php" destination="$themedir" />
+		<require-file name="Ads.english.php" destination="$languagedir" />
+		<require-file name="Ads.english-utf8.php" destination="$languagedir" />
+		<require-file name="adshooks.php" destination="$sourcedir" />
+		<require-file name="chart_bar.png" destination="$imagesdir/admin" />
+		<code>dohooks.php</code>
+	</install>
+	
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<modification reverse="true">install21.xml</modification>
+		<remove-file name="$sourcedir/Ads.php" />
+		<remove-file name="$sourcedir/LoadAds.php" />
+		<remove-file name="$themedir/Ads.template.php" />
+		<remove-file name="$languagedir/Ads.english.php" />
+		<remove-file name="$languagedir/Ads.english-utf8.php" />
+		<code>dohooks.php</code>
+		<code>UnInstall.php</code>
+	</uninstall>
+</package-info>

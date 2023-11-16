@@ -1,0 +1,25 @@
+<file name="$languagedir/Modifications.italian.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+//Start GoogAd
+$txt['googad_title'] = 'GoogAd Mod';
+$txt['googad_description'] = 'Con questa mod è possibile inserire pubblicità all'interno del corpo di ogni Argomento / Risposte o solo all'interno del primo Argomento (non nelle risposte)';
+$txt['googad_title2'] = 'Impostazioni GoogAd';
+$txt['googad_enable'] = 'Abilita GoogAd Mod';
+$txt['googad_code'] = 'Inserisci il Codice';
+$txt['googad_code_subtext'] = 'Accetta HTML <br />Non Accetta BBC';
+$txt['googad_guest'] = 'Mostra solo ai Visitatori?';
+$txt['googad_guest_subtext'] = 'Attivando questa opzione, la pubblicità aggiunta verrà mostrata solo ai visitatori. Se non si attiva verrà mostrato a tutti i Visitatori/Utenti';
+$txt['googad_float'] = 'Stabilire la posizione';
+$txt['googad_float_subtext'] = 'Hai la possibilità di stabillire la posizione dove apparirà la pubblicità se a sinistra o a destra.';
+$txt['googad_float_left'] = 'Sinistra';
+$txt['googad_float_right'] = 'Destra';
+$txt['googad_show'] = 'Visualizzare sono nel primo Argomento';
+$txt['googad_show_subtext'] = 'Se si desidera visualizzare pubblicità solo nel primo messaggio è necessario attivare questa opzione, ma, lo mostrerà in tutti i messaggi di questo Argomento (comprese le risposte).';
+//End GoogAd
+
+]]></add>
+	</operation>
+</file>
+

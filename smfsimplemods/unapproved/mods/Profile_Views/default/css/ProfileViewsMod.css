@@ -1,0 +1,13 @@
+.pvm_avatar{
+	float:left;
+	clear:both;
+	margin: 0px 5px 5px 0px;
+}
+
+.pvm_info{
+	float:left;
+}
+
+.pvm_name{
+	font-weight: bold;
+}

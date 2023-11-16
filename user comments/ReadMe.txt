@@ -1,11 +1,11 @@
 *******************************
 Profile Comments
 By: vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 *******************************
 
 Mod Information: 
-For SMF 2.0.x, 1.1.x and 1.0.x
+For SMF 2.1.x, 2.0.x, 1.1.x and 1.0.x
 
 Adds a comments section to a user's profile page.
 User's can leave multiple comments.
@@ -22,7 +22,6 @@ SMF Trader System
 SMF Archive
 SMF Staff Page
 SMF Links
-User Email System
 SMF Classifieds
 Newsletter Pro
 Downloads System Pro

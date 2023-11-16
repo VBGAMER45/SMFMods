@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:Reason_For_Delete</id>
+	<name>Reason For Delete</name>
+	<version>1.0</version>
+<file name="$boarddir/index.php">
+    <operation>
+		<search position="after"><![CDATA['removetopic2' => array('RemoveTopic.php', 'RemoveTopic2'),]]></search>
+			<add><![CDATA[
+		'removetopic' => array ('Reasonfordelete.php','Reasonfordelete'),
+		'reasonfordelete' => array('Reasonfordelete.php', 'Reasonfordelete'),
+		]]></add>
+	</operation>
+</file>	
+<file name="$sourcedir/Admin.php">
+    <operation>
+		<search position="after"><![CDATA['modsettings' => array(]]></search>
+			<add><![CDATA[
+				'reasonfordelete' => array(
+					'label' => $txt['rfd_menu_button'],
+					'file' => 'Reasonfordelete.php',
+					'function' => 'ReasonfordeleteAdmin',
+					'icon' => 'post_moderation_deny.gif',
+					'subsections' => array(
+						'main' => array($txt['rfd_settings']),
+						'add' => array($txt['rfd_AddProfiles'])
+					),
+				),				
+				]]></add>
+	</operation>
+</file>	
+
+<file name="$sourcedir/RemoveTopic.php">
+    <operation>
+		<search position="after"><![CDATA[// Notify people that this topic has been removed]]></search>
+			<add><![CDATA[
+			//ReasonForDelete MOD START
+				rfdmod();	
+			//ReasonForDelete MOD START				
+				]]></add>
+	</operation>
+</file>	
+
+<file name="$sourcedir/RemoveTopic.php">
+    <operation>
+		<search position="end" />
+			<add><![CDATA[
+function rfdmod()
+{	
+	global $user_info, $sourcedir, $context, $modSettings, $txt;
+	if (!empty($modSettings['rfd_enabled']))
+	{
+		require_once($sourcedir . '/Reasonfordelete.php');
+		$id = (int) $_POST['reason'];
+		
+		if($id != 0) //if is 0 use a additional text
+		loadReasons($id);
+		
+		include_once($sourcedir . '/Subs-Post.php'); //Get info ::)
+		$aut = (!empty($_POST['author'])) ? $_POST['author'] : $txt['guest_title'];
+		$psr_name = (!empty($_POST['poster_name'])) ? $_POST['poster_name'] : $txt['guest_title'];
+		
+		$recipients = array(
+			'to' => array($aut),
+			'bcc' => array()
+		);
+		
+		$outbox_store = false;
+		
+		$from = array (
+			'id' => (!empty($modSettings['rfd_senderid'])) ? $modSettings['rfd_senderid'] : $user_info['id'], 
+			'name' =>'',
+			'username' => '',
+			);
+			
+		$subj = (!empty($_POST['subject'])) ? $_POST['subject'] : '';			
+		$subject = (!empty($modSettings['rfd_titleset'])) ? $modSettings['rfd_titleset'] : $txt['rfd_postRemoved'].$subj ;
+		$message = ($id != 0) ? $context['reasontext'] : '';
+		
+		if(!empty($_POST['infoadd']))
+		{
+			$infoadd = (string) $_POST['infoadd'];
+$message .='
+'.$txt['rfd_additional_info'].''.$infoadd.'';
+		}
+		
+		//Matches (?)
+		$author_name = $psr_name;
+		$subject2 = $subj;
+		$messagetoTransform  = $message;
+		$search = array("(member_name)", "(subject_topic)");
+		$finalmessage   = array($author_name, $subject2);		
+		$newphrase = str_replace($search, $finalmessage, $messagetoTransform);
+
+		if(!empty($message)) // IF have something send PM!
+		sendpm($recipients, $subject, $newphrase, $outbox_store, $from);
+	}
+	//ReasonForDeleteTopic SMFSIMPLE.COM END
+}
+]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Display.template.php">
+    <operation>
+		<search position="replace"><![CDATA[action=removetopic2]]></search>
+			<add><![CDATA[action=removetopic]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+</file>
+		
+</modification>

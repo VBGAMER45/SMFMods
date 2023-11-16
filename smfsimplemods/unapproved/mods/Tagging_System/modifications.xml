@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>4kstore:Tagging_System_SMFSIMPLE</id>
+	<name>Tagging System SMFSIMPLE</name>
+	<version>1.4</version>
+<file name="$sourcedir/Post.php">
+    <operation>
+		<search position="after"><![CDATA[// Check the subject and message.]]></search>
+			<add><![CDATA[//TaggingSystem Errors Checks
+	if (!empty($modSettings['tag_enabled']) && (empty($topic) || isset($_REQUEST['msg'])) && !empty($context['active_tags_boards']) && (isset($_REQUEST['msg']) && $_REQUEST['msg'] == $topic_info['id_first_msg']) || (!isset($_REQUEST['msg'])  && empty($topic)))
+	{
+		$context['tagserror'] = false;
+		$errorsTags = errorsTags();
+		if (!empty($errorsTags))
+		{
+			foreach ($errorsTags as $er)
+				$post_errors[] = $er;
+
+			$context['tagserror'] = true;
+		}
+	}
+	]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[// Set the destinaton.]]></search>
+			<add><![CDATA[//Tagging System:
+		if (!empty($modSettings['tag_enabled']) && !empty($context['active_tags_boards']))
+			$context['editTags'] = editTags($topic);
+
+		]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[modifyPost($msgOptions, $topicOptions, $posterOptions);]]></search>
+			<add><![CDATA[
+
+		//Tagging System:
+		if (!empty($modSettings['tag_enabled']) && isset($_POST['tags_news']))
+		{
+			deleteTagsTopics($topic);
+			postTags();
+		}]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[$topic = $topicOptions['id'];]]></search>
+			<add><![CDATA[
+
+		//Tagging System
+		if (!empty($modSettings['tag_enabled']) && isset($_POST['tags_news']))
+			postTags();]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Display.php">
+	<operation>
+		<search position="after"><![CDATA[// Load up the "double post" sequencing magic.]]></search>
+			<add><![CDATA[//Tagging System
+	if ($modSettings['tag_enabled'] && !empty($context['active_tags_boards']))
+		taggingRelated();
+
+	]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/RemoveTopic.php">
+	<operation>
+		<search position="after"><![CDATA[// Update the totals...]]></search>
+			<add><![CDATA[//Tagging System
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}tags_topic
+		WHERE id_topic IN ({array_int:topics})',
+		array(
+			'topics' => $topics,
+		)
+	);
+
+	]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Display.template.php">
+    <operation>
+		<search position="before"><![CDATA[<hr class="post_separator" />';]]></search>
+			<add><![CDATA[
+		//Tagging System
+		if (($message['id'] == $context['first_message']) && !empty($context['tagsinfo']))
+		{
+			echo '
+				<div class="cat_bar">
+					<h3 class="catbg">'.$txt['tags_topic'].'</h3>
+				</div>
+				<div class="windowbg2" style="overflow: auto;">
+					<div class="content_tags">';
+					foreach ($context['tagsinfo'] as $tag)
+						echo '
+						<div class="content_tags">
+							<span><a href="'.$scripturl .'?action=tags;sa=search;id_tag='.$tag['id_tag'].'">'.$tag['tag'].'</a></span>
+						</div>';
+					echo '
+					</div>
+				</div>';
+		}
+		//Tagging System END]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[echo '
+		<br class="clear" />';
+
+	if ($context['show_spellchecking'])]]></search>
+			<add><![CDATA[echo '
+		<br class="clear" />';
+	
+	//Tagging System
+	if (!empty($context['tagsrelated']) && !empty($modSettings['tag_enabled_related_topics']) && !empty($modSettings['tag_enabled']))
+	{
+		echo '
+			<div class="cat_bar">
+				<h3 class="catbg">'.$txt['tags_related_title'].'</h3>
+			</div>
+			<div class="tborder topic_table" id="messageindex">
+				<table class="table_grid" cellspacing="0">
+					<thead>
+						<tr class="catbg">
+							<th scope="col" class="smalltext first_th">'.$txt['subject'].'</th>
+							<th scope="col" class="smalltext last_th" width="14%">'.$txt['replies'].'</th>
+						</tr>
+					</thead>
+					<tbody>';
+		foreach ($context['tagsrelated'] as $rtags)
+		{
+			echo '		<tr class="windowbg">
+							<td class="subject">
+								<div>
+									<a href="'.$rtags['topic_href'].'">'.$rtags['subject'].'</a>
+								</div>
+								<a href="'.$rtags['board_href'].'">'.$rtags['board_name'].'</a> <span style="font-size:0.8em;">'.$txt['started_by'].' <a href="'.$rtags['member_href'].'">'.$rtags['real_name'].'</a></span>
+							</td>
+							<td class="stats">
+								'.$rtags['num_replies'].' '.$txt['replies'].'
+								<br />
+								'.$rtags['num_views'].' '.$txt['views'].'
+							</td>
+						</tr>';
+		}
+		echo '		</tbody>
+				</table>
+			</div>';
+	}
+	//Tagging System END
+	
+	if ($context['show_spellchecking'])]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/Post.template.php">
+    <operation>
+		<search position="before"><![CDATA[', template_control_richedit($context['post_box_name'], 'smileyBox_message', 'bbcBox_message');]]></search>
+			<add><![CDATA[
+	//Tagging System
+	if (($context['is_new_topic'] || (!empty($_REQUEST['msg']) && !empty($context['is_first_post']))) && $modSettings['tag_enabled'] && !empty($context['active_tags_boards']))
+	{	
+				
+			if (!empty($context['editTags']) && !empty($_REQUEST['tags_news']))
+				$context['editTags'] = $context['editTags'] .  implode(' ', $_REQUEST['tags_news']);				
+			
+			echo '
+						<span style="font-weight: bold;" ',(isset($context['tagserror'])) ? ' class="error"' : '',' id="caption_tags">', $txt['tags_menu_btn'], ':</span>
+						<div id="searcher_tags">
+							<div class="tag_selection"></div>
+							<div class="tag_selectable">
+								<label>
+									<input id="consulta" type="text" autocomplete="off" value="', !empty($context['editTags']) ? $context['editTags'] : '','" />
+									<span class="tag_suggest"></span>
+								</label>
+							</div>
+						</div>';
+						
+	}					
+	//Tagging System END!]]></add>
+	</operation>
+</file>
+</modification>

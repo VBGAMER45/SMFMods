@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<name>Profile Views</name>
+	<id>4kstore:ProfileViews</id>
+	<version>2.0</version>
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="before"><![CDATA[loadCustomFields($memID);]]></search>		
+			<add><![CDATA[
+		
+	if (!empty($modSettings['pvm_enabled']))
+	{
+		require_once($sourcedir . '/ProfileViewsMod.php');
+		load_profile_visit_log($memID);
+	}]]></add>
+		</operation>		
+	</file>
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="replace"><![CDATA[echo '
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+	</div>
+	<div id="detailedinfo">
+		<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<dl>';]]></search>		
+			<add><![CDATA[echo '
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>';
+		
+	//mod Profile views	
+	if (!empty($context['pv_mod']))
+	{
+		echo'
+		<div class="windowbg">
+			<div class="cat_bar">
+				<h3 class="catbg">
+					<span class="ie6_header floatleft"><img src="', $settings['images_url'], '/icons/login.gif" alt="" class="icon" />', $txt['pvm_title_log'], '</span>
+				</h3>
+			</div>
+			<span class="topslice"><span></span></span>
+			<div class="content flow_auto" style="max-height:',!empty($modSettings['pvm_height']) ? $modSettings['pvm_height'] : '100' ,'px;">';
+			
+			foreach ($context['pv_mod'] as $pv)
+			{
+				if (!empty($modSettings['pvm_show_avatar']))
+				echo '				
+				<div class="pvm_avatar">
+					', $pv['avatar'],'
+				</div>';
+				
+				echo '
+				<div class="pvm_info">';
+				if (!empty($pv['id_member_visit']))
+					echo '<a href="', $scripturl, '?action=profile;u=', $pv['id_member_visit'],'" class="pvm_name" style="color:'.$pv['mg_color'].'">', $pv['name'],'</a><br />';
+						
+				else 
+					echo $pv['name'],'<br />';
+					
+				if (!empty($pv['last_visit']))
+				echo' ', $pv['last_visit'],'<br />';		
+				
+				if (!empty($pv['total_visits']))
+				echo' ', $txt['pvm_visits'],' ', $pv['total_visits'],'';
+				
+				echo '
+				</div>
+				';				
+			}
+			
+		echo'
+					
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>';
+	}	
+	//END	
+		
+		echo'
+	</div>
+	
+	<div id="detailedinfo">
+		<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<dl>';]]></add>
+		</operation>		
+	</file>
+</modification>

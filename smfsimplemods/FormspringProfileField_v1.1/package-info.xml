@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is a simplified package manifest for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	This script can be used to make your package do many different things.
+	The following documentation should be available on the format of this
+	file and the things you can do with it:
+		http://mods.simplemachines.org/docs/package-info.php
+
+	Please see the other included file, package-info_advanced.xml, for
+	a more detailed description of what you can do with this file.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:FormspringProfileField</id>
+	<name>Formspring Profile Field</name>
+	<version>1.1</version>
+	<type>modification</type>
+	
+	<install for="2.0 RC4 - 2.99.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>modification_2_rc4.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="formspring-logo.png" destination="$imagesdir" />
+		<code>install_2.php</code>
+	</install>
+	
+	<install for="2.0 - 2.0 RC3">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification>modification_2.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="formspring-logo.png" destination="$imagesdir" />
+		<code>install_2.php</code>
+	</install>
+	
+	<install for="1.1 - 1.99.99">
+        	<readme parsebbc="true">readme.txt</readme>
+		<modification>modification_1_1_x.xml</modification>
+		<modification>languages.xml</modification>
+		<require-file name="formspring-logo.png" destination="$imagesdir" />
+	</install>
+
+	<uninstall for="1.1 - 1.99.99">
+		<modification reverse="true">modification_1_1_x.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$imagesdir/formspring-logo.png" />
+	</uninstall>
+	
+	<uninstall for="2.0 RC4 - 2.99.99">
+		<modification reverse="true">modification_2_rc4.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$imagesdir/formspring-logo.png" />
+	</uninstall>
+	
+	<uninstall for="2.0 - 2.0 RC3">
+		<modification reverse="true">modification_2.xml</modification>
+		<modification reverse="true">languages.xml</modification>
+		<remove-file name="$imagesdir/formspring-logo.png" />
+	</uninstall>	
+	
+</package-info>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>JBlaze:PSNGamerCardBBC</id>
+	<name>PSN GamerCard BBC</name>
+	<type>modification</type>
+	<version>1.5</version>
+
+	<install for="2.0 RC2, 2.0 RC3, 2.0 - 2.99.99">
+		<readme parsebbc="true">readme.txt</readme>
+		<modification type="file">smf-2.0.xml</modification>
+		<require-file name="psn.gif" destination="$themedir/images/bbc" />
+	</install>
+
+	<uninstall for="2.0 RC2, 2.0 RC3, 2.0 - 2.99.99">
+		<modification type="file" reverse="true">smf-2.0.xml</modification>
+		<remove-file name="$themedir/images/bbc/psn.gif" />
+	</uninstall>
+
+</package-info>

@@ -15,7 +15,7 @@
 	if ((isset($context['pretty']['oldschoolquery']) || $context['pretty']['query_string']['board'] != $context['pretty']['board_urls'][$board]) && $modSettings['pretty_enable_filters'])
 	{
 		$filterData = unserialize($modSettings['pretty_filters']);
-		if ($filterData['topics']['enabled'])
+		if (!empty($filterData['topics']['enabled']))
 		{
 			$url = 'topic=' . $topic . '.' . (isset($_REQUEST['start']) ? $_REQUEST['start'] : '0') . (isset($_REQUEST['prev_next']) ? ';prev_next=' . $_REQUEST['prev_next'] : '') . (isset($_REQUEST['topicseen']) ? ';topicseen' : '') . (isset($_REQUEST['all']) ? ';all' : '') . (isset($_REQUEST['viewResults']) ? ';viewResults' : '');
 			header('HTTP/1.1 301 Moved Permanently');
@@ -152,7 +152,7 @@ function PrettyBoardUrls()
 	if ((isset($context['pretty']['oldschoolquery']) || $context['pretty']['query_string']['board'] != $context['pretty']['board_urls'][$board]) && $modSettings['pretty_enable_filters'])
 	{
 		$filterData = unserialize($modSettings['pretty_filters']);
-		if ($filterData['boards']['enabled'])
+		if (!empty($filterData['boards']['enabled']))
 		{
 			$url = 'board=' . $board . '.' . (isset($_REQUEST['start']) ? $_REQUEST['start'] : '0') . (isset($_REQUEST['sort']) ? ';sort=' . $_REQUEST['sort'] : '');
 			header('HTTP/1.1 301 Moved Permanently');

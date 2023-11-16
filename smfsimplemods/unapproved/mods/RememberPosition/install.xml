@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+   <id>distante:RememberPositionAfter</id>
+   <version>1.3</version>
+   <homepage>www.smfsimple.com</homepage>
+    <info>This simple Mod allow your forum users stay in the same page where they login or logout</info>
+
+
+<file name="$sourcedir/LogInOut.php">
+	<operation>
+         <search position="replace"><![CDATA[
+		if (empty($_SESSION['logout_url']))
+			redirectexit('', $context['server']['needs_login_fix']);
+]]></search>
+			<add><![CDATA[
+		if (empty($_SESSION['logout_url']))
+		{
+		//Let's see if the REFERER is empty if it's no, take the next step
+			if (!empty($_SERVER['HTTP_REFERER']))
+			{
+			redirectexit($_SERVER['HTTP_REFERER']); //Let's go back to the page where we logout
+			}
+			else
+			{
+			redirectexit('', $context['server']['needs_login_fix']); //There's no HTTP_REFERER, go to the main page.
+			}
+		}
+]]></add>
+	</operation>	
+	<operation>
+	<search position="replace"><![CDATA[
+function Login2()
+{
+]]></search>
+<add><![CDATA[
+function Login2()
+{
+	global $boardurl;
+]]></add>
+</operation>
+</file>
+
+<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.]]></search>
+			<add><![CDATA[
+		global $forum_copyright;
+        $context['deletforum'] = base64_decode('IHwgPGEgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iU21mIC0gU29wb3J0ZSAtIFR1dG9yaWFsZXMgLSBNb2RzIC0gVGhlbWVzIj5TTUYgU2ltcGxlICZjb3B5Owo8L2E+PGJyIC8+');
+        if(!$load){
+        $buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);
+        $load = true;}
+			]]></add>
+		</operation>
+</file>
+
+</modification>

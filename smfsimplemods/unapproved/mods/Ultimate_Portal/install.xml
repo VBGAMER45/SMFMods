@@ -1,0 +1,512 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>vicram10:UltimatePortal</id>
+	<name>Ultimate Portal 0.3 By SMFSimple.com</name>
+	<version>0.3</version>
+<file name="$boarddir/index.php">
+    <operation>
+		<search position="before"><![CDATA[
+		'activate' => array('Register.php', 'Activate'),]]></search>
+			<add><![CDATA[
+		//Ultimate Portal 
+		'ultimateportal' => array('UltimatePortal.php', 'UltimatePortalMain'),
+		'news' => array('UPNews.php', 'UPNewsMain'),		
+		'internal-page' => array('UPInternalPage.php', 'UPInternalPageMain'),				
+		'about' => array('UPAboutUs.php', 'UPAboutUsMain'),				
+		'faq' => array('UPFaq.php', 'UPFaqMain'),						
+		'user-posts' => array('UPUserPosts.php', 'UPUserPostsMain'),		
+		'downloads' => array('UPDownload.php', 'UPDownloadMain'),		
+		'forum' => array('BoardIndex.php', 'BoardIndex'),		
+		//End ultimate Portal
+		]]></add>
+	</operation>
+    <operation>
+		<search position="after"><![CDATA[
+		// Action and board are both empty... BoardIndex!]]></search>
+			<add><![CDATA[
+		// Ultimate Portal
+		global $ultimateportalSettings;
+		if (!empty($ultimateportalSettings['ultimate_portal_enable']) && empty($board) && empty($topic))
+		{
+					require_once($sourcedir . '/UltimatePortal.php');
+					return 'UltimatePortal_Home_Page';
+		}
+		]]></add>
+	</operation>	
+    <operation>
+		<search position="before"><![CDATA[require_once($sourcedir . '/Security.php');]]></search>
+			<add><![CDATA[
+//UltimatePortal Important Files
+require_once($sourcedir . '/Subs-UltimatePortal.php');	
+require_once($sourcedir . '/Subs-UltimatePortal-Init-Blocks.php');		
+//End Ultimate Portal
+
+]]></add>
+	</operation>			
+    <operation>
+		<search position="before"><![CDATA[	// Is the forum in maintenance mode? (doesn't apply to administrators.)]]></search>
+			<add><![CDATA[
+	//Ultimate Portal Load funcionts
+		ultimateportalSettings();
+		LoadMemberGroupsPermissions();
+		// Load Language
+		if (loadlanguage('UltimatePortal') == false)
+			loadLanguage('UltimatePortal','english');	
+		require_once($sourcedir . '/UltimatePortal.php');
+		if (!isset($_REQUEST['wap']) && !isset($_REQUEST['wap2']) && !isset($_REQUEST['imode']))
+		UltimatePortalMain();	
+		//Load Top Menu
+		LoadTopMenu();	
+		//Load Blocks
+		up_init_blocks();
+	//End Ultimate Portal
+	]]></add>
+	</operation>		
+</file>		
+<file name="$boarddir/SSI.php">
+    <operation>
+		<search position="before"><![CDATA[// Load the current user's permissions....
+loadPermissions();
+]]></search>
+			<add><![CDATA[
+//Ultimate Portal Load funcionts
+require_once($sourcedir . '/Subs-UltimatePortal.php');
+ultimateportalSettings();
+// Load Language
+if (loadlanguage('UltimatePortal') == false)
+	loadLanguage('UltimatePortal','english');	
+require_once($sourcedir . '/UltimatePortal.php');
+//End Ultimate Portal
+
+]]></add>
+	</operation>
+</file>	
+<file name="$sourcedir/QueryString.php">
+     <operation>
+			<search position="after"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['copyfor'] = base64_decode('PGJyIC8+PGEgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tLyIgdGl0bGU9IlNNRlNJTVBMRS5jb20gLSBQb3J0YWwsIFRoZW1lcywgbW9kcywgc29wb3J0ZSwgdG9kbyBwYXJhIHR1IGZvcm8gU01GIj5VbHRpbWF0ZSBQb3J0YWwgMC4zICZjb3B5OyAyMDExIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+$buffer = str_replace($forum_copyright, $forum_copyright.$context['copyfor'],$buffer);
+			]]></add>
+		</operation>
+		</file>	
+		
+		
+<file name="$sourcedir/Admin.php">
+    <operation>
+		<search position="before"><![CDATA[	// You have to be able to do at least one of the below to see this page.
+	isAllowedTo(array(]]></search>
+			<add><![CDATA['ultimate_portal_cp','ultimate_portal_blocks','ultimate_portal_modules', ]]></add>
+	</operation>
+    <operation>
+		<search position="before"><![CDATA['ManageSearchEngines', 'ManageServer', 'ManageSmileys',]]></search>
+			<add><![CDATA[ 'UltimatePortalCP','UltimatePortal-BlocksMain', 'UltimatePortalModules',]]></add>
+	</operation>	
+    <operation>
+		<search position="after"><![CDATA[	// Load the language and templates....
+	loadLanguage('Admin');
+	loadTemplate('Admin', 'admin');
+]]></search>
+			<add><![CDATA[
+	//Load ultimate portal language
+	if (loadLanguage('UltimatePortalCP', '', false) === false)
+		loadLanguage('UltimatePortalCP', 'english', false);
+	if (loadLanguage('UltimatePortalModules', '', false) === false)
+		loadLanguage('UltimatePortalModules', 'english', false);
+	//Call File
+	global $sourcedir, $ultimateportalSettings;
+	//End
+	
+]]></add>
+	</operation>	
+    <operation>
+		<search position="after"><![CDATA[
+		'config' => array(
+			'title' => $txt['admin_config'],
+			]]></search>
+			<add><![CDATA[
+		//Ultimate Portal 
+		'ultimate_portal_cp' => array(
+			'title' => $txt['ultport_admin_category_title'],
+			'permission' => array('admin_forum'),
+			'areas' => array(
+				'preferences' => array(
+					'label' => $txt['ultport_preferences_title'],
+					'file' => 'UltimatePortalCP.php',
+					'function' => 'ShowPreferences',
+					'permission' => array('admin_forum'),
+					'icon' => 'up-admin.png',
+					'custom_url' => $scripturl . '?action=admin;area=preferences',
+					'subsections' => array(
+						'main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/info.png" alt="*" />&nbsp;' . $txt['ultport_admin_main_title'],'url' => $scripturl . '?action=admin;area=preferences;sa=main'),
+						'gral-settings' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['ultport_admin_gral_settings_title'], 'url' => $scripturl . '?action=admin;area=preferences;sa=gral-settings'),
+						'lang-maintenance' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/lang-maintenance.png" alt="*" />&nbsp;' . $txt['ultport_admin_lang_maintenance_title'],'url' => $scripturl . '?action=admin;area=preferences;sa=lang-maintenance'),
+						'permissions-settings' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/permissions-settings.png" alt="*" />&nbsp;' . $txt['ultport_admin_permissions_settings_title'],'url' => $scripturl . '?action=admin;area=preferences;sa=permissions-settings'),
+						'portal-menu' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/portal-menu.png" alt="*" />&nbsp;' . $txt['ultport_admin_portal_menu_title'], 'url' => $scripturl . '?action=admin;area=preferences;sa=portal-menu'),
+						'seo' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['ultport_seo_title'], 'url' => $scripturl . '?action=admin;area=preferences;sa=seo'),												
+					),	
+				),
+				'ultimate_portal_blocks' => array(
+					'label' => $txt['ultport_blocks_title'],
+					'file' => 'UltimatePortal-BlocksMain.php',
+					'function' => 'ShowBlocksMain',
+					'icon' => 'up-blocks.png',
+					'permission' => array('admin_forum'),
+					'custom_url' => $scripturl . '?action=admin;area=ultimate_portal_blocks',
+					'subsections' => array(
+						'positions' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/block-position.png" alt="*" />&nbsp;' . $txt['ultport_blocks_position_title'],'url' => $scripturl . '?action=admin;area=ultimate_portal_blocks;sa=positions'),
+						'blocks-titles' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/block-title.png" alt="*" />&nbsp;' . $txt['ultport_blocks_titles'], 'url' => $scripturl . '?action=admin;area=ultimate_portal_blocks;sa=blocks-titles'),
+						'create-blocks' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/add-block.png" alt="*" />&nbsp;' . $txt['ultport_create_blocks_titles'],'url' => $scripturl . '?action=admin;area=ultimate_portal_blocks;sa=create-blocks'),
+						'admin-block' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/admin-block.png" alt="*" />&nbsp;' . $txt['ultport_admin_bk_title'],'url' => $scripturl . '?action=admin;area=ultimate_portal_blocks;sa=admin-block'),
+					),						
+				),
+				'multiblock' => array(
+					'label' => $txt['ultport_mb_title'],
+					'file' => 'UltimatePortalCP.php',
+					'function' => 'ShowMultiblock',
+					'permission' => array('admin_forum'),
+					'icon' => 'up-multiblock.png',
+					'custom_url' => $scripturl . '?action=admin;area=multiblock',
+					'subsections' => array(
+						'main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/mb-list.png" alt="*" />&nbsp;' . $txt['ultport_mb_main'],'url' => $scripturl . '?action=admin;area=multiblock;sa=main'),
+						'add' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/mb-add.png" alt="*" />&nbsp;' . $txt['ultport_mb_add'],'url' => $scripturl . '?action=admin;area=multiblock;sa=add'),
+					),	
+				),				
+			),
+		),
+		'ultimate_portal_modules' => array(
+			'title' => $txt['ultport_admin_module_title'],
+			'permission' => array('admin_forum'),
+			'areas' => array(
+				'upmodulesenable' => array(
+					'label' => $txt['ultport_enablemodules_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowEnableModules',
+					'icon' => 'corefeatures.gif',
+				),							 
+				'user-posts' => array(
+					'label' => $txt['ultport_admin_user_posts_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'UltimatePortalMainModules',
+					'permission' => array('admin_forum'),
+					'enabled' => !empty($ultimateportalSettings['user_posts_enable']),//Show Section?
+					'icon' => 'up-user-posts.png',
+					'custom_url' => $scripturl . '?action=admin;area=user-posts',
+					'subsections' => array(
+						'up-main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="" />&nbsp;' . $txt['ultport_admin_user_posts_main'],'url' => $scripturl . '?action=admin;area=user-posts;sa=up-main'),
+						'extra-field' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/add.png" alt="" />&nbsp;' . $txt['ultport_admin_up_extra_field_title'], 'url' => $scripturl . '?action=admin;area=user-posts;sa=extra-field'),
+						'up-perms' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/perm.png" alt="" />&nbsp;' . $txt['user_posts_perms'],'url' => $scripturl . '?action=admin;area=preferences;sa=permissions-settings'),
+					),						
+				),
+				'up-news' => array(
+					'label' => $txt['ultport_admin_news_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowNews',
+					'icon' => 'up-news.png',
+					'permission' => array('admin_forum'),
+					'enabled' => !empty($ultimateportalSettings['up_news_enable']),//Show Section?
+					'custom_url' => $scripturl . '?action=admin;area=up-news',
+					'subsections' => array(
+						'ns-main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['ultport_admin_news_main'],'url' => $scripturl . '?action=admin;area=up-news;sa=ns-main'),
+						'section' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/news_section.png" alt="*" />&nbsp;' . $txt['ultport_admin_news_section_title'], 'url' => $scripturl . '?action=admin;area=up-news;sa=section'),
+						'admin-news' => array('<img style="vertical-align: middle;" width="16" height="16" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/news-icon.png" alt="*" />&nbsp;' . $txt['ultport_admin_admin_news_title'],'url' => $scripturl . '?action=admin;area=up-news;sa=admin-news'),
+						'announcements' => array('<img style="vertical-align: middle;" width="16" height="16" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/information.png" alt="*" />&nbsp;' . $txt['ultport_admin_announcements_title'],'url' => $scripturl . '?action=admin;area=up-news;sa=announcements'),						
+					),						
+				),
+				'board-news' => array(
+					'label' => $txt['ultport_admin_board_news_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowBoardNews',
+					'permission' => array('admin_forum'),
+					'icon' => 'up-boards-news.png',
+					'custom_url' => $scripturl . '?action=admin;area=board-news',
+					'subsections' => array(
+						'bn-main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['ultport_admin_board_news_main'],'url' => $scripturl . '?action=admin;area=board-news;sa=bn-main'),
+					),											
+				),
+				'download' => array(
+					'label' => $txt['up_download_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowDownload',
+					'permission' => array('admin_forum'),
+					'enabled' => !empty($ultimateportalSettings['download_enable']),//Show Section?
+					'icon' => 'up-download.png',
+					'custom_url' => $scripturl . '?action=admin;area=download',
+					'subsections' => array(
+						'main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['up_down_settings_tab'],'url' => $scripturl . '?action=admin;area=download;sa=main'),
+						'section' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/block-position.png" alt="*" />&nbsp;' . $txt['up_down_section_tab'],'url' => $scripturl . '?action=admin;area=download;sa=section'),
+					),											
+				),
+				'internal-page' => array(
+					'label' => $txt['ipage_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowInternalPage',
+					'permission' => array('admin_forum'),
+					'enabled' => !empty($ultimateportalSettings['ipage_enable']),//Show Section?
+					'icon' => 'up-ipage.png',
+					'custom_url' => $scripturl . '?action=admin;area=internal-page',
+					'subsections' => array(
+						'main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['ipage_settings_title'],'url' => $scripturl . '?action=admin;area=internal-page;sa=main'),
+					),											
+				),
+				'up-affiliates' => array(
+					'label' => $txt['ultport_admin_affiliates_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowAffiliates',
+					'permission' => array('admin_forum'),
+					'icon' => 'up-affiliates.png',
+					'custom_url' => $scripturl . '?action=admin;area=up-affiliates',
+					'subsections' => array(
+						'aff-main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['ultport_admin_affiliates_main'],'url' => $scripturl . '?action=admin;area=up-affiliates;sa=aff-main'),
+						'aff_affiliates' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/icons/bk-affiliates.png" alt="*" />&nbsp;' . $txt['ultport_admin_affiliates_title'],'url' => $scripturl . '?action=admin;area=up-affiliates;sa=aff_affiliates'),						
+					),											
+				),
+				'up-aboutus' => array(
+					'label' => $txt['up_about_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowAboutUs',
+					'permission' => array('admin_forum'),
+					'enabled' => !empty($ultimateportalSettings['about_us_enable']),//Show Section?
+					'icon' => 'up-aboutus.png',
+					'custom_url' => $scripturl . '?action=admin;area=up-aboutus',
+					'subsections' => array(
+						'main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['up_about_settings_tab'],'url' => $scripturl . '?action=admin;area=up-aboutus;sa=main'),
+					),											
+				),				
+				'up-faq' => array(
+					'label' => $txt['up_faq_title'],
+					'file' => 'UltimatePortalModules.php',
+					'function' => 'ShowFaq',
+					'permission' => array('admin_forum'),
+					'enabled' => !empty($ultimateportalSettings['faq_enable']),//Show Section?
+					'icon' => 'up-faq.png',
+					'custom_url' => $scripturl . '?action=admin;area=up-faq',
+					'subsections' => array(
+						'main' => array('<img style="vertical-align: middle;" border="0" src="'.$settings['default_images_url'].'/ultimate-portal/config.png" alt="*" />&nbsp;' . $txt['up_faq_config'],'url' => $scripturl . '?action=admin;area=up-faq;sa=main'),
+					),											
+				),
+			),
+		),
+		//End Ultimate Portal
+		]]></add>
+	</operation>	
+</file>		
+<file name="$sourcedir/Load.php">
+    <operation>
+		<search position="replace"><![CDATA[	// Set the top level linktree up.
+	array_unshift($context['linktree'], array(
+		'url' => $scripturl,
+		'name' => $context['forum_name_html_safe']
+	));
+]]></search>
+			<add><![CDATA[
+	//Ultimate Portal
+	global $ultimateportalSettings;
+	ultimateportalSettings();
+	require_once($sourcedir . '/Subs-UltimatePortal.php');	
+	// Load the Ultimate Portal language file, always ;). (but don't sweat it if it doesn't exist.)
+	if (loadlanguage('UltimatePortal') == false)
+		loadLanguage('UltimatePortal','english');
+	// Set the top level linktree up.
+	if (!empty($ultimateportalSettings['ultimate_portal_enable']))	
+	{
+		//url?
+		$current_url = ReturnCurrentUrl();		
+		$home_url = explode('index.php', $current_url); //Result $home_url[0] = https://www.smfsimple.com/
+		if (($current_url == $scripturl) || $current_url == $home_url[0])
+		{
+			array_unshift($context['linktree'], array(
+				'url' => $scripturl,
+				'name' => $context['forum_name_html_safe']
+			));					
+		}else{
+			array_unshift($context['linktree'], array(
+			  'url' => $scripturl,
+			  'name' => $context['forum_name_html_safe']
+			),array('url' => $scripturl . '?action=forum', 'name' => $txt['ultport_forum_tab']));
+		}
+   }else{
+   		array_unshift($context['linktree'], array(
+			'url' => $scripturl,
+			'name' => $context['forum_name_html_safe']
+		));
+   }
+   //End Ultimate Portal
+
+]]></add>
+	</operation>	
+</file>		
+<file name="$sourcedir/Recent.php">
+    <operation>
+		<search position="replace"><![CDATA['href' => $scripturl . '#c' . $row['id_cat'],
+				'link' => '<a href="' . $scripturl . '#c' . $row['id_cat'] . '">' . $row['cname'] . '</a>']]></search>
+			<add><![CDATA['href' => $scripturl . '?action=forum#c' . $row['id_cat'],
+				'link' => '<a href="' . $scripturl . '?action=forum#c' . $row['id_cat'] . '">' . $row['cname'] . '</a>']]></add>
+	</operation>
+    <operation>
+		<search position="replace"><![CDATA['url' => $scripturl . '#c' . (int) $_REQUEST['c'],]]></search>
+			<add><![CDATA['url' => $scripturl . '?action=forum#c' . (int) $_REQUEST['c'],]]></add>
+	</operation>	
+    <operation>
+		<search position="replace"><![CDATA['url' => $scripturl . '#c' . (int) $_REQUEST['c'][0],]]></search>
+			<add><![CDATA['url' => $scripturl . '?action=forum#c' . (int) $_REQUEST['c'][0],]]></add>
+	</operation>		
+</file>		
+<file name="$sourcedir/Subs.php">
+    <operation>
+		<search position="replace"><![CDATA['admin_forum', 'manage_boards']]></search>
+			<add><![CDATA['admin_forum', 'manage_boards', 'ultimate_portal_cp', 'ultimate_portal_blocks','ultimate_portal_modules']]></add>
+	</operation>
+    <operation>
+		<search position="before"><![CDATA[function setupMenuContext()
+{
+]]></search>
+			<add><![CDATA[	global $ultimateportalSettings;
+	//Load ultimate portal language
+	if (loadLanguage('UltimatePortalCP', '', false) === false)
+		loadLanguage('UltimatePortalCP', 'english', false);
+		
+	
+]]></add>
+	</operation>
+    <operation>
+		<search position="replace"><![CDATA[
+			'home' => array(
+				'title' => $txt['home'],
+				'href' => $scripturl,
+				'show' => true,
+				'sub_buttons' => array(
+				),
+				'is_last' => $context['right_to_left'],
+			),]]></search>
+			<add><![CDATA[			
+			'home' => array(
+				'title' => (!empty($ultimateportalSettings['ultimate_portal_enable']) ? (!empty($txt['ultport_home_tab']) ? $txt['ultport_home_tab'] : $txt['home']) : $txt['home']),
+				'href' => $scripturl,
+				'show' => true,
+				'sub_buttons' => array(
+				),
+				'is_last' => $context['right_to_left'],
+			),
+			'forum' => array(
+				'title' => $txt['ultport_forum_tab'],
+				'href' => $scripturl . '?action=forum',
+				'show' => (!empty($ultimateportalSettings['ultimate_portal_enable']) ? true : false),
+				'sub_buttons' => array(
+				),
+			),
+]]></add>
+	</operation>		
+    <operation>
+		<search position="before"><![CDATA[
+			'admin' => array(
+				'title' => $txt['admin'],
+				'href' => $scripturl . '?action=admin',
+				'show' => $context['allow_admin'],
+				'sub_buttons' => array(
+					]]></search>
+			<add><![CDATA['preferences' => array(
+						'title' => $txt['ultport_admin_category_title'],
+						'href' => $scripturl . '?action=admin;area=preferences;' . $context['session_var'] . '=' . $context['session_id'],
+						'show' => allowedTo('admin_forum'),
+					),
+					]]></add>
+	</operation>			
+    <operation>
+		<search position="replace"><![CDATA[$current_action = isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'pick' ? 'profile' : 'admin';]]></search>
+			<add><![CDATA[
+		$current_action = isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'pick' ? 'profile' : 'admin';			
+	elseif((!empty($ultimateportalSettings['ultimate_portal_enable']) && (isset($_GET['board']) || isset($_GET['topic']) || in_array($context['current_action'], array('unread', 'unreadreplies', 'groups', 'who')))))
+		$current_action = 'forum';
+	]]></add>
+	</operation>			
+</file>		
+<file name="$themedir/index.template.php" error="skip">
+    <operation>
+		<search position="before"><![CDATA[// The main sub template above the content.
+function template_html_above()
+{
+]]></search>
+			<add><![CDATA[	global $ultimateportalSettings, $user_info;		
+			]]></add>
+	</operation>
+    <operation>
+		<search position="after"><![CDATA[</title>]]></search>
+			<add><![CDATA[',!empty($ultimateportalSettings['seo_title_keyword']) ? '&nbsp;- '.$ultimateportalSettings['seo_title_keyword'] : '',']]></add>
+	</operation>	
+    <operation>
+		<search position="replace"><![CDATA[empty($settings['site_slogan']) ? '<img id="smflogo" src="' . $settings['images_url'] . '/smflogo.png" alt="Simple Machines Forum" title="Simple Machines Forum" />' : '<div id="siteslogan" class="floatright">' . $settings['site_slogan'] . '</div>']]></search>
+			<add><![CDATA[(empty($context['top_menu_view']) ? (empty($settings['site_slogan']) ? '<img id="smflogo" src="' . $settings['images_url'] . '/smflogo.png" alt="Simple Machines Forum" title="Simple Machines Forum" />' : '<div id="siteslogan" class="floatright">' . $settings['site_slogan'] . '</div>') : '')]]></add>
+	</operation>
+    <operation>
+		<search position="before"><![CDATA[	// the upshrink image, right-floated
+	echo '
+			<img id="upshrink" src="', $settings['images_url'], '/upshrink.png" alt="*" title="', $txt['upshrink_description'], '" style="display: none;" />';
+]]></search>
+			<add><![CDATA[
+	//Ultimate portal Top Menu
+	if(!empty($context['top_menu_view']))
+	{
+		echo '<div id="up_top_menu">', template_top_menu_ultimate_portal() ,'</div>';
+	}
+	//End Top Menu
+
+]]></add>
+	</operation>
+    <operation>
+		<search position="replace"><![CDATA[}
+
+function template_body_below()
+{
+]]></search>
+	<add><![CDATA[	
+	//Ultimate Portal Column Left - Forum
+	$context['vblocks'] = false;
+	
+	if (!empty($_REQUEST['board']) || !empty($_REQUEST['topic']))
+		$context['vblocks'] = true;
+	
+	if (!empty($_REQUEST['action'])
+		&& !in_array($_REQUEST['action'], array('news', 'downloads', 'user-posts', 'internal-page', 'about', 'faq', 'admin')))
+			$context['vblocks'] = true;
+	
+	global $ultimateportalSettings;
+	
+	//View blocks into forum (Ultimate Portal disable)	
+	if	(empty($ultimateportalSettings['ultimate_portal_enable']) 
+		&& (!empty($ultimateportalSettings['up_forum_enable_col_left']) 
+			|| !empty($ultimateportalSettings['up_forum_enable_col_right']))
+		&& (empty($_REQUEST['board']) || empty($_REQUEST['topic']))
+		&& !in_array(!empty($_REQUEST['action']), array('news', 'downloads', 'user-posts', 'internal-page', 'about', 'faq', 'admin')))
+	{
+		$context['vblocks'] = true;
+	}	
+	
+	if ($context['vblocks'] === true)
+	{
+		$left = !empty($ultimateportalSettings['up_forum_enable_col_left']) ? 1 : 0;
+		$right = !empty($ultimateportalSettings['up_forum_enable_col_right']) ? 1 : 0;
+		up_print_page_above($left, $right, '', 1, 0);
+	}
+	//End
+}
+
+function template_body_below()
+{
+	//Ultimate Portal Column Left - Forum
+	global $context, $ultimateportalSettings;
+	if ($context['vblocks'] === true)
+	{	
+		$right = !empty($ultimateportalSettings['up_forum_enable_col_right']) ? 1 : 0;
+		up_print_page_below($right);
+	}
+	//End
+
+]]></add>
+	</operation>
+</file>	
+</modification>

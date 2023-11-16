@@ -57,9 +57,13 @@ function Contact()
 			$message = $_POST['message'];
 			if ($message == '')
 				fatal_error($txt['smfcontact_errmessage'], false);
-			$email = $_POST['email'];
+			$email = trim($_POST['email']);
 			if ($email == '')
 				fatal_error($txt['smfcontact_erremail'], false);
+
+
+			if (filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+				fatal_error($txt['smfcontact_errbademail'], false);
 
 			$subject = $func['htmlspecialchars']($subject, ENT_QUOTES);
 			$message = $func['htmlspecialchars']($message, ENT_QUOTES);

@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:MonthUser</id>
+	<name>Month User By Smfsimple.com</name>
+	<version>V1</version>
+	<info>Premia a los usuarios del mes de tu foro!</info>
+
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Mod MonthUser By Smfsimple.com
+$txt['monthUser_enable'] = 'Enable Month User Mod';
+$txt['monthUser_img'] = 'Image Url<br /> e.g star.png <br />Leave empty to use the default image';
+$txt['monthUser_user'] = 'Month users <br />(separated by commas)';	 
+$txt['monthUser_txt'] = 'Some Text to show';
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Mod MonthUser By Smfsimple.com
+$txt['monthUser_enable'] = 'Activar Month User Mod';
+$txt['monthUser_img'] = 'Url de la imagen<br /> ej: star.png <br />Dejar vacio para usar la imagen predeterminada';
+$txt['monthUser_user'] = 'Usuarios del mes <br />(separados por coma)';	 
+$txt['monthUser_txt'] = 'Algun texto para mostrar';]]></add>
+		</operation>
+	</file>
+			
+	<file name="$themedir/languages/Modifications.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Mod MonthUser By Smfsimple.com
+$txt['monthUser_enable'] = 'Activar Month User Mod';
+$txt['monthUser_img'] = 'Url de la imagen<br /> ej: star.png <br />Dejar vacio para usar la imagen predeterminada';
+$txt['monthUser_user'] = 'Usuarios del mes <br />(separados por coma)';	 
+$txt['monthUser_txt'] = 'Algun texto para mostrar';]]></add>
+		</operation>
+	</file>	
+
+	<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Mod MonthUser By Smfsimple.com
+$txt['monthUser_enable'] = 'Activar Month User Mod';
+$txt['monthUser_img'] = 'Url de la imagen<br /> ej: star.png <br />Dejar vacio para usar la imagen predeterminada';
+$txt['monthUser_user'] = 'Usuarios del mes <br />(separados por coma)';	 
+$txt['monthUser_txt'] = 'Algun texto para mostrar';]]></add>
+		</operation>
+	</file>	
+
+	<file name="$themedir/languages/Modifications.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+//Mod MonthUser By Smfsimple.com
+$txt['monthUser_enable'] = 'Activar Month User Mod';
+$txt['monthUser_img'] = 'Url de la imagen<br /> ej: star.png <br />Dejar vacio para usar la imagen predeterminada';
+$txt['monthUser_user'] = 'Usuarios del mes <br />(separados por coma)';	 
+$txt['monthUser_txt'] = 'Algun texto para mostrar';]]></add>
+		</operation>
+	</file>	
+	
+</modification>

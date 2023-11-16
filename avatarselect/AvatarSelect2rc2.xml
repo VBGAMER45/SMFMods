@@ -241,7 +241,7 @@ function getAvatars2($directory, $level)
 		$result[] = array(
 			'filename' => 'blank.gif',
 			'checked' => in_array($context['member']['avatar']['server_pic'], array('', 'blank.gif')),
-			'name' => &$txt[422],
+			'name' => &$txt['no_pic'],
 			'is_dir' => false
 		);
 	}

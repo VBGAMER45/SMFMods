@@ -1,7 +1,7 @@
 <?php
 /*
-	SMF Archive Version: 2.0
-	http://www.smfhacks.com
+	SMF Archive Version: 3.0
+	https://www.smfhacks.com
 	By:vbgamer45
 
 	Install: Just upload archive2.php to your forum's main directory
@@ -24,16 +24,18 @@ include 'SSI.php';
 $board = 0;
 $topic = 0;
 
-//Max topics to show per page in a forum
-$maxtopics = 20;
-//Max posts to show per page in a topic
-$maxposts = 15;
+// Max topics to show per page in a forum
+$maxtopics = $modSettings['defaultMaxTopics'];
+// Max posts to show per page in a topic
+$maxposts = $modSettings['defaultMaxMessages'];
 
-//Get the board ID
-@$board = (int) $_GET['board'];
+// Get the board ID
+if (isset($_GET['board']))
+	$board = (int) $_GET['board'];
 
 //Get the topic ID
-@$topic = (int) $_GET['topic'];
+if (isset($_GET['topic']))
+	$topic = (int) $_GET['topic'];
 
 $smcFunc['db_select_db']($db_name, $db_connection);
 
@@ -55,7 +57,7 @@ if (!empty($topic))
 
 function archive_board($boardid)
 {
-	global $boardurl, $maxtopics, $mbname, $user_info, $smcFunc;
+	global $boardurl, $maxtopics, $mbname, $user_info, $smcFunc, $txt;
 
 	$boardid = addslashes($boardid);
 	$start = (int) $_REQUEST['start'];
@@ -65,12 +67,19 @@ function archive_board($boardid)
 	SELECT
 		b.name, b.num_topics
 	FROM {db_prefix}boards AS b
-	WHERE b.ID_BOARD = $boardid  AND $user_info[query_see_board]");
+	WHERE b.ID_BOARD = $boardid AND $user_info[query_see_board]");
 	$row = $smcFunc['db_fetch_assoc']($request);
 
 	if ($smcFunc['db_num_rows']($request) == 0)
-		die('The topic or board you are looking for appears to be either missing or off limits to you');
+		die($txt['topic_gone']);
 	$smcFunc['db_free_result']($request);
+
+	$request = $smcFunc['db_query']('', "
+	SELECT
+		COUNT(*) as total
+	FROM {db_prefix}topics AS b
+	WHERE b.ID_BOARD = $boardid ");
+	$rowTotal = $smcFunc['db_fetch_assoc']($request);
 
 
 	archive_header($row['name'],$boardurl . '/index.php?board=' . $boardid . '.' . $start);
@@ -78,18 +87,21 @@ function archive_board($boardid)
 	echo '<div id="linktree"><a href="' . $boardurl . '/archive2.php">' . $mbname . '</a></div>';
 
 
-	//Show Pages List
-	$totalpages = (int) $row['num_topics'] / $maxtopics;
+	// Show Pages List
+
+	$totalpages = ceil($rowTotal['total'] / $maxtopics);
 	if($totalpages < 1)
 		$totalpages = 1;
 
-	echo '<div id="pages">Pages: ';
+
+	echo '<div id="pages">' .  $txt['pages'] . ': ';
 	for($i=1; $i <= $totalpages; $i++)
 	{
-		if($i != $totalpages)
-			echo '<a href="' . $boardurl . '/archive2.php?board=' . $boardid . '.' . (($i-1) * $maxtopics) . '">' . $i . '</a>,&nbsp;';
-		else
+		if ($i != 1)
+			echo ',&nbsp;';
+
 			echo '<a href="' . $boardurl . '/archive2.php?board=' . $boardid . '.' . (($i-1) * $maxtopics) . '">' . $i . '</a>';
+
 	}
 	echo '</div>';
 
@@ -98,7 +110,7 @@ function archive_board($boardid)
 	SELECT
 		m.subject, t.ID_TOPIC, t.num_replies
 	FROM {db_prefix}messages AS m, {db_prefix}topics AS t
-	WHERE m.ID_BOARD = $boardid AND m.ID_MSG = t.ID_FIRST_MSG
+	WHERE m.ID_BOARD = $boardid AND m.ID_MSG = t.ID_FIRST_MSG AND t.approved = 1
 	ORDER BY t.ID_LAST_MSG DESC
 	LIMIT $start,$maxtopics");
 	$i = 0;
@@ -115,7 +127,7 @@ function archive_board($boardid)
 
 function archive_topic($topicid)
 {
-	global $boardurl, $smcFunc, $maxposts, $user_info, $mbname;
+	global $boardurl, $smcFunc, $maxposts, $user_info, $mbname, $txt;
 
 	$topicid = addslashes($topicid);
 
@@ -126,10 +138,10 @@ function archive_topic($topicid)
 		m.subject, t.num_replies, b.name, b.ID_BOARD, m.ID_BOARD
 	FROM ({db_prefix}messages AS m, {db_prefix}topics AS t,
 	{db_prefix}boards AS b)
-	WHERE b.ID_BOARD = m.ID_BOARD AND t.ID_TOPIC = $topicid AND m.ID_MSG = t.ID_FIRST_MSG AND $user_info[query_see_board]");
+	WHERE b.ID_BOARD = m.ID_BOARD AND t.ID_TOPIC = $topicid AND t.approved = 1 AND m.ID_MSG = t.ID_FIRST_MSG AND $user_info[query_see_board]");
 	$row = $smcFunc['db_fetch_assoc']($request);
 	if ($smcFunc['db_num_rows']($request) == 0)
-		die('The topic or board you are looking for appears to be either missing or off limits to you');
+		die($txt['topic_gone']);
 
 
 	archive_header($row['subject'],$boardurl . '/index.php?topic=' . $topicid . '.' . $start);
@@ -143,12 +155,12 @@ function archive_topic($topicid)
 		$totalpages = 1;
 
 
-	echo '<div id="pages">Pages: ';
+	echo '<div id="pages">' . $txt['pages'] . ': ';
 	for($i=1; $i <= $totalpages; $i++)
 	{
-		if($i != $totalpages)
-			echo '<a href="' . $boardurl . '/archive2.php?topic=' . $topicid . '.' . (($i-1) * $maxposts) . '">' . $i . '</a>,&nbsp;';
-		else
+		if ($i != 1)
+			echo ',&nbsp;';
+
 			echo '<a href="' . $boardurl . '/archive2.php?topic=' . $topicid . '.' . (($i-1) * $maxposts) . '">' . $i . '</a>';
 	}
 	echo '</div>';
@@ -159,7 +171,7 @@ function archive_topic($topicid)
 		m.subject, m.poster_name, m.body, m.poster_time
 		FROM {db_prefix}messages AS m
 		LEFT JOIN {db_prefix}boards AS b ON(b.ID_BOARD = m.ID_BOARD)
-		WHERE m.ID_TOPIC = $topicid AND $user_info[query_see_board] ORDER BY m.ID_MSG ASC LIMIT $start,$maxposts");
+		WHERE m.ID_TOPIC = $topicid AND m.approved = 1 AND $user_info[query_see_board] ORDER BY m.ID_MSG ASC LIMIT $start,$maxposts");
 
 	echo '<div id="topic">';
 	while($row2 = $smcFunc['db_fetch_assoc']($request2))
@@ -172,6 +184,17 @@ function archive_topic($topicid)
 		echo '<hr />';
 	}
 
+	echo '</div>';
+
+
+	echo '<div id="pages">' . $txt['pages'] . ': ';
+	for($i=1; $i <= $totalpages; $i++)
+	{
+		if ($i != 1)
+			echo ',&nbsp;';
+
+			echo '<a href="' . $boardurl . '/archive2.php?topic=' . $topicid . '.' . (($i-1) * $maxposts) . '">' . $i . '</a>';
+	}
 	echo '</div>';
 
 	archive_footer();
@@ -231,7 +254,7 @@ function archive_main()
 
 function archive_header($title, $url)
 {
-	global $boardurl;
+	global $boardurl, $txt;
  echo '
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html>
@@ -245,7 +268,7 @@ function archive_header($title, $url)
  	<div id="header">
 		<div id="fullver">Full Version: <a href="' . $url . '">' . $title . '</a>
 		</div>
-		<div id="menu" align="center"><a href="' . $boardurl . '/index.php?action=help">Help</a>&nbsp;<a href="' . $boardurl . '/index.php?action=search">Search</a>&nbsp;<a href="' . $boardurl . '/index.php?action=mlist">Member List</a>
+		<div id="menu" align="center"><a href="' . $boardurl . '/index.php?action=help">' . $txt['help'] . '</a>&nbsp;<a href="' . $boardurl . '/index.php?action=search">' . $txt['search']  . '</a>
 		</div>
 	</div>';
 
@@ -255,7 +278,7 @@ function archive_footer()
 {
 // Link back to SMF Hacks must remain.
 // http://www.smfhacks.com/copyright_removal.php
-echo '<br /><div align="center" id="footer"><!--Copyright for SMFHacks must stay-->SMF Archive by&nbsp;<a href="http://www.createaforum.com">Free Forum Hosting</a><!--EndCopyright for SMFHacks must stay--></div>
+echo '<br /><div align="center" id="footer"><!--Copyright for SMFHacks must stay-->SMF Archive by&nbsp;<a href="https://www.createaforum.com">Free Forum Hosting</a><!--EndCopyright for SMFHacks must stay--></div>
 	</body></html>';
 }
 ?>

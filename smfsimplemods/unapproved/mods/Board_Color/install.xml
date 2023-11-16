@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>4kstore:BoardColor</id>
+	<version>V1</version>
+	
+	
+	<file name="$sourcedir/ManageBoards.php">
+		<operation>
+			<search position="before"><![CDATA['description' => '',]]></search>
+		
+			<add><![CDATA[
+			'color_title' => '',]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$context['board']['description'] = htmlspecialchars($context['board']['description']);]]></search>
+		
+			<add><![CDATA[
+		$context['board']['color_title'] = htmlspecialchars($context['board']['color_title']);]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[$boardOptions['board_description'] = preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['desc']);]]></search>
+		
+			<add><![CDATA[
+		$boardOptions['board_color_title'] = preg_replace('~[&]([^;]{8}|[^;]{0,8}$)~', '&amp;$1', $_POST['color_title']);]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs-BoardIndex.php">
+		<operation>
+			<search position="before"><![CDATA[$this_category[$row_board['id_board']] = array(]]></search>
+		
+			<add><![CDATA[
+					'color_title' => $row_board['color_title'],]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[b.id_parent,]]></search>
+		
+			<add><![CDATA[ b.color_title,]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs-Boards.php">
+		<operation>
+			<search position="before"><![CDATA[$boardUpdateParameters['board_description'] = $boardOptions['board_description'];
+	}]]></search>
+		
+			<add><![CDATA[
+	
+	if (isset($boardOptions['board_color_title']))
+	{
+		$boardUpdates[] = 'color_title = {string:board_color_title}';
+		$boardUpdateParameters['board_color_title'] = $boardOptions['board_color_title'];
+	}]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA['board_description' => '',]]></search>
+		
+			<add><![CDATA[
+		'board_color_title' => '',]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA[b.description]]></search>
+		
+			<add><![CDATA[, b.color_title]]></add>
+		</operation>
+		
+		<operation>
+			<search position="before"><![CDATA['description' => $row['description'],]]></search>
+		
+			<add><![CDATA[
+				'color_title' => $row['color_title'],]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/ManageBoards.template.php">
+		<operation>
+			<search position="after"><![CDATA[<dt>
+							<strong>', $txt['permission_profile'], ':</strong><br />]]></search>
+			<add><![CDATA[
+			<dt>
+						     <strong>', $txt['board_color_title'], ':</strong>
+						</dt>
+						<dd>
+							<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/jscolor/jscolor.js"></script>
+							<input type="text" name="color_title" value="', $context['board']['color_title'], '" size="30" class="color {hash:true, adjust:false}" />
+						</dd>
+						]]></add>
+		</operation>
+	</file>
+	
+	<file name="$themedir/BoardIndex.template.php">
+		<operation>
+			<search position="before"><![CDATA[href="', $board['href'], '" ]]></search>
+			
+			<add><![CDATA[style="color:'.$board['color_title'].'" ]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/ManagePermissions.english.php">
+		<operation>
+			<search position="end"></search>
+		
+			<add><![CDATA[
+$txt['board_color_title'] = 'Title Color (Optional)';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/ManagePermissions.spanish_es.php" error="skip">
+		<operation>
+			<search position="end"></search>
+		
+			<add><![CDATA[
+$txt['board_color_title'] = 'Color del titulo (Opcional)';
+]]></add>
+		</operation>
+	</file>	
+		<file name="$languagedir/ManagePermissions.spanish_es-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+		
+			<add><![CDATA[
+$txt['board_color_title'] = 'Color del titulo (Opcional)';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$languagedir/ManagePermissions.spanish_latin.php" error="skip">
+		<operation>
+			<search position="end"></search>
+		
+			<add><![CDATA[
+$txt['board_color_title'] = 'Color del titulo (Opcional)';
+]]></add>
+		</operation>
+	</file>		
+	
+	<file name="$languagedir/ManagePermissions.spanish_latin-utf8.php" error="skip">
+		<operation>
+			<search position="end"></search>
+		
+			<add><![CDATA[
+$txt['board_color_title'] = 'Color del titulo (Opcional)';
+]]></add>
+		</operation>
+	</file>	
+	
+	<file name="$sourcedir/QueryString.php">
+		<operation>
+			<search position="before"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.
+]]></search>
+			<add><![CDATA[
+			$load = false;
+			]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// Return the changed buffer.
+]]></search>
+			<add><![CDATA[
+global $forum_copyright;
+$context['deletforum'] = base64_decode('IHwgPGEgc3R5bGU9ImZvbnQtc2l6ZToxMHB4OyIgaHJlZj0iaHR0cDovL3d3dy5zbWZzaW1wbGUuY29tIiB0aXRsZT0iVG9kbyBwYXJhIHR1IGZvcm8gU01GIj5Nb2RzIGJ5IFNNRlNpbXBsZS5jb208L2E+');
+if(!$load){$buffer = str_replace($forum_copyright, $forum_copyright.$context['deletforum'],$buffer);$load = true;}
+			]]></add>
+		</operation>
+		</file>
+</modification>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+		<id>karlbenson:areyouhuman</id>
+	<name>Anti Bot: Are You Human/Bot?</name>
+<version>3.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification format="xml" type="file">install.xml</modification>
+		<modification format="xml" type="file">languages.xml</modification>
+		<code type="file">install.php</code>
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification format="xml" type="file" reverse="true">install.xml</modification>
+		<modification format="xml" type="file" reverse="true">languages.xml</modification>
+	</uninstall>
+
+</package-info>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>karlbenson:antibotclock</id>
+	<name>Anti Bot: Captcha Clock</name>
+	<version>2.2</version>
+	<type>modification</type>
+
+	<install for="1.1.1 - 1.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification format="xml" type="file">install1.xml</modification>
+		<modification format="xml" type="file">languages.xml</modification>
+		<require-file name="ABClock.php" destination="$sourcedir" />
+		<require-dir name="clocks" destination="$imagesdir" />
+		<code type="file">install1.php</code>
+	</install>
+
+	<uninstall for="1.1.1 - 1.99.99">
+		<modification format="xml" type="file" reverse="true">install1.xml</modification>
+		<modification format="xml" type="file" reverse="true">languages.xml</modification>
+		<remove-file name="$sourcedir/ABClock.php" />
+		<remove-dir name="$imagesdir/clocks" />
+	</uninstall>
+
+	<install for="2.0 - 2.99.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<modification format="xml" type="file">install2.xml</modification>
+		<modification format="xml" type="file">languages.xml</modification>
+		<require-file name="ABClock.php" destination="$sourcedir" />
+		<require-dir name="clocks" destination="$imagesdir" />
+		<code type="file">install2.php</code>
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification format="xml" type="file" reverse="true">install2.xml</modification>
+		<modification format="xml" type="file" reverse="true">languages.xml</modification>
+		<remove-file name="$sourcedir/ABClock.php" />
+		<remove-dir name="$imagesdir/clocks" />
+	</uninstall>
+
+</package-info>

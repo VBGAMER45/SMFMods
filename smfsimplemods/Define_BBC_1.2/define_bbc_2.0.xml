@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>S-M-FModdersTeam:Define_BBC</id>
+	<version>1.2</version>
+	<homepage>http://www.SMFModders.com/</homepage>
+	<file name="$sourcedir/Subs-Editor.php">
+		<operation>
+			<search position="before"><![CDATA[
+				'description' => $txt['ftp']
+			),
+			array(),
+]]></search>
+			<add><![CDATA[
+			// SMF Modders; Define BBC
+			array(
+				'image' => 'define_bbc',
+				'code' => 'define',
+				'before' => '[define]',
+				'after' => '[/define]',
+				'description' => $txt['define_a_word']
+			),
+			array(),
+			// End SMF Modders; Define BBC
+]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[
+				'before' => '<span style="color: $1;" class="bbc_color">',
+				'after' => '</span>',
+			),
+]]></search>
+			<add><![CDATA[
+			// SMF Modders; Define BBC
+			array(
+				'tag' => 'define',
+				'type' => 'unparsed_content',
+				'content' => '<a href="http://www.dictionary.reference.com/browse/$1" target="_blank" title="Define: $1">$1</a>',
+				'block_level' => true,
+				'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+				'disallow_children' => array('email', 'ftp', 'url', 'iurl'),
+			),
+			array(
+	                        'tag' => 'define',
+	                        'type' => 'unparsed_equals',
+	                        'before' => '<a href="http://www.dictionary.reference.com/browse/$1" target="_blank" title="Define: $1">',
+	                        'after' => '</a>',
+							'validate' => create_function('&$tag, &$data, $disabled', '$data = strtr($data, array(\'<br />\' => \'\'));'),
+							'disallow_children' => array('email', 'ftp', 'url', 'iurl'),
+	                ),
+			// End SMF Modders; Define BBC
+]]></add>
+		</operation>
+	</file>
+	<file name="$themedir/languages/Modifications.english.php">
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+// SMF Modders; Define BBC
+$txt['define_a_word'] = 'Define a Word';
+// End SMF Modders; Define BBC
+]]></add>
+		</operation>
+	</file>
+</modification>

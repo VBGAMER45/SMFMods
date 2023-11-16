@@ -1,0 +1,90 @@
+.comments_container {
+	padding: 10px 0 0 60px;
+}
+
+.comments_container .comments{
+    /*background: url("../images/tcs_arrow2.png") no-repeat bottom left;*/
+    border-left: 5px solid #E7EAEF;
+    padding-left: 10px;
+}
+.comments_container .replay_comment_container{
+    padding-bottom: 7px;
+}
+
+.comments_container .comment_form{
+    position: relative;
+    width: 80%;
+}
+.comments_container .comment_form textarea{
+    border: 1px solid #ccc;
+    width: 100%;
+}
+.comments_container .comment_form .char_counter{
+    display: inline-block;
+    min-width: 120px;
+    height: 35px;
+}
+.comments_container .comment_form .char_counter.normal{
+     color: black;
+}
+.comments_container .comment_form .char_counter.warning{
+    color: orange;
+	font-weight: 600;
+	font-size: 1.1em; 
+}
+.comments_container .comment_form .char_counter.final{
+    color: red;
+	font-weight: 900;
+	font-size: 1.2em; 
+}
+.comments_container .comment_form .sent_comment_action{
+    display: inline-block;
+    padding: 2px 0 15px 0;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    
+}
+.comments_container .comment_form .sent_comment_action input{
+    padding: 5px;
+    min-width: 100px;
+}
+
+.tcs_avatar img {
+	margin-right: 4px;
+	width: 32px;
+	height: 32px;
+}
+
+.tcs_hidden{
+    display: none;
+    height: 0;
+}
+
+.tcs_actived{
+    display: normal;
+}
+
+.show-more{
+    background: #E8E8E8;
+    display: block;
+    margin: 10px 0 10px 0;
+    padding: 5px;
+    text-align: center;
+}
+
+.comment{
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.char_left{
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.comment_error{
+    color: red;
+    display: inline-block;
+    padding-left: 25px;
+}

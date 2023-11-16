@@ -1,7 +1,7 @@
 <?php
 /*
 Tagging System
-Version 2.4.1
+Version 4.0
 by:vbgamer45
 http://www.smfhacks.com
 */
@@ -425,6 +425,11 @@ function TagsSettings2()
 	$smftags_set_cloud_min_font_size_precent = (int) $_REQUEST['smftags_set_cloud_min_font_size_precent'];
 
 	
+	$smftags_set_msgindex = isset($_REQUEST['smftags_set_msgindex']) ? 1 : 0;
+	$smftags_set_msgindex_max_show = (int) $_REQUEST['smftags_set_msgindex_max_show'];
+	$smftags_set_use_css_tags = isset($_REQUEST['smftags_set_use_css_tags']) ? 1 : 0;
+	$smftags_set_css_tag_background_color = htmlspecialchars($_REQUEST['smftags_set_css_tag_background_color']);
+	$smftags_set_css_tag_font_color = htmlspecialchars($_REQUEST['smftags_set_css_tag_font_color']);
 	// Save the setting information
 	updateSettings(
 	array('smftags_set_maxtags' => $smftags_set_maxtags,
@@ -434,6 +439,13 @@ function TagsSettings2()
 	'smftags_set_cloud_tags_to_show' => $smftags_set_cloud_tags_to_show,
 	'smftags_set_cloud_max_font_size_precent' => $smftags_set_cloud_max_font_size_precent,
 	'smftags_set_cloud_min_font_size_precent' => $smftags_set_cloud_min_font_size_precent,
+
+	'smftags_set_msgindex' => $smftags_set_msgindex,
+	'smftags_set_msgindex_max_show' => $smftags_set_msgindex_max_show,
+	'smftags_set_use_css_tags' => $smftags_set_use_css_tags,
+	'smftags_set_css_tag_background_color' => $smftags_set_css_tag_background_color,
+	'smftags_set_css_tag_font_color' => $smftags_set_css_tag_font_color,
+
 	));
 	
 	
@@ -483,5 +495,81 @@ function SuggestTag2()
 	// Check permission
 	isAllowedTo('smftags_suggest');
 }
+function LoadTagsCSS()
+{
+	global $context, $modSettings;
 
+	if (empty($modSettings['smftags_set_use_css_tags']))
+		return;
+// From https://codepen.io/wbeeftink/pen/dIaDH
+$context['html_headers'] .='
+<style>	
+
+
+.tags {
+  list-style: none;
+  margin: 0;
+  overflow: hidden; 
+  padding: 0;
+}
+
+.tags li {
+  float: left; 
+}
+
+.tag {
+  background: ' . $modSettings['smftags_set_css_tag_background_color'] . ';
+  border-radius: 3px 0 0 3px;
+  color: ' . $modSettings['smftags_set_css_tag_font_color'] .  ';
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 20px 0 23px;
+  position: relative;
+  margin: 0 10px 10px 0;
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+}
+
+.tag::before {
+  background: ' . $modSettings['smftags_set_css_tag_background_color'] . ';
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+  content: "";
+  height: 6px;
+  left: 10px;
+  position: absolute;
+  width: 6px;
+  top: 10px;
+}
+
+.tag::after {
+  background: ' . $modSettings['smftags_set_css_tag_background_color'] . ';
+  border-bottom: 13px solid transparent;
+  border-left: 10px solid ' . $modSettings['smftags_set_css_tag_background_color'] . ';
+  border-top: 13px solid transparent;
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.tag:link, .tag:visited {
+  color: ' . $modSettings['smftags_set_css_tag_font_color'] .  ';
+}
+
+.tag:hover {
+  background-color: ' . $modSettings['smftags_set_css_tag_background_color'] . ';
+  color: ' . $modSettings['smftags_set_css_tag_font_color'] .  ';
+}
+
+.tag:hover::after {
+   border-left-color: ' . $modSettings['smftags_set_css_tag_background_color'] . '; 
+}
+
+  
+</style>  
+';
+
+}
 ?>
