@@ -1,0 +1,387 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:s3system</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin S3 System
+$txt['amazon_s3'] = 'Amazon S3';
+$txt['amazon_s3_note'] = 'Amazon S3 is another way to store files/serve requests to learn more visit <a href="https://aws.amazon.com/s3/" target="_blank">https://aws.amazon.com/s3/</a>';
+$txt['s3_enabled'] = 'Enable Amazon S3 for Storage';
+$txt['s3_delete_local'] = 'Delete the local file after uploaded successfully to S3';
+$txt['s3_thumbnails'] = 'Copy/display attachment thumbnails using S3. Images may load slower';
+$txt['s3_access_key'] = 'AWS Access Key';
+$txt['s3_secret_access_key'] = 'AWS Secret Key';
+$txt['s3_bucket'] = 'S3 Bucket';
+$txt['s3_region'] = 'S3 Region';
+$txt['s3_domain'] = 'Optional -Custom AWS CNAME domain';
+$txt['s3_domain_note'] = 'Enter CNAME with https:// or http://.  Also your CNAME must match your bucket name exactly!  Example: bucket name mybucket.domain.com  then your cname should be https://mybucket.domain.com';
+$txt['s3_cron_items'] = 'Number of items to process per cron job';
+$txt['s3_sycned'] = 'Synced';
+$txt['s3_no'] = 'No';
+
+$txt['error_bad_access_key'] = 'Invalid AWS S3 Access Key';
+$txt['error_bad_secret_access_key'] = 'Invalid AWS S3 Secret Key';
+$txt['s3_cronjob'] = 'Cron Job';
+$txt['s3_cronurl'] = 'Cron Path';
+$txt['s3_cronurl_note'] = '<strong>Required!</strong> Setup a cron job with file path below to execute php code. Have it run at least once an hour or every 15 minutes for faster uploads to S3';
+
+// END S3 System
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/ManageAttachments.php">
+	<operation>
+		<search position="replace"><![CDATA[// Get all the attachment names and id_msg's.
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			a.id_folder, a.filename, a.file_hash, a.attachment_type, a.id_attach, a.id_member' . ($query_type == 'messages' ? ', m.id_msg' : ', a.id_msg') . ',
+			thumb.id_folder AS thumb_folder, COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.filename AS thumb_filename, thumb.file_hash AS thumb_file_hash, thumb_parent.id_attach AS id_parent
+		FROM {db_prefix}attachments AS a' . ($query_type == 'members' ? '
+			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = a.id_member)' : ($query_type == 'messages' ? '
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg)' : '')) . '
+			LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)
+			LEFT JOIN {db_prefix}attachments AS thumb_parent ON (thumb.attachment_type = {int:thumb_attachment_type} AND thumb_parent.id_thumb = a.id_attach)
+		WHERE ' . $condition,
+		$query_parameter
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		// Figure out the "encrypted" filename and unlink it ;).
+		if ($row['attachment_type'] == 1)
+		{
+			// if attachment_type = 1, it's... an avatar in a custom avatars directory.
+			// wasn't it obvious? :P
+			// @todo look again at this.
+			@unlink($modSettings['custom_avatar_dir'] . '/' . $row['filename']);
+		}
+		else
+		{
+			$filename = getAttachmentFilename($row['filename'], $row['id_attach'], $row['id_folder'], false, $row['file_hash']);
+			@unlink($filename);
+
+			// If this was a thumb, the parent attachment should know about it.
+			if (!empty($row['id_parent']))
+				$parents[] = $row['id_parent'];
+
+			// If this attachments has a thumb, remove it as well.
+			if (!empty($row['id_thumb']) && $autoThumbRemoval)
+			{
+				$thumb_filename = getAttachmentFilename($row['thumb_filename'], $row['id_thumb'], $row['thumb_folder'], false, $row['thumb_file_hash']);
+				@unlink($thumb_filename);
+				$attach[] = $row['id_thumb'];
+			}
+		}
+
+		// Make a list.
+		if ($return_affected_messages && empty($row['attachment_type']))
+			$msgs[] = $row['id_msg'];
+
+		$attach[] = $row['id_attach'];
+	}
+	$smcFunc['db_free_result']($request);]]></search>
+		<add><![CDATA[// Get all the attachment names and id_msg's.
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			a.id_folder, a.filename, a.s3, a.file_hash, a.attachment_type, a.id_attach, a.id_member' . ($query_type == 'messages' ? ', m.id_msg' : ', a.id_msg') . ',
+			thumb.id_folder AS thumb_folder, COALESCE(thumb.id_attach, 0) AS id_thumb, thumb.filename AS thumb_filename,  thumb.s3 as thumb_s3, thumb.file_hash AS thumb_file_hash, thumb_parent.id_attach AS id_parent
+		FROM {db_prefix}attachments AS a' . ($query_type == 'members' ? '
+			INNER JOIN {db_prefix}members AS mem ON (mem.id_member = a.id_member)' : ($query_type == 'messages' ? '
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg)' : '')) . '
+			LEFT JOIN {db_prefix}attachments AS thumb ON (thumb.id_attach = a.id_thumb)
+			LEFT JOIN {db_prefix}attachments AS thumb_parent ON (thumb.attachment_type = {int:thumb_attachment_type} AND thumb_parent.id_thumb = a.id_attach)
+		WHERE ' . $condition,
+		$query_parameter
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		// Figure out the "encrypted" filename and unlink it ;).
+		if ($row['attachment_type'] == 1)
+		{
+			// if attachment_type = 1, it's... an avatar in a custom avatars directory.
+			// wasn't it obvious? :P
+			// @todo look again at this.
+			@unlink($modSettings['custom_avatar_dir'] . '/' . $row['filename']);
+		}
+		else
+		{
+			$filename = getAttachmentFilename($row['filename'], $row['id_attach'], $row['id_folder'], false, $row['file_hash']);
+
+			// s3 check
+			if (empty($row['s3']))
+				@unlink($filename);
+			else
+			{
+				$s3filename = 	$row['file_hash'];
+				if (empty($s3filename))
+						$s3filename = $row['filename'];
+
+				DeleteS3File($s3filename);
+			}
+
+			// If this was a thumb, the parent attachment should know about it.
+			if (!empty($row['id_parent']))
+				$parents[] = $row['id_parent'];
+
+			// If this attachments has a thumb, remove it as well.
+			if (!empty($row['id_thumb']) && $autoThumbRemoval)
+			{
+				$thumb_filename = getAttachmentFilename($row['thumb_filename'], $row['id_thumb'], $row['thumb_folder'], false, $row['thumb_file_hash']);
+				if (empty($row['thumb_s3']))
+					@unlink($thumb_filename);
+				else
+				{
+					$s3filename = 	$row['thumb_file_hash'];
+					if (empty($s3filename))
+							$s3filename = $row['thumb_filename'];
+
+					DeleteS3File($s3filename);
+				}
+
+				$attach[] = $row['id_thumb'];
+			}
+		}
+
+		// Make a list.
+		if ($return_affected_messages && empty($row['attachment_type']))
+			$msgs[] = $row['id_msg'];
+
+		$attach[] = $row['id_attach'];
+	}
+	$smcFunc['db_free_result']($request);]]></add>
+	</operation>
+
+	<operation>
+		<search position="replace"><![CDATA[SELECT thumb.id_attach, thumb.id_folder, thumb.filename, thumb.file_hash
+				FROM {db_prefix}attachments AS thumb
+					LEFT JOIN {db_prefix}attachments AS tparent ON (tparent.id_thumb = thumb.id_attach)
+				WHERE thumb.id_attach BETWEEN {int:substep} AND {int:substep} + 499
+					AND thumb.attachment_type = {int:thumbnail}
+					AND tparent.id_attach IS NULL]]></search>
+		<add><![CDATA[SELECT thumb.id_attach, thumb.id_folder, thumb.filename, thumb.file_hash
+				FROM {db_prefix}attachments AS thumb
+					LEFT JOIN {db_prefix}attachments AS tparent ON (tparent.id_thumb = thumb.id_attach)
+				WHERE thumb.s3 != 1 AND thumb.id_attach BETWEEN {int:substep} AND {int:substep} + 499
+					AND thumb.attachment_type = {int:thumbnail}
+					AND tparent.id_attach IS NULL]]></add>
+	</operation>
+
+
+	<operation>
+		<search position="replace"><![CDATA[WHERE id_attach BETWEEN {int:substep} AND {int:substep} + 249]]></search>
+		<add><![CDATA[WHERE s3 != 1 AND id_attach BETWEEN {int:substep} AND {int:substep} + 249]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA['downloads' => array(
+				'header' => array(
+					'value' => $txt['downloads'],
+				),
+				'data' => array(
+					'db' => 'downloads',
+					'comma_format' => true,
+				),
+				'sort' => array(
+					'default' => 'a.downloads',
+					'reverse' => 'a.downloads DESC',
+				),
+			),]]></search>
+		<add><![CDATA[			's3' => array(
+				'header' => array(
+					'value' => $txt['amazon_s3'],
+				),
+				'data' => array(
+					'function' => function($rowData) use ($txt, $context)
+					{
+						if ($context['browse_type'] === 'avatars')
+							return "";
+
+
+						if ($rowData['s3'] == 1)
+							return $txt['s3_sycned'];
+						else
+							return $txt['s3_no'];
+
+					},
+				),
+			),]]></add>
+	</operation>
+
+	<operation>
+		<search position="replace"><![CDATA[$request = $smcFunc['db_query']('', '
+			SELECT
+				m.id_msg, COALESCE(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.id_topic, m.id_member,
+				a.id_attach, a.filename, a.file_hash, a.attachment_type, a.size, a.width, a.height, a.downloads, mf.subject, t.id_board
+			FROM {db_prefix}attachments AS a]]></search>
+		<add><![CDATA[$request = $smcFunc['db_query']('', '
+			SELECT
+				m.id_msg, COALESCE(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.id_topic, m.id_member,
+				a.id_attach, a.filename, a.s3, a.file_hash, a.attachment_type, a.size, a.width, a.height, a.downloads, mf.subject, t.id_board
+			FROM {db_prefix}attachments AS a]]></add>
+	</operation>
+
+	<operation>
+		<search position="replace"><![CDATA[$result = $smcFunc['db_query']('', '
+				SELECT a.id_attach, a.id_folder, a.filename, a.file_hash
+				FROM {db_prefix}attachments AS a
+					LEFT JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg)
+				WHERE a.id_attach BETWEEN {int:substep} AND {int:substep} + 499
+					AND a.id_member = {int:no_member}
+					AND (a.id_msg = {int:no_msg} OR m.id_msg IS NULL)
+					AND a.id_attach NOT IN ({array_int:ignore_ids})
+					AND a.attachment_type IN ({array_int:attach_thumb})',
+				array(
+					'no_member' => 0,
+					'no_msg' => 0,
+					'substep' => $_GET['substep'],
+					'ignore_ids' => $ignore_ids,
+					'attach_thumb' => array(0, 3),
+				)
+			);
+
+			while ($row = $smcFunc['db_fetch_assoc']($result))
+			{
+				$to_remove[] = $row['id_attach'];
+				$context['repair_errors']['attachment_no_msg']++;
+
+				// If we are repairing remove the file from disk now.
+				if ($fix_errors && in_array('attachment_no_msg', $to_fix))
+				{
+					$filename = getAttachmentFilename($row['filename'], $row['id_attach'], $row['id_folder'], false, $row['file_hash']);
+					@unlink($filename);
+				}]]></search>
+		<add><![CDATA[$result = $smcFunc['db_query']('', '
+				SELECT a.id_attach, a.id_folder, a.filename, a.s3, a.file_hash
+				FROM {db_prefix}attachments AS a
+					LEFT JOIN {db_prefix}messages AS m ON (m.id_msg = a.id_msg)
+				WHERE a.id_attach BETWEEN {int:substep} AND {int:substep} + 499
+					AND a.id_member = {int:no_member}
+					AND (a.id_msg = {int:no_msg} OR m.id_msg IS NULL)
+					AND a.id_attach NOT IN ({array_int:ignore_ids})
+					AND a.attachment_type IN ({array_int:attach_thumb})',
+				array(
+					'no_member' => 0,
+					'no_msg' => 0,
+					'substep' => $_GET['substep'],
+					'ignore_ids' => $ignore_ids,
+					'attach_thumb' => array(0, 3),
+				)
+			);
+
+			while ($row = $smcFunc['db_fetch_assoc']($result))
+			{
+				$to_remove[] = $row['id_attach'];
+				$context['repair_errors']['attachment_no_msg']++;
+
+				// If we are repairing remove the file from disk now.
+				if ($fix_errors && in_array('attachment_no_msg', $to_fix))
+				{
+					$filename = getAttachmentFilename($row['filename'], $row['id_attach'], $row['id_folder'], false, $row['file_hash']);
+					// s3 check
+					if (empty($row['s3']))
+						@unlink($filename);
+					else
+					{
+						$s3filename = 	$row['file_hash'];
+						if (empty($s3filename))
+								$s3filename = $row['filename'];
+
+						DeleteS3File($s3filename);
+					}
+
+
+				}]]></add>
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/ShowAttachments.php">
+	<operation>
+		<search position="replace"><![CDATA[// No point in a nicer message, because this is supposed to be an attachment anyway...]]></search>
+		<add><![CDATA[
+
+			// S3 System SMFHacks.com
+
+			$s3 = 0;
+			$file_hash = '';
+			$real_filename = '';
+
+				$request = $smcFunc['db_query']('', '
+					SELECT
+						id_folder, s3, filename, file_hash, fileext, id_attach,
+						id_thumb, attachment_type, mime_type, approved, id_msg
+					FROM {db_prefix}attachments
+					WHERE id_attach = {int:attach}' . (!empty($context['preview_message']) ? '
+						AND a.id_msg != 0' : '') . '
+					LIMIT 1',
+					array(
+						'attach' => $attachId,
+					)
+				);
+
+				$s3Row = $smcFunc['db_fetch_assoc']($request);
+				$smcFunc['db_free_result']($request);
+
+				$s3 = $s3Row['s3'];
+				$file_hash = $s3Row['file_hash'];
+				$real_filename = $s3Row['filename'];
+
+			if (!empty($showThumb) && !empty($thumbFile))
+			{
+				if (!empty($modSettings['s3_thumbnails']))
+				{
+					$request = $smcFunc['db_query']('', '
+						SELECT id_folder, filename, file_hash, s3, fileext, id_attach, attachment_type, mime_type, approved, id_member
+						FROM {db_prefix}attachments
+						WHERE id_attach = {int:thumb_id}
+						LIMIT 1',
+						array(
+							'thumb_id' => $file['id_thumb'],
+						)
+					);
+
+					$s3Row = $smcFunc['db_fetch_assoc']($request);
+					$smcFunc['db_free_result']($request);
+
+					$s3 = $s3Row['s3'];
+					$file_hash = $s3Row['file_hash'];
+					$real_filename = $s3Row['filename'];
+				}
+				else
+					$s3 = 0;
+
+			}
+
+
+			if ($s3 == 1)
+			{
+
+				$is_image = 0;
+				if (isset($_REQUEST['image']))
+					$is_image = 1;
+
+				$s3filename = 	$file_hash;
+				if (empty($s3filename))
+					$s3filename = $real_filename;
+
+				header("Location: " . S3GetSignedUrl($file_hash,$real_filename,$is_image));
+
+				exit;
+
+			}
+
+			// END S3 System SMFHacks.com
+
+// No point in a nicer message, because this is supposed to be an attachment anyway...
+]]></add>
+	</operation>
+</file>
+
+
+
+</modification>

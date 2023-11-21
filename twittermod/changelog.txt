@@ -1,0 +1,15 @@
+2.1.3
+!Updated Facebook framework code and security certificate to work better
+
+2.1.2
+!Updated Twitter connection code due to twitter api changes
+
+2.1
+!Fixed issue if expires time is passed with facebook token.
++Added support for posting to Facebook Fan Pages
+
+2.0
++Added support for Facebook Posting of selected boards
+
+1.1
+!Fixed bug with 's in the subject being escaped

@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:smfgalleryprovideo2</id>
+<version>2.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Gallery Video Text Strings
+
+//Permissions
+$txt['permissiongroup_smfgalleryvideo'] = 'SMF Gallery Pro Video';
+
+$txt['permissionname_smfgalleryvideo_add'] = 'Add Video';
+$txt['permissionhelp_smfgalleryvideo_add'] = 'Allows the user to add a picture.';
+$txt['cannot_smfgalleryvideo_add'] = 'You are not allowed to add a picture.';
+
+
+//END SMF Gallery Video Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Gallery.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Gallery Video
+$txt['gallery_form_addvideo'] = 'Add Video';
+$txt['gallery_form_editvideo'] = 'Edit Video';
+$txt['gallery_form_delvideo'] = 'Delete Video';
+$txt['gallery_form_previewpic'] = 'Preview Picture';
+$txt['gallery_form_videofile'] = 'Video File';
+$txt['gallery_form_videourl'] = 'Linked Video Url (YouTube,Google Video)';
+$txt['gallery_form_videourl2'] = 'Examples:<br />http://www.youtube.com/watch?v=EDIP71Lviys';
+$txt['gallery_video_playerheight'] = 'Video Player Height';
+$txt['gallery_video_playerwidth'] = 'Video Player Width';
+$txt['gallery_video_showdowloadlink'] = 'Show video download link';
+$txt['gallery_video_showbbclinks'] = 'Show html linking codes';
+$txt['gallery_err_videosize'] = 'Video exceeds max size of ';
+
+$txt['gallery_text_videosettings'] = 'Video Settings';
+$txt['gallery_video_write_error'] = 'Video save path is not writable';
+
+$txt['gallery_video_maxfilesize'] = 'Video Max Filesize: ';
+$txt['gallery_video_allowlinked'] = 'Allowed linked videos such as youtube.com';
+$txt['gallery_video_filetypes'] = 'Filetypes allowed: ';
+$txt['gallery_err_extension'] = 'File extension not allowed: ';
+$txt['gallery_video_dowloadlink'] = 'Download Video';
+$txt['gallery_video_htmllink'] = 'HTML Linking Code:';
+$txt['gallery_txt_video_linking'] = 'Video Linking Codes';
+$txt['gallery_video_oldvideo'] = 'Old Video';
+
+$txt['gallery_txt_embed_default_width'] = 'Embed Video Player Width:';
+$txt['gallery_txt_embed_default_height'] = 'Embed Video Player Height:';
+
+//END SMF Gallery Video Strings	
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/Gallery2.php">
+	<operation>
+<search position="replace"><![CDATA[// Process the user gallery functions]]></search>
+		<add><![CDATA[
+
+require_once($sourcedir . '/Subs-Video2.php');
+
+// Process the user gallery functions
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="replace"><![CDATA['smfgallery_view',
+		'smfgallery_add',
+		'smfgallery_bulk',
+		'smfgallery_edit',
+		'smfgallery_delete',
+		'smfgallery_ratepic',
+		'smfgallery_comment',
+		'smfgallery_editcomment',
+		'smfgallery_report',
+		'smfgallery_autocomment',
+		'smfgallery_autoapprove',
+		'smfgallery_usergallery',
+		'smfgallery_manage',]]></search>
+		<add><![CDATA['smfgallery_view',
+		'smfgallery_add',
+		'smfgallery_bulk',
+		'smfgallery_edit',
+		'smfgallery_delete',
+		'smfgallery_ratepic',
+		'smfgallery_comment',
+		'smfgallery_editcomment',
+		'smfgallery_report',
+		'smfgallery_autocomment',
+		'smfgallery_autoapprove',
+		'smfgallery_usergallery',
+		'smfgallery_manage',
+		'smfgalleryvideo_add',]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA['smfgallery_view' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_add' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_bulk' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_edit' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_delete' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_ratepic' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_comment' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_editcomment' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_report' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_autocomment' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_autoapprove' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_usergallery' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_manage' => array(false, 'smfgallery', 'smfgallery'),]]></search>
+		<add><![CDATA['smfgallery_view' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_add' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_bulk' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_edit' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_delete' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_ratepic' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_comment' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_editcomment' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_report' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_autocomment' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_autoapprove' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_usergallery' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgallery_manage' => array(false, 'smfgallery', 'smfgallery'),
+			'smfgalleryvideo_add' => array(false, 'smfgallery', 'smfgallery'),]]></add>
+	</operation>
+</file>
+
+
+</modification>

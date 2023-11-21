@@ -1,0 +1,55 @@
+4.0.1
++Addded settings to control height/width of embeded media from sites such as youtube etc.
+
+4.0
++Added support for webm, ogg (Default player for mp4,web,ogg is html5)
++Audio Files can be played though Add Video such as wav,mid,mp3
++Better Styling for SMF 2.0
++More options on add video page
++Added Copy item to another category on add video page
++Improved redirection on adding a video to either last location, gallery
++Updated embed media sharing links to support more video sites
+
+3.5.1
+!Fixed a bug that broken some remote/localy hosted videos that used the video url
+
+3.5
++Added code from Simple Audio Video Embeder to support over 40+ video sites for embeding inside the gallery
+
+3.0
++Added movie thumbnail support requires ffmpeg installed in php as a module
++Now uses add_video category level permission part of SMF Gallery Pro 3.0!
+
+2.0.2
++Added mp4 support
+
+2.0
++Redid the struture of the video addon moved the files and functions to Video.template.php and Subs-Video.php
++Added BBC editor to add/edit video
+!Fixed spell check on add/edit video SMF 2.0
+!Fixed extra \n\n in show post link for SMF 2.0
++Added medium Image Support SMF 1.1.X
++Added marking mature for videos for SMF 1.1.x
++Added if video is edited also edits the posted topic if it exists
+
+1.1.1
+!Fixed an issue with handling of uploaded images. An image could be crafted
+
+1.1
+Support for SMF Gallery Pro 1.4 and SMF 2.0
+
+1.0.8
++Added support for megavideo
+
+1.0.7 
+!Fix to work with the latest SMF Gallery release.
++Add option for to display remote .flv files
+
+1.0.6
+!Fixed the display of linking codes for videos
+
+1.0.5 
+!Fixed undefined error
+
+1.0.4 
+!Fixed bug with changing video owner

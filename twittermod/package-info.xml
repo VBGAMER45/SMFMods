@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:tweettopicssystem</id>
+<name>Tweet Topics/FB Post System</name>
+<type>modification</type>
+<version>2.1.3</version>
+
+	<install for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
+		<redirect url="?action=twitter;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">tweettopicsystem.xml</modification>
+		<require-file name="tweettopics.php" destination="$sourcedir" />
+		<require-file name="OAuth.php" destination="$sourcedir" />
+		<require-file name="bitly.php" destination="$sourcedir" />
+		<require-file name="twitteroauth.php" destination="$sourcedir" />
+		<require-file name="twittercallback.php" destination="$boarddir" />
+		<require-file name="facebookcallback.php" destination="$boarddir" />
+		<require-dir name="images" destination="$boarddir" />
+		
+		<require-file name="tweettopics.template.php" destination="$themedir" />
+		<require-file name="facebook.php" destination="$sourcedir" />
+		<require-file name="base_facebook.php" destination="$sourcedir" />
+		<require-file name="fb_ca_chain_bundle.crt" destination="$sourcedir" />
+		
+		<code>tweettopicssql.php</code>
+	</install>
+	<upgrade for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=twitter;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="tweettopics2.php" destination="$sourcedir" />
+		<require-file name="OAuth.php" destination="$sourcedir" />
+		<require-file name="bitly.php" destination="$sourcedir" />
+		<require-file name="twitteroauth.php" destination="$sourcedir" />
+		<require-file name="twittercallback.php" destination="$boarddir" />
+		<require-file name="facebookcallback.php" destination="$boarddir" />
+		<require-dir name="images" destination="$boarddir" />
+
+		<require-file name="tweettopics.template.php" destination="$themedir" />
+		<require-file name="facebook.php" destination="$sourcedir" />
+		<require-file name="base_facebook.php" destination="$sourcedir" />
+		<require-file name="fb_ca_chain_bundle.crt" destination="$sourcedir" />
+		<code>tweettopicssql2.php</code>
+	</upgrade>
+	<uninstall for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
+		<modification type="file" reverse="true">tweettopicsystem.xml</modification>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file">tweettopicsystem2.xml</modification>
+		<redirect url="?action=admin;area=twitter;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="tweettopics2.php" destination="$sourcedir" />
+		<require-file name="OAuth.php" destination="$sourcedir" />
+		<require-file name="bitly.php" destination="$sourcedir" />
+		<require-file name="twitteroauth.php" destination="$sourcedir" />
+		<require-file name="twittercallback.php" destination="$boarddir" />
+		<require-file name="facebookcallback.php" destination="$boarddir" />
+		<require-dir name="images" destination="$boarddir" />
+
+		<require-file name="tweettopics.template.php" destination="$themedir" />
+		<require-file name="facebook.php" destination="$sourcedir" />
+		<require-file name="base_facebook.php" destination="$sourcedir" />
+		<require-file name="fb_ca_chain_bundle.crt" destination="$sourcedir" />
+		<code>tweettopicssql2.php</code>
+	</install>
+		
+	<upgrade for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=links;sa=admin">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="tweettopics2.php" destination="$sourcedir" />
+		<require-file name="OAuth.php" destination="$sourcedir" />
+		<require-file name="bitly.php" destination="$sourcedir" />
+		<require-file name="twitteroauth.php" destination="$sourcedir" />
+		<require-file name="twittercallback.php" destination="$boarddir" />
+		<require-file name="facebookcallback.php" destination="$boarddir" />
+		<require-dir name="images" destination="$boarddir" />
+
+		<require-file name="tweettopics.template.php" destination="$themedir" />
+		<require-file name="facebook.php" destination="$sourcedir" />
+		<require-file name="base_facebook.php" destination="$sourcedir" />
+		<require-file name="fb_ca_chain_bundle.crt" destination="$sourcedir" />
+		<code>tweettopicssql2.php</code>
+	</upgrade>
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+			<modification type="file" reverse="true">tweettopicsystem2.xml</modification>
+	</uninstall>
+	
+</package-info>

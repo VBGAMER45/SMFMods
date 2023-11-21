@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:tweettopicssystem</id>
+<version>2.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+//Begin Tweet Topics System Text Strings
+$txt['twitter_admin'] = 'Tweet Topics System';
+$txt['twitter_signon_error'] = 'Could not connect to Twitter. Refresh the page or try again later.';
+$txt['twitter_step1'] = 'Step 1: Register an App <a href="http://dev.twitter.com/apps">http://dev.twitter.com/apps</a> and fill out the settings below.';
+$txt['twitter_step2'] = 'Step 2: ';
+$txt['twitter_step2_part2'] = 'Done! If having issues resign in with twitter';
+$txt['twitter_signinwithtwitter'] = 'Signin with your Twitter Account';
+$txt['twitter_boardstotweet'] = 'Boards to Tweet';
+$txt['twitter_selectmultipleboards'] = 'You can select multiple boards by holding the control key down and clicking on each board';
+$txt['consumer_key'] = 'Twitter Consumer Key';
+$txt['consumer_secret'] = 'Twitter Consumer Secret';
+$txt['bitly_username'] = 'Bitly Username';
+$txt['bitly_apikey'] = 'Bitly Api Key';
+$txt['twitter_bitly_info'] = 'Optional Bitly settings used to shorten the topic link. Signup for an account at <a href="http://www.bitly.com" target="_blank">http://www.bitly.com</a>';
+$txt['twitter_save_settings'] = 'Save Twitter Settings';
+
+$txt['facebook_admin'] = 'FB Post Topics System';
+$txt['facebook_step1'] = '<b>Step 1</b>: Go to <a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a> and click the "Set Up a New App" button. Follow the steps through setting up your application until you get to the edit settings page. Click the Facebook Integration tab and in the Canvas URL and Secure Canvas URL and enter the url as ';
+$txt['facebook_step2'] = '<b>Step 2<b>: ';
+$txt['facebook_signin'] = 'Signin with your Facebook Account';
+
+$txt['facebook_step2_part2'] = 'Done! If having issues resign in with facebook';
+$txt['facebook_boardstotweet'] = 'Boards to FB Post';
+$txt['facebook_selectmultipleboards'] = 'You can select multiple boards by holding the control key down and clicking on each board';
+$txt['facebook_save_settings'] = 'Save Facebook Settings';
+$txt['facebook_err_step2'] = 'You must fill in the AppID and App Secret and save settings to get to step2';
+
+$txt['facebook_appid'] = 'App ID';
+$txt['facebook_appsecret'] = 'App Secret';
+
+$txt['facebook_yourprofile'] = 'Your Facebook Profile';
+$txt['facebook_selectfacebookprofilefanpage'] = 'Select Profile/Page';
+
+//END Tweet Topics System Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+//Begin Tweet Topics System Text Strings
+$txt['twitter_admin'] = 'Tweet Topics System';
+$txt['twitter_signon_error'] = 'Could not connect to Twitter. Refresh the page or try again later.';
+$txt['twitter_step1'] = 'Step 1: Register an App <a href="http://dev.twitter.com/apps">http://dev.twitter.com/apps</a> and fill out the settings below.';
+$txt['twitter_step2'] = 'Step 2: ';
+$txt['twitter_step2_part2'] = 'Done! If having issues resign in with twitter';
+$txt['twitter_signinwithtwitter'] = 'Signin with your Twitter Account';
+$txt['twitter_boardstotweet'] = 'Boards to Tweet';
+$txt['twitter_selectmultipleboards'] = 'You can select multiple boards by holding the control key down and clicking on each board';
+$txt['consumer_key'] = 'Twitter Consumer Key';
+$txt['consumer_secret'] = 'Twitter Consumer Secret';
+$txt['bitly_username'] = 'Bitly Username';
+$txt['bitly_apikey'] = 'Bitly Api Key';
+$txt['twitter_bitly_info'] = 'Optional Bitly settings used to shorten the topic link. Signup for an account at <a href="http://www.bitly.com" target="_blank">http://www.bitly.com</a>';
+$txt['twitter_save_settings'] = 'Save Twitter Settings';
+
+$txt['facebook_admin'] = 'FB Post Topics System';
+$txt['facebook_step1'] = '<b>Step 1</b>: Go to <a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a> and click the "Set Up a New App" button. Follow the steps through setting up your application until you get to the edit settings page. Click the Facebook Integration tab and in the Canvas URL and Secure Canvas URL and enter the url as ';
+$txt['facebook_step2'] = '<b>Step 2</b>: ';
+$txt['facebook_signin'] = 'Signin with your Facebook Account';
+$txt['facebook_step2_part2'] = 'Done! If having issues resign in with facebook';
+$txt['facebook_boardstotweet'] = 'Boards to FB Post';
+$txt['facebook_selectmultipleboards'] = 'You can select multiple boards by holding the control key down and clicking on each board';
+$txt['facebook_save_settings'] = 'Save Facebook Settings';
+$txt['facebook_err_step2'] = 'You must fill in the AppID and App Secret and save settings to get to step2';
+
+$txt['facebook_appid'] = 'App ID';
+$txt['facebook_appsecret'] = 'App Secret';
+
+$txt['facebook_yourprofile'] = 'Your Facebook Profile';
+$txt['facebook_selectfacebookprofilefanpage'] = 'Select Profile/Page';
+//END Tweet Topics System Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA['jsmodify' => array('Post.php', 'JavaScriptModify'),]]></search>
+		<add><![CDATA[
+		'twitter' => array('tweettopics.php', 'TwitterMain'),]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'twitter_settings' => '<a href="' . $scripturl . '?action=twitter;sesc=' . $sc . '">' . $txt['twitter_admin'] . '</a>',
+	'fb_settings' => '<a href="' . $scripturl . '?action=twitter;sa=fbsettings;sesc=' . $sc . '">' . $txt['facebook_admin'] . '</a>',
+]]></add>
+	</operation>
+
+</file>
+
+<file name="$sourcedir/Subs-Post.php">
+	<operation>
+		<search position="replace"><![CDATA[updateStats('topic', true);
+		updateStats('subject', $topicOptions['id'], $msgOptions['subject']);]]></search>
+		<add><![CDATA[updateStats('topic', true);
+		updateStats('subject', $topicOptions['id'], $msgOptions['subject']);
+		
+		// Tweet Topics System
+		global $sourcedir;
+		require_once($sourcedir . '/tweettopics.php');
+		TweetTopic($msgOptions['subject'],$topicOptions['id'],$topicOptions['board']);
+		FBPostTopic($msgOptions['subject'],$topicOptions['id'],$topicOptions['board']);
+]]></add>
+	</operation>
+</file>
+</modification>

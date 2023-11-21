@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:smfgalleryprovideo</id>
+	<name>SMF Gallery Pro - Video AddOn</name>
+	<type>modification</type>
+	<version>4.0.1</version>
+
+	<install for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=gallery;sa=videoset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Subs-Video.php" destination="$sourcedir" />
+		<require-file name="Video.template.php" destination="$themedir" />
+		<modification type="file">smfvideoaddon1.1.x.xml</modification>
+		<require-dir name="gallery" destination="$boarddir" />
+		<code>videoinstall1.1.x.php</code>
+		<code>AutoEmbedMediaProInstall.php</code>
+		
+	</install>
+
+	<uninstall for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<modification type="file" reverse="true">smfvideoaddon1.1.x.xml</modification>
+	</uninstall>
+
+
+	<install for="2.0 - 2.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=gallery;sa=videoset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">smfvideoaddon2.0.x.xml</modification>
+		<require-dir name="gallery" destination="$boarddir" />
+		<require-file name="Video2.template.php" destination="$themedir" />
+		<require-file name="Subs-Video2.php" destination="$sourcedir" />
+		<code>videoinstall2.0.x.php</code>
+		<code>AutoEmbedMediaProInstall2.php</code>
+		
+	</install>
+
+	<uninstall for="2.0 - 2.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">smfvideoaddon2.0.x.xml</modification>
+	</uninstall>
+
+</package-info>

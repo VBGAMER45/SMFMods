@@ -1,0 +1,5 @@
+Version 1.1
+!Handle legacy attachments without file_hash
+
+Version 1.0
+Initial Release

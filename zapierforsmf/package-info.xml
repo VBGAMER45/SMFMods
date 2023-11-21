@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:zapierforsmf</id>
+	<name>Zapier for SMF</name>
+	<type>modification</type>
+	<version>1.0.1</version>
+	
+
+
+	<upgrade from="all" for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=zapier;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="zapierwebhook.php" destination="$boarddir" />
+		<require-file name="zapier2.php" destination="$sourcedir" />
+		<require-file name="zapierhooks.php" destination="$sourcedir" />
+		<require-file name="zapier2.template.php" destination="$themedir" />
+		<require-file name="zapier.english.php" destination="$themedir/languages" />
+		<require-file name="zapier.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="zapier-small-orange-logo.png" destination="$imagesdir" />
+		<code>zapierinstall2.php</code>
+		
+		
+	</upgrade>
+
+	<install for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=zapier;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">zapier2.xml</modification>
+		<require-file name="zapierwebhook.php" destination="$boarddir" />
+		<require-file name="zapier2.php" destination="$sourcedir" />
+		<require-file name="zapier2.template.php" destination="$themedir" />
+		<require-file name="zapier.english.php" destination="$themedir/languages" />
+		<require-file name="zapier.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="zapierhooks.php" destination="$sourcedir" />
+		<require-file name="zapier-small-orange-logo.png" destination="$imagesdir" />
+		<code>zapierinstall2.php</code>
+		
+	</install>
+	
+	
+	<uninstall for="2.0 - 2.0.99, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<remove-file name="zapierwebhook.php" destination="$boarddir" />
+		<remove-file name="$sourcedir/zapier2.php" />
+		<remove-file name="$themedir/zapier2.template.php" />
+		<remove-file name="$themedir/languages/zapier.english.php" />
+		<remove-file name="$themedir/languages/zapier.english-utf8.php" />
+		<remove-file name="$sourcedir/zapierhooks.php"/>
+		<modification type="file" reverse="true">zapier2.xml</modification>
+		<code>zapierinstall2.php</code>
+	</uninstall>
+	
+
+	
+	<install for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<redirect url="?action=admin;area=zapier;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">zapier21.xml</modification>
+		<require-file name="zapierwebhook.php" destination="$boarddir" />
+		<require-file name="zapier2.php" destination="$sourcedir" />
+		<require-file name="zapier2.template.php" destination="$themedir" />
+		<require-file name="zapier.english.php" destination="$themedir/languages" />
+		<require-file name="zapier.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="zapierhooks.php" destination="$sourcedir" />
+		<require-file name="zapier.png" destination="$imagesdir/admin" />
+		<require-file name="zapier-small-orange-logo.png" destination="$imagesdir" />
+		<code>zapierinstall2.php</code>
+		
+	</install>
+	
+	
+	<uninstall for="2.1 - 2.1.99,2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3, 2.1 RC1">
+		<remove-file name="zapierwebhook.php" destination="$boarddir" />
+		<remove-file name="$sourcedir/zapier2.php" />
+		<remove-file name="$themedir/zapier2.template.php" />
+		<remove-file name="$themedir/languages/zapier.english.php" />
+		<remove-file name="$themedir/languages/zapier.english-utf8.php" />
+		<remove-file name="$sourcedir/zapierhooks.php"/>
+		<modification type="file" reverse="true">zapier21.xml</modification>
+		<code>zapierinstall2.php</code>
+	</uninstall>
+	
+	
+</package-info>

@@ -1,0 +1,5 @@
+1.0.1
++Passing group now supported in registermember webhook call
++Added new webhook call updatemember which supports changing the membergroup via the group parameter
+
+1.0 Initial Release
