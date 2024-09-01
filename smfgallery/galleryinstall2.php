@@ -1,10 +1,10 @@
 <?php
 /*
 SMF Gallery Lite Edition
-Version 5.5
+Version 8.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2008-2019 SMFHacks.com
+Copyright 2008-2024 SMFHacks.com
 
 ############################################
 License Information:

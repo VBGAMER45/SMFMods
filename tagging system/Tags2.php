@@ -166,6 +166,9 @@ function ViewTags()
 			    // (assuming your tag links to some sort of details page)
 			    $context['poptags'] .= '<a href="' . $scripturl . '?action=tags;tagid=' . $tags2[$key] . '" style="font-size: '.$size.'%"';
 			    // perhaps adjust this title attribute for the things that are tagged
+
+				$key = str_replace("&#039;","'",$key);
+
 			   $context['poptags'] .= ' title="'.$value.' things tagged with '.$key.'"';
 			   $context['poptags'] .= '>'.$key.'</a> ';
 			   if ($row_count > ($modSettings['smftags_set_cloud_tags_per_row']-1))
@@ -190,7 +193,10 @@ function ViewTags()
 		$context['tags_topics'] = array();
 		while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
-				$context['tags_topics'][] = $row;
+
+			 $row['tag'] = str_replace("&#039;","'",$row['tag']);
+
+			 $context['tags_topics'][] = $row;
 		}
 		$smcFunc['db_free_result']($dbresult);
 

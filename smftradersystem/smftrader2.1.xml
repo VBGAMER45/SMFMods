@@ -149,6 +149,300 @@ $txt['permissionhelp_smftrader_autorating'] = 'Ratings do not need to wait for a
 ]]></add>
 	</operation>
 </file>
+
+
+<file name="$languagedir/Modifications.german.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+$txt['smftrader_title'] = 'SMF Trader System';
+$txt['smftrader_version'] = '1.1';
+$txt['smftrader_admin'] = 'Trader Einstellungen';
+$txt['smftrader_guest'] = 'Gast';
+//Display text strings
+$txt['smftrader_profile'] = 'Anzahl Handel: ';
+//Profile text strings
+$txt['smftrader_submitfeedback'] = 'Feedback einreichen für ';
+$txt['smftrader_totalfeedback'] = 'Gesamtes positives Feedback: ';
+$txt['smftrader_positivefeedbackpercent'] = 'Positives Feedback: ';
+$txt['smftrader_positivefeedback'] = '<span style="color: #006400;">Positives Feedback: </span>';
+$txt['smftrader_neutralfeedback'] = 'Neutrales Feedback: ';
+$txt['smftrader_negativefeedback'] = '<span style="color: #FF0000;">Negatives Feedback: </span>';
+//Start trader.template
+
+//Submit Transaction Rating
+$txt['smftrader_whoareu'] = 'Sie waren der:';
+$txt['smftrader_buyer'] = 'Käufer';
+$txt['smftrader_seller'] = 'Verkäufer';
+$txt['smftrader_trade'] = 'Handel';
+
+
+$txt['smftrader_transaction'] = 'Transaktionsbewertung:';
+$txt['smftrader_positive'] = 'Positiv';
+$txt['smftrader_neutral'] = 'Neutral';
+$txt['smftrader_negative'] = 'Negativ';
+$txt['smftrader_shortcomment_small'] = 'Kurzer Kommentar';
+$txt['smftrader_shortcomment'] = 'Kurzer Kommentar zu Ihrer Transaktion:';
+$txt['smftrader_shortcommentnote'] = 'Max: 100 Zeichen';
+$txt['smftrader_topicurl'] = 'Thema URL:';
+$txt['smftrader_longcomment'] = 'Langer Kommentar zu Ihrer Transaktion:';
+
+
+//Rating Overview
+$txt['smftrader_allfeedback'] = 'Alle Feedbacks ansehen';
+$txt['smftrader_sellerfeedback'] = 'Verkäufer-Feedback ansehen';
+$txt['smftrader_buyerfeedback'] = 'Käufer-Feedback ansehen';
+$txt['smftrader_tradefeedback'] = 'Handels-Feedback ansehen';
+
+//Page Titles
+$txt['smftrader_feedbacktitle'] = 'SMF Trader System - Trader Übersicht';
+$txt['smftrader_submittitle'] = 'SMF Trader System - Feedback einreichen';
+$txt['smftrader_reporttitle'] = 'SMF Trader System - Schlechtes Feedback melden';
+
+
+$txt['smftrader_contact'] = 'Kontakt';
+$txt['smftrader_viewprofile'] = 'Vollständiges Profil ansehen.';
+$txt['smftrader_sendpm'] = 'Diesem Benutzer eine private Nachricht senden.';
+//End trader.template
+
+//Permissions
+$txt['permissiongroup_smftrader'] = 'SMF Trader';
+$txt['permissiongroup_simple_smftrader'] = 'SMF Trader';
+$txt['permissionname_smftrader_feedback'] = 'Feedback einreichen erlauben';
+$txt['permissionhelp_smftrader_feedback'] = 'Erlaubt dem Benutzer, Trader-Bewertungsfeedback einzureichen.';
+$txt['permissionname_smftrader_deletefeed'] = 'Löschen von Feedback von JEDEM Benutzer erlauben.';
+$txt['permissionhelp_smftrader_deletefeed'] = 'Erlaubt dem Benutzer, Feedback von jeder Person zu löschen.';
+$txt['cannot_smftrader_feedback'] = 'Sie dürfen kein Feedback einreichen.';
+$txt['cannot_smftrader_deletefeed'] = 'Sie dürfen kein Feedback löschen.';
+$txt['permissionname_smftrader_autorating'] = 'Automatische Genehmigung von Bewertungen';
+$txt['permissionhelp_smftrader_autorating'] = 'Bewertungen müssen nicht auf Genehmigung warten, wenn diese Berechtigung gegeben ist.';
+
+//END SMF Trader System Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.french.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+$txt['smftrader_title'] = 'SMF Système de Trader';
+$txt['smftrader_version'] = '1.1';
+$txt['smftrader_admin'] = 'Paramètres du Trader';
+$txt['smftrader_guest'] = 'Invité';
+//Display text strings
+$txt['smftrader_profile'] = 'Nombre de transactions : ';
+//Profile text strings
+$txt['smftrader_submitfeedback'] = 'Envoyer un retour pour ';
+$txt['smftrader_totalfeedback'] = 'Total des retours positifs : ';
+$txt['smftrader_positivefeedbackpercent'] = 'Retour positif : ';
+$txt['smftrader_positivefeedback'] = '<span style="color: #006400;">Retour positif : </span>';
+$txt['smftrader_neutralfeedback'] = 'Retour neutre : ';
+$txt['smftrader_negativefeedback'] = '<span style="color: #FF0000;">Retour négatif : </span>';
+//Start trader.template
+
+//Submit Transaction Rating
+$txt['smftrader_whoareu'] = 'Vous étiez le :';
+$txt['smftrader_buyer'] = 'Acheteur';
+$txt['smftrader_seller'] = 'Vendeur';
+$txt['smftrader_trade'] = 'Transaction';
+
+
+$txt['smftrader_transaction'] = 'Note de transaction :';
+$txt['smftrader_positive'] = 'Positif';
+$txt['smftrader_neutral'] = 'Neutre';
+$txt['smftrader_negative'] = 'Négatif';
+$txt['smftrader_shortcomment_small'] = 'Bref commentaire';
+$txt['smftrader_shortcomment'] = 'Bref commentaire sur votre transaction :';
+$txt['smftrader_shortcommentnote'] = 'Max: 100 caractères';
+$txt['smftrader_topicurl'] = 'URL du sujet :';
+$txt['smftrader_longcomment'] = 'Commentaire long sur votre transaction :';
+
+
+//Rating Overview
+$txt['smftrader_allfeedback'] = 'Voir tous les retours';
+$txt['smftrader_sellerfeedback'] = 'Voir les retours du vendeur';
+$txt['smftrader_buyerfeedback'] = 'Voir les retours de l\'acheteur';
+$txt['smftrader_tradefeedback'] = 'Voir les retours de transaction';
+
+//Page Titles
+$txt['smftrader_feedbacktitle'] = 'SMF Système de Trader - Aperçu du Trader';
+$txt['smftrader_submittitle'] = 'SMF Système de Trader - Envoyer un retour';
+$txt['smftrader_reporttitle'] = 'SMF Système de Trader - Rapport mauvais retour';
+
+
+$txt['smftrader_contact'] = 'Contact';
+$txt['smftrader_viewprofile'] = 'Voir le profil complet.';
+$txt['smftrader_sendpm'] = 'Envoyer un message personnel à cet utilisateur.';
+//End trader.template
+
+//Permissions
+$txt['permissiongroup_smftrader'] = 'SMF Trader';
+$txt['permissiongroup_simple_smftrader'] = 'SMF Trader';
+$txt['permissionname_smftrader_feedback'] = 'Autoriser l\'envoi d\'un retour';
+$txt['permissionhelp_smftrader_feedback'] = 'Permet à l\'utilisateur d\'envoyer un retour de note de trader.';
+$txt['permissionname_smftrader_deletefeed'] = 'Autoriser la suppression de TOUS les retours par TOUS les utilisateurs.';
+$txt['permissionhelp_smftrader_deletefeed'] = 'Permet à l\'utilisateur de supprimer des retours de n’importe qui ou de n’importe qui.';
+$txt['cannot_smftrader_feedback'] = 'Vous n\'êtes pas autorisé à envoyer un retour.';
+$txt['cannot_smftrader_deletefeed'] = 'Vous n\'êtes pas autorisé à supprimer des retours.';
+$txt['permissionname_smftrader_autorating'] = 'Approbation automatique des notations';
+$txt['permissionhelp_smftrader_autorating'] = 'Les notes n'ont pas besoin d'attendre une approbation si cette permission est accordée.'
+
+//END SMF Trader System Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.dutch.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+$txt['smftrader_title'] = 'SMF Handelaar Systeem';
+$txt['smftrader_version'] = '1.1';
+$txt['smftrader_admin'] = 'Handelaar Instellingen';
+$txt['smftrader_guest'] = 'Gast';
+//Display text strings
+$txt['smftrader_profile'] = 'Handelaar Telling: ';
+//Profile text strings
+$txt['smftrader_submitfeedback'] = 'Feedback indienen voor ';
+$txt['smftrader_totalfeedback'] = 'Totaal positieve feedback: ';
+$txt['smftrader_positivefeedbackpercent'] = 'Positieve Feedback: ';
+$txt['smftrader_positivefeedback'] = '<span style="color: #006400;">Positieve Feedback: </span>';
+$txt['smftrader_neutralfeedback'] = 'Neutrale Feedback: ';
+$txt['smftrader_negativefeedback'] = '<span style="color: #FF0000;">Negatieve Feedback: </span>';
+//Start trader.template
+
+//Submit Transaction Rating
+$txt['smftrader_whoareu'] = 'Jij was de:';
+$txt['smftrader_buyer'] = 'Koper';
+$txt['smftrader_seller'] = 'Verkoper';
+$txt['smftrader_trade'] = 'Handelaar';
+
+
+$txt['smftrader_transaction'] = 'Transactie Beoordeling:';
+$txt['smftrader_positive'] = 'Positief';
+$txt['smftrader_neutral'] = 'Neutraal';
+$txt['smftrader_negative'] = 'Negatief';
+$txt['smftrader_shortcomment_small'] = 'Korte Opmerking';
+$txt['smftrader_shortcomment'] = 'Korte opmerking over je transactie:';
+$txt['smftrader_shortcommentnote'] = 'Max: 100 karakters';
+$txt['smftrader_topicurl'] = 'Onderwerp URL:';
+$txt['smftrader_longcomment'] = 'Lange opmerking over je transactie:';
+
+
+//Rating Overview
+$txt['smftrader_allfeedback'] = 'Bekijk Alle Feedback';
+$txt['smftrader_sellerfeedback'] = 'Bekijk Verkoper Feedback';
+$txt['smftrader_buyerfeedback'] = 'Bekijk Koper Feedback';
+$txt['smftrader_tradefeedback'] = 'Bekijk Handelaar Feedback';
+
+//Page Titles
+$txt['smftrader_feedbacktitle'] = 'SMF Handelaar Systeem - Handelaar Overzicht';
+$txt['smftrader_submittitle'] = 'SMF Handelaar Systeem - Feedback Indienen';
+$txt['smftrader_reporttitle'] = 'SMF Handelaar Systeem - Slechte Feedback Melden';
+
+
+$txt['smftrader_contact'] = 'Contact';
+$txt['smftrader_viewprofile'] = 'Bekijk volledig profiel.';
+$txt['smftrader_sendpm'] = 'Stuur deze Gebruiker een persoonlijk bericht.';
+//End trader.template
+
+//Permissions
+$txt['permissiongroup_smftrader'] = 'SMF Handelaar';
+$txt['permissiongroup_simple_smftrader'] = 'SMF Handelaar';
+$txt['permissionname_smftrader_feedback'] = 'Toestaan om feedback in te dienen';
+$txt['permissionhelp_smftrader_feedback'] = 'Staat de gebruiker toe om handelaar beoordelingsfeedback in te dienen.';
+$txt['permissionname_smftrader_deletefeed'] = 'Toestaan om ALLE feedback door ELKE gebruiker te verwijderen.';
+$txt['permissionhelp_smftrader_deletefeed'] = 'Staat de gebruiker toe om feedback van iedereen of door iedereen te verwijderen.';
+$txt['cannot_smftrader_feedback'] = 'Je mag geen feedback indienen.';
+$txt['cannot_smftrader_deletefeed'] = 'Je mag geen feedback verwijderen.';
+$txt['permissionname_smftrader_autorating'] = 'Automatisch Goedkeuren Beoordelingen';
+$txt['permissionhelp_smftrader_autorating'] = 'Beoordelingen hoeven niet te wachten op goedkeuring als deze toestemming wordt gegeven.';
+//END SMF Trader System Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+//Begin SMF Trader System Text Strings
+$txt['smftrader_title'] = 'Sistema de Comercio SMF';
+$txt['smftrader_version'] = '1.1';
+$txt['smftrader_admin'] = 'Configuración de Comercio';
+$txt['smftrader_guest'] = 'Invitado';
+//Display text strings
+$txt['smftrader_profile'] = 'Contador de Comercios: ';
+//Profile text strings
+$txt['smftrader_submitfeedback'] = 'Enviar feedback para ';
+$txt['smftrader_totalfeedback'] = 'Feedback Positivo Total: ';
+$txt['smftrader_positivefeedbackpercent'] = 'Feedback Positivo: ';
+$txt['smftrader_positivefeedback'] = '<span style="color: #006400;">Feedback Positivo: </span>';
+$txt['smftrader_neutralfeedback'] = 'Feedback Neutral: ';
+$txt['smftrader_negativefeedback'] = '<span style="color: #FF0000;">Feedback Negativo: </span>';
+//Start trader.template
+
+//Submit Transaction Rating
+$txt['smftrader_whoareu'] = 'Fueras el:';
+$txt['smftrader_buyer'] = 'Comprador';
+$txt['smftrader_seller'] = 'Vendedor';
+$txt['smftrader_trade'] = 'Comercio';
+
+
+$txt['smftrader_transaction'] = 'Clasificación de la transacción:';
+$txt['smftrader_positive'] = 'Positivo';
+$txt['smftrader_neutral'] = 'Neutral';
+$txt['smftrader_negative'] = 'Negativo';
+$txt['smftrader_shortcomment_small'] = 'Comentario corto';
+$txt['smftrader_shortcomment'] = 'Comentario corto sobre tu transacción:';
+$txt['smftrader_shortcommentnote'] = 'Máx: 100 caracteres';
+$txt['smftrader_topicurl'] = 'URL del tema:';
+$txt['smftrader_longcomment'] = 'Comentario largo sobre tu transacción:';
+
+
+//Rating Overview
+$txt['smftrader_allfeedback'] = 'Ver Todo el Feedback';
+$txt['smftrader_sellerfeedback'] = 'Ver Feedback del Vendedor';
+$txt['smftrader_buyerfeedback'] = 'Ver Feedback del Comprador';
+$txt['smftrader_tradefeedback'] = 'Ver Feedback del Comercio';
+
+//Page Titles
+$txt['smftrader_feedbacktitle'] = 'Sistema de Comercio SMF - Descripción de Comercio';
+$txt['smftrader_submittitle'] = 'Sistema de Comercio SMF - Enviar Feedback';
+$txt['smftrader_reporttitle'] = 'Sistema de Comercio SMF - Reportar Feedback Negativo';
+
+
+$txt['smftrader_contact'] = 'Contacto';
+$txt['smftrader_viewprofile'] = 'Ver perfil completo.';
+$txt['smftrader_sendpm'] = 'Enviar a este usuario un mensaje personal.';
+//End trader.template
+
+//Permissions
+$txt['permissiongroup_smftrader'] = 'Comerciante SMF';
+$txt['permissiongroup_simple_smftrader'] = 'Comerciante SMF';
+$txt['permissionname_smftrader_feedback'] = 'Permitir enviar feedback';
+$txt['permissionhelp_smftrader_feedback'] = 'Permite al usuario enviar un feedback de clasificación de comercio.';
+$txt['permissionname_smftrader_deletefeed'] = 'Permitir eliminar CUALQUIER feedback de CUALQUIER usuario.';
+$txt['permissionhelp_smftrader_deletefeed'] = 'Permite al usuario eliminar el feedback de cualquier persona.';
+$txt['cannot_smftrader_feedback'] = 'No tienes permitido enviar feedback.';
+$txt['cannot_smftrader_deletefeed'] = 'No tienes permitido eliminar el feedback.';
+$txt['permissionname_smftrader_autorating'] = 'Auto Aprobar Clasificaciones';
+$txt['permissionhelp_smftrader_autorating'] = 'Las clasificaciones no necesitan esperar aprobación si se da este permiso.';
+//END SMF Trader System Text Strings
+]]></add>
+	</operation>
+</file>
+
 <file name="$themedir/Profile.template.php">
 	<operation>
 	<search position="replace"><![CDATA[<dd>', $context['member']['local_time'], '</dd>';]]></search>

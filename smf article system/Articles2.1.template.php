@@ -2300,8 +2300,11 @@ function ShowUserBox($memCommID)
 
 		// Show online and offline buttons?
 		if (!empty($modSettings['onlineEnable']) && !$memberContext[$memCommID]['is_guest'])
-			echo '
-		', $context['can_send_pm'] ? '<a href="' . $memberContext[$memCommID]['online']['href'] . '" title="' . $memberContext[$memCommID]['online']['label'] . '">' : '', $settings['use_image_buttons'] ? '<img src="' . $memberContext[$memCommID]['online']['image_href'] . '" alt="' . $memberContext[$memCommID]['online']['text'] . '" border="0" style="margin-top: 2px;" />' : $memberContext[$memCommID]['online']['text'], $context['can_send_pm'] ? '</a>' : '', $settings['use_image_buttons'] ? '<span class="smalltext"> ' . $memberContext[$memCommID]['online']['text'] . '</span>' : '', '<br /><br />';
+		{
+			echo '<span id="userstatus">
+				', $context['can_send_pm'] ? '<a href="' . $memberContext[$memCommID]['online']['href'] . '" title="' . $memberContext[$memCommID]['online']['text'] . '" rel="nofollow">' : '', $settings['use_image_buttons'] ? '<span class="' . ($memberContext[$memCommID]['online']['is_online'] == 1 ? 'on' : 'off') . '" title="' . $memberContext[$memCommID]['online']['text'] . '"></span>' : $memberContext[$memCommID]['online']['label'], $context['can_send_pm'] ? '</a>' : '', $settings['use_image_buttons'] ? '<span class="smalltext"> ' . $memberContext[$memCommID]['online']['label'] . '</span>' : '';
+			echo '</span><br />';
+		}
 
 		// Show the member's gender icon?
 		if (!empty($settings['show_gender']) && $memberContext[$memCommID]['gender']['image'] != '')
@@ -2324,38 +2327,13 @@ function ShowUserBox($memCommID)
 		', $memberContext[$memCommID]['blurb'], '<br />
 		<br />';
 
-		// This shows the popular messaging icons.
-		echo '
-		', $memberContext[$memCommID]['icq']['link'], $memberContext[$memCommID]['msn']['link'], $memberContext[$memCommID]['aim']['link'], $memberContext[$memCommID]['yim']['link'], '<br />';
-
-		// Show the profile, website, email address, and personal message buttons.
-		if ($settings['show_profile_buttons'])
-		{
-			echo '
-		<a href="', $memberContext[$memCommID]['href'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/icons/profile_sm.gif" alt="' . $txt['view_profile'] . '" title="' . $txt['view_profile'] . '" border="0" />' : $txt['view_profile']), '</a>';
-
-			// Don't show an icon if they haven't specified a website.
-			if ($memberContext[$memCommID]['website']['url'] != '')
-				echo '
-		<a href="', $memberContext[$memCommID]['website']['url'], '" title="' . $memberContext[$memCommID]['website']['title'] . '" target="_blank">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/www_sm.gif" alt="' . $txt['www'] . '" border="0" />' : $txt['www']), '</a>';
-
-			// Don't show the email address if they want it hidden.
-			if (empty($memberContext[$memCommID]['hide_email']))
-				echo '
-		<a href="mailto:', $memberContext[$memCommID]['email'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/email_sm.gif" alt="' . $txt['email'] . '" title="' . $txt['email'] . '" border="0" />' : $txt['email']), '</a>';
-
-			// Since we know this person isn't a guest, you *can* message them.
-			if ($context['can_send_pm'])
-				echo '
-		<a href="', $scripturl, '?action=pm;sa=send;u=', $memberContext[$memCommID]['id'], '" title="', $memberContext[$memCommID]['online']['label'], '">', $settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/im_' . ($memberContext[$memCommID]['online']['is_online'] ? 'on' : 'off') . '.gif" alt="' . $memberContext[$memCommID]['online']['label'] . '" border="0" />' : $memberContext[$memCommID]['online']['label'], '</a>';
-		}
 	}
 	// Otherwise, show the guest's email.
 	elseif (empty($memberContext[$memCommID]['hide_email']))
 		echo '
 		<br />
 		<br />
-		<a href="mailto:', $memberContext[$memCommID]['email'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/email_sm.gif" alt="' . $txt['email'] . '" title="' . $txt['email'] . '" border="0" />' : $txt['email']), '</a>';
+		<a href="mailto:', $memberContext[$memCommID]['email'], '">', ($settings['use_image_buttons'] ? '<img src="' . $modSettings['articles_url'] . 'email_sm.gif" alt="' . $txt['email'] . '" title="' . $txt['email'] . '" border="0" />' : $txt['email']), '</a>';
 
 	// Done with the information about the poster... on to the post itself.
 	echo '

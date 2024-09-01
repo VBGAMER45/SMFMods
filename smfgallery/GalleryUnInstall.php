@@ -4,7 +4,7 @@ SMF Gallery Lite
 Version 2.0.5
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2008-2019 https://www.samsonsoftware.com
+Copyright 2008-2024 https://www.samsonsoftware.com
 */
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))

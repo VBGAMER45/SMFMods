@@ -1,0 +1,493 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:downloadsystem</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Download System Text Strings
+$txt['downloads_menu'] = 'Downloads';
+$txt['downloads_admin'] = 'Downloads Configuration';
+
+// Permissions
+$txt['permissiongroup_downloads'] = 'Downloads System';
+
+$txt['permissionname_downloads_view'] = 'View Downloads';
+$txt['permissionhelp_downloads_view'] = 'Allows the user to view the Downloads';
+$txt['cannot_downloads_view'] = 'You are not allowed to view the Downloads';
+
+$txt['permissionname_downloads_add'] = 'Add Download';
+$txt['permissionhelp_downloads_add'] = 'Allows the user to add a download.';
+$txt['cannot_downloads_add'] = 'You are not allowed to add a download.';
+
+$txt['permissionname_downloads_edit'] = 'Edit own Download';
+$txt['permissionhelp_downloads_edit'] = 'Allows the user to edit their own download.';
+$txt['cannot_downloads_edit'] = 'You are not allowed to edit that download';
+
+$txt['permissionname_downloads_delete'] = 'Delete own Download';
+$txt['permissionhelp_downloads_delete'] = 'Allows the user to delete their own download.';
+$txt['cannot_downloads_delete'] = 'You are not allowed to delete that download.';
+
+$txt['permissionname_downloads_ratefile'] = 'Rate Downloads';
+$txt['permissionhelp_downloads_ratefile'] = 'Allows the user to rate a file.';
+$txt['cannot_downloads_ratefile'] = 'You are not allowed to rate that file.';
+
+$txt['permissionname_downloads_editcomment'] = 'Edit own Comment';
+$txt['permissionhelp_downloads_editcomment'] = 'Allows the user to edit their own comments.';
+$txt['cannot_downloads_editcomment'] = 'You are not allowed to edit that comment.';
+
+$txt['permissionname_downloads_comment'] = 'Leave Comments';
+$txt['permissionhelp_downloads_comment'] = 'Allows the user to leave comments on a download.';
+$txt['cannot_downloads_comment'] = 'You are not allowed to leave comments.';
+
+$txt['permissionname_downloads_report'] = 'Report Pictures/Comments';
+$txt['permissionhelp_downloads_report'] = 'Allows the user to report downloads and comments.';
+$txt['cannot_downloads_report'] = 'You are not allowed to report content.';
+
+$txt['permissionname_downloads_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_downloads_autocomment'] = 'Comments do not need to wait for approval.';
+
+$txt['permissionname_downloads_autoapprove'] = 'Auto Approve Downloads';
+$txt['permissionhelp_downloads_autoapprove'] = 'Downloads do not need to wait for approval.';
+
+
+$txt['permissionname_downloads_manage'] = 'Admin Download System';
+$txt['permissionhelp_downloads_manage'] = 'Allows the user to add/delete/edit all categories. Delete Comments, Delete Downloads, Approve Downloads';
+$txt['cannot_downloads_manage'] = 'You are not allowed to manage the downloads.';
+
+// END Download System Text Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Download System
+$txt['whoall_downloads'] = 'In the <a href="' . $scripturl . '?action=downloads">Downloads</a>';
+// END Download System Strings			
+]]></add>
+	</operation>
+</file>
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="after"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Download System Text Strings
+$txt['downloads_menu'] = 'Downloads';
+$txt['downloads_admin'] = 'Downloads Configuration';
+
+// Permissions
+$txt['permissiongroup_downloads'] = 'Downloads System';
+
+$txt['permissionname_downloads_view'] = 'View Downloads';
+$txt['permissionhelp_downloads_view'] = 'Allows the user to view the Downloads';
+$txt['cannot_downloads_view'] = 'You are not allowed to view the Downloads';
+
+$txt['permissionname_downloads_add'] = 'Add Download';
+$txt['permissionhelp_downloads_add'] = 'Allows the user to add a download.';
+$txt['cannot_downloads_add'] = 'You are not allowed to add a download.';
+
+$txt['permissionname_downloads_edit'] = 'Edit own Download';
+$txt['permissionhelp_downloads_edit'] = 'Allows the user to edit their own download.';
+$txt['cannot_downloads_edit'] = 'You are not allowed to edit that download';
+
+$txt['permissionname_downloads_delete'] = 'Delete own Download';
+$txt['permissionhelp_downloads_delete'] = 'Allows the user to delete their own download.';
+$txt['cannot_downloads_delete'] = 'You are not allowed to delete that download.';
+
+$txt['permissionname_downloads_ratefile'] = 'Rate Downloads';
+$txt['permissionhelp_downloads_ratefile'] = 'Allows the user to rate a file.';
+$txt['cannot_downloads_ratefile'] = 'You are not allowed to rate that file.';
+
+$txt['permissionname_downloads_editcomment'] = 'Edit own Comment';
+$txt['permissionhelp_downloads_editcomment'] = 'Allows the user to edit their own comments.';
+$txt['cannot_downloads_editcomment'] = 'You are not allowed to edit that comment.';
+
+$txt['permissionname_downloads_comment'] = 'Leave Comments';
+$txt['permissionhelp_downloads_comment'] = 'Allows the user to leave comments on a download.';
+$txt['cannot_downloads_comment'] = 'You are not allowed to leave comments.';
+
+$txt['permissionname_downloads_report'] = 'Report Pictures/Comments';
+$txt['permissionhelp_downloads_report'] = 'Allows the user to report downloads and comments.';
+$txt['cannot_downloads_report'] = 'You are not allowed to report content.';
+
+$txt['permissionname_downloads_autocomment'] = 'Auto Approve Comments';
+$txt['permissionhelp_downloads_autocomment'] = 'Comments do not need to wait for approval.';
+
+$txt['permissionname_downloads_autoapprove'] = 'Auto Approve Downloads';
+$txt['permissionhelp_downloads_autoapprove'] = 'Downloads do not need to wait for approval.';
+
+
+$txt['permissionname_downloads_manage'] = 'Admin Download System';
+$txt['permissionhelp_downloads_manage'] = 'Allows the user to add/delete/edit all categories. Delete Comments, Delete Downloads, Approve Downloads';
+$txt['cannot_downloads_manage'] = 'You are not allowed to manage the downloads.';
+
+// END Download System Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Download System Text Strings
+
+$txt['downloads_menu'] = 'Descargas';
+$txt['downloads_admin'] = 'Configuración de Descargas';
+$txt['downloads_text_settings'] = 'Ajustes';
+
+$txt['downloads_form_approvedownloads'] = 'Aprobar Descargas';
+$txt['downloads_form_reportdownloads'] = 'Descargas Reportadas';
+$txt['downloads_form_approvecomments'] = 'Aprobar Comentarios';
+$txt['downloads_filespace'] = 'Administrador de Espacio de Archivo';
+$txt['downloads_text_catpermlist2'] = 'Permisos de Categoría';
+$txt['downloads_txt_import'] = 'Importar';
+
+// Permissions
+$txt['permissiongroup_downloads'] = 'Sistema de Descargas';
+$txt['permissiongroup_simple_downloads'] = 'Sistema de Descargas';
+
+$txt['permissionname_downloads_view'] = 'Ver Descargas';
+$txt['permissionhelp_downloads_view'] = 'Permite al usuario ver las Descargas';
+$txt['cannot_downloads_view'] = 'No tienes permiso para ver las Descargas';
+
+$txt['permissionname_downloads_add'] = 'Agregar Descarga';
+$txt['permissionhelp_downloads_add'] = 'Permite al usuario agregar una descarga.';
+$txt['cannot_downloads_add'] = 'No tienes permiso para agregar una descarga.';
+
+$txt['permissionname_downloads_edit'] = 'Editar Propia Descarga';
+$txt['permissionhelp_downloads_edit'] = 'Permite al usuario editar su propia descarga.';
+$txt['cannot_downloads_edit'] = 'No tienes permiso para editar esa descarga';
+
+$txt['permissionname_downloads_delete'] = 'Borrar Propia Descarga';
+$txt['permissionhelp_downloads_delete'] = 'Permite al usuario eliminar su propia descarga.';
+$txt['cannot_downloads_delete'] = 'No tienes permiso para eliminar esa descarga.';
+
+$txt['permissionname_downloads_ratefile'] = 'Valorar Descargas';
+$txt['permissionhelp_downloads_ratefile'] = 'Permite al usuario valorar un archivo.';
+$txt['cannot_downloads_ratefile'] = 'No tienes permiso para valorar ese archivo.';
+
+$txt['permissionname_downloads_editcomment'] = 'Editar Propio Comentario';
+$txt['permissionhelp_downloads_editcomment'] = 'Permite al usuario editar sus propios comentarios.';
+$txt['cannot_downloads_editcomment'] = 'No tienes permiso para editar ese comentario.';
+
+$txt['permissionname_downloads_comment'] = 'Dejar Comentarios';
+$txt['permissionhelp_downloads_comment'] = 'Permite al usuario dejar comentarios en una descarga.';
+$txt['cannot_downloads_comment'] = 'No tienes permiso para dejar comentarios.';
+
+$txt['permissionname_downloads_report'] = 'Reportar Imágenes/Comentarios';
+$txt['permissionhelp_downloads_report'] = 'Permite al usuario reportar descargas y comentarios.';
+$txt['cannot_downloads_report'] = 'No tienes permiso para reportar contenido.';
+
+$txt['permissionname_downloads_autocomment'] = 'Auto Aprobar Comentarios';
+$txt['permissionhelp_downloads_autocomment'] = 'Los comentarios no necesitan esperar aprobación.';
+
+$txt['permissionname_downloads_autoapprove'] = 'Auto Aprobar Descargas';
+$txt['permissionhelp_downloads_autoapprove'] = 'Las descargas no necesitan esperar aprobación.';
+
+$txt['permissionname_downloads_manage'] = 'Administrar Sistema de Descargas';
+$txt['permissionhelp_downloads_manage'] = 'Permite al usuario agregar/eliminar/editar todas las categorías. Eliminar Comentarios, Eliminar Descargas, Aprobar Descargas';
+$txt['cannot_downloads_manage'] = 'No tienes permiso para administrar las descargas.';
+
+$txt['whoall_downloads'] = 'En las <a href="' . $scripturl . '?action=downloads">Descargas</a>';
+
+// END Download System Text Strings
+
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.french.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Download System Text Strings
+$txt['downloads_menu'] = 'Téléchargements';
+$txt['downloads_admin'] = 'Configuration des Téléchargements';
+$txt['downloads_text_settings'] = 'Paramètres';
+
+$txt['downloads_form_approvedownloads'] = 'Approuver les Téléchargements';
+$txt['downloads_form_reportdownloads'] = 'Téléchargements signalés';
+$txt['downloads_form_approvecomments'] = 'Approuver les Commentaires';
+$txt['downloads_filespace'] = 'Gestionnaire d\'espace de fichier';
+$txt['downloads_text_catpermlist2'] = 'Autorisations de Catégorie';
+$txt['downloads_txt_import'] = 'Importer';
+
+// Permissions
+$txt['permissiongroup_downloads'] = 'Système de Téléchargements';
+$txt['permissiongroup_simple_downloads'] = 'Système de Téléchargements';
+
+$txt['permissionname_downloads_view'] = 'Voir les Téléchargements';
+$txt['permissionhelp_downloads_view'] = 'Permet à l\'utilisateur de voir les Téléchargements';
+$txt['cannot_downloads_view'] = 'Vous n\'êtes pas autorisé à voir les Téléchargements';
+
+$txt['permissionname_downloads_add'] = 'Ajouter un Téléchargement';
+$txt['permissionhelp_downloads_add'] = 'Permet à l\'utilisateur d\'ajouter un téléchargement.';
+$txt['cannot_downloads_add'] = 'Vous n\'êtes pas autorisé à ajouter un téléchargement.';
+
+$txt['permissionname_downloads_edit'] = 'Modifier son propre Téléchargement';
+$txt['permissionhelp_downloads_edit'] = 'Permet à l\'utilisateur de modifier leur propre téléchargement.';
+$txt['cannot_downloads_edit'] = 'Vous n\'êtes pas autorisé à modifier ce téléchargement';
+
+$txt['permissionname_downloads_delete'] = 'Supprimer son propre Téléchargement';
+$txt['permissionhelp_downloads_delete'] = 'Permet à l\'utilisateur de supprimer leur propre téléchargement.';
+$txt['cannot_downloads_delete'] = 'Vous n\'êtes pas autorisé à supprimer ce téléchargement.';
+
+$txt['permissionname_downloads_ratefile'] = 'Noter les Téléchargements';
+$txt['permissionhelp_downloads_ratefile'] = 'Permet à l\'utilisateur de noter un fichier.';
+$txt['cannot_downloads_ratefile'] = 'Vous n\'êtes pas autorisé à noter ce fichier.';
+
+$txt['permissionname_downloads_editcomment'] = 'Modifier son propre Commentaire';
+$txt['permissionhelp_downloads_editcomment'] = 'Permet à l\'utilisateur de modifier leurs propres commentaires.';
+$txt['cannot_downloads_editcomment'] = 'Vous n\'êtes pas autorisé à modifier ce commentaire.';
+
+$txt['permissionname_downloads_comment'] = 'Laisser des Commentaires';
+$txt['permissionhelp_downloads_comment'] = 'Permet à l\'utilisateur de laisser des commentaires sur un téléchargement.';
+$txt['cannot_downloads_comment'] = 'Vous n\'êtes pas autorisé à laisser des commentaires.';
+
+$txt['permissionname_downloads_report'] = 'Signaler des Images/Commentaires';
+$txt['permissionhelp_downloads_report'] = 'Permet à l\'utilisateur de signaler des téléchargements et des commentaires.';
+$txt['cannot_downloads_report'] = 'Vous n\'êtes pas autorisé à signaler du contenu.';
+
+$txt['permissionname_downloads_autocomment'] = 'Approbation Automatique des Commentaires';
+$txt['permissionhelp_downloads_autocomment'] = 'Les commentaires n\'ont pas besoin d\'attendre l\'approbation.';
+
+$txt['permissionname_downloads_autoapprove'] = 'Approbation Automatique des Téléchargements';
+$txt['permissionhelp_downloads_autoapprove'] = 'Les téléchargements n\'ont pas besoin d\'attendre l\'approbation.';
+
+$txt['permissionname_downloads_manage'] = 'Admin Système de Téléchargement';
+$txt['permissionhelp_downloads_manage'] = 'Permet à l\'utilisateur d\'ajouter/supprimer/modifier toutes les catégories. Supprimer les Commentaires, Supprimer les Téléchargements, Approuver les Téléchargements';
+$txt['cannot_downloads_manage'] = 'Vous n\'êtes pas autorisé à gérer les téléchargements.';
+
+$txt['whoall_downloads'] = 'Dans les <a href="' . $scripturl . '?action=downloads">Téléchargements</a>';
+
+// END Download System Text Strings
+
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.dutch.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Download System Text Strings
+$txt['downloads_menu'] = 'Downloads';
+$txt['downloads_admin'] = 'Downloads Configuratie';
+$txt['downloads_text_settings'] = 'Instellingen';
+
+$txt['downloads_form_approvedownloads'] = 'Downloads Goedkeuren';
+$txt['downloads_form_reportdownloads'] = 'Gemelde Downloads';
+$txt['downloads_form_approvecomments'] = 'Reacties Goedkeuren';
+$txt['downloads_filespace'] = 'Bestandsruimte Beheerder';
+$txt['downloads_text_catpermlist2'] = 'Categorie Toestemmingen';
+$txt['downloads_txt_import'] = 'Importeren';
+
+// Permissions
+$txt['permissiongroup_downloads'] = 'Downloads Systeem';
+$txt['permissiongroup_simple_downloads'] = 'Downloads Systeem';
+
+$txt['permissionname_downloads_view'] = 'Downloads Bekijken';
+$txt['permissionhelp_downloads_view'] = 'Staat de gebruiker toe de downloads te bekijken';
+$txt['cannot_downloads_view'] = 'Je mag de downloads niet bekijken';
+
+$txt['permissionname_downloads_add'] = 'Download Toevoegen';
+$txt['permissionhelp_downloads_add'] = 'Staat de gebruiker toe een download toe te voegen.';
+$txt['cannot_downloads_add'] = 'Je mag geen download toevoegen';
+
+$txt['permissionname_downloads_edit'] = 'Eigen Download Bewerken';
+$txt['permissionhelp_downloads_edit'] = 'Laat de gebruiker zijn eigen download bewerken.';
+$txt['cannot_downloads_edit'] = 'Je mag die download niet bewerken';
+
+$txt['permissionname_downloads_delete'] = 'Eigen Download Verwijderen';
+$txt['permissionhelp_downloads_delete'] = 'Staat de gebruiker toe om zijn eigen download te verwijderen';
+$txt['cannot_downloads_delete'] = 'Je mag die download niet verwijderen';
+
+$txt['permissionname_downloads_ratefile'] = 'Downloads Beoordelen';
+$txt['permissionhelp_downloads_ratefile'] = 'Staat de gebruiker toe om een bestand te waarderen.';
+$txt['cannot_downloads_ratefile'] = 'Je mag dat bestand niet beoordelen';
+
+$txt['permissionname_downloads_editcomment'] = 'Eigen Reactie Bewerken';
+$txt['permissionhelp_downloads_editcomment'] = 'Laat de gebruiker hun eigen reacties bewerken.';
+$txt['cannot_downloads_editcomment'] = 'Je mag die reactie niet bewerken';
+
+$txt['permissionname_downloads_comment'] = 'Reacties Achterlaten';
+$txt['permissionhelp_downloads_comment'] = 'Staat de gebruiker toe om reacties achter te laten op een download.';
+$txt['cannot_downloads_comment'] = 'Je mag geen reacties achterlaten';
+
+$txt['permissionname_downloads_report'] = 'Foto\'s/Reacties Rapporteren';
+$txt['permissionhelp_downloads_report'] = 'Maakt het voor de gebruiker mogelijk om downloads en opmerkingen te rapporteren.';
+$txt['cannot_downloads_report'] = 'Je mag geen inhoud rapporteren';
+
+$txt['permissionname_downloads_autocomment'] = 'Automatisch Reacties Goedkeuren';
+$txt['permissionhelp_downloads_autocomment'] = 'Reacties hoeven niet op goedkeuring te wachten.';
+
+$txt['permissionname_downloads_autoapprove'] = 'Automatisch Downloads Goedkeuren';
+$txt['permissionhelp_downloads_autoapprove'] = 'Downloads hoeven niet op goedkeuring te wachten.';
+
+$txt['permissionname_downloads_manage'] = 'Beheer Download Systeem';
+$txt['permissionhelp_downloads_manage'] = 'Staat de gebruiker toe om alle categorieën toe te voegen/te verwijderen/te bewerken. Reacties verwijderen, Downloads verwijderen, Downloads goedkeuren';
+$txt['cannot_downloads_manage'] = 'Je mag de downloads niet beheren.';
+
+$txt['whoall_downloads'] = 'In de <a href="' . $scripturl . '?action=downloads">Downloads</a>';
+
+// END Download System Text Strings
+
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.german.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+
+// Begin Download System Text Strings
+$txt['downloads_menu'] = 'Downloads';
+$txt['downloads_admin'] = 'Downloads Konfiguration';
+$txt['downloads_text_settings'] = 'Einstellungen';
+
+$txt['downloads_form_approvedownloads'] = 'Downloads genehmigen';
+$txt['downloads_form_reportdownloads'] = 'Gemeldete Downloads';
+$txt['downloads_form_approvecomments'] = 'Kommentare genehmigen';
+$txt['downloads_filespace'] = 'Dateispeicher-Manager';
+$txt['downloads_text_catpermlist2'] = 'Kategorieberechtigungen';
+$txt['downloads_txt_import'] = 'Importieren';
+
+// Permissions
+$txt['permissiongroup_downloads'] = 'Downloads System';
+$txt['permissiongroup_simple_downloads'] = 'Downloads System';
+
+$txt['permissionname_downloads_view'] = 'Downloads anzeigen';
+$txt['permissionhelp_downloads_view'] = 'Ermöglicht dem Benutzer das Anzeigen der Downloads';
+$txt['cannot_downloads_view'] = 'Sie sind nicht berechtigt, die Downloads anzuzeigen.';
+
+$txt['permissionname_downloads_add'] = 'Download hinzufügen';
+$txt['permissionhelp_downloads_add'] = 'Ermöglicht dem Benutzer das Hinzufügen eines Downloads.';
+$txt['cannot_downloads_add'] = 'Sie sind nicht berechtigt, einen Download hinzuzufügen.';
+
+$txt['permissionname_downloads_edit'] = 'Eigene Downloads bearbeiten';
+$txt['permissionhelp_downloads_edit'] = 'Ermöglicht dem Benutzer das Bearbeiten seiner eigenen Downloads.';
+$txt['cannot_downloads_edit'] = 'Sie sind nicht berechtigt, diesen Download zu bearbeiten.';
+
+$txt['permissionname_downloads_delete'] = 'Eigene Downloads löschen';
+$txt['permissionhelp_downloads_delete'] = 'Ermöglicht dem Benutzer das Löschen seiner eigenen Downloads.';
+$txt['cannot_downloads_delete'] = 'Sie sind nicht berechtigt, diesen Download zu löschen.';
+
+$txt['permissionname_downloads_ratefile'] = 'Downloads bewerten';
+$txt['permissionhelp_downloads_ratefile'] = 'Ermöglicht dem Benutzer die Bewertung einer Datei.';
+$txt['cannot_downloads_ratefile'] = 'Sie sind nicht berechtigt, diese Datei zu bewerten.';
+
+$txt['permissionname_downloads_editcomment'] = 'Eigene Kommentare bearbeiten';
+$txt['permissionhelp_downloads_editcomment'] = 'Ermöglicht dem Benutzer das Bearbeiten seiner eigenen Kommentare.';
+$txt['cannot_downloads_editcomment'] = 'Sie sind nicht berechtigt, diesen Kommentar zu bearbeiten.';
+
+$txt['permissionname_downloads_comment'] = 'Kommentare hinterlassen';
+$txt['permissionhelp_downloads_comment'] = 'Ermöglicht dem Benutzer das Hinterlassen von Kommentaren zu einem Download.';
+$txt['cannot_downloads_comment'] = 'Sie sind nicht berechtigt, Kommentare zu hinterlassen.';
+
+$txt['permissionname_downloads_report'] = 'Bilder/Kommentare melden';
+$txt['permissionhelp_downloads_report'] = 'Ermöglicht dem Benutzer das Melden von Downloads und Kommentaren.';
+$txt['cannot_downloads_report'] = 'Sie sind nicht berechtigt, Inhalte zu melden.';
+
+$txt['permissionname_downloads_autocomment'] = 'Kommentare automatisch genehmigen';
+$txt['permissionhelp_downloads_autocomment'] = 'Kommentare müssen nicht auf Genehmigung warten.';
+
+$txt['permissionname_downloads_autoapprove'] = 'Downloads automatisch genehmigen';
+$txt['permissionhelp_downloads_autoapprove'] = 'Downloads müssen nicht auf Genehmigung warten.';
+
+
+$txt['permissionname_downloads_manage'] = 'Download-System Admin';
+$txt['permissionhelp_downloads_manage'] = 'Ermöglicht dem Benutzer das Hinzufügen/Löschen/Bearbeiten aller Kategorien. Kommentare löschen, Downloads löschen, Downloads genehmigen';
+$txt['cannot_downloads_manage'] = 'Sie sind nicht berechtigt, die Downloads zu verwalten.';
+
+
+$txt['whoall_downloads'] = 'In den <a href="' . $scripturl . '?action=downloads">Downloads</a>';
+// END Download System Text Strings
+
+]]></add>
+	</operation>
+</file>
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'help' => array('Help.php', 'ShowHelp'),]]></search>
+		<add><![CDATA[
+		'downloads' => array('Downloads.php', 'DownloadsMain'),
+		]]></add>
+	</operation>
+</file>
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[$current_action = 'admin';
+	if (in_array($context['current_action'], array(]]></search>
+		<add><![CDATA['downloads',]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[// the [member] list button
+	if ($context['allow_memberlist'])
+		echo ($current_action == 'mlist' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'mlist' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=mlist">' , $txt[331] , '</a>
+				</td>' , $current_action == 'mlist' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+]]></search>
+		<add><![CDATA[
+	// the [Downloads System] button
+	if ($context['allow_downloads_view'])
+		echo ($current_action == 'downloads' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+				<td valign="top" class="maintab_' , $current_action == 'downloads' ? 'active_back' : 'back' , '">
+					<a href="', $scripturl, '?action=downloads">' , $txt['downloads_menu']  , '</a>
+				</td>' , $current_action == 'downloads' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA['edit_settings' => '<a href="' . $scripturl . '?action=serversettings;sesc=' . $sc . '">' . $txt[222] . '</a>',]]></search>
+	<add><![CDATA[
+	'downloads_settings' => '<a href="' . $scripturl . '?action=downloads;sa=adminset;sesc=' . $sc . '">' . $txt['downloads_admin'] . '</a>',
+]]></add>
+	</operation>
+
+	<operation>
+		<search position="before"><![CDATA[$context['allow_calendar'] = allowedTo('calendar_view') && !empty($modSettings['cal_enabled']);]]></search>
+		<add><![CDATA[
+		$context['allow_downloads_view'] = allowedTo('downloads_view');
+		]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA['pm' => array(
+				'pm_read' => false,
+				'pm_send' => false,
+			),]]></search>
+		<add><![CDATA[
+'downloads' => array(
+				'downloads_view' => false,
+				'downloads_add' => false,
+				'downloads_edit' => false,
+				'downloads_delete' => false,
+				'downloads_ratefile' => false,
+				'downloads_comment' => false,
+				'downloads_editcomment' => false,
+				'downloads_report' => false,
+				'downloads_autocomment' => false,
+				'downloads_autoapprove' => false,
+				'downloads_manage' => false,
+			),]]></add>
+	</operation>
+</file>
+</modification>

@@ -44,5 +44,11 @@
 		<search position="replace"><![CDATA[if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['can_recaptcha']))]]></search>
 		<add><![CDATA[if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['can_recaptcha']) && empty($thisVerification['can_hcaptcha']))]]></add>
 	</operation>
+	<operation>
+		<search position="before"><![CDATA['can_recaptcha' => !empty($modSettings['recaptcha_enabled']) && !empty($modSettings['recaptcha_site_key']) && !empty($modSettings['recaptcha_secret_key']),]]></search>
+		<add><![CDATA[
+		'can_hcaptcha' => !empty($modSettings['hcaptcha_enabled']) && !empty($modSettings['hcaptcha_public_key']) && !empty($modSettings['hcaptcha_private_key']),]]></add>
+	</operation>
+
 	</file>
 </modification>

@@ -212,7 +212,7 @@ function WhoQuotedRebuildQuoteLog()
 
 }
 
-function WhoQuoted_ParseMessage($id_msg = 0, $id_topic = 0, $body ,$postMemberID = 0, $posterTime = 0, $reIndex = false)
+function WhoQuoted_ParseMessage($id_msg = 0, $id_topic = 0, $body = '' ,$postMemberID = 0, $posterTime = 0, $reIndex = false)
 {
 
 	global $modSettings, $db_prefix;

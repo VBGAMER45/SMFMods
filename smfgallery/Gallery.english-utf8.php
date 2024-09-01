@@ -19,7 +19,7 @@ Gallery English Text Strings
 */
 
 //Gallery.template.php Strings
-
+global $scripturl;
 //Title string
 $txt['gallery_text_title'] = 'Gallery';
 
@@ -119,7 +119,7 @@ $txt['gallery_set_url'] = 'Gallery Url: ';
 $txt['gallery_set_whoonline'] = 'Display who is viewing a picture';
 $txt['gallery_set_images_per_page'] = 'Images per page:';
 
-$txt['gallery_shop_settings'] = '<b>Shop Points Settings</b><br /><span class="smalltext">Only if SMF Shop is installed</span>';
+$txt['gallery_shop_settings'] = '<b>Shop Points Settings</b><br /><span class="smalltext">Only if SMF Shop/ST Shop is installed</span>';
 $txt['gallery_shop_picadd']  = 'Picture Add Points: ';
 $txt['gallery_shop_commentadd'] = 'Comment Add Points: ';
 
@@ -244,7 +244,7 @@ $txt['gallery_errors_addpicture'] = 'The following error or errors occurred whil
 
 // 5.0
 $txt['gallery_txt_waitingforapproval'] = 'Waiting for Approval';
-$txt['gallery_txt_convertors'] = 'Converters';
+$txt['gallery_txt_convertors'] = 'Convertors';
 
 $txt['gallery_txt_importaeva'] = 'Import Aeva Media';
 $txt['gallery_txt_noimport'] = 'No gallery supported to import from. Only supports Aeva Media importing';
@@ -328,4 +328,6 @@ $txt['gallery_text_settings'] = 'Settings';
 $txt['gallery_txt_copyrightremoval'] = 'Copyright Removal';
 
 //END SMF Gallery Text Strings
+
+$txt['whoall_gallery'] = 'In the <a href="' . $scripturl . '?action=gallery">Gallery</a>';
 ?>

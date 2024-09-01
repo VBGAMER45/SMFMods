@@ -605,7 +605,7 @@ function template_addcat()
   <tr>
     <td width="28%" colspan="2"  align="center" class="windowbg2">
     <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-    <input type="submit" value="' . $txt['smflinks_addcat'] . '" name="submit" /></td>
+    <input type="submit" class="button_submit"  value="' . $txt['smflinks_addcat'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -732,7 +732,7 @@ echo '
     <td width="28%" colspan="2" align="center" class="windowbg2">
     <input type="hidden" value="' . $row['ID_CAT'] . '" name="catid" />
     <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-    <input type="submit" value="' . $txt['smflinks_editcat'] . '" name="submit" /></td>
+    <input type="submit" class="button_submit"  value="' . $txt['smflinks_editcat'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -761,7 +761,7 @@ function template_deletecat()
     <br />
     <input type="hidden" value="' . $context['links_catid'] . '" name="catid" />
     <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-    <input type="submit" value="' . $txt['smflinks_deltcat'] . '" name="submit" /></td>
+    <input type="submit" class="button_submit"  value="' . $txt['smflinks_deltcat'] . '" name="submit" /></td>
   </tr>
 </table>
 </form>';
@@ -892,7 +892,7 @@ echo '</select>
   <tr>
     <td width="28%" colspan="2" align="center" class="windowbg2">
     <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-    <input type="submit" value="' . $txt['smflinks_addlink'] .'" name="submit" /></td>
+    <input type="submit" class="button_submit"  value="' . $txt['smflinks_addlink'] .'" name="submit" /></td>
   </tr>
 </table>
 </form>';
@@ -1029,7 +1029,7 @@ echo '
     <td width="28%" colspan="2" align="center" class="windowbg2">
     <input type="hidden" value="' . $context['link_id'] . '" name="id" />
     <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-    <input type="submit" value="' . $txt['smflinks_editlink'] . '" name="submit" /></td>
+    <input type="submit" class="button_submit"  value="' . $txt['smflinks_editlink'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -1060,7 +1060,7 @@ function template_deletelink()
     <br />
     <input type="hidden" value="' . $context['links_id'] . '" name="id" />
     <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-    <input type="submit" value="' . $txt['smflinks_dellink'] . '" name="submit" /></td>
+    <input type="submit" class="button_submit"  value="' . $txt['smflinks_dellink'] . '" name="submit" /></td>
   </tr>
 </table>
 </form>';
@@ -1215,7 +1215,7 @@ echo '
 				<input type="checkbox" name="smflinks_disp_date" ' . ($modSettings['smflinks_disp_date'] ? ' checked="checked" ' : '') . ' />' . $txt['smflinks_disp_date'] . '<br />
 				<br />
                 <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-				<input type="submit" name="savesettings" value="' . $txt['smflinks_settings_save'] .'" />
+				<input type="submit" class="button_submit"  name="savesettings" value="' . $txt['smflinks_settings_save'] .'" />
 			</form>
 			</td>
 		</tr>
@@ -1379,7 +1379,7 @@ function template_catperm()
 			  	<td align="center" colspan="2">
 			  	<input type="hidden" name="cat" value="' . $context['links_cat'] . '" />
                 <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-			  	<input type="submit" value="' . $txt['smflinks_text_addperm'] . '" /></td>
+			  	<input type="submit" class="button_submit"  value="' . $txt['smflinks_text_addperm'] . '" /></td>
 
 			  </tr>
 		</table>

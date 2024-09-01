@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:downloadsystem</id>
+	<name>Downloads System</name>
+	<type>modification</type>
+	<version>3.0.15</version>
+
+	<install for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=downloads;sa=adminset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">downloads.xml</modification>
+		<require-file name="Downloads.php" destination="$sourcedir" />
+		<require-file name="Downloads.template.php" destination="$themedir" />
+		<require-dir name="downloads" destination="$boarddir" />
+		<require-file name="Downloads.english.php" destination="$themedir/languages" />
+		<require-file name="Downloads.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<code>downloadsinstall.php</code>
+		
+	</install>
+	
+	<upgrade for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<redirect url="?action=downloads;sa=adminset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Downloads.php" destination="$sourcedir" />
+		<require-file name="Downloads.template.php" destination="$themedir" />
+		<require-dir name="downloads" destination="$boarddir" />
+		<require-file name="Downloads.english.php" destination="$themedir/languages" />
+		<require-file name="Downloads.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<code>downloadsinstall.php</code>
+		
+	</upgrade>
+
+	<uninstall for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
+		<modification type="file" reverse="true">downloads.xml</modification>
+		<remove-file name="$sourcedir/Downloads.php" />
+		<remove-file name="$themedir/Downloads.template.php" />
+		<remove-file name="$themedir/languages/Downloads.english.php" />
+		<remove-file name="$themedir/languages/Downloads.english-utf8.php" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<code>DownloadUnInstall.php</code>
+	</uninstall>
+	
+	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=downloads;sa=adminset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">downloads2.xml</modification>
+		<require-file name="Downloads2.php" destination="$sourcedir" />
+		<require-file name="Downloads2.template.php" destination="$themedir" />
+		<require-dir name="downloads" destination="$boarddir" />
+		<require-file name="Downloads.english.php" destination="$themedir/languages" />
+		<require-file name="Downloads.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<code>downloadsinstall2.php</code>
+	</install>
+	
+	<upgrade for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<redirect url="?action=admin;area=downloads;sa=adminset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Downloads2.php" destination="$sourcedir" />
+		<require-file name="Downloads2.template.php" destination="$themedir" />
+		<require-dir name="downloads" destination="$boarddir" />
+		<require-file name="Downloads.english.php" destination="$themedir/languages" />
+		<require-file name="Downloads.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<code>downloadsinstall2.php</code>
+	
+	</upgrade>
+	<uninstall for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
+		<modification type="file" reverse="true">downloads2.xml</modification>
+		<remove-file name="$sourcedir/Downloads2.php" />
+		<remove-file name="$themedir/Downloads2.template.php" />
+		<remove-file name="$themedir/languages/Downloads.english.php" />
+		<remove-file name="$themedir/languages/Downloads.english-utf8.php" />
+		<code>DownloadUnInstall.php</code>
+	</uninstall>
+	
+	
+	
+	
+	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 Beta 3,2.1 RC1,2.1 RC2,,2.1 RC3,2.1 RC4">
+		<redirect url="?action=admin;area=downloads;sa=adminset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Downloads2.php" destination="$sourcedir" />
+		<require-file name="Downloads2.1.template.php" destination="$themedir" />
+		<require-dir name="downloads" destination="$boarddir" />
+		<require-file name="Downloads.english.php" destination="$themedir/languages" />
+		<require-file name="Downloads.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<require-file name="drive.png" destination="$imagesdir/admin" />
+		<require-file name="drive.png" destination="$imagesdir" />
+		<require-file name="bar_stats.png" destination="$imagesdir" />
+		<require-file name="DownloadsHooks.php" destination="$sourcedir" />
+		<code>dohooks.php</code>
+		<code>downloadsinstall2.php</code>
+	</install>
+	
+	<upgrade for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 Beta 3,2.1 RC1,2.1 RC2,,2.1 RC3,2.1 RC4">
+		<redirect url="?action=admin;area=downloads;sa=adminset">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="Downloads2.php" destination="$sourcedir" />
+		<require-file name="Downloads2.1.template.php" destination="$themedir" />
+		<require-dir name="downloads" destination="$boarddir" />
+		<require-file name="Downloads.english.php" destination="$themedir/languages" />
+		<require-file name="Downloads.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Downloads.german.php" destination="$themedir/languages" />
+		<require-file name="Downloads.dutch.php" destination="$themedir/languages" />
+		<require-file name="Downloads.french.php" destination="$themedir/languages" />
+		<require-file name="Downloads.spanish_es.php" destination="$themedir/languages" />
+		<require-file name="drive.png" destination="$imagesdir/admin" />
+		<require-file name="drive.png" destination="$imagesdir" />
+		<require-file name="bar_stats.png" destination="$imagesdir" />
+		<require-file name="DownloadsHooks.php" destination="$sourcedir" />
+		<code>dohooks.php</code>
+		<code>downloadsinstall2.php</code>
+	
+	</upgrade>
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 Beta 3,2.1 RC1,2.1 RC2,,2.1 RC3,2.1 RC4">
+		<remove-file name="$sourcedir/Downloads2.php" />
+		<remove-file name="$themedir/Downloads2.1.template.php" />
+		<remove-file name="$themedir/languages/Downloads.english.php" />
+		<remove-file name="$themedir/languages/Downloads.english-utf8.php" />
+		<remove-file name="$imagesdir/admin/drive.png" />
+		<remove-file name="$imagesdir/drive.png" />
+		<remove-file name="$sourcedir/DownloadsHooks.php" />
+		<code>dohooks.php</code>
+		<code>DownloadUnInstall.php</code>
+	</uninstall>
+	
+	
+</package-info>

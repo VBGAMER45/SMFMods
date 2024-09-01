@@ -5,7 +5,7 @@
 	<id>vbgamer45:smfgallery</id>
 	<name>SMF Gallery Lite</name>
 	<type>modification</type>
-	<version>7.1a</version>
+	<version>8.0.1</version>
 
 	<install for="1.0 - 1.1.99, 1.1 RC3, 1.1 RC2">
 		<readme>ReadMe.txt</readme>
@@ -62,7 +62,9 @@
 		<require-file name="Gallery.english.php" destination="$themedir/languages" />
 		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
 		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
-		
+		<require-file name="Gallery.german.php" destination="$themedir/languages" />
+		<require-file name="Gallery.french.php" destination="$themedir/languages" />
+		<require-file name="Gallery.spanish_es.php" destination="$themedir/languages" />
 		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
 		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
 		<redirect url="?action=admin;area=gallery;sa=adminset;newstart=1" />
@@ -83,6 +85,9 @@
 		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
 		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
 		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Gallery.german.php" destination="$themedir/languages" />
+		<require-file name="Gallery.french.php" destination="$themedir/languages" />
+		<require-file name="Gallery.spanish_es.php" destination="$themedir/languages" />
 		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
 		<redirect url="?action=admin;area=gallery;sa=adminset;newstart=1" />
 		
@@ -120,6 +125,9 @@
 		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
 		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
 		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
+		<require-file name="Gallery.german.php" destination="$themedir/languages" />
+		<require-file name="Gallery.french.php" destination="$themedir/languages" />
+		<require-file name="Gallery.spanish_es.php" destination="$themedir/languages" />
 		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
 		<require-file name="gallery.png" destination="$imagesdir" />
 		<require-file name="gallery.png" destination="$imagesdir/admin" />
@@ -137,6 +145,9 @@
 		<require-file name="Gallery.english-utf8.php" destination="$themedir/languages" />
 		<require-file name="Gallery.portuguese.php" destination="$themedir/languages" />
 		<require-file name="Gallery.norwegian.php" destination="$themedir/languages" />
+		<require-file name="Gallery.german.php" destination="$themedir/languages" />
+		<require-file name="Gallery.french.php" destination="$themedir/languages" />
+		<require-file name="Gallery.spanish_es.php" destination="$themedir/languages" />
 		<require-file name="Subs-ConvertAeva2.php" destination="$sourcedir" />
 		<require-file name="gallery.png" destination="$imagesdir" />
 		<require-file name="gallery.png" destination="$imagesdir/admin" />

@@ -142,9 +142,9 @@ $txt['smfcontactpage_email'] = 'SMF Contact Page Email: ';
 
 
 
-<file name="$languagedir/Modifications.german.php" error="skip">
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
 	<operation>
-		<search position="end"><![CDATA[
+		<search position="after"><![CDATA[
 ?>]]></search>
 		<add><![CDATA[
 // Begin Contact Page Text Strings
@@ -173,6 +173,46 @@ $txt['smfcontact_ip'] = "IP: ";
 $txt['smfcontact_formmessage'] =  "Message: \n";
 $txt['smfcontactpage_email'] = 'Contact Page - Email: ';
 $txt['smfcontactpage_board'] = 'Contact Page - Board to Post to (Optional): ';
+
+
+// END Contact Page Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$languagedir/Modifications.german.php" error="skip">
+	<operation>
+		<search position="end"><![CDATA[
+?>]]></search>
+		<add><![CDATA[
+// Begin Contact Page Text Strings
+$txt['smfcontact_contact'] = 'Kontakt';
+$txt['permissionname_view_contact'] = 'Kontaktseite anzeigen';
+$txt['permissionhelp_view_contact'] = 'Ermöglicht Mitgliedern das Anzeigen der Kontaktseite und das Senden von E-Mails.';
+$txt['cannot_view_contact'] = 'Sie können die Kontaktseite nicht anzeigen.';
+$txt['smfcontact_name'] = 'Ihr Name:';
+$txt['smfcontact_subject'] = 'Betreff';
+$txt['smfcontact_body'] = 'Nachricht';
+$txt['smfcontact_emailaddress'] = 'Email Adresse';
+$txt['smfcontact_sendemail'] = 'E-Mail senden';
+$txt['smfcontact_messagesent'] = 'Ihre Nachricht wurde gesendet!';
+$txt['smfcontact_messagesent_click'] = 'Ihre Nachricht wurde gesendet! Klicken Sie ';
+$txt['smfcontact_messagesent_return'] = 'hier</a> um zum Board zurückzukehren.';
+$txt['smfcontact_errname'] = 'Sie müssen Ihren Namen eingeben.';
+$txt['smfcontact_errsubject'] = 'Sie müssen einen Betreff eingeben.';
+$txt['smfcontact_errmessage'] = 'Sie müssen eine Nachricht eingeben.';
+$txt['smfcontact_erremail'] = 'Sie müssen Ihre E-Mail-Adresse eingeben.';
+$txt['smfcontact_errbademail'] = 'Sie haben keine gültige E-Mail-Adresse eingegeben.';
+$txt['smfcontact_titlesent'] = ' - Nachricht gesendet.';
+$txt['smfcontact_form'] = 'Kontaktformular für ';
+$txt['smfcontact_formname'] = "Name: ";
+$txt['smfcontact_formemail'] = "Email: ";
+$txt['smfcontact_ip'] = "IP: ";
+$txt['smfcontact_formmessage'] =  "Nachricht: \n";
+$txt['smfcontactpage_email'] = 'Kontaktseite - Email: ';
+$txt['smfcontactpage_board'] = 'Kontaktseite - Board zum Posten (Optional): ';
 // END Contact Page Text Strings
 ]]></add>
 	</operation>
@@ -183,44 +223,44 @@ $txt['smfcontactpage_board'] = 'Contact Page - Board to Post to (Optional): ';
 		<search position="end" />
 		<add><![CDATA[
 // Begin Contact Page Text Strings
-$txt['smfcontact_contact'] = 'Contact';
-$txt['permissionname_view_contact'] = 'View Contact Page';
-$txt['permissionhelp_view_contact'] = 'Allows members to view contact page and send email.';
-$txt['cannot_view_contact'] = 'You can not view the contact page.';
-$txt['smfcontact_name'] = 'Your Name:';
-$txt['smfcontact_subject'] = 'Subject';
-$txt['smfcontact_body'] = 'Message';
-$txt['smfcontact_emailaddress'] = 'Email Address';
-$txt['smfcontact_sendemail'] = 'Send e-mail';
-$txt['smfcontact_messagesent'] = 'Your message has been sent!';
-$txt['smfcontact_messagesent_click'] = 'Your message has been sent! Click ';
-$txt['smfcontact_messagesent_return'] = 'here</a> to return to the board.';
-$txt['smfcontact_errname'] = 'You need to enter your name.';
-$txt['smfcontact_errsubject'] = 'You need to enter a subject.';
-$txt['smfcontact_errmessage'] = 'You need to enter a message.';
-$txt['smfcontact_erremail'] = 'You need to enter your email address.';
-$txt['smfcontact_errbademail'] = 'You have not entered a valid email address.';
-$txt['smfcontact_titlesent'] = ' - Message sent.';
-$txt['smfcontact_form'] = 'Contact Page Form for ';
+$txt['smfcontact_contact'] = 'Kontakt';
+$txt['permissionname_view_contact'] = 'Kontaktseite anzeigen';
+$txt['permissionhelp_view_contact'] = 'Ermöglicht Mitgliedern das Anzeigen der Kontaktseite und das Senden von E-Mails.';
+$txt['cannot_view_contact'] = 'Sie können die Kontaktseite nicht anzeigen.';
+$txt['smfcontact_name'] = 'Ihr Name:';
+$txt['smfcontact_subject'] = 'Betreff';
+$txt['smfcontact_body'] = 'Nachricht';
+$txt['smfcontact_emailaddress'] = 'Email Adresse';
+$txt['smfcontact_sendemail'] = 'E-Mail senden';
+$txt['smfcontact_messagesent'] = 'Ihre Nachricht wurde gesendet!';
+$txt['smfcontact_messagesent_click'] = 'Ihre Nachricht wurde gesendet! Klicken Sie ';
+$txt['smfcontact_messagesent_return'] = 'hier</a> um zum Board zurückzukehren.';
+$txt['smfcontact_errname'] = 'Sie müssen Ihren Namen eingeben.';
+$txt['smfcontact_errsubject'] = 'Sie müssen einen Betreff eingeben.';
+$txt['smfcontact_errmessage'] = 'Sie müssen eine Nachricht eingeben.';
+$txt['smfcontact_erremail'] = 'Sie müssen Ihre E-Mail-Adresse eingeben.';
+$txt['smfcontact_errbademail'] = 'Sie haben keine gültige E-Mail-Adresse eingegeben.';
+$txt['smfcontact_titlesent'] = ' - Nachricht gesendet.';
+$txt['smfcontact_form'] = 'Kontaktformular für ';
 $txt['smfcontact_formname'] = "Name: ";
 $txt['smfcontact_formemail'] = "Email: ";
 $txt['smfcontact_ip'] = "IP: ";
-$txt['smfcontact_formmessage'] =  "Message: \n";
-$txt['smfcontactpage_email'] = 'Contact Page - Email: ';
-$txt['smfcontactpage_board'] = 'Contact Page - Board to Post to (Optional): ';
+$txt['smfcontact_formmessage'] =  "Nachricht: \n";
+$txt['smfcontactpage_email'] = 'Kontaktseite - Email: ';
+$txt['smfcontactpage_board'] = 'Kontaktseite - Board zum Posten (Optional): ';
 // END Contact Page Text Strings
 ]]></add>
 	</operation>
 </file>
 
-	<file name="$languagedir/Modifications.german_dutch.php" error="skip">
+	<file name="$languagedir/Modifications.dutch.php" error="skip">
 	<operation>
 		<search position="end" />
 		<add><![CDATA[
 $txt['smfcontact_contact'] = 'Contact';
-$txt['permissionname_view_contact'] = 'View Contact Page';
-$txt['permissionhelp_view_contact'] = 'Allows members to view contact page and send email.';
-$txt['cannot_view_contact'] = 'You can not view the contact page.';
+$txt['permissionname_view_contact'] = 'Contactpagina Bekijken';
+$txt['permissionhelp_view_contact'] = 'Staat leden toe de contactpagina te bekijken en een e-mail te sturen.';
+$txt['cannot_view_contact'] = 'U kunt de contactpagina niet bekijken.';
 $txt['smfcontact_name'] = 'Uw Naam:';
 $txt['smfcontact_subject'] = 'Onderwerp';
 $txt['smfcontact_body'] = 'Type Uw bericht';
@@ -233,17 +273,51 @@ $txt['smfcontact_errname'] = 'U vergeet Uw naam in te tikken.';
 $txt['smfcontact_errsubject'] = 'U bent vergeten een onderwerp in te tikken.';
 $txt['smfcontact_errmessage'] = 'U heeft niets ingevuld in de berichtenbox.';
 $txt['smfcontact_erremail'] = 'U bent vergeten Uw e-mail adres in te vullen.';
-$txt['smfcontact_errbademail'] = 'You have not entered a valid email address.';
+$txt['smfcontact_errbademail'] = 'U heeft geen geldig e-mailadres ingevoerd.';
 $txt['smfcontact_titlesent'] = ' - Bericht verzonden.';
-$txt['smfcontact_form'] = 'Contact Pagina voor ';
-$txt['smfcontact_formname'] = "Name: ";
-$txt['smfcontact_formemail'] = "Email: ";
+$txt['smfcontact_form'] = 'Contactpagina voor ';
+$txt['smfcontact_formname'] = "Naam: ";
+$txt['smfcontact_formemail'] = "E-mail: ";
 $txt['smfcontact_ip'] = "IP: ";
 $txt['smfcontact_formmessage'] =  "Bericht: \n";
-$txt['smfcontactpage_email'] = 'Contact Pagina - Email: ';
-$txt['smfcontactpage_board'] = 'Contact Pagina - Board to Post to (Optional): ';
+$txt['smfcontactpage_email'] = 'Contactpagina - Email: ';
+$txt['smfcontactpage_board'] = 'Contactpagina - Te posten bord (optioneel): ';
 // END Contact Page Text Strings
 ]]></add>
 	</operation>
 </file>
+
+<file name="$themedir/languages/Modifications.spanish_es.php" error="skip">
+		<operation>
+			<search position="end" />
+				<add><![CDATA[
+$txt['smfcontact_contact'] = 'Contacto';
+$txt['permissionname_view_contact'] = 'Ver Página de Contacto';
+$txt['permissionhelp_view_contact'] = 'Permite a los miembros ver la página de contacto y enviar correo electrónico.';
+$txt['cannot_view_contact'] = 'No puedes ver la página de contacto.';
+$txt['smfcontact_name'] = 'Tu Nombre:';
+$txt['smfcontact_subject'] = 'Asunto';
+$txt['smfcontact_body'] = 'Mensaje';
+$txt['smfcontact_emailaddress'] = 'Dirección de Correo Electrónico';
+$txt['smfcontact_sendemail'] = 'Enviar correo electrónico';
+$txt['smfcontact_messagesent'] = '¡Tu mensaje ha sido enviado!';
+$txt['smfcontact_messagesent_click'] = '¡Tu mensaje ha sido enviado! Haz clic ';
+$txt['smfcontact_messagesent_return'] = 'aquí</a> para volver al foro.';
+$txt['smfcontact_errname'] = 'Necesitas ingresar tu nombre.';
+$txt['smfcontact_errsubject'] = 'Necesitas ingresar un asunto.';
+$txt['smfcontact_errmessage'] = 'Necesitas ingresar un mensaje.';
+$txt['smfcontact_erremail'] = 'Necesitas ingresar tu dirección de correo electrónico.';
+$txt['smfcontact_errbademail'] = 'No has ingresado una dirección de correo electrónico válida.';
+$txt['smfcontact_titlesent'] = ' - Mensaje enviado.';
+$txt['smfcontact_form'] = 'Formulario de Página de Contacto para ';
+$txt['smfcontact_formname'] = "Nombre: ";
+$txt['smfcontact_formemail'] = "Correo electrónico: ";
+$txt['smfcontact_ip'] = "IP: ";
+$txt['smfcontact_formmessage'] =  "Mensaje: \n";
+$txt['smfcontactpage_email'] = 'Página de Contacto - Correo electrónico: ';
+$txt['smfcontactpage_board'] = 'Página de Contacto - Foro para Publicar (Opcional): ';
+]]></add>
+		</operation>
+</file>
+
 </modification>

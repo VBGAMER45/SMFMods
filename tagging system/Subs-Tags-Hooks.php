@@ -67,6 +67,9 @@ function tags_menu_buttons(&$menu_buttons)
 	if (loadlanguage('Tags') == false)
 		loadLanguage('Tags','english');
 
+	if (!isset($txt['smftags_menu']))
+			$txt['smftags_menu'] = 'Tags';
+
 
 	#You can use these settings to move the button around or even disable the button and use a sub button
 	#Main menu button options

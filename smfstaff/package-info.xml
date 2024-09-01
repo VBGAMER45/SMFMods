@@ -5,7 +5,7 @@
 	<id>vbgamer45:SMFStaff</id>
 	<name>SMF Staff Page</name>
 	<type>modification</type>
-	<version>2.0</version>
+	<version>2.1</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC3,1.1 RC2">
 		<redirect url="?action=staff;sa=admin">redirect.txt</redirect>
@@ -14,6 +14,7 @@
 		<require-file name="Staff.php" destination="$sourcedir" />
 		<require-file name="Staff.template.php" destination="$themedir" />
 		<require-file name="Staff.english.php" destination="$themedir/languages" />
+		<require-file name="Staff.spanish_es.php" destination="$themedir/languages" />
 		<require-file name="Staff.english-utf8.php" destination="$themedir/languages" />
 		<code>staffsql.php</code>
 	</install>
@@ -43,6 +44,7 @@
 		<require-file name="Staff2.template.php" destination="$themedir" />
 		<require-file name="Staff.english.php" destination="$themedir/languages" />
 		<require-file name="Staff.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Staff.spanish_es.php" destination="$themedir/languages" />
 		<code>staffsql2.php</code>
 	
 	</install>
@@ -59,6 +61,7 @@
 		<require-file name="Staff2.1.php" destination="$sourcedir" />
 		<require-file name="Staff2.1.template.php" destination="$themedir" />
 		<require-file name="Staff.english.php" destination="$themedir/languages" />
+		<require-file name="Staff.spanish_es.php" destination="$themedir/languages" />
 		<require-file name="group.png" destination="$imagesdir/admin" />
 		<require-file name="group.png" destination="$imagesdir" />
 

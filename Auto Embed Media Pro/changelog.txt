@@ -1,5 +1,13 @@
+7.0.5
++Fixed support for sendvid.com with https
+!Fixed a few other video sites that had wrong regex
+
+7.0.4
++Added support for imgur albums
+
 7.0.3
 +Added support for Threads.net Posts
+!Removed database table that isn't used.
 
 7.0.2
 +Added support for Threads.net

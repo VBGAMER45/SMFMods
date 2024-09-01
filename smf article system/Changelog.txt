@@ -1,3 +1,6 @@
+3.2
+!Fixed a few errors log in SMF 2.1 and new PHP versions
+
 3.1.1
 !Fixed searching results for more than one page was displaying incorrect data if options on advanced search were uncheck
 

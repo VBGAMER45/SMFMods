@@ -3,7 +3,7 @@
 Simple Audio Video Embedder
 Version 4.0
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 
 License Information:
 Links to http://www.smfhacks.com must remain unless

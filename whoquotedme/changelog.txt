@@ -1,1 +1,3 @@
-1.0 Intital Release
+1.0b Fixed a PHP error with optional parameter
+
+1.0 Initial Release

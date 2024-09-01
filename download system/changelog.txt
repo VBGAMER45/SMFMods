@@ -1,0 +1,190 @@
+3.0.15
+!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit" 
+
+3.0.14
+!Fixed searching results for more than one page was displaying incorrect data if options on advanced search were uncheck
+
+3.0.13
+!Fixed group by not having all the columns in some cases
+
+3.0.12
+!Fixed some unclosed html tags
+
+3.0.11
+!Fixed bug previous/next links logging errors for downloads that were removed.
+
+3.0.10
+!Removed || changed to OR in SQL statements for MariaDB
+
+3.0.9a
+!Fixed $context['show_bbc'] error log for SMF 2.1.x
+
+3.0.9
+!Remove create_function for PHP 7.4+ support
+
+3.0.8
++Added check for upload url to be sure it is http:// or https://
+!Minor code cleanup/fixes
+
+3.0.7a
+!Fixes for remote filesize function more checks added. Requires allow_url_fopen to be set
+
+3.0.7
++Added filesize support for remote links
+
+3.0.6
+!Fixes for PHP 7.4
+
+3.0.5
+!Fixed missing language string bug for spam protection thanks to wintstar
++Better linktrees on view download/add comment page thanks to wintstar
+
+3.0.4a
+!Fixed missing message id for email notification for SMF 2.0.x
+
+3.0.4
+!Fixed showing hidden files in Stats page
+
+3.0.3
+!Fixed showing hidden categories in search results
+
+3.0.2
+!Fixed some undefined variables in SMF 2.1 Beta 3 profile icons for im services/karma on comment view.
+
+3.0.1
+!Fixed next and previous links in the download system.
+
+3.0
++Added add download item to menu on all download pages that have buttons. Should make it easier to find.
++Link tree added all download pages
+
+
+2.6.1
+!Fixed tiny portal conversion for SMF 2.0 uses author_id if found
+
+2.6
+!Fixed icon for SMF 2.1 Beta 2
+
+2.5.1
+!Fixed wrong permission for custom field delete
+
+2.5
++Now supports SMF 2.1 Beta 1 using hooks for most file edits!
+
+2.1
++Better support for other languages
+
+2.0
++Updated styling for SMF 2.0 for main areas for a better experience
++Updated admin areas with alternating row styles to make reading easier
+
+1.5.2
+!Fixed top downloads bar layout issue in chrome
+
+1.5.1
+!Fixed bug with SMF 2.0 missing a function
+
+1.5 
++Improved comment display to show more user information.
+!Fixed hardcoded text string Posts
+!Fixed bugs in show ratings on myfiles page in SMF 1.1.x
+
+1.4.1 Bug fixes due to prefix function changes
+
+1.4 Added Download prefix to function names
+
+1.3.8
+!Fixed bug with removetopic in SMF 1.1.x on deleting a download
+
+1.3.7
+!Fixed missing text string for max filesize too large when uploaded file exceeds the max filesize setting
+
+1.3.6
+!Improved how search results are handled for multiple pages
+
+1.3.5
+!Allowed quotas to be set above 2GB
+
+1.3.4.4
+!Fixed missing image for stats bar in SMF 2.0
+
+1.3.4.2
+!Fixed issue with MySQL 5.5 since it no longer supports the Type for create tables uses Engine instead
+
+1.3.4 
++Added unlimited level deep counting for file totals
+
+1.3.3
+!Fixed incorrect html linking code had an extra /
+
+1.3.2
+!Fixed issue with quotes in filenames that are uploaded!
+
+1.3
++Added SMF 2.0 RC3 support
++Moved location of Downloads Configuration to its own spot in the admin
++Added display of max_upload_filesize and max_post_size php settings in the admin area these control how large files are accepted by your forum
+
+1.2.8
++Optimized the table view for SMF 2.0 RC2
+
+1.2.7
+!Fixed extra link tree in SMF 2.0 
+
+1.2.6
+!Fixed bbc editor in SMF 2.0 not working in IE6/IE7
+
+1.2.5
+!Fixed who is viewing category/download to now show all members viewing that page
+
+1.2.4
+!Fixed a bug in the download in download access permissions in SMF 2.0 if you give another group such as global moderator access to the downloads admin area it would not let them access it.
+
+1.2.3
++Added most downloaded download index page block
++Added total download line in the main page blocks
+
+1.2.2
+!Fixed support with mod_security
++Now storing the topic id of the post download topic and when deleting a download deletes the posted topic
+!Fixed a case for importing from tiny portal if there is an empty rating it would error out
+
+1.2.1
+!Fixed missing function format_size function SMF 1.1.x
+1.2
++Added Tiny Portal Downloads Import Feature. Will import all downloads,categories,ratings from TP Downloads. Downloads Pro coming soon will also import the screenshots.
+
+1.1.5
++Added better formating of download size instead of just saying kb
+!Fixed an error in 1.1.x of SMF on template page a $$ variable
++Added editor for description for adding/editing downloads SMF 1.1.x
+
+1.1.4.2
+!Fixed bugs with SMF 2.0 using the WYSIWYG editor
++Added editor for description for adding/editing downloads SMF 2.0
+
+1.1.4.1
+!Fixed a bug in the SMF 2.0 version for forum post links
+
+1.1.4
+!Fixed a bug which could cause duplicate entries in main page blocks
+
+1.1.3
+!Fixed searching for downloads
+
+1.1.2
+!Fixed a bug with downloading files for some users
+!Fixed interface for themes that don't support tabs
+
+1.1
++New updated interface.
++Uses SMF's built in paging function
+!Fixed bug with blocks shown item's that the user does not have access to.
++Added unlimited level deep link tree
+
+1.0.4
+!Fixed category totals when editing a download and changing the category of the file.
+
+1.0.3
+!Fixed showing filesize on download page if file is a remote url.
+

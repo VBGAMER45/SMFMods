@@ -222,6 +222,8 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 
 					foreach ($context['topic_tags'] as $i => $tag)
 					{
+						$tag['tag'] = str_replace("&#039;","'",$tag['tag']);
+
 						echo '<a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '" class="tag">' . $tag['tag'] . '</a>&nbsp;';
 						if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
 						echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
@@ -251,6 +253,8 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 
 						foreach ($context['topic_tags'] as $i => $tag)
 						{
+							$tag['tag'] = str_replace("&#039;","'",$tag['tag']);
+
 							echo '<li><a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '" class="tag">' . $tag['tag'] . '</a>&nbsp;';
 							if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
 							echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
@@ -341,6 +345,9 @@ function AutoSuggest_Search_Tags()
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
+
+		$row['tag'] = str_replace("&#039;","'",$row['tag']);
+
 		$xml_data['tags']['children'][] = array(
 			'attributes' => array(
 				'id' => $row['id_tag'],
@@ -363,7 +370,7 @@ function AutoSuggest_Search_Tags()
 
 <file name="$sourcedir/MessageIndex.php">
 	<operation>
-		<search position="before"><![CDATA[// For search engine effectiveness we'll link guests differently.]]></search>
+		<search position="before"><![CDATA[// Show a message in case a recently posted message became unapproved.]]></search>
 	<add><![CDATA[
 	// Tagging System
 
@@ -402,6 +409,8 @@ function AutoSuggest_Search_Tags()
 				{
 					if (empty($context['topic_tags'][$row['ID_TOPIC']]))
 						$context['topic_tags'][$row['ID_TOPIC']] = array();
+
+					$row['tag'] = str_replace("&#039;","'",$row['tag']);
 
 					$context['topic_tags'][$row['ID_TOPIC']][] = array(
 					'ID' => $row['ID'],
@@ -457,6 +466,8 @@ function AutoSuggest_Search_Tags()
 					{
 						if ($count == 0)
 							echo '<br /><ul class="tags">';
+
+						$tag['tag'] = str_replace("&#039;","'",$tag['tag']);
 
 						$count++;
 						// Check tag limit

@@ -1,10 +1,10 @@
 <?php
 /*
 SMF Gallery Lite Edition
-Version 7.0
+Version 8.0
 by:vbgamer45
 http://www.smfhacks.com
-Copyright 2008-2021 SMFHacks.com
+Copyright 2008-2024 SMFHacks.com
 
 ############################################
 License Information:
@@ -27,7 +27,7 @@ function GalleryMain()
 
 	$id_member = $user_info['id'];
 
-	$currentVersion = '7.0';
+	$currentVersion = '8.0';
 
 	// Load the main template file
     if (function_exists("set_tld_regex"))
@@ -167,7 +167,7 @@ function mainview()
 				);
 
 
-		$context['page_title'] = $mbname . ' - ' . $context['gallery_cat_name'];
+		$context['page_title'] = $context['gallery_cat_name'];
 		$context['sub_template']  = 'image_listing';
 
 		if (!empty($modSettings['gallery_who_viewing']))
@@ -257,7 +257,7 @@ function mainview()
 	}
 	else
 	{
-		$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'];
+		$context['page_title'] = $txt['gallery_text_title'];
 
 		// Category list
 		$dbresult = $smcFunc['db_query']('', "
@@ -302,7 +302,7 @@ function AddCategory()
 
 	isAllowedTo('smfgallery_manage');
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_addcategory'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_addcategory'];
 
 	$context['sub_template']  = 'add_category';
 
@@ -398,7 +398,7 @@ function EditCategory()
 
 	isAllowedTo('smfgallery_manage');
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_editcategory'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_editcategory'];
 
 	$context['sub_template']  = 'edit_category';
 
@@ -494,7 +494,7 @@ function DeleteCategory()
 
 	isAllowedTo('smfgallery_manage');
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_delcategory'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_delcategory'];
 
 	$context['sub_template']  = 'delete_category';
 
@@ -620,7 +620,7 @@ function ViewPicture()
 
 	$context['sub_template']  = 'view_picture';
 
-	$context['page_title'] = $mbname . ' - ' . $context['gallery_pic']['title'];
+	$context['page_title'] = $context['gallery_pic']['title'];
 
 $dbresult = $smcFunc['db_query']('', "
 		SELECT
@@ -641,7 +641,6 @@ $dbresult = $smcFunc['db_query']('', "
 	{
 		$context['can_moderate_forum'] = allowedTo('moderate_forum');
 
-				//SMF 1.1
 				//Taken from Display.php
 				// Start out with no one at all viewing it.
 				$context['view_members'] = array();
@@ -725,7 +724,7 @@ function AddPicture()
 
 	$context['sub_template']  = 'add_picture';
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_addpicture'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_addpicture'];
 
 	// Check if spellchecking is both enabled and actually working.
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
@@ -950,6 +949,12 @@ function AddPicture2()
 				 	WHERE id_member = {$id_member}
 				 	LIMIT 1");
 
+			if (isset($modSettings['Shop_importer_success']))
+								$smcFunc['db_query']('', "UPDATE {db_prefix}members
+									SET shopMoney = shopMoney + " . $modSettings['gallery_shop_picadd'] . "
+									WHERE id_member = " .  $id_member . "
+									LIMIT 1");
+
  			// Badge Awards Mod Check
  			GalleryCheckBadgeAwards($id_member);
 
@@ -1059,7 +1064,7 @@ $dbresult = $smcFunc['db_query']('', "
 
 	if (AllowedTo('smfgallery_manage') || (AllowedTo('smfgallery_edit') && $id_member == $context['gallery_pic']['id_member']))
 	{
-		$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_editpicture'];
+		$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_editpicture'];
 		$context['sub_template']  = 'edit_picture';
 
 
@@ -1309,7 +1314,7 @@ function DeletePicture()
 
 	if (allowedTo('smfgallery_manage') || (allowedTo('smfgallery_delete') && $id_member == $context['gallery_pic']['id_member']))
 	{
-		$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_delpicture'];
+		$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_delpicture'];
 		$context['sub_template']  = 'delete_picture';
 
         $context['linktree'][] = array(
@@ -1365,6 +1370,12 @@ function DeletePicture2()
 				 	WHERE id_member = {$memID}
 				 	LIMIT 1");
 
+			if (isset($modSettings['Shop_importer_success']))
+								$smcFunc['db_query']('', "UPDATE {db_prefix}members
+									SET shopMoney = shopMoney - " . $modSettings['gallery_shop_picadd'] . "
+									WHERE id_member = " .  $memID . "
+									LIMIT 1");
+
 		// Redirect to the users image page.
 		redirectexit('action=gallery;sa=myimages;u=' . $id_member);
 
@@ -1388,7 +1399,7 @@ function ReportPicture()
 
 	$context['sub_template']  = 'report_picture';
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_reportpicture'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_reportpicture'];
 
     $context['linktree'][] = array(
 			'name' => $txt['gallery_form_reportpicture']
@@ -1448,7 +1459,7 @@ function AddComment()
 
 	$context['sub_template']  = 'add_comment';
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_addcomment'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_addcomment'];
 
    	$context['linktree'][] = array(
 			'name' => '<em>' .  $txt['gallery_text_addcomment']. '</em>'
@@ -1532,6 +1543,12 @@ function AddComment2()
 				 	WHERE id_member = {$id_member}
 				 	LIMIT 1");
 
+	if (isset($modSettings['Shop_importer_success']))
+								$smcFunc['db_query']('', "UPDATE {db_prefix}members
+									SET shopMoney = shopMoney + " .  $modSettings['gallery_shop_commentadd'] . "
+									WHERE id_member = " .  $id_member . "
+									LIMIT 1");
+
 	// Badge Awards Mod Check
  	GalleryCheckBadgeAwards($id_member);
 
@@ -1585,6 +1602,12 @@ function DeleteComment()
 				 	WHERE id_member = {$memID}
 				 	LIMIT 1");
 
+		if (isset($modSettings['Shop_importer_success']))
+								$smcFunc['db_query']('', "UPDATE {db_prefix}members
+									SET shopMoney = shopMoney - " .  $modSettings['gallery_shop_commentadd'] . "
+									WHERE id_member = " .  $memID . "
+									LIMIT 1");
+
 	// Redirect to the picture
 	redirectexit('action=gallery;sa=view;pic=' . $picid);
 }
@@ -1596,7 +1619,7 @@ function AdminSettings()
 
 	DoGalleryAdminTabs();
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_settings'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_settings'];
 
 	$context['sub_template']  = 'settings';
 
@@ -1670,7 +1693,7 @@ function AdminCats()
 	global $context, $mbname, $txt, $smcFunc;
 	isAllowedTo('smfgallery_manage');
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_managecats'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_managecats'];
 
 
 	DoGalleryAdminTabs();
@@ -1808,7 +1831,7 @@ function MyImages()
 
 	$context['start'] = (int) $_REQUEST['start'];
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $context['gallery_usergallery_name'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $context['gallery_usergallery_name'];
 
 	$context['sub_template']  = 'myimages';
 
@@ -1848,7 +1871,7 @@ function ApproveList()
 
 	DoGalleryAdminTabs();
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_approveimages'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_approveimages'];
 	$context['sub_template']  = 'approvelist';
 
 
@@ -1908,7 +1931,7 @@ function ReportList()
 
 	isAllowedTo('smfgallery_manage');
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_reportimages'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_form_reportimages'];
 
 
 	DoGalleryAdminTabs();
@@ -1957,7 +1980,7 @@ function Search()
 
 	$context['sub_template']  = 'search';
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_search'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_search'];
 
     $context['linktree'][] = array(
 			'name' => $txt['gallery_search']
@@ -2056,7 +2079,7 @@ function Search2()
 
 	$context['sub_template']  = 'search_results';
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_searchresults'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_searchresults'];
 
 
     $context['linktree'][] = array(
@@ -2311,7 +2334,7 @@ function ReGenerateThumbnails()
 		$context['catid'] = $cat;
 
 	$context['sub_template']  = 'regenerate';
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_regeneratethumbnails2'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_text_regeneratethumbnails2'];
 
     $context['linktree'][] = array(
 			'name' => $txt['gallery_text_regeneratethumbnails2']
@@ -2621,7 +2644,7 @@ function Gallery_CopyrightRemoval()
 
 	DoGalleryAdminTabs();
 
-	$context['page_title'] = $mbname . ' - ' . $txt['gallery_text_title'] . ' - ' . $txt['gallery_txt_copyrightremoval'];
+	$context['page_title'] = $txt['gallery_text_title'] . ' - ' . $txt['gallery_txt_copyrightremoval'];
 
 	$context['sub_template']  = 'gallerycopyright';
 

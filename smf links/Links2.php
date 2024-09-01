@@ -395,7 +395,10 @@ function AddCat2()
 	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
-	$order = $row['roworder'];
+	if (empty($row['roworder']))
+		$row['roworder'] = 0;
+
+	$order = (int) $row['roworder'];
 	$order++;
     
     

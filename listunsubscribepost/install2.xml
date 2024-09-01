@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:ListUnsubscribePost</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin ListUnsubscribePostText Strings
+$txt['listunsub_emailunsubscribed'] = 'Email has been unsubscribed';
+// END ListUnsubscribePost Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Subs-Post.php">
+	<operation>
+		<search position="replace"><![CDATA[if (!mail(strtr($to, array("\r" => '', "\n" => '')), $subject, $message, $headers))]]></search>
+		<add><![CDATA[
+		// ListUnsubscribe Header
+		global $boardurl;
+		$emailStatus = GetEmailStatus($to);
+
+		if ($emailStatus['unsubscribed'] == 1)
+		{
+			$allowedActions = array('activate','register','join','join2','register2','register3','logintfa','login2','login','sendactivation');
+
+			if (isset($_REQUEST['action']) && in_array($_REQUEST['action'],$allowedActions) == true)
+			{
+				// Allowed action transactional emails for user logins/registration
+			}
+			else
+				continue;
+
+		}
+
+		$hash = smf_email_hash($to);
+
+		$extra_headers = 'List-Unsubscribe: <' . $boardurl . '/listunsubscribe.php?act=unsub&id=' . $emailStatus['id'] . '&hash=' . $hash . '>' . $line_break;
+		$extra_headers .= 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' . $line_break;
+
+		$tmp = explode("@",$to);
+		$emailDomain = array_pop($tmp);
+		if ($emailDomain == 'gmail.com')
+		{
+			$extra_headers .= 'Feedback-ID: ' . $hash  . ':' . $emailStatus['id']  . ":" . $emailStatus['unsubscribed']  . ':forum' . $line_break;
+		}
+
+		// End ListUnsubscribe Header
+				if (!mail(strtr($to, array("\r" => '', "\n" => '')), $subject, $message, $headers . $extra_headers))]]></add>
+	</operation>
+
+
+	<operation>
+		<search position="replace"><![CDATA[// Will this insert go over MySQL's limit?
+		$this_insert_len = strlen($to) + strlen($message) + strlen($headers) + 700;]]></search>
+		<add><![CDATA[
+		// ListUnsubscribe Header
+		global $boardurl;
+		$emailStatus = GetEmailStatus($to);
+
+		if ($emailStatus['unsubscribed'] == 1)
+		{
+			$allowedActions = array('activate','register','join','join2','register2','register3','logintfa','login2','login','sendactivation');
+
+			if (isset($_REQUEST['action']) && in_array($_REQUEST['action'],$allowedActions) == true)
+			{
+				// Allowed action transactional emails for user logins/registration
+			}
+			else
+				continue;
+
+		}
+
+		// Use sendmail if it's set or if no SMTP server is set.
+		$use_sendmail = empty($modSettings['mail_type']) || $modSettings['smtp_host'] == '';
+
+		// Line breaks need to be \r\n only in windows or for SMTP.
+		$line_break = $context['server']['is_windows'] || !$use_sendmail ? "\r\n" : "\n";
+
+		$hash = smf_email_hash($to);
+
+		$extra_headers = 'List-Unsubscribe: <' . $boardurl . '/listunsubscribe.php?act=unsub&id=' . $emailStatus['id'] . '&hash=' . $hash . '>' . $line_break;
+		$extra_headers .= 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' . $line_break;
+
+		$tmp = explode("@",$to);
+		$emailDomain = array_pop($tmp);
+		if ($emailDomain == 'gmail.com')
+		{
+			$extra_headers .= 'Feedback-ID: ' . $hash  . ':' . $emailStatus['id']  . ":" . $emailStatus['unsubscribed']  . ':forum' . $line_break;
+		}
+
+		// End ListUnsubscribe Header
+
+		// Will this insert go over MySQL's limit?
+		$this_insert_len = strlen($to) + strlen($message) + strlen($headers) + strlen($extra_headers) + 700;
+
+
+]]></add>
+	</operation>
+
+	<operation>
+		<search position="replace"><![CDATA[$cur_insert[] = array(time(), (string) $to, (string) $message, (string) $subject, (string) $headers, ($send_html ? 1 : 0), $priority, (int) $is_private);]]></search>
+		<add><![CDATA[$cur_insert[] = array(time(), (string) $to, (string) $message, (string) $subject, (string) $headers . $extra_headers, ($send_html ? 1 : 0), $priority, (int) $is_private);]]></add>
+	</operation>
+	
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+function GetEmailStatus($email = '')
+{
+	global $smcFunc;
+
+	$email = addslashes($email);
+
+	$dbresult = $smcFunc['db_query']('', "
+			SELECT
+				id,unsubscribed
+			FROM {db_prefix}listsubscribe WHERE email = '$email' LIMIT 1");
+			$row = $smcFunc['db_fetch_assoc']($dbresult);
+			$smcFunc['db_free_result']($dbresult);
+
+	if (empty($row['id']))
+	{
+		$smcFunc['db_query']('', "
+		INSERT IGNORE INTO {db_prefix}listsubscribe
+		(email)
+		VALUES ('$email')
+		");
+
+		$id = $smcFunc['db_insert_id']('{db_prefix}listsubscribe', 'id');
+
+		$tmp = array();
+		$tmp['id'] = $id;
+		$tmp['unsubscribed'] = 0;
+
+		return $tmp;
+
+	}
+	else
+		return $row;
+
+}
+
+function smf_email_hash($email)
+{
+	return sprintf('%u', crc32(strtolower($email))) . strlen($email);
+}
+]]></add>
+	</operation>
+	
+</file>
+
+</modification>

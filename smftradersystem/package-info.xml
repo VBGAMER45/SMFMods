@@ -13,6 +13,10 @@
 		<require-file name="Trader.template.php" destination="$themedir" />
 		<require-file name="Trader.english.php" destination="$themedir/languages" />
 		<require-file name="Trader.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Trader.french.php" destination="$themedir/languages" />
+		<require-file name="Trader.dutch.php" destination="$themedir/languages" />
+		<require-file name="Trader.german.php" destination="$themedir/languages" />
+		<require-file name="Trader.spanish_es.php" destination="$themedir/languages" />
 		<code>smftraderinstall.php</code>
 	
 	</install>
@@ -31,6 +35,10 @@
 		<require-file name="Trader2.template.php" destination="$themedir" />
 		<require-file name="Trader.english.php" destination="$themedir/languages" />
 		<require-file name="Trader.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Trader.french.php" destination="$themedir/languages" />
+		<require-file name="Trader.dutch.php" destination="$themedir/languages" />
+		<require-file name="Trader.german.php" destination="$themedir/languages" />
+		<require-file name="Trader.spanish_es.php" destination="$themedir/languages" />
 		<code>smftraderinstall2.php</code>
 	
 	</install>
@@ -48,6 +56,10 @@
 		<require-file name="Trader2.1.template.php" destination="$themedir" />
 		<require-file name="Trader.english.php" destination="$themedir/languages" />
 		<require-file name="Trader.english-utf8.php" destination="$themedir/languages" />
+		<require-file name="Trader.french.php" destination="$themedir/languages" />
+		<require-file name="Trader.dutch.php" destination="$themedir/languages" />
+		<require-file name="Trader.german.php" destination="$themedir/languages" />
+		<require-file name="Trader.spanish_es.php" destination="$themedir/languages" />
             <require-file name="trader.png" destination="$imagesdir/admin" />
             <code>dohooks.php</code>
 		<code>smftraderinstall2.php</code>

@@ -15,7 +15,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl, $context, $smcFunc;
 	
 	// Current version of the article system
-	$currentVersion = '3.1.1';
+	$currentVersion = '3.2';
 	
 	$context['articles21beta'] = false;
 	
@@ -406,7 +406,11 @@ function AddCat2()
 	ORDER BY roworder DESC");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
-	$order = $row['roworder'];
+
+	if (empty($row['roworder']))
+		$order = 0;
+	else
+		$order = $row['roworder'];
 	$order++;
 
 	// Insert the category
@@ -1219,8 +1223,17 @@ function CatUpDown()
 	FROM {db_prefix}articles_cat 
 	WHERE ID_CAT = $cat");
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
-	$oldrow = $row['roworder'];
-	$o = $row['roworder'];
+
+	if (empty($row['roworder']))
+	{
+		$o = 0;
+		$oldrow = 0;
+	}
+	else
+	{
+		$oldrow = $row['roworder'];
+		$o = $row['roworder'];
+	}
 	
 	if ($_GET['sa'] == 'catup')
 		$o--;

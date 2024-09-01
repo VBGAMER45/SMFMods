@@ -185,7 +185,7 @@ function template_main()
 								if($data['hideEmail'] == 0)
 									echo '<a href="mailto:', $data['emailAddress'], '"><img src="', $settings['images_url'], '/email_sm.gif" alt="email" /></a>&nbsp;';
 		
-		
+		/*
 								if($data['ICQ'] != '')
 									echo '<a href="http://www.icq.com/whitepages/about_me.php?uin=', $data['ICQ'], '" target="_blank"><img src="http://status.icq.com/online.gif?img=5&amp;icq=', $data['ICQ'], '" alt="', $data['ICQ'], '" width="18" height="18" border="0" /></a>&nbsp;';
 								if($data['AIM'] != '')
@@ -194,7 +194,7 @@ function template_main()
 									echo '<a href="http://edit.yahoo.com/config/send_webmesg?.target=', urlencode($data['YIM']), '"><img src="http://opi.yahoo.com/online?u=', urlencode($data['YIM']), '&amp;m=g&amp;t=0" alt="', $data['YIM'], '" border="0" /></a>&nbsp;';
 								if($data['MSN'] != '')
 									echo '<a href="http://members.msn.com/', $data['MSN'], '" target="_blank"><img src="', $settings['images_url'], '/msntalk.gif" alt="', $data['MSN'], '" border="0" /></a>&nbsp;';
-		
+		*/
 								//Send PM row
 								echo '<a href="', $scripturl, '?action=pm;sa=send;u=', $data['id'], '">', $txt['smfstaff_sendpm'], '</a>';
 		
@@ -245,7 +245,7 @@ function template_adminset()
 				<input type="checkbox" name="smfstaff_showdateregistered" ', ($modSettings['smfstaff_showdateregistered'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showdateregistered'], '<br />
 				<input type="checkbox" name="smfstaff_showcontactinfo" ', ($modSettings['smfstaff_showcontactinfo'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showcontactinfo'], '<br />
 				<input type="checkbox" name="smfstaff_showlocalmods" ', ($modSettings['smfstaff_showlocalmods'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showlocalmods'], '<br />
-				<input type="submit" name="savesettings" value="' . $txt['smfstaff_savesettings'] . '" />
+				<input type="submit" class="button_submit" name="savesettings" value="' . $txt['smfstaff_savesettings'] . '" />
 			</form>
 			<br /><br />
 			

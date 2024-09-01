@@ -1,10 +1,10 @@
 <?php
 /*
 SMF Gallery Lite Edition
-Version 6.1
+Version 8.0
 by:vbgamer45
 http://www.smfhacks.com
-Copyright 2008-2022 SMFHacks.com
+Copyright 2008-2024 SMFHacks.com
 
 ############################################
 License Information:
@@ -208,7 +208,7 @@ function template_image_listing()
 			echo $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' . $row['id_picture'] . '">' . $row['commenttotal'] . '</a>)<br />';
 
 			if ($row['real_name'] != '')
-				echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
+				echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
 			else
 				echo $txt['gallery_text_by'], $txt['gallery_guest'],  '<br />';
 
@@ -707,7 +707,7 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" />';
+    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp" />';
 
   if (!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -869,7 +869,7 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" />';
+    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp" />';
 
   if (!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -991,7 +991,7 @@ function template_view_picture()
 				}
 
 				if ($context['gallery_pic']['real_name'] != '')
-					echo$txt['gallery_text_postedby'] . '<a href="' . $scripturl . '?action=profile;u=' . $context['gallery_pic']['id_member'] . '">'  . $context['gallery_pic']['real_name'] . '</a> ' . $txt['gallery_at'] . $context['gallery_pic']['date'] . '<br /><br />';
+					echo$txt['gallery_text_postedby'] . '<a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $context['gallery_pic']['id_member'] . '">'  . $context['gallery_pic']['real_name'] . '</a> ' . $txt['gallery_at'] . $context['gallery_pic']['date'] . '<br /><br />';
 				else
 					echo $txt['gallery_text_postedby'] . $txt['gallery_guest']  . $txt['gallery_at'] . $context['gallery_pic']['date'] . '<br /><br />';
 
@@ -1086,7 +1086,7 @@ echo '
 
 			if ($row['real_name'] != '')
 			{
-				echo '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />
+				echo '<a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />
 				<span class="smalltext">' . $txt['gallery_text_posts'] . $row['posts'] . '</span><br />';
 				// Display the users avatar
 	            $memCommID = $row['id_member'];
@@ -1528,7 +1528,7 @@ echo '
 				echo '<td>' . $row['description'] . '</td>';
 				echo '<td>' . timeformat($row['date']) . '</td>';
 				if ($row['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a></td>';
 				else
 						echo '<td>' . $txt['gallery_guest'] . '</td>';
 
@@ -1597,7 +1597,7 @@ echo '
 				echo '<td>' . $row['comment'] . '</td>';
 				echo '<td>' . timeformat($row['date']) . '</td>';
 				if ($row['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a></td>';
 				else
 					echo '<td>' .  $txt['gallery_guest'] . '</td>';
 
@@ -1724,7 +1724,7 @@ function template_search_results()
 			echo $txt['gallery_text_date'] . timeformat($row['date']) . '<br />';
 			echo $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' . $row['id_picture'] . '">' . $row['commenttotal'] . '</a>)<br />';
 			if ($row['real_name'] != '')
-				echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
+				echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
 			else
 				echo $txt['gallery_text_by'] . $txt['gallery_guest'] . '<br />';
 			if ($g_manage)
@@ -1839,7 +1839,7 @@ function template_myimages()
 			echo $txt['gallery_text_filesize'] . gallery_format_size($row['filesize'], 2) . '<br />';
 			echo $txt['gallery_text_date'] . timeformat($row['date']) . '<br />';
 			echo $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' . $row['id_picture'] . '">' . $row['commenttotal'] . '</a>)<br />';
-			echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
+			echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
 			if ($g_manage)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if ($g_manage || $g_edit_own && $row['id_member'] == $id_member)

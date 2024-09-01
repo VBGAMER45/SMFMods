@@ -14,7 +14,7 @@ function ArticlesMain()
 	global $currentVersion, $modSettings, $boarddir, $boardurl;
 
 	// Current version of the article system
-	$currentVersion = '3.1.1';
+	$currentVersion = '3.2';
 
 	// Load the main Articles template
 	loadtemplate('Articles');

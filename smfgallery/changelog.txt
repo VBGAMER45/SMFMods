@@ -1,4 +1,13 @@
 SMF Gallery Lite
+8.0.1
+!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit" 
+
+8.0
++Changed that the persons name links to their myimages section instead of their main profile.
+!Restrict picture upload fields to image file extensions ".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp"
++ST Shop money now supported in addition to normal SMF Shop.
+!Removed forum title from page titles in store possible SEO improvement
+
 7.1
 !Make main image display mobile friendly for SMF 2.1.x Thanks to Mick idesignsmf.com
 !Start support for webp

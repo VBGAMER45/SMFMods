@@ -119,7 +119,7 @@ $txt['gallery_set_url'] = 'Gallery Url: ';
 $txt['gallery_set_whoonline'] = 'Display who is viewing a picture';
 $txt['gallery_set_images_per_page'] = 'Images per page:';
 
-$txt['gallery_shop_settings'] = '<b>Shop Points Settings</b><br /><span class="smalltext">Only if SMF Shop is installed</span>';
+$txt['gallery_shop_settings'] = '<b>Shop Points Settings</b><br /><span class="smalltext">Only if SMF Shop/ST Shop is installed</span>';
 $txt['gallery_shop_picadd']  = 'Picture Add Points: ';
 $txt['gallery_shop_commentadd'] = 'Comment Add Points: ';
 
