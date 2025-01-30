@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:autoblueskyrembed</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Auto Embed Bluesky Strings
+$txt['autobluesky_error'] = 'Bluesky error (does not exist)';
+$txt['autobluesky_blankid'] = 'Bluesky error (blank ID)';
+// END Auto Embed Bluesky Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin Auto Embed Bluesky Strings
+$txt['autobluesky_error'] = 'Bluesky error (does not exist)';
+$txt['autobluesky_blankid'] = 'Bluesky error (blank ID)';
+// END Auto Embed Bluesky Strings
+]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="replace"><![CDATA[// Some basic information...
+	if (!isset($context['html_headers']))
+		$context['html_headers'] = '';]]></search>
+			<add><![CDATA[// Some basic information...
+	if (!isset($context['html_headers']))
+		$context['html_headers'] = '';
+	
+	// Auto Embed Bluesky
+	global $boardurl;
+	
+	if (!function_exists("set_tld_regex"))
+		$context['html_headers'] .=  '
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>';
+	
+	$context['html_headers'] .=  '
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+		var oBluesky = $(\'a[href*="bsky.app"][href*="/profile"]\');
+		if (oBluesky.length > 0) {
+			oBluesky.each(function() {
+				var oHolder = $(this);
+				var sStr = $(this).attr(\'href\');
+				sStr = sStr.split(\'?\')[0];
+				var oStr = sStr;
+				sStr = sStr.replace(/\/+$/, "");
+				sStr = sStr.substr(sStr.lastIndexOf(\'/\') + 1);
+				$.getJSON("' . $boardurl .'/bluesky-cache.php?id=" + sStr + "&url=" + oStr, function(data) {
+					oHolder.before(data.html);
+				});
+			});
+		}
+		
+
+
+		});
+	</script>';
+	//end Auto Embed Bluesky
+			]]></add>
+		</operation>
+	</file>
+
+</modification>

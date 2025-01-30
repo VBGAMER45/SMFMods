@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:autoblueskyrembed</id>
+	<name>Auto Bluesky Embed</name>
+	<type>modification</type>
+	<version>1.0</version>
+	
+
+	<install for="2.0 - 2.0.99,2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<modification type="file">autobluesky.xml</modification>
+		<require-file name="bluesky-cache.php" destination="$boarddir" />
+		<database>install.php</database>
+	</install>
+	
+	<uninstall for="2.0 - 2.0.99,2.1 - 2.1.99,2.1 Beta 3,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
+		<remove-file name="$boarddir/bluesky-cache.php" />
+		<modification type="file" reverse="true">autobluesky.xml</modification>
+	</uninstall>
+	
+
+</package-info>

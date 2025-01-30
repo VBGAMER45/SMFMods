@@ -27,10 +27,12 @@
 if (!defined('SMF'))
 	die('No direct access...');
 
-
 function tenor_bbc_buttons(&$bbc_tags, &$editor_tag_map)
 {
 	global $context, $editortxt, $modSettings;
+
+	if (empty($modSettings['tenorapikey']))
+			return;
 
 	loadLanguage('tenor');
 
@@ -59,30 +61,31 @@ function tenor_bbc_buttons(&$bbc_tags, &$editor_tag_map)
 	$secondData = array_slice($context['bbc_tags'][count($context['bbc_tags']) - 1],$lastCount,($count - $lastCount));
 	$context['bbc_tags'][count($context['bbc_tags']) - 1] = array_merge($firstData,$tenorData,$secondData);
 
-
 	loadJavaScriptFile('scetenor.js', array(), 'smf_scetenor');
 
 
 	addInlineJavaScript('
 		window.tenorkey = "' . $modSettings['tenorapikey'] . '";');
 }
-
 function tenor_credits()
 {
 	global $context;
 	$context['copyrights']['mods'][] = 'Tenor for SMF by vbgamer45 &copy; 2024';
 }
-
 function tenor_sceditor(&$sce_options)
 {
+
+	global $modSettings;
+
+	if (empty($modSettings['tenorapikey']))
+		return;
+
 	if (!empty($sce_options['plugins']))
 		$sce_options['plugins'] .= ',';
 
-
-		$sce_options['plugins'] .= 'scetenor';
+	$sce_options['plugins'] .= 'scetenor';
 
 }
-
 function tenor_mod_settings(&$config_vars)
 {
 	global $txt;

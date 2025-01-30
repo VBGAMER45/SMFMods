@@ -105,8 +105,11 @@ function DiscordSettings2()
 	$discord_webhook_url = $smcFunc['htmlspecialchars']($_REQUEST['discord_webhook_url'],ENT_QUOTES);
 	$discord_webhook_topic_url = $smcFunc['htmlspecialchars']($_REQUEST['discord_webhook_topic_url'],ENT_QUOTES);
 	$discord_webhook_post_url = $smcFunc['htmlspecialchars']($_REQUEST['discord_webhook_post_url'],ENT_QUOTES);
-	
+
+	if (!empty($_REQUEST['discord_boardstopush']))
 	$discord_boardstopush = implode(",",$_REQUEST['discord_boardstopush']);
+	else
+		$discord_boardstopush = '';
 	
 	$discord_dateformat = $smcFunc['htmlspecialchars']($_REQUEST['discord_dateformat'],ENT_QUOTES);
 	$discord_msg_reg = $smcFunc['htmlspecialchars']($_REQUEST['discord_msg_reg'],ENT_QUOTES);

@@ -3,8 +3,6 @@
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>vbgamer45:hcaptchaforsmf</id>
 	<name>hCaptcha Visual Verification Options</name>
-
-
 	<file name="$themedir/GenericControls.template.php">
 		<operation>
 			<search position="replace"><![CDATA[if ($verify_context['show_visual'])]]></search>
@@ -39,6 +37,15 @@
 		</operation>
 
 	</file>
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="replace"><![CDATA[$qIndex = $verify_context['show_visual'] || $verify_context['can_recaptcha'] ? $i - 1 : $i;]]></search>
+			<add><![CDATA[$qIndex = $verify_context['show_visual'] || $verify_context['can_recaptcha'] || $verify_context['can_hcaptcha'] ? $i - 1 : $i;]]></add>
+		</operation>
+
+	</file>
+
 	<file name="$sourcedir/Subs-Editor.php">
 	<operation>
 		<search position="replace"><![CDATA[if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['can_recaptcha']))]]></search>

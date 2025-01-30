@@ -93,7 +93,7 @@ echo '
 
 					break;
 					case 1:
-					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="netural" /></td>';
+					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="neutral" /></td>';
 					break;
 					case 2:
 					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.gif" alt="negative" /></td>';
@@ -447,7 +447,7 @@ echo '
 
 					break;
 					case 1:
-					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="netural" /></td>';
+					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="neutral" /></td>';
 					break;
 					case 2:
 					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.gif" alt="negative" /></td>';
@@ -545,7 +545,7 @@ function TraderSystemCopyright()
 {
 	// Copyright link Removal order form
 	// http://www.smfhacks.com/copyright_removal.php
-	echo '<div align="center"><!--Link must remain or contact me to pay to remove.-->Powered by <a href="http://www.smfhacks.com" target="blank"><span class="smalltext">SMF Trader System</span></a><!--End Copyright link--></div>';
+	echo '<div align="center"><!--Link must remain or contact me to pay to remove.-->Powered by <a href="https://www.smfhacks.com" target="blank"><span class="smalltext">SMF Trader System</span></a><!--End Copyright link--></div>';
 
 }
 ?>

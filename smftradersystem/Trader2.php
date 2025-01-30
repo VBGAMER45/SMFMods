@@ -23,17 +23,17 @@ function tradermain()
 	// Trader actions
 	$subActions = array(
 		'main' => 'TraderMainView',
-		'report' => 'Report',
-		'report2' => 'Report2',
-		'submit' => 'Submit',
-		'detail' => 'ViewDetail',
+		'report' => 'Trader_Report',
+		'report2' => 'Trader_Report2',
+		'submit' => 'Trader_Submit',
+		'detail' => 'Trader_ViewDetail',
 		'delete' => 'Trader_Delete',
 		'delete2' => 'Trader_Delete2',
-		'submit2' => 'Submit2',
-		'admin' => 'AdminSettings',
-		'admin2' => 'AdminSettings2',
-		'approve' => 'ApproveRating',
-		'bulkactions' => 'BulkActions',
+		'submit2' => 'Trader_Submit2',
+		'admin' => 'Trader_AdminSettings',
+		'admin2' => 'Trader_AdminSettings2',
+		'approve' => 'Trader_ApproveRating',
+		'bulkactions' => 'Trader_BulkActions',
 	);
 
 	@$sa = $_GET['sa'];
@@ -181,7 +181,7 @@ function TraderMainView()
 
 }
 
-function Submit()
+function Trader_Submit()
 {
 	global $context, $txt, $smcFunc, $user_info;
 
@@ -273,7 +273,7 @@ function Submit()
 
 }
 
-function Submit2()
+function Trader_Submit2()
 {
 	global $smcFunc, $txt, $modSettings, $user_info;
 
@@ -410,7 +410,7 @@ function Submit2()
 
 }
 
-function Report()
+function Trader_Report()
 {
 	global $context, $txt;
 
@@ -428,7 +428,7 @@ function Report()
 	$context['page_title'] = $txt['smftrader_reporttitle'];
 }
 
-function Report2()
+function Trader_Report2()
 {
 	global $smcFunc, $webmaster_email, $sourcedir, $scripturl, $txt, $sourcedir, $modSettings;
 
@@ -484,7 +484,7 @@ function Report2()
 	redirectexit('action=trader&id=' . $row['ID_MEMBER'] );
 }
 
-function ViewDetail()
+function Trader_ViewDetail()
 {
 	global $context, $smcFunc, $txt;
 
@@ -583,7 +583,7 @@ function Trader_Delete2()
 	redirectexit('action=trader&id=' . $redirectid);
 }
 
-function AdminSettings()
+function Trader_AdminSettings()
 {
 	global $context, $txt,  $mbname, $smcFunc, $scripturl;
 
@@ -640,7 +640,7 @@ function AdminSettings()
 
 }
 
-function AdminSettings2()
+function Trader_AdminSettings2()
 {
 	isAllowedTo('admin_forum');
 
@@ -659,7 +659,7 @@ function AdminSettings2()
 	redirectexit('action=admin;area=trader;sa=admin');
 }
 
-function ApproveRating()
+function Trader_ApproveRating()
 {
 
 	isAllowedTo('admin_forum');
@@ -667,7 +667,7 @@ function ApproveRating()
 	$id = (int) $_REQUEST['id'];
 
 
-	ApproveByID($id);
+	Trader_ApproveByID($id);
 
 	redirectexit('action=admin;area=trader;sa=admin');
 }
@@ -700,7 +700,7 @@ function SendTraderPMByID($id)
 
 }
 
-function BulkActions()
+function Trader_BulkActions()
 {
 	isAllowedTo('admin_forum');
 
@@ -713,9 +713,9 @@ function BulkActions()
 		{
 
 			if ($baction == 'approve')
-				ApproveByID($value);
+				Trader_ApproveByID($value);
 			if ($baction == 'delete')
-				DeleteByID($value);
+				Trader_DeleteByID($value);
 
 		}
 	}
@@ -724,7 +724,7 @@ function BulkActions()
 	redirectexit('action=admin;area=trader;sa=admin');
 }
 
-function DeleteByID($id)
+function Trader_DeleteByID($id)
 {
 	global $smcFunc;
 
@@ -734,7 +734,7 @@ function DeleteByID($id)
 	WHERE feedbackid = $id");
 }
 
-function ApproveByID($id)
+function Trader_ApproveByID($id)
 {
 	global $smcFunc;
 

@@ -98,7 +98,7 @@ echo '
 
 					break;
 					case 1:
-					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.png" alt="netural" /></td>';
+					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.png" alt="neutral" /></td>';
 					break;
 					case 2:
 					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.png" alt="negative" /></td>';
@@ -500,7 +500,7 @@ echo '
 
 					break;
 					case 1:
-					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.png" alt="netural" /></td>';
+					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.png" alt="neutral" /></td>';
 					break;
 					case 2:
 					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.png" alt="negative" /></td>';

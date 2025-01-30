@@ -36,7 +36,7 @@
 	$thisVerification = &$context['controls']['verification'][$verificationOptions['id']];
 ]]></search>
 			<add><![CDATA[
-            'use_hcaptcha' => !empty($modSettings['hcaptcha_enabled']),
+            'can_hcaptcha' => !empty($modSettings['hcaptcha_enabled']),
 ]]></add>
 		</operation>
 		<operation>
@@ -44,7 +44,7 @@
 	if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']))
 ]]></search>
 			<add><![CDATA[
-	if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['use_hcaptcha']))
+	if (empty($thisVerification['show_visual']) && empty($thisVerification['number_questions']) && empty($thisVerification['can_hcaptcha']))
 ]]></add>
 		</operation>
 		<operation>
@@ -78,4 +78,14 @@
 ]]></add>
 		</operation>
 	</file>
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="replace"><![CDATA[$qIndex = $verify_context['show_visual'] ? $i - 1 : $i;]]></search>
+			<add><![CDATA[$qIndex = $verify_context['show_visual'] || $verify_context['can_hcaptcha'] ? $i - 1 : $i;]]></add>
+		</operation>
+
+	</file>
+
+
 </modification>

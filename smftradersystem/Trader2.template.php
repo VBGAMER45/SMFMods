@@ -98,7 +98,7 @@ echo '
 
 					break;
 					case 1:
-					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="netural" /></td>';
+					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="neutral" /></td>';
 					break;
 					case 2:
 					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.gif" alt="negative" /></td>';
@@ -497,7 +497,7 @@ echo '
 
 					break;
 					case 1:
-					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="netural" /></td>';
+					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/undecided.gif" alt="neutral" /></td>';
 					break;
 					case 2:
 					echo '<td align="center"><img src="', $modSettings['smileys_url'], '/', $context['user']['smiley_set'], '/angry.gif" alt="negative" /></td>';
@@ -506,9 +506,6 @@ echo '
 					echo '<td align="center">', $row['salevalue'], '</td>';
 					break;
 				}
-
-
-
 
 				if($row['topicurl'] == '')
 					echo '<td>', parse_bbc($row['comment_short']), '</td>';

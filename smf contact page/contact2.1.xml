@@ -188,6 +188,42 @@ $txt['smfcontactpage_board'] = 'Kontaktseite - Board zum Posten (Optional): ';
 	</operation>
 </file>
 
+<file name="$languagedir/Modifications.portuguese_pt.php" error="skip">
+ <operation>
+ <search position="after"><![CDATA[
+?>]]></search>
+ <add><![CDATA[
+// Begin Contact Page Text Strings
+$txt['smfcontact_contact'] = 'Contato';
+$txt['permissionname_view_contact'] = 'Ver página de contato';
+$txt['permissionhelp_view_contact'] = 'Permite que os membros visualizem a página de contato e enviem e-mails.';
+$txt['cannot_view_contact'] = 'Você não pode visualizar a página de contato.';
+$txt['smfcontact_name'] = 'Seu nome:';
+$txt['smfcontact_subject'] = 'Assunto';
+$txt['smfcontact_body'] = 'Menssagem';
+$txt['smfcontact_emailaddress'] = 'Endereço de email';
+$txt['smfcontact_sendemail'] = 'Enviar e-mail';
+$txt['smfcontact_messagesent'] = 'Sua mensagem foi enviada!';
+$txt['smfcontact_messagesent_click'] = 'Sua mensagem foi enviada! Click ';
+$txt['smfcontact_messagesent_return'] = 'aqui</a> para retornar.';
+$txt['smfcontact_errname'] = 'Você precisa digitar seu nome.';
+$txt['smfcontact_errsubject'] = 'Você precisa digitar um assunto.';
+$txt['smfcontact_errmessage'] = 'Você precisa digitar uma mensagem.';
+$txt['smfcontact_erremail'] = 'Você precisa digitar seu endereço de e-mail.';
+$txt['smfcontact_errbademail'] = 'Você não inseriu um endereço de e-mail válido.';
+$txt['smfcontact_titlesent'] = ' - Mensagem enviada.';
+$txt['smfcontact_form'] = 'Formulário de página de contato para ';
+$txt['smfcontact_formname'] = "Nome: ";
+$txt['smfcontact_formemail'] = "Email: ";
+$txt['smfcontact_ip'] = "IP: ";
+$txt['smfcontact_formmessage'] =  "mensagem: \n";
+$txt['smfcontactpage_email'] = 'Página de contato - E-mail: ';
+$txt['smfcontactpage_board'] = 'Página de contato - Quadro para postar (opcional): ';
+// END Contact Page Text Strings
+]]></add>
+ </operation>
+</file>
+
 	<file name="$languagedir/Modifications.dutch.php" error="skip">
 	<operation>
 		<search position="end" />
