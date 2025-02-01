@@ -1,0 +1,100 @@
+/* This Code Will be moved to its file after tests done */
+.roundframe {
+	overflow: auto;
+}
+/* With this we can avoid extra containers inside code */
+textarea {
+	display: block;
+}
+/* As much as we need ul/li padding-free its needed for more readable text. */
+li.windowbg, li.windowbg2 {
+	padding: 5px !important;
+}
+/* Middle the images */
+.catbg img {
+	vertical-align: middle;
+}
+/* Colums */
+#column1, #column2, #column3, #ezContainer {
+	box-sizing: border-box;
+	display: table-cell;
+	vertical-align: top;
+	white-space: normal;
+}
+#column2, #ezContainer {
+	padding: 0px 0.3%;
+	overflow: hidden;
+	max-width: 100%;
+	white-space: normal;
+}
+#column4 {
+	margin: 0 0 5px 0;
+}
+#column5 {
+	margin: 5px 0 0 0;
+}
+.toggle_icon {
+	display: block;
+	padding: 3px;
+}
+/* Table and its grids */
+.ezTable {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+	position: relative;
+}
+.ezTRow {
+	display: table-row;
+	width: auto;
+	clear: both;
+}
+.ezTCell {
+	display: table-cell;
+	line-height: 2em;
+	padding: 0 5px;
+}
+.ezTCell2 {
+	display: table-cell;
+}
+.ez5p {
+	width: 5%;
+}
+.ez10p {
+	width: 10%;
+}
+.ez20p {
+	width: 20%;
+}
+.ez25p {
+	width: 25%;
+}
+.ez_equal {
+	width: 33%;
+}
+.ez50p {
+	width: 50%;
+}
+.ez75p {
+	width: 75%;
+}
+.ez100p {
+	width: 100%;
+}
+.collapse_fix {
+	padding: 9px 0 0 0;
+}
+h3.catbg a {
+	vertical-align: middle;
+}
+
+@media screen and (max-width: 640px) {
+	/* ezPortal */
+	#column1, #column2, #column3, #ezContainer {
+		display: block;
+		width: 100% !important;
+		float: none;
+		margin: 0 0 5px 0;
+		white-space: normal;
+	}
+}

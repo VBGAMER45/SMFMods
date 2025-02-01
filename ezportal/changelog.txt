@@ -1,0 +1,528 @@
+5.6
++Added Bluesky Feed block
+
+5.5.4
++Added media type to SMF Gallery blocks if you are using SMF Gallery Pro. Allows you to select pictures or audio/video files or both to show
+
+5.5.3
+!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit" 
+
+5.5.2
+!Fixed possible undefined errors in SMF 2.1.x with attach tags in recent post/topics ezblocks
+
+5.5.1
+!Fixed undefined error with Birthdays block SMF 2.1.x
+!Fix small option for Calendar block for SMF 2.1.x
+
+5.5
++Added BBC pages now as option in addition to normal pages
++Added random type to downloads block
+!Fixed missing meta tags option for SMF 2.1 for pages
+
+5.4.2
+!Fixes links in parsebbc block in SMF 2.1
+
+5.4.1
+!Fixes for Poll block For SMF 2.1
+!Fixes for Calendar block for SMF 2.1
+
+5.4
+Note: focusing on SMF 2.0,2.1 going forward
++Poll ezBlock now has the option to show a random poll, in addition to showing just a specific poll.
++Added file exist check for Arcade block to make sure it is installed. before showing the block
+!Fixed bug with visible action calendar had a typo should work correctly now.
+
+5.3
++New sticky column setting. You can now make a column sticky for SMF 2.1.x and SMF 2.0.x
+To do this go to ezBlock Manager then click on the "Edit Column" link next to the column name to change the setting.
+A sticky column means it will stay at the top of the page even if you scroll down on a page with a lot of content.
+Useful to keep a sidebar always visible and easy to access.
+!Fixed unclosed classname SMF 2.0.x on block display
+!Fixed admin area column collapsed checked html
+
+5.2
+!Fixes to responsive layout for blocks for SMF 2.0
+!Minor optimizations
+
+5.1.5a
+!Hotfix for adding/editing pages if you had installed 5.1.4/5.15! for SMF 2.0.x and SMF 1.1.x
+
+5.1.5
+!Hotfix for adding/editing html blocks if you had installed 5.1.4! for SMF 2.0.x and SMF 1.1.x
+
+5.1.4
++Enable/disable block now added on Add/Edit ezBlock For SMF 2.0,2.1
+!Fixed enable/disable TinyMCE on Add/Edit Page  SMF 2.1
+!Improve the width on the add/edit page and add/edit block on SMF 2.1
++New icon in the admin center menus for SMF 2.1
+
+5.1.3
+!Fixed undefined wireless error on 2.1
+!Added more actions/subactions to the not load SetupezPortal function
+
+5.1.2
+!Add random parameter for SMF Store ezBlock
+!Add extra new line for .htaccess append
+
+5.1.1
+!Fixed edit block custom css class name display for SMF 2.1
++Updated copyright links to link to https://
+
+5.1
++You can now override the css class used for the header and body of ezblocks.
+Changes the h3 and tr tags.
+The h3 tag you could catbg centertext which allow you to center the title block
+
+5.0.2
+!Removed || changed to OR in SQL statements for MariaDB for SMF Gallery and Downloads ezBlocks.
+
+5.0.1
+!Fixed cache issue for columns from 5.0c for 2.0 and 2.1x
+
+5.0c
+!Fixed a couple more possible error log conditions when testing with full errors displayed.
+
+5.0a/b
+!Admins can now see blocks in Maintenance Mode
+!Fix error for php 7.4 on printpage for ezportal menu 
+
+5.0
++Added support for these variables on html blocks, and custom pages: {$member.name} {$member.id} {$member.email} {$member.link} SMF 2.0.x SMF 2.1.x
++Added support for Simple Audio Video Embeder on custom page display
+!Fixes for center ezblock for both the responsive mode and normal
+!More fixes for PHP 7.4 and php 8.0
+!Fix news ezblock to display quicker with caching enabled when a new post is made.
+!Fix responsive mode bug on ezblock manager pages.
+!Fix error array log for parameters on add/edit ezblock for boardnews ezblock
+!Fix error log for bbc box SMF 2.1.x
+!Hide center ezblock when editing blocks to make it easier to edit them instead of scrolling down.
+
+4.5.12
+!More fixes for blocks with PHP 7.4 deprecated errors
+
+4.5.11
+!Fixes for PHP 7.4 errors for null
+
+4.5.10
+!For SMF 2.1 fixed not showing the board index if you have ezPortal disabled on mobile devices
+!Fixed undefined url in linktree on SMF 2.1
+
+4.5.9
+!Make sure there is a language string loaded for spam protection on shoutbox
+
+4.5.8
+!Fixed a bug with TinyMCE editor when editing blocks would strip out the base url of your main site. Which could break images when navigating to subdirectories when using mods such as prettyurls.
+
+4.5.7
+!Fixed new indicator for recent posts and recent topics block for SMF 2.0 to cache per user instead of global cached.
+
+4.5.6
+!Fixes for SMF 2.0.x and mobile detection.
+
+4.5.5
+!Fix error log for PHP 7.2/7.3 for mobile detection
+
+4.5.4
+!Disable SAVE auto embed in shoutbox
+
+4.5.3a
+!Fixed link tree in SMF 2.1 RC2
+
+4.5.3
+!Fixed SMF 2.1.x registration link to use new action=signup
+
+4.5.2
+!Fixed center column display SMF 2.1.x if using visibility options
+
+4.5.1
+!Fixed center display if center block disabled for SMF 2.1.x
+!Fixes using column width/percent SMF 2.1.x thanks to Antes
+
+4.5
++Responsive added to SMF 2.1 thanks to Antes it is default setting now
++Added page icon setting for SMF 2.1.x for extra pages
+!Fixed twitter tweets embed code and restored the block in the install script
+!Fixed homepage title for SMF 2.1.x
+!Fixed undefined errors if not parameters set for ezBlock for PHP 7.1.x
++RSS Feed Block can now handle SSL feeds better
++SMF Gallery Block now has more options to customize
+!Fixed Group By errors on strict mysql for SMF 2.1.x and SMF 2.0.x
+!Fixed Smiles on Shoutbox form setting for SMF 2.1.x
+!Fixed broken menu ezBlock due to cache SMF 2.0.x
+!Fixed vertical menu ezBlock for SMF 1.1.x
+!Solved issue with ezBlock parameter data sometimes getting missed due to cache SMF 2.0.x
+
+4.1.1
++More changes/improvements for SMF 2.1.x
+
+4.1a
++Added support for SMF 2.1 RC1
+
+4.1
++For SMF 2.0 better caching of data for the following ezBlocks: Stats ezBlocks, Whos Online, Recent Posts, and Recent Topics
+
+4.0.2
+!Shoutbox now respects post bans
+
+4.0.1
+!Fixed visibility clearing cache issue. Which caused visibility option changes to take time to appear
+!Removed old file cache functions which are not used.
+
+4.0
++New setting for pages. Added option for SEO page urls as long as your host supports mod_rewrite
+
+3.5.2
+!Fixes to the SMF Gallery Lite blocks for the category selection was not working correctly.
+
+3.5.1
++Added new setting for blocks Show Only Mobile. Allows a block to only be shown on mobile devices.
+!Fixed bug with hide mobile block setting not working correctly
+
+3.5
++Improve the look and feel of ezPortal pages for SMF 2.0/2.1. Now includes title bar, and content area along with edit/delete links when viewing the page
++Added option to add a button to the menu when adding a page in ezPortal you can set the page title for SMF 2.0.x and SMF 2.1.x
++Added support for the Oneall Social Login mod on the login form page
+!When adding a shoutbox block make sure it is enabled when they add it
+
+3.2
++Added option on pages to enter meta tag in html.
+
+3.1.3
+!Fixed a bug for SMF 2.1 Beta 2/3 showing a template error if the portal homepage feature was disabled.
+
+3.1.2
+!Improved support for https sites. Moved google plus and facebook urls to use https://
+
+3.1.1
+!Fixed bug in SMF 2.0.x responsive mode was loading the ezportal.css too early before some checks
++Added option to SMF Arcade ezblock to show the number of top scores
+
+3.1
++ezPortal is now responsive For SMF 2.0.x. Works best if you have the responsive curve mod found here http://custom.simplemachines.org/mods/index.php?mod=4040 Thanks to Antes for the hard that went into doing this major update.
+To use the responsive mode under ezportal settings check the responsive mode option
++Added new option on a block to hide on mobile devices
++Added support content encoded in the RSS feed block for atom based feeds
++ezPortal modules are now updated better in sync with latest versions on smfhacks.com
+!Fixed bug if disabled ezportal for mobile not showing boardindex on mobile device - You need to uninstall ezportal and then reinstall to get this fix.
+
+3.0.3
++Two new settings for the RSS Feed block. Encoding type and the order in which feed items are displayed
+!Fixed RSS feed block bug when only showing one feed item 
+
+3.0.2
+!Fixed undefined login_token for SMF 2.0 was meant for SMF 2.1 beta only
+
+3.0.1
+!Fixed some missing images in SMF 2.1 Beta 1 for some blocks
+!Fixed login box not working in SMF 2.1 Beta 1
+
+3.0
++Now supporting SMF 2.1 Beta 1 with hooks instead of file edits for most places.
+!Fixed html issue on page add in page editor.
+!Fixed bug not removing Subs-EzPortalRSS(2).php file on uninstall
+
+2.7
+!Better handling of RSS feed block if the rss feed goes down
+!Fixed undefined showPrevNext for SMF 2.0 calendar block
+
+2.6
+!Fixed bug with blocks not being upgraded!
+!Fixed bug with news ezblock not showing anything in certain situations
+
+2.5.1
++Added new setting to disable ezPortal for mobile devices based on user agent
+!Fixed disable ezportal global variable for SMF 1.1.x
+
+2.5
++Added Calendar Block for SMF 2.0
++Added option to delete all shoutbox entries when viewing the shoutbox history
++Added option to disable blocks when using ezPortal admin area
+
+2.1
++Improved layout of shoutbox and RSS feed display thanks to Maxx
++Updated menu display block thanks to Maxx
+!Increased max execution time for getting RSS feed information
+!Fixed two missing images on some themes for SMF 2.0.x for the shoutbox  thanks to Maxx
+
+2.0.1
++Added a global variable which can be used to disable ezPortal $disableEzPortal
+
+2.0
++Board News ezBlock the title now links to the topic
++Updated TinyMCE to 3.5.10
++Added support for translating blocks and parameters
+Examples: 
+$txt['Recent Topics ezBlock']['title'] = 'Test Random Title';
+$txt['Recent Topics ezBlock']['param']['numTopics'] = 'Number of topics yah!!!';
+
+!Fixed bug in ezPortal RSS block not showing the latest RSS feed item.
+!Fixed error undefined cache error with column state in SMF 2.0
+!Fixed possible undefined error when editing an ezblock if it has no parameters
+!Fixed handling parameters if zero is passed as a required field.
+!Twitter block removed due to Twitter api changes
+
+1.2.1
+!Fixing undefined caching error when editing an ezBlock
+
+1.2
++Added easy to use copyright removal purchase system to allow forums to have a clean look.
+!Fixed undefined errors for when adding a block if there are no parameters for that block
++Added random listing/auction block for SMF Classifieds ezBlock
++Listing date in SMF Classifieds ezBlock uses the datetime format in the classifieds settings
+
+1.1
++Better caching of main ezPortal loading functions for block parameters, column and block collapse states, and ezPortal pages. Should be huge performance gains for sites with caching enabled.
+
+1.0
+!Fixed sharing link in the news block for Facebook and Google+
++Updated TinyMCE webpage editor/html block editor to 3.5.8
++Style updates to admin area for SMF 2.0
++Module updates new updated downloads
+
+0.6.7
+!Fixed undefined errors when adding or deleting a shoutbox message
+
+0.6.6a
+!Fix possible escape bug with add/edit block issue for SMF 2.0
+
+0.6.6
++Random SMF Gallery Block and SMF Gallery Block now support SMF Gallery Pro category level permissions and private user gallery permissions.
+
+0.6.5
+!Fixed some formatting of some the column combinations
+
+0.6.4
+!Fixed default install for ezPortal with blocks
+
+0.6.3
++Added Show Google+ Button option to board news ezblock
+!Fixed missing div tag in the stats ezBlock
+!Fixed bug with center column area
+
+0.6.2
++Added setting to exclude boards for the Recent Posts and Recent Topics ezBlocks
+
+0.6.1
+!Fixed missing css reference for SMF 2.0 in the shoutbox
+!Fixed caching bug with multiple ezboard news blocks in SMF 1.1.x
+!Removed fixed width from the tables from SMF 1.1.x
++Added caching to boardnews block post ids for SMF 2.0.x
+
+0.6.0
++Added hide tinymce option when adding/editing pages
+!Took out warning for ezcache folder not used
++Now for new copies for ezPortal setups default blocks and enables portal homepage
+
+0.5.2
+!Fixed SMF Gallery Random ezBlock not using number of images per row settings
+
+0.5.1
++Added ezBlock layout setting to hide the title bar of an ezBlock
+!Do not load ezPortal if in maintenance mode
++Added edit icon near Edit Column Link to make it standout a little better on the ezBlocks page
+
+0.5.0
+!Fixed xhtml validation with valign="middle" fix
+!Fixed layout issue with code tags in SMF 1.1.x thanks to Sinan for fix
+
+0.4.9
+!Fixed bug in which html/javascript content is displayed in html ezBlocks and webpages. Should work better now for codes that used quotes
+
+0.4.8
++Added Twitter tweets ezBlock
++Added Facebook Comments ezBlock
++Added Like Button for Board News ezBlock
+!Fix possible ezBlock update issue
+
+0.4.7
+!Fixed the rounded corners for SMF 2.0 RC5 big thanks to MrGrumpy for the fix!
+
+0.4.6
+!Fixed with feed block grabs oldest feed items first then goes to newest
+
+0.4.5
+!Bug fix for Social Login Pro for login block for SMF 2.0 not passing to correct file
+!Fixed missing text string for gallery views for SMF gallery ezBlock
++Added support for remotefilename for SMF Classifieds ezBlock and added alt tags to classifieds images.
++Added membergroup color to the poster name for the board ezBlock
+!Fixed poll block image for SMF 2.0 to support left to right and right to left languages
+
+0.4.4
+!Fixed some possible layout issues depending on how columns are setup
+!Moved where the collapsing of columns code is on the page to make it xhtml compliant.
+
+0.4.3
++Added support for SMF 2.0 RC4
+!Fixed bug with board news block not allowing more than one board to be selected.
++RSS Feed Block now supports ATOM based feeds
+
+0.4.2
+!Fixed two bugs with Rss Feed ezBlock in the fsockopen fetch the query string and processing the headers
+!Fixed a couple bugs with column layout. If you had just the right and left block enabled but not the center block could cause the layout to appear stretched
+
+0.4.1
+!Forum button appears instantly now with SMF 2.0 if you had caching enabled when enabling/disabling the portal
++Added support for Social Login Pro in the login ezBlock
++Added for html ezBlocks a quick link to toggle TinyMce on or off in case you didn't see the html toolbar icon
+!Fixed no index issue for action=forum for SMF 2.0 requires full uninstall and reinstall
+!Fixed RSS Feed ezBlock not showing feed after first view
+
+0.4.0
+!Fixed bug with visible settings all visible option not staying checked
+!Fixed issue with MySQL 5.5 since it no longer supports the Type for create tables uses Engine instead
+!Fixed a couple of bugs with the RSS feed ezBlock should work better
++Added category level permissions check for SMF Classifieds ezBlocks
+!Fixed extra </div> that was added in the stats ezBlock that causes a huge gap
+
+0.3.9
++Updated curve style of ezBlocks for SMF 2.0
++Added caching support to the shoutbox
++Added setting to disable TinyMCE for html ezblocks
+!Fixed bug with board index visibility setting
+
+0.3.8b
+!Fixed bug not allowing other people other than admins from seeing admin blocks,admin pages, settings page of ezportal
+
+0.3.8
+!Fixed bug with Recent Topics/Recent Posts ezBlock which could cause some posts/topics not to appear
++Added caching for each ezBlock query under each column which will save one query per column enabled if you have caching enabled in SMF.
++Added html editor to adding/editing the html ezblock
++Added caching for the ThemeSelect ezBlock  if you have caching enabled in SMF.
++Added caching for the menu ezBlock if you have caching enabled in SMF.
+
+0.3.7
++Added SMF 2.0 RC3 support
+!Fixed possible issue with invalid images for the Store ezBlock
++Added caching for ezPortal Columns if you caching enabled
+!Removed the gzip option for tinymce caused issues on some hosts
+
+0.3.6
++Upgraded Tiny MCE to 3.2.7 used by the page editor
+!Fixed a couple possible undefined errors with the shoutbox
++Added pages visible options support for ezBlocks
++Added most downloads type to the downloads ezBlock
++Better ordering by rating for SMF Store and SMF Articles ezBlocks
++Added Top Boards ezBlock
++Added Top Topics ezBlock which can be formatted by either replies or views
++Added Today's Birthdays ezBlock
+
+0.3.5
+!Fixed bug when collapsing and expanding blocks it would take up too much space
++Updated look of login ezBlock. Added length, extra, and openid support for SMF 2.0
++Added Stats ezBlock
++Added Ad Seller Pro ezBlock
+
+0.3.4
+!Fixed a bug in the SMF Store ezBlock not working correctly
++Added thumbnails to Downloads Pro ezBlock
++Better sorting by top rated for downloads ezBlock
++Added check all function for membergroups on adding ezBlocks/pages
+
+0.3.3
++Now supports SMF 2.0 RC2!
++Added Edit/Delete icons instead of text on edit/delete ezBlocks in the main forum layout
++Added column status indicator of Enabled or Disabled next to edit column
++Closer spacing on the installed ezBlock list
+!Fixed possible undefined index for SMF Classifieds ezBlock
+!Fixed bug in SMF 2.0 which could cause the module list to fail to load
+
+0.3.2
+!Fixed bug from 0.3.1 that messed up formatting in Internet Explorer due to an unclosed td tag
++Added Top and Bottom Columns
+!Fixed the hide says option for the shoutbox also added : spacer if you disable it
+
+0.3.1
++Added just board index visible option for ezBlocks
+!Fixed link tree in SMF 2.0 thanks to Kinderd forgot to replace a couple more spots. Requires full uninstall then install of new version to take affect
+!Added format options to the menu ezBlock for either horizontal or vertical
+!Fixed bug if column is collapsed then disable collapsed column the column would not go back to uncollasped
+!Fixes for undefined issues with RSS ezBlock
+!Iframe was not working for shoutbox in Chrome,IE6 now detects those browsers and disables the iframe
++Added check for invalid actions when adding a new action and an example of what a custom action should be like
++Aligned the collapsing of ezBlocks all to the right of column title
+
+0.3.0
++Redid shoutbox. Added autorefresh option, bbc codes, smiles option to the shoutbox
++Added option rss feedblock to open links in new window
++For coding ezblocks added option to specify order of the parameters listed on add/edit ezblock
++Added support for select values for coding custom ezblocks
++Collapsing of columns. Option under edit column whether column can be collapsed or not. For right and left columns
++Added checkbox parameter support for custom ezBlocks
+!Fixed bug with guest ezblock collapse saving state
++Updated the example custom ezBlock file
+!Fixed importing parameter type for custom ezBlocks
+!Fixed default value importing for custom ezBlocks
+
+0.2.9
++Added Menu ezBlock to allow custom menu items with permissions!
++Added RSS ezBlock. Set number of items to display, toggle body, and settings to control update time in minutes
++Added BBC Block with BBC editor
++Added to the Download EzBlock Most Downloaded option and added text on the ezBlock to show total downloads.
+!Fixed bug in the PollBlock missing argument error
+!Fixed link tree bug thanks SiNaN
+!Upgrade now checks if menu icons already inserted so duplicate icon entries are not added.
+!Fixed extra values that might be saved when editing an ezBlock
+
+0.2.8
+!Fixed xhtml validation error missing alt tags for icons for ezBlocks
+!Fixed a couple missing language strings from english-utf8 file
++Added option to show member link color's for the Recent Posts and Topics ezBlocks
++Added Top Posters ezBlock - Configure number of posters to show, color, show user's avatar and layout options
++Added Recent Members ezBlock  - Configure number of members to show, color, show user's avatar and layout options
+!Fixed a bug with select dropdown values for ezBlocks that have multiple select fields in the same ezBlock
+
+0.2.7
+!Fixed issued for SMF 2.0.x not showing the permission title for EzPortal under simple permissions
+!Fixed shoutbox scrollbar issue.
++Now defines the action=forum in Who.english.php
++Added new feature to include a custom icon to display in the titlebar of an ezBlock
+
+0.2.6
+!Fixed issue in SMF 2.0.x with adding a shout showing a template error and a language error if spam protection is enabled.
++Added option in shoutbox to hide member name says
++Added option to hide delete option in the shoutbox for admin's
++Added option to the shoutbox to set the number of items shown per page in the shoutbox history
+!Made the textarea on the shoutbox ezBlock expand to the full width of the ezBlock in cases of where the shoutbox is centered.
++Added option to hide the preview image on the theme select ezBlock
++Added option to the Board News EzBlock to control the number of characters shown on a news post.
+!Fixed bug in random SMF Gallery Random Image ezBlock was not using the number of random images to show parameter
+
+0.2.5
+!Fixed one more bug in classifieds ezBlock
+!Fixed Advanced Search link was hardcoded to ezportal.com
++Added option to member's ezBlock to format it horizontal or vertical
++Added option on EzPortal settings page to hide the edit/delete links on the layout of the ezBlocks
+!Changed a couple things with the board news ezBlock should help fix some issues.
++Added multiboard select for the BoardNews ezBlock. Allows you to select unlimited number of boards for boardnews
+
+0.2.4
+!Fixed a couple xml validation issues with the theme select ezBlock
+!Fixed bug in SMF Classifieds ezBlock for undefined function
+!Fixed shoutbox ezBlock when making a shout to redirect to the page that you were on.
++Added option to shoutbox ezBlock to turn off the date/time of the shout. Under EzPortal Settings
++Added option to view the shoutbox history. Adds a link that allows everyone to access it. Under EzPortal Settings
+
+0.2.3
++Default install now uses columns widths of 15% for left and right and center is 70%
+!Fixed a couple issues with forum being small if no columns are present
++Added option to delete shoutbox entries for Admins on the forum
+!Fixed expanding shoutbox for some browsers new fix
+!Fixed a bug in SMF 2.0 version of the gallery blocks url.
+
+0.2.2
+!Fixed bug with xml functions in the forum
+!Fixed shoutbox expanding if someone inputs a long text such as a link
++Added Column Percent option for column width
++Added Tag Cloud ezBlock uses Tagging System for Topics
+
+0.2.1
+!Fixed bug with template files using <? instead of <?php causing error in some installs
+!Fixed bug with ratings text for some ezBlocks were there is no rating yet
+!Fixed SMF Arcade ezBlock for SMF 2.0
+!Fixed undefined error $forum_version for 1.1.x
+
+0.2
++18 new EzBlocks
++Added Modules section
+
+0.1 Initial Release

@@ -1,0 +1,589 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<id>vbgamer45:ezportal</id>
+<version>1.0</version>
+<file name="$languagedir/Modifications.english.php">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Forum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Settings';
+$txt['ezportal_block_manager'] = 'ezBlock Manager';
+$txt['ezportal_page_manager'] = 'Page Manager';
+$txt['ezp_txt_ordercopyright'] = 'Order Copyright Removal';
+$txt['ezp_txt_copyrightremoval'] = 'Copyright Removal';
+$txt['ezp_credits'] = 'Credits';
+
+// Permissions
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+
+$txt['permissionname_ezportal_page'] = 'Manage Pages';
+$txt['permissionhelp_ezportal_page'] = 'Allows adding,editing,and deleting of pages.';
+$txt['cannot_ezportal_page'] = 'You are not allowed to manage EzPortal pages.';
+
+$txt['permissionname_ezportal_blocks'] = 'Manage ezBlocks';
+$txt['permissionhelp_ezportal_blocks'] = 'Allows adding,editing,and deleting of ezBlocks.';
+$txt['cannot_ezportal_blocks'] = 'You are not allowed to manage ezBlocks.';
+
+
+$txt['permissionname_ezportal_manage'] = 'Admin EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Allows full control of EzPortal';
+$txt['cannot_ezportal_manage'] = 'You are not allowed to manage EzPortal.';
+
+// END EzPortal Text Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.english-utf8.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Forum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Settings';
+$txt['ezportal_block_manager'] = 'ezBlock Manager';
+$txt['ezportal_page_manager'] = 'Page Manager';
+$txt['ezp_txt_ordercopyright'] = 'Order Copyright Removal';
+$txt['ezp_txt_copyrightremoval'] = 'Copyright Removal';
+$txt['ezp_credits'] = 'Credits';
+
+// Permissions
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+
+$txt['permissionname_ezportal_page'] = 'Manage Pages';
+$txt['permissionhelp_ezportal_page'] = 'Allows adding,editing,and deleting of pages.';
+$txt['cannot_ezportal_page'] = 'You are not allowed to manage EzPortal pages.';
+
+$txt['permissionname_ezportal_blocks'] = 'Manage ezBlocks';
+$txt['permissionhelp_ezportal_blocks'] = 'Allows adding,editing,and deleting of ezBlocks.';
+$txt['cannot_ezportal_blocks'] = 'You are not allowed to manage ezBlocks.';
+
+
+$txt['permissionname_ezportal_manage'] = 'Admin EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Allows full control of EzPortal';
+$txt['cannot_ezportal_manage'] = 'You are not allowed to manage EzPortal.';
+
+// END EzPortal Text Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.turkish.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Forum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Ayarlar';
+$txt['ezportal_block_manager'] = 'ezBlock Yöneticisi';
+$txt['ezportal_page_manager'] = 'Sayfa Yöneticisi';
+
+$txt['ezp_settings'] = 'Ayarlar';
+$txt['ezp_modules'] = 'Modüller';
+$txt['ezp_blocks'] = 'ezBlocklar';
+$txt['ezp_pagemanager'] = 'Sayfa Yöneticisi';
+$txt['ezp_import'] = 'İçe Aktar';
+$txt['ezp_txt_ordercopyright'] = 'Telif Hakkı Kaldırma Siparişi';
+$txt['ezp_download_blocks'] = 'ezBlockları İndir';
+$txt['ezp_installed_blocks'] = 'Yüklü ezBlocklar';
+$txt['ezp_txt_copyrightremoval'] = 'Telif Hakkı Kaldırma';
+$txt['ezp_credits'] = 'Krediler';
+
+// Permissions
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+$txt['permissiongroup_simple_ezportal'] = 'EzPortal Kullan';
+
+$txt['permissionname_ezportal_page'] = 'Sayfaları Yönet';
+$txt['permissionhelp_ezportal_page'] = 'Sayfa ekleme, düzenleme ve silme yeteneğini sağlar.';
+$txt['cannot_ezportal_page'] = 'EzPortal sayfalarını yönetme izniniz yok.';
+
+$txt['permissionname_ezportal_blocks'] = 'ezBlockları Yönet';
+$txt['permissionhelp_ezportal_blocks'] = 'ezBlock ekleme, düzenleme ve silme yeteneğini sağlar.';
+$txt['cannot_ezportal_blocks'] = 'ezBlockları yönetme izniniz yok.';
+
+$txt['permissionname_ezportal_manage'] = 'EzPortal Yönet';
+$txt['permissionhelp_ezportal_manage'] = 'EzPortal üzerinde tam kontrol sağlar';
+$txt['cannot_ezportal_manage'] = 'EzPortal yönetme izniniz yok.';
+
+$txt['whoall_forum'] = '<a href="' . $scripturl . '">' . $context['forum_name'] . '</a>\'daki indeksi görüntülüyor.';
+
+
+// END EzPortal Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.portuguese_pt.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Fórum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Configurações';
+$txt['ezportal_block_manager'] = 'Gerenciador ezBlock';
+$txt['ezportal_page_manager'] = 'Gerenciador de páginas';
+
+$txt['ezp_settings'] = 'Configurações';
+$txt['ezp_modules'] = 'Módulos';
+$txt['ezp_blocks'] = 'ezBlocks';
+$txt['ezp_pagemanager'] = 'Gerenciador de páginas';
+$txt['ezp_import'] = 'Importar';
+$txt['ezp_txt_ordercopyright'] = 'Solicitar remoção de copyright';
+$txt['ezp_download_blocks'] = 'Download ezBlocks';
+$txt['ezp_installed_blocks'] = 'ezBlocks instalados';
+$txt['ezp_txt_copyrightremoval'] = 'Remoção de Copyright';
+$txt['ezp_credits'] = 'Créditos';
+
+// Permissões
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+$txt['permissiongroup_simple_ezportal'] = 'Use o EzPortal';
+
+$txt['permissionname_ezportal_page'] = 'Gerenciar páginas';
+$txt['permissionhelp_ezportal_page'] = 'Permite adição, edição e remoção de páginas.';
+$txt['cannot_ezportal_page'] = 'Você não tem permissão para gerenciar páginas do EzPortal.';
+
+$txt['permissionname_ezportal_blocks'] = 'Gerenciar ezBlocks';
+$txt['permissionhelp_ezportal_blocks'] = 'Permite adição, edição e remoção de ezBlocks.';
+$txt['cannot_ezportal_blocks'] = 'Você não tem permissão para gerenciar ezBlocks.';
+
+
+$txt['permissionname_ezportal_manage'] = 'Administrar EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Permite controle total do EzPortal';
+$txt['cannot_ezportal_manage'] = 'Você não tem permissão para gerenciar EzPortal.';
+
+
+$txt['whoall_forum'] = 'Visualizando o índice de <a href="' . $scripturl . '">' . $context['forum_name'] . '</a>.';
+
+// END EzPortal Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.spanish_es.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Foro';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Configuraciones';
+$txt['ezportal_block_manager'] = 'Administrador de ezBlock';
+$txt['ezportal_page_manager'] = 'Administrador de Páginas';
+
+$txt['ezp_settings'] = 'Configuraciones';
+$txt['ezp_modules'] = 'Módulos';
+$txt['ezp_blocks'] = 'ezBlocks';
+$txt['ezp_pagemanager'] = 'Administrador de Páginas';
+$txt['ezp_import'] = 'Importar';
+$txt['ezp_txt_ordercopyright'] = 'Ordenar la Eliminación de Derechos de Autor';
+$txt['ezp_download_blocks'] = 'Descargar ezBlocks';
+$txt['ezp_installed_blocks'] = 'ezBlocks Instalados';
+$txt['ezp_txt_copyrightremoval'] = 'Eliminación de Derechos de Autor';
+$txt['ezp_credits'] = 'Créditos';
+
+// Permisos
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+$txt['permissiongroup_simple_ezportal'] = 'Usar EzPortal';
+
+$txt['permissionname_ezportal_page'] = 'Administrar Páginas';
+$txt['permissionhelp_ezportal_page'] = 'Permite añadir, editar y eliminar páginas.';
+$txt['cannot_ezportal_page'] = 'No tienes permiso para administrar páginas de EzPortal.';
+
+$txt['permissionname_ezportal_blocks'] = 'Administrar ezBlocks';
+$txt['permissionhelp_ezportal_blocks'] = 'Permite añadir, editar y eliminar ezBlocks.';
+$txt['cannot_ezportal_blocks'] = 'No tienes permiso para administrar ezBlocks.';
+
+
+$txt['permissionname_ezportal_manage'] = 'Administrar EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Permite el control total de EzPortal';
+$txt['cannot_ezportal_manage'] = 'No tienes permiso para administrar EzPortal.';
+
+
+$txt['whoall_forum'] = 'Viendo el índice de <a href="' . $scripturl . '">' . $context['forum_name'] . '</a>.';
+
+// END EzPortal Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+
+<file name="$languagedir/Modifications.german.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Forum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Einstellungen';
+$txt['ezportal_block_manager'] = 'ezBlock Manager';
+$txt['ezportal_page_manager'] = 'Seitenmanager';
+
+$txt['ezp_settings'] = 'Einstellungen';
+$txt['ezp_modules'] = 'Module';
+$txt['ezp_blocks'] = 'ezBlöcke';
+$txt['ezp_pagemanager'] = 'Seitenmanager';
+$txt['ezp_import'] = 'Import';
+$txt['ezp_txt_ordercopyright'] = 'Urheberrecht Entfernung bestellen';
+$txt['ezp_download_blocks'] = 'Download ezBlöcke';
+$txt['ezp_installed_blocks'] = 'Installierte ezBlöcke';
+$txt['ezp_txt_copyrightremoval'] = 'Urheberrecht Entfernung';
+$txt['ezp_credits'] = 'Guthaben';
+
+// Berechtigungen
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+$txt['permissiongroup_simple_ezportal'] = 'EzPortal benutzen';
+
+$txt['permissionname_ezportal_page'] = 'Seiten verwalten';
+$txt['permissionhelp_ezportal_page'] = 'Ermöglicht das Hinzufügen, Bearbeiten und Löschen von Seiten.';
+$txt['cannot_ezportal_page'] = 'Sie sind nicht berechtigt, EzPortal-Seiten zu verwalten.';
+
+$txt['permissionname_ezportal_blocks'] = 'ezBlöcke verwalten';
+$txt['permissionhelp_ezportal_blocks'] = 'Ermöglicht das Hinzufügen, Bearbeiten und Löschen von ezBlöcken.';
+$txt['cannot_ezportal_blocks'] = 'Sie sind nicht berechtigt, ezBlöcke zu verwalten.';
+
+
+$txt['permissionname_ezportal_manage'] = 'Admin EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Ermöglicht die volle Kontrolle über EzPortal';
+$txt['cannot_ezportal_manage'] = 'Sie sind nicht berechtigt, EzPortal zu verwalten.';
+
+
+$txt['whoall_forum'] = 'Betrachtet das Verzeichnis von <a href="' . $scripturl . '">' . $context['forum_name'] . '</a>.';
+
+// END EzPortal Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Modifications.french.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Forum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Paramètres';
+$txt['ezportal_block_manager'] = 'Gestionnaire ezBlock';
+$txt['ezportal_page_manager'] = 'Gestionnaire de Page';
+
+$txt['ezp_settings'] = 'Paramètres';
+$txt['ezp_modules'] = 'Modules';
+$txt['ezp_blocks'] = 'ezBlocks';
+$txt['ezp_pagemanager'] = 'Gestionnaire de Page';
+$txt['ezp_import'] = 'Importer';
+$txt['ezp_txt_ordercopyright'] = 'Commander la suppression des droits d\'auteur';
+$txt['ezp_download_blocks'] = 'Télécharger ezBlocks';
+$txt['ezp_installed_blocks'] = 'ezBlocks installés';
+$txt['ezp_txt_copyrightremoval'] = 'Suppression des droits d\'auteur';
+$txt['ezp_credits'] = 'Crédits';
+
+// Permissions
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+$txt['permissiongroup_simple_ezportal'] = 'Utiliser EzPortal';
+
+$txt['permissionname_ezportal_page'] = 'Gérer les Pages';
+$txt['permissionhelp_ezportal_page'] = 'Permet l\'ajout, la modification et la suppression de pages.';
+$txt['cannot_ezportal_page'] = 'Vous n\'êtes pas autorisé à gérer les pages EzPortal.';
+
+$txt['permissionname_ezportal_blocks'] = 'Gérer ezBlocks';
+$txt['permissionhelp_ezportal_blocks'] = 'Permet l\'ajout, la modification et la suppression de ezBlocks.';
+$txt['cannot_ezportal_blocks'] = 'Vous n\'êtes pas autorisé à gérer les ezBlocks.';
+
+$txt['permissionname_ezportal_manage'] = 'Admin EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Permet le contrôle total d\'EzPortal';
+$txt['cannot_ezportal_manage'] = 'Vous n\'êtes pas autorisé à gérer EzPortal.';
+
+$txt['whoall_forum'] = 'Consultation de l\'index de <a href="' . $scripturl . '">' . $context['forum_name'] . '</a>.';
+
+// END EzPortal Text Strings
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$languagedir/Modifications.dutch.php" error="skip">
+	<operation>
+		<search position="end" />
+		<add><![CDATA[
+// Begin EzPortal Text Strings
+$txt['ezp_forum_tab'] = 'Forum';
+$txt['ezportal_admin'] = 'EzPortal';
+$txt['ezportal_settings'] = 'Instellingen';
+$txt['ezportal_block_manager'] = 'ezBlock Manager';
+$txt['ezportal_page_manager'] = 'Pagina Manager';
+
+$txt['ezp_settings'] = 'Instellingen';
+$txt['ezp_modules'] = 'Modules';
+$txt['ezp_blocks'] = 'ezBlocks';
+$txt['ezp_pagemanager'] = 'Pagina Manager';
+$txt['ezp_import'] = 'Importeren';
+$txt['ezp_txt_ordercopyright'] = 'Bestel Copyright Verwijdering';
+$txt['ezp_download_blocks'] = 'Download ezBlocks';
+$txt['ezp_installed_blocks'] = 'Geïnstalleerde ezBlocks';
+$txt['ezp_txt_copyrightremoval'] = 'Copyright Verwijdering';
+$txt['ezp_credits'] = 'Credits';
+
+// Permissies
+$txt['permissiongroup_ezportal'] = 'EzPortal';
+$txt['permissiongroup_simple_ezportal'] = 'Gebruik EzPortal';
+
+$txt['permissionname_ezportal_page'] = 'Beheer Pagina’s';
+$txt['permissionhelp_ezportal_page'] = 'Staat het toevoegen, bewerken en verwijderen van pagina’s toe.';
+$txt['cannot_ezportal_page'] = 'U heeft geen toestemming om de EzPortal pagina’s te beheren.';
+
+$txt['permissionname_ezportal_blocks'] = 'Beheer ezBlocks';
+$txt['permissionhelp_ezportal_blocks'] = 'Staat het toevoegen, bewerken en verwijderen van ezBlocks toe.';
+$txt['cannot_ezportal_blocks'] = 'U heeft geen toestemming om ezBlocks te beheren.';
+
+$txt['permissionname_ezportal_manage'] = 'Beheer EzPortal';
+$txt['permissionhelp_ezportal_manage'] = 'Staat volledige controle over EzPortal toe.';
+$txt['cannot_ezportal_manage'] = 'U heeft geen toestemming om EzPortal te beheren.';
+
+$txt['wieall_forum'] = 'Bekijkt de index van <a href="' . $scripturl . '">' . $context['forum_naam'] . '</a>.';
+
+// END EzPortal Text Strings
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Who.english.php">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin EzPortal
+$txt['whoall_forum'] = 'Viewing the index of <a href="' . $scripturl . '">' . $context['forum_name'] . '</a>.';
+// END EzPortal Strings			
+]]></add>
+	</operation>
+</file>
+
+<file name="$languagedir/Who.english-utf8.php" error="skip">
+	<operation error="ignore">
+		<search position="after"><![CDATA[?>]]></search>
+		<add><![CDATA[
+// Begin EzPortal
+$txt['whoall_forum'] = 'Viewing the index of <a href="' . $scripturl . '">' . $context['forum_name'] . '</a>.';
+// END EzPortal Strings			
+]]></add>
+	</operation>
+</file>
+
+
+<file name="$boarddir/index.php">
+	<operation>
+		<search position="before"><![CDATA[
+		'editpoll2' => array('Poll.php', 'EditPoll2'),]]></search>
+		<add><![CDATA[
+		'ezportal' => array('EzPortal.php', 'EzPortalMain'),
+		 'forum' => array('BoardIndex.php', 'BoardIndex'),
+		]]></add>
+	</operation>
+	<operation>
+		<search position="replace"><![CDATA[// Load the current user's permissions.
+	loadPermissions();]]></search>
+		<add><![CDATA[// Load the current user's permissions.
+	loadPermissions();
+	
+	// Setup EzPortal
+	require_once($sourcedir . '/EzPortal.php');
+	SetupEzPortal();
+	
+	]]></add>
+	</operation>	
+<operation>
+		<search position="replace"><![CDATA[// Action and board are both empty... BoardIndex!
+		if (empty($board) && empty($topic))
+		{
+			require_once($sourcedir . '/BoardIndex.php');
+			return 'BoardIndex';
+		}
+		// Topic is empty, and action is empty.... MessageIndex!]]></search>
+		<add><![CDATA[
+		// EzPortal
+		global $ezpSettings;
+		if ($ezpSettings['ezp_portal_enable'] == 1 && empty($board) && empty($topic))
+		{
+
+
+			    if (!empty($ezpSettings['ezp_disablemobiledevices']))
+			    {
+
+				    $user_agents = array(
+						array('iPhone', 'iphone'),
+						array('iPod', 'ipod'),
+						array('PocketIE', 'iemobile'),
+						array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ? $_SERVER['HTTP_X_OPERAMINI_PHONE_UA'] : "Opera Mini"),
+						array('Opera Mobile', 'Opera Mobi'),
+						array('Android', 'android'),
+						array('Symbian', 'symbian'),
+						array('BlackBerry', 'blackberry'),
+						array('BlackBerry Storm', 'blackberry05'),
+						array('Palm', 'palm'),
+						array('Web OS', 'webos'),
+					);
+
+					foreach ($user_agents as $ua)
+					{
+						$string = (string) $ua[1];
+						
+						if (!empty($string))
+						if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string)))
+						{
+							require_once($sourcedir . '/BoardIndex.php');
+							return 'BoardIndex';
+						}
+
+					}
+			    }
+
+
+					require_once($sourcedir . '/EzPortal.php');
+					return 'EzPortalForumHomePage';
+		}
+		
+		
+		// Action and board are both empty... BoardIndex!
+		if (empty($board) && empty($topic))
+		{
+			require_once($sourcedir . '/BoardIndex.php');
+			return 'BoardIndex';
+		}
+		// Topic is empty, and action is empty.... MessageIndex!
+		
+
+	
+	]]></add>
+	</operation>
+	
+	
+</file>
+<file name="$sourcedir/Subs.php">
+	<operation>
+		<search position="before"><![CDATA[// Admin area 'Forum'.]]></search>
+	<add><![CDATA[
+	// EzPortal Admin
+	if (allowedTo(array('ezportal_page', 'ezportal_blocks', 'ezportal_manage')))
+	{
+		$context['admin_areas']['ezportal'] = array(
+			'title' => $txt['ezportal_admin'],
+			'areas' => array()
+		);
+
+		if (allowedTo('ezportal_manage'))
+			$context['admin_areas']['ezportal']['areas']['ezportal_admin'] =  '<a href="' . $scripturl . '?action=ezportal;sa=settings;sesc=' . $sc . '">' . $txt['ezportal_settings'] . '</a>';
+
+		if (allowedTo('ezportal_blocks') || allowedTo('ezportal_manage'))
+			$context['admin_areas']['ezportal']['areas']['ezportal_blocks'] = '<a href="' . $scripturl . '?action=ezportal;sa=blocks;sesc=' . $sc . '">' . $txt['ezportal_block_manager'] . '</a>';
+
+		if (allowedTo('ezportal_page') || allowedTo('ezportal_manage'))
+			$context['admin_areas']['ezportal']['areas']['ezportal_pages'] = '<a href="' . $scripturl . '?action=ezportal;sa=pagemanager;sesc=' . $sc . '">' . $txt['ezportal_page_manager'] . '</a>';
+	}
+
+	// End EzPortal Admin
+	
+]]></add>
+	</operation>
+	
+	<operation>
+		<search position="replace"><![CDATA[$context['allow_admin'] = allowedTo(array(]]></search>
+	<add><![CDATA[$context['allow_admin'] = allowedTo(array('ezportal_manage','ezportal_blocks','ezportal_page', ]]></add>
+	</operation>
+	
+</file>
+<file name="$sourcedir/ManagePermissions.php">
+	<operation>
+		<search position="before"><![CDATA['pm' => array(
+				'pm_read' => false,
+				'pm_send' => false,
+			),]]></search>
+		<add><![CDATA[
+'ezportal' => array(
+				'ezportal_page' => false,
+				'ezportal_blocks' => false,
+				'ezportal_manage' => false,
+			),]]></add>
+	</operation>
+</file>
+
+<file name="$themedir/index.template.php">
+	<operation>
+		<search position="before"><![CDATA[$current_action = 'admin';
+	if (in_array($context['current_action'], array(]]></search>
+		<add><![CDATA['forum',]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[// Are we using right-to-left orientation?]]></search>
+		<add><![CDATA[
+		
+	// EzPortal
+	if (isset($context['current_action2']))
+		$current_action = $context['current_action2'];
+		
+		]]></add>
+	</operation>
+	<operation>
+		<search position="after"><![CDATA[// Show the [help] button.]]></search>
+		<add><![CDATA[
+		
+	// EzPortal Forum Button
+	global $ezpSettings;
+		
+	if ($ezpSettings['ezp_portal_enable'] == 1)
+		echo ($current_action == 'forum' || $context['browser']['is_ie4']) ? '<td class="maintab_active_' . $first . '">&nbsp;</td>' : '' , '
+			<td valign="top" class="maintab_' , $current_action == 'forum' ? 'active_back' : 'back' , '">
+				<a href="', $scripturl, '?action=forum">' , $txt['ezp_forum_tab'] , '</a>
+			</td>' , $current_action == 'forum' ? '<td class="maintab_active_' . $last . '">&nbsp;</td>' : '';
+		]]></add>
+	</operation>
+</file>
+
+<file name="$sourcedir/Load.php">
+	<operation  error="ignore">
+		<search position="replace"><![CDATA[// Set the top level linktree up.
+	array_unshift($context['linktree'], array(
+		'url' => &$scripturl,
+		'name' => &$context['forum_name']
+	));]]></search>
+		<add><![CDATA[// Removed old link tree Part EzPortal]]></add>
+	</operation>
+
+	
+	
+	<operation>
+		<search position="replace"><![CDATA[// Compatibility.
+	if (!isset($settings['theme_version']))
+		$modSettings['memberCount'] = $modSettings['totalMembers'];]]></search>
+		<add><![CDATA[
+// Compatibility.
+	if (!isset($settings['theme_version']))
+		$modSettings['memberCount'] = $modSettings['totalMembers'];
+		
+	 global $ezpSettings;
+				
+// Set the top level linktree up.
+   array_unshift($context['linktree'], array(
+      'url' => &$scripturl,
+      'name' => &$context['forum_name']
+   ), array('url' => $scripturl . '?action=forum', 'name' => $txt['ezp_forum_tab']));]]></add>
+	</operation>
+</file>
+
+
+<file name="$sourcedir/Admin.php">
+	<operation>
+		<search position="before"><![CDATA[// You have to be able to do at least one of the below to see this page.
+	isAllowedTo(array(]]></search>
+		<add><![CDATA['ezportal_page', 'ezportal_blocks', 'ezportal_manage',]]></add>
+	</operation>
+</file>
+
+</modification>

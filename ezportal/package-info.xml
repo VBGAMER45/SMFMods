@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:ezportal</id>
+	<name>EzPortal</name>
+	<type>modification</type>
+	<version>5.6</version>
+	
+	
+	<upgrade from="all" for="1.1 - 1.1.99">
+		<redirect url="?action=ezportal;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<require-file name="EzPortal.php" destination="$sourcedir" />
+		<require-file name="Subs-EzPortal-Convert.php" destination="$sourcedir" />
+		<require-file name="Subs-EzPortalMain.php" destination="$sourcedir" />
+		<require-file name="Subs-EzPortalRSS.php" destination="$sourcedir" />
+		<require-file name="EzPortal.template.php" destination="$themedir" />
+		<require-file name="EzPortal.english.php" destination="$languagedir" />
+		<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />c
+
+		<require-dir name="ezportal" destination="$boarddir" />
+		<code>EzPortalInstall.php</code>
+		
+	</upgrade>
+
+	<install for="1.1 - 1.1.99">
+		<redirect url="?action=ezportal;sa=settings">redirect.txt</redirect>
+		<readme>ReadMe.txt</readme>
+		<modification type="file">ezportal.xml</modification>
+		<require-file name="EzPortal.php" destination="$sourcedir" />
+		<require-file name="Subs-EzPortal-Convert.php" destination="$sourcedir" />
+		<require-file name="Subs-EzPortalMain.php" destination="$sourcedir" />
+		<require-file name="Subs-EzPortalRSS.php" destination="$sourcedir" />
+		<require-file name="EzPortal.template.php" destination="$themedir" />
+		<require-file name="EzPortal.english.php" destination="$languagedir" />
+		<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+		<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+		<require-file name="EzPortal.french.php" destination="$languagedir" />
+		<require-file name="EzPortal.german.php" destination="$languagedir" />
+		<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+		<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+		<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+		<require-dir name="ezportal" destination="$boarddir" />
+		<code>EzPortalInstall.php</code>
+		
+	</install>
+	
+	
+
+	<uninstall for="1.1 - 1.1.99">
+		<modification type="file" reverse="true">ezportal.xml</modification>
+		<remove-file name="$sourcedir/EzPortal.php" />
+		<remove-file name="$sourcedir/Subs-EzPortalMain.php" />
+		<remove-file name="$sourcedir/Subs-EzPortalRSS.php" />
+		<remove-file name="$sourcedir/Subs-EzPortal-Convert.php" />
+		<remove-file name="$themedir/EzPortal.template.php" />
+		<remove-file name="$languagedir/EzPortal.english.php" />
+		<remove-file name="$languagedir/EzPortal.english-utf8.php" />
+		<code>EzPortalUnInstall.php</code>
+	</uninstall>
+	
+	
+	
+	
+		<install for="2.0 RC2">
+			<redirect url="?action=admin;area=ezpsettings;sa=settings">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<modification type="file">ezportal2rc2.xml</modification>
+			<require-file name="EzPortal2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortal-Convert2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortalMain2.php" destination="$sourcedir" />
+			<require-file name="EzPortal2.template.php" destination="$themedir" />
+			<require-file name="EzPortal.english.php" destination="$languagedir" />
+			<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+			<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+			<require-file name="EzPortal.french.php" destination="$languagedir" />
+			<require-file name="EzPortal.german.php" destination="$languagedir" />
+			<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+			<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+			<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+			<require-file name="Subs-EzPortalRSS2.php" destination="$sourcedir" />
+			<require-dir name="ezportal" destination="$boarddir" />
+			<code>EzPortalInstall2.php</code>
+		
+		</install>
+		<uninstall for="2.0 RC2">
+			<modification type="file" reverse="true">ezportal2rc2.xml</modification>
+			<remove-file name="$sourcedir/EzPortal2.php" />
+			<remove-file name="$sourcedir/Subs-EzPortalMain2.php" />
+			<remove-file name="$sourcedir/Subs-EzPortal-Convert2.php" />
+			<remove-file name="$themedir/EzPortal2.template.php" />
+			<remove-file name="$languagedir/EzPortal.english.php" />
+			<remove-file name="$languagedir/EzPortal.english-utf8.php" />
+			<remove-file name="$sourcedir/Subs-EzPortalRSS2.php" />
+			<code>EzPortalUnInstall.php</code>
+		</uninstall>
+		<upgrade from="all" for="2.0 RC2">
+			<redirect url="?action=admin;area=ezpsettings;sa=settings">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<require-file name="EzPortal2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortal-Convert2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortalMain2.php" destination="$sourcedir" />
+			<require-file name="EzPortal2.template.php" destination="$themedir" />
+			<require-file name="EzPortal.english.php" destination="$languagedir" />
+			<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+			<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+			<require-file name="EzPortal.french.php" destination="$languagedir" />
+			<require-file name="EzPortal.german.php" destination="$languagedir" />
+			<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+			<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+			<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+			<require-file name="Subs-EzPortalRSS2.php" destination="$sourcedir" />
+			<require-dir name="ezportal" destination="$boarddir" />
+			<code>EzPortalInstall2.php</code>
+	</upgrade>	
+	
+
+		<install for="2.0 - 2.0.99,2.0 RC3,2.0 RC4,2.0 RC5">
+			<redirect url="?action=admin;area=ezpsettings;sa=settings">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<modification type="file">ezportal2rc3.xml</modification>
+			<require-file name="EzPortal2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortal-Convert2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortalMain2.php" destination="$sourcedir" />
+			<require-file name="EzPortalHooks.php" destination="$sourcedir" />
+			<require-file name="EzPortal2.template.php" destination="$themedir" />
+			<require-file name="EzPortal2r.template.php" destination="$themedir" />
+			<require-file name="ezportal.css" destination="$themedir/css" />
+			<require-file name="EzPortal.english.php" destination="$languagedir" />
+			<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+			<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+			<require-file name="EzPortal.french.php" destination="$languagedir" />
+			<require-file name="EzPortal.german.php" destination="$languagedir" />
+			<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+			<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+			<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+			<require-file name="Subs-EzPortalRSS2.php" destination="$sourcedir" />
+			<require-dir name="ezportal" destination="$boarddir" />
+			<code>EzPortalInstall2.php</code>
+			<code>dohooks20.php</code>
+		
+		</install>
+		<uninstall for="2.0 - 2.0.99,2.0 RC3,2.0 RC4,2.0 RC5">
+			<modification type="file" reverse="true">ezportal2rc3.xml</modification>
+			<remove-file name="$sourcedir/EzPortal2.php" />
+			<remove-file name="$sourcedir/Subs-EzPortalMain2.php" />
+			<remove-file name="$sourcedir/Subs-EzPortal-Convert2.php" />
+			<remove-file name="$sourcedir/EzPortalHooks.php" />
+			<remove-file name="$themedir/EzPortal2.template.php" />
+			<remove-file name="$themedir/EzPortal2r.template.php" />
+			<remove-file name="$themedir/css/ezportal.css" />
+			<remove-file name="$languagedir/EzPortal.english.php" />
+			<remove-file name="$languagedir/EzPortal.english-utf8.php" />
+			<remove-file name="$sourcedir/Subs-EzPortalRSS2.php" />
+			<code>EzPortalUnInstall.php</code>
+			<code>dohooks20.php</code>
+		</uninstall>
+		<upgrade from="all" for="2.0 - 2.0.99,2.0 RC3,2.0 RC4,2.0 RC5">
+			<redirect url="?action=admin;area=ezpsettings;sa=settings">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<require-file name="EzPortal2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortal-Convert2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortalMain2.php" destination="$sourcedir" />
+			<require-file name="EzPortalHooks.php" destination="$sourcedir" />
+			<require-file name="EzPortal2.template.php" destination="$themedir" />
+			<require-file name="EzPortal2r.template.php" destination="$themedir" />
+			<require-file name="ezportal.css" destination="$themedir/css" />
+			<require-file name="EzPortal.english.php" destination="$languagedir" />
+			<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+			<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+			<require-file name="EzPortal.french.php" destination="$languagedir" />
+			<require-file name="EzPortal.german.php" destination="$languagedir" />
+			<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+			<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+			<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+			<require-file name="Subs-EzPortalRSS2.php" destination="$sourcedir" />
+			<require-dir name="ezportal" destination="$boarddir" />
+			<code>EzPortalInstall2.php</code>
+			<code>dohooks20.php</code>
+	</upgrade>
+	
+	
+	
+<install for="2.1 - 2.1.99,2.1 Beta 1, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+			<redirect url="?action=admin;area=ezpsettings;sa=settings">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<modification type="file">ezportabeta2.1.xml</modification>
+			<require-file name="EzPortal2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortal-Convert2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortalMain2.php" destination="$sourcedir" />
+			<require-file name="EzPortalHooks.php" destination="$sourcedir" />
+			<require-file name="ezportal2.1.css" destination="$themedir/css" />
+			<require-file name="EzPortal2.1.template.php" destination="$themedir" />
+			<require-file name="EzPortal.english.php" destination="$languagedir" />
+			<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+			<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+			<require-file name="EzPortal.french.php" destination="$languagedir" />
+			<require-file name="EzPortal.german.php" destination="$languagedir" />
+			<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+			<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+			<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+			<require-file name="Subs-EzPortalRSS2.php" destination="$sourcedir" />
+			<require-dir name="ezportal" destination="$boarddir" />
+			<require-file name="ezportal.png" destination="$imagesdir/admin" />
+			<require-file name="forum.png" destination="$imagesdir" />
+			<require-file name="page.png" destination="$imagesdir" />
+			<code>dohooks.php</code>
+			<code>EzPortalInstall2.php</code>
+		
+		</install>
+		<uninstall for="2.1 - 2.1.99,2.1 Beta 1, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+			<modification type="file" reverse="true">ezportabeta2.1.xml</modification>
+			<remove-file name="$sourcedir/EzPortal2.php" />
+			<remove-file name="$sourcedir/Subs-EzPortalMain2.php" />
+			<remove-file name="$sourcedir/Subs-EzPortal-Convert2.php" />
+			<remove-file name="$sourcedir/EzPortalHooks.php" />
+			<remove-file name="$themedir/EzPortal2.1.template.php" />
+			<remove-file name="$languagedir/EzPortal.english.php" />
+			<remove-file name="$languagedir/EzPortal.english-utf8.php" />
+			<remove-file name="$sourcedir/Subs-EzPortalRSS2.php" />
+			<code>dohooks.php</code>
+			<code>EzPortalUnInstall.php</code>
+		</uninstall>
+		<upgrade from="all" for="2.1 - 2.1.99, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+			<redirect url="?action=admin;area=ezpsettings;sa=settings">redirect.txt</redirect>
+			<readme>ReadMe.txt</readme>
+			<require-file name="EzPortal2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortal-Convert2.php" destination="$sourcedir" />
+			<require-file name="Subs-EzPortalMain2.php" destination="$sourcedir" />
+			<require-file name="EzPortalHooks.php" destination="$sourcedir" />
+			<require-file name="EzPortal2.1.template.php" destination="$themedir" />
+			<require-file name="EzPortal.english.php" destination="$languagedir" />
+			<require-file name="EzPortal.english-utf8.php" destination="$languagedir" />
+			<require-file name="EzPortal.dutch.php" destination="$languagedir" />
+			<require-file name="EzPortal.french.php" destination="$languagedir" />
+			<require-file name="EzPortal.german.php" destination="$languagedir" />
+			<require-file name="EzPortal.spanish_es.php" destination="$languagedir" />
+			<require-file name="EzPortal.portuguese_pt.php" destination="$languagedir" />
+			<require-file name="EzPortal.turkish.php" destination="$languagedir" />
+			<require-file name="Subs-EzPortalRSS2.php" destination="$sourcedir" />
+			<require-file name="ezportal2.1.css" destination="$themedir/css" />
+			<require-dir name="ezportal" destination="$boarddir" />
+			<require-file name="ezportal.png" destination="$imagesdir/admin" />
+			<require-file name="forum.png" destination="$imagesdir" />
+			<require-file name="page.png" destination="$imagesdir" />
+			<code>EzPortalInstall2.php</code>
+			<code>dohooks.php</code>
+	</upgrade>
+
+</package-info>

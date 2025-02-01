@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE block-info SYSTEM "http://www.ezportal.com/xml/block-info">
+<block-info xmlns="http://www.ezportal.com/xml/block-info" xmlns:ezportal="http://www.ezportal.com/">
+<id>vbgamer45:exampleblock</id>
+<title>Example Block</title>
+<version>1.1</version>
+<blocktype>php</blocktype>
+<forumversion>SMF 1.1.x</forumversion>
+<author>vbgamer45</author>
+<website>http://www.ezportal.com</website>
+<editable>1</editable>
+<can_cache>1</can_cache>
+<parameter1>
+	<type>string</type>
+	<required>1</required>
+	<default>John</default>
+	<title>First Name</title>
+	<order>3</order>
+</parameter1>
+<parameter2>
+	<type>string</type>
+	<required>0</required>
+	<default>Smith</default>
+	<title>Last Name</title>
+	<order>2</order>
+</parameter2>
+<parameter3>
+	<type>checkbox</type>
+	<required>0</required>
+	<default>1</default>
+	<title>This is a checkbox</title>
+	<order>1</order>
+</parameter3>
+
+<parameter4>
+	<type>select</type>
+	<required>0</required>
+	<title>Select Test</title>
+	<selectvalues>Each,Value,Seperate,By,Comma,Example,Red,Green,Blue</selectvalues>
+	<order>4</order>
+</parameter4>
+<blockdata><![CDATA[echo '<b>My Awesome EzPortal ezBlock</b> My Name is ' . $parameter1 . ' ' . $parameter2;]]></blockdata>
+
+</block-info>

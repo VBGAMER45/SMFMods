@@ -1,0 +1,64 @@
+#ezPortal {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	white-space: normal;
+}
+
+#ezPortal > * {
+	flex: 1 100%;
+	white-space: normal;
+}
+#column1, #column3 {
+	flex: 1;
+	white-space: normal;
+	min-width: 0;
+}
+#column2, #ezCenter {
+	flex: 2 0px;
+	white-space: normal;
+	min-width: 0;
+}
+/* Hide if its empty */
+#ezCenter:empty {
+	display: none;
+}
+/* Give some space */
+#column4 {
+	margin: 0 0 10px 0;
+	white-space: normal;
+	min-width: 0;
+}
+#column1 {
+	padding: 0 5px 0 0;
+	white-space: normal;
+	min-width: 0;
+}
+#column3 {
+	padding: 0 0 0 5px;
+	white-space: normal;
+	min-width: 0;
+}
+/* Blocks needs some space */
+div[id^="block"] {
+	margin: 0 0 5px 0;
+}
+
+/* SMF 2.1 */
+dl#ezPortal_admin dt {
+	width: 25%;
+	font-weight: bold;
+}
+dl#ezPortal_admin dd {
+	width: 75%;
+}
+
+@media (max-width: 480px) {
+	#ezPortal > div {
+		display: block;
+		width: 100% !important; /* Ignore user specific width */
+		margin: 0 0 10px 0;
+		padding: 0;
+		white-space: normal;
+	}
+}
