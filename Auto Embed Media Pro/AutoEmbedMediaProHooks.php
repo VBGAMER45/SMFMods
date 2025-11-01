@@ -6,7 +6,7 @@ by:vbgamer45
 https://www.smfhacks.com
 
 License Information:
-Links to http://www.smfhacks.com must remain unless
+Links to https://www.smfhacks.com must remain unless
 branding free option is purchased.
 */
 if (!defined('SMF'))

@@ -671,6 +671,10 @@ $txt['whoall_forum'] = 'Viewing the index of <a href="' . $scripturl . '">' . $c
 					$context['robot_no_index'] = false;	
 				}					
 		}
+
+		if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'forum')
+		  $context['canonical_url'] = $scripturl . '?action=forum';
+
 		// End Ezportal
 		
 		// Retrieve the categories and boards.

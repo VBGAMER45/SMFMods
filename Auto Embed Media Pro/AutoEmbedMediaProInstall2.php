@@ -316,7 +316,7 @@ VALUES
 (70, 'Google Maps', 'http://maps.google.com/', 350,425, 'htt(p|ps)://(maps" . '\\' .'\\' . ".google" . '\\' .'\\' . ".[^" . '"' . ">]+/" . '\\' .'\\' . "w*?" . '\\' .'\\' . "?[^" . '"' . ">]+)','" . '
 <iframe width="480" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="htt$1://$2&output=svembed"></iframe>
 ' . "'),
-(71, 'Youtube Short Url','http://www.youtube.com', 385,640, 'htt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/watch" . '\\' .'\\' . "?v=([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*ZSPLITMZhtt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#" . '\\' .'\\' . "?&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*','" . '<iframe title="YouTube video player" width="480" height="600" src="//www.youtube.com/embed/$2?rel=0&start=$3" frameborder="0" allowFullScreen="true"></iframe>' . "')
+(71, 'Youtube Short Url','http://www.youtube.com', 385,640, 'htt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/watch" . '\\' .'\\' . "?v=([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*ZSPLITMZhtt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#" . '\\' .'\\' . "?&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*ZSPLITMZhtt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/([-a-zA-Z0-9&;+=_]*)" . '\\' .'\\' . "?si=([-a-zA-Z0-9&;+=_]*)','" . '<iframe title="YouTube video player" width="480" height="600" src="//www.youtube.com/embed/$2?rel=0&start=$3" frameborder="0" allowFullScreen="true"></iframe>' . "')
 
 ");
 

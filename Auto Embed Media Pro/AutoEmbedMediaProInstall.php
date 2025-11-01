@@ -303,7 +303,7 @@ VALUES
 (70, 'Google Maps', 'http://maps.google.com/', 350,425, 'htt(p|ps)://(maps" . '\\' .'\\' . ".google" . '\\' .'\\' . ".[^" . '"' . ">]+/" . '\\' .'\\' . "w*?" . '\\' .'\\' . "?[^" . '"' . ">]+)','" . '
 <iframe width="480" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="htt$1://$2&output=svembed"></iframe>
 ' . "'),
-(71, 'Youtube Short Url','http://www.youtube.com', 385,640, 'htt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/watch" . '\\' .'\\' . "?v=([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*ZSPLITMZhtt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#" . '\\' .'\\' . "?&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*','" . '<iframe title="YouTube video player" width="480" height="600" src="//www.youtube.com/embed/$2?rel=0&start=$3" frameborder="0" allowFullScreen="true"></iframe>' . "')
+(71, 'Youtube Short Url','http://www.youtube.com', 385,640, 'htt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/watch" . '\\' .'\\' . "?v=([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*ZSPLITMZhtt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/([-a-zA-Z0-9&;+=_]*)[" . '\\' .'\\' . "w;+=-]*[" . '\\' .'\\' . "#" . '\\' .'\\' . "?&t=]*([" . '\\' .'\\' . "d]*)[&;10wshdq=]*ZSPLITMZhtt(p|ps)://[w" . '\\' .'\\' . ".]*youtu" . '\\' .'\\' . ".be/([-a-zA-Z0-9&;+=_]*)" . '\\' .'\\' . "?si=([-a-zA-Z0-9&;+=_]*)','" . '<iframe title="YouTube video player" width="480" height="600" src="//www.youtube.com/embed/$2?rel=0&start=$3" frameborder="0" allowFullScreen="true"></iframe>' . "')
 
 ", __FILE__, __LINE__);
 
@@ -571,7 +571,7 @@ VALUES
  db_query("REPLACE INTO {$db_prefix}mediapro_sites
 	(ID,title, website, height,width,  regexmatch, embedcode)
 VALUES
-(101, 'Streamable.com','https://streamable.com', 360,640, 'htt(p|ps)://streamable.com/([A-Za-z0-9]*)','" . '<div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.250%;"><iframe src="https://streamable.com/s/$2" frameborder="0" width="100%" height="100%" allowFullScreen="true" style="width: 100%; height: 100%; position: absolute;"></iframe></div>
+(101, 'Streamable.com','https://streamable.com', 360,640, 'htt(p|ps)://streamable.com/([A-Za-z0-9]*)ZSPLITMZhtt(p|ps)://streamable.com/e/([A-Za-z0-9]*)','" . '<div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.250%;"><iframe src="https://streamable.com/s/$2" frameborder="0" width="100%" height="100%" allowFullScreen="true" style="width: 100%; height: 100%; position: absolute;"></iframe></div>
 ' . "'),
 (102, 'imgur','https://imgur.com', 360,640, 'htt(p|ps)://[A-Za-z" . '\\' .'\\' . ".]*imgur.com/([A-Za-z0-9]*)[" . '\\' .'\\' . ".A-Za-z]*','" . '<blockquote class="imgur-embed-pub" lang="en" data-id="$2"></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 ' . "'),
@@ -658,8 +658,8 @@ VALUES
 <script src="https://www.buzzsprout.com/$2/$3-$4.js?player=small"></script>
 
 ' . "'),
-(118, 'TikTok', '', 600,768, 'htt(p|ps)://www.tiktok.com/@([0-9A-Za-z_]*)/video/([0-9]*)','" . '
-<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@$2/video/$3" data-video-id="$3" style="max-width: 768px;min-width: 600px;" > <section> <a target="_blank" title="@$2" href="https://www.tiktok.com/@$2">@$2</a> <p> </p>&nbsp; </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+(118, 'TikTok', '', 600,768, 'htt(p|ps)://([0-9A-Za-z_]*).tiktok.com/@([0-9A-Za-z_]*)/video/([0-9]*)','" . '
+<blockquote class="tiktok-embed" cite="https://$2.tiktok.com/@$3/video/$4" data-video-id="$4" style="max-width: 768px;min-width: 600px;" > <section> <a target="_blank" title="@$3" href="https://$2.tiktok.com/@$3">@$3</a> <p> </p>&nbsp; </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
 ' . "'),
 (119, 'Telegram', '', 600,768, 'htt(p|ps)://t.me/([0-9A-Za-z_]*)/([0-9A-Za-z_]*)ZSPLITMZhtt(p|ps)://telegram.org/([0-9A-Za-z_]*)/([0-9A-Za-z_]*)','" . '
 <blockquote></blockquote><script async src="https://telegram.org/js/telegram-widget.js?8" data-telegram-post="$2/$3" data-width="100%"></script>
@@ -699,7 +699,7 @@ VALUES
 <script async src="https://embed.redditmedia.com/widgets/platform.js" charset="UTF-8"></script>
 
 ' . "'),
-(125, 'Twitch Clips', 'https://twitch.tv/', 378, 620, 'https://clips.twitch.tv/([A-Za-z0-9]*)','" . '<iframe src="https://clips.twitch.tv/embed?clip=$1&parent=#parent#" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>' . "'),
+(125, 'Twitch Clips', 'https://twitch.tv/', 378, 620, 'https://([A-Za-z0-9_]*).twitch.tv/([A-Za-z0-9_\\\-]*)ZSPLITMZhttps://www.twitch.tv/clip/([A-Za-z0-9_]*)/([A-Za-z0-9_\\\-]*)','" . '<iframe src="https://clips.twitch.tv/embed?clip=$2&parent=#parent#" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>' . "'),
 (126, 'GitHub Gist', 'https://github.com',  300, 700, 'https://gist.github.com/([A-Za-z0-9-]*/[A-Za-z0-9]*)','" . '<script src="https://gist.github.com/$1.js"></script>'  . "')
 ", __FILE__, __LINE__);
 
@@ -716,7 +716,7 @@ VALUES
 (129, 'Twitch Clips','https://twitch.tv',378,620, 'https://clips.twitch.tv/([A-Za-z0-9]*)','" . '<iframe src="https://clips.twitch.tv/embed?clip=$1&parent=#parent#" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
 
 ' . "'),
-(130, 'Facebook fb.watch','ttps://fb.watch',378,620, 'https://fb.watch/([A-Za-z0-9]*)/','" . '
+(130, 'Facebook fb.watch','https://fb.watch',378,620, 'https://fb.watch/([A-Za-z0-9]*)/','" . '
 <iframe src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Ffb.watch%2F$1%2F&show_text=false&width=560&t=0" width="560" height="314" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>
 ' . "'),
 (131, 'YouTube Shorts','https://youtube.com',378,620, 'https://www.youtube.com/shorts/([A-Za-z0-9_-]*)ZSPLITMZhttps://youtube.com/shorts/([A-Za-z0-9_-]*)','" . '

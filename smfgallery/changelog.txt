@@ -1,6 +1,13 @@
 SMF Gallery Lite
+9.0.1
+!Minor fix styling for SMF 2.1.x submit buttons now use class="button"
+
+9.0
++Added full support Webp and avif file support requires uninstall of old version for SMF 2.1.x and SMF 2.0.x.
+Does require file edits so mod is no longer fully hook based. Requires PHP 8.1+ with AVIF,WEBP supported enabled in GD
+
 8.0.1
-!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit" 
+!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit"
 
 8.0
 +Changed that the persons name links to their myimages section instead of their main profile.

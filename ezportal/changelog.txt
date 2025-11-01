@@ -1,3 +1,13 @@
+6.0.1
+!Fixed Downloads Pro ezBlock to respect category level permissions.
+
+6.0
+!SEO improvement fixed canonical used for the homepage, custom pages and ?action=forum thanks to shawnb61
+SMF 2.0.x users have to uninstall ezPortal and install new version since requires edit to the Sources/BoardIndex.php
+
+5.7
+!Fixed some database errors with bad inputs, no security issue just handling failure more gracefully. Thanks to Emiliano Febbi
+
 5.6
 +Added Bluesky Feed block
 

@@ -21,3 +21,4 @@ $txt['hcaptcha_public_key'] = 'hCaptcha Site Key';
 $txt['hcaptcha_private_key'] = 'hCaptcha Secret Key';
 $txt['hcaptcha_no_key_question'] = 'Don\'t have a key for hCaptcha?';
 $txt['hcaptcha_get_key'] = 'Get your hCaptcha key here.';
+$txt['error_hcaptcha_verification_code'] = 'Verification failed. Please try again.';

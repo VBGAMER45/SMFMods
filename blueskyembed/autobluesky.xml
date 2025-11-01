@@ -42,29 +42,32 @@ $txt['autobluesky_blankid'] = 'Bluesky error (blank ID)';
 		$context['html_headers'] .=  '
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>';
 	
-	$context['html_headers'] .=  '
-	<script type="text/javascript">
-		$(document).ready(function() {
+		$context['html_headers'] .= '
+		<script type="text/javascript">
+		  $(document).ready(function() {
 
-		var oBluesky = $(\'a[href*="bsky.app"][href*="/profile"]\');
-		if (oBluesky.length > 0) {
-			oBluesky.each(function() {
-				var oHolder = $(this);
-				var sStr = $(this).attr(\'href\');
-				sStr = sStr.split(\'?\')[0];
-				var oStr = sStr;
-				sStr = sStr.replace(/\/+$/, "");
-				sStr = sStr.substr(sStr.lastIndexOf(\'/\') + 1);
-				$.getJSON("' . $boardurl .'/bluesky-cache.php?id=" + sStr + "&url=" + oStr, function(data) {
-					oHolder.before(data.html);
-				});
-			});
-		}
-		
+		    // Only select Bluesky URLs that include "/post/"
+		    var oBluesky = $(\'a[href*="bsky.app"][href*="/post/"]\');
 
+		    if (oBluesky.length) {
+		      oBluesky.each(function() {
+			var oHolder = $(this);
+			// Strip off any query string
+			var href = oHolder.attr(\'href\').split(\'?\')[0];
+			// Grab the ID after "/post/"
+			var postId = href.substring(href.indexOf(\'/post/\') + 6);
+			// Call your cache endpoint
+			$.getJSON(
+			  \'' . $boardurl . '/bluesky-cache.php?id=\' + postId + \'&url=\' + encodeURIComponent(href),
+			  function(data) {
+			    oHolder.before(data.html);
+			  }
+			);
+		      });
+		    }
 
-		});
-	</script>';
+		  });
+		</script>';
 	//end Auto Embed Bluesky
 			]]></add>
 		</operation>

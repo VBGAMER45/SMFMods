@@ -20,7 +20,7 @@ function MediaProMain()
 	isAllowedTo('admin_forum');
 
 	// Hold Current Version
-	$mediaProVersion = '7.0.5';
+	$mediaProVersion = '7.0.6';
 
 	// Load the language files
 	if (loadlanguage('AutoEmbedMediaPro') == false)

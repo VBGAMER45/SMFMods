@@ -1,7 +1,7 @@
 <?php
 /*
 EzPortal
-Version 5.4
+Version 6.0
 by:vbgamer45
 https://www.ezportal.com
 Copyright 2010-2025 https://www.samsonsoftware.com
@@ -11,7 +11,7 @@ function EzPortalMain()
 	global $sourcedir, $ezPortalVersion, $context, $ezpSettings, $boardurl, $boarddir;
 
 	// Hold Current Version
-	$ezPortalVersion = '5.6';
+	$ezPortalVersion = '6.0.1';
 
 	// Subs for EzPortal
 	require_once($sourcedir . '/Subs-EzPortalMain.php');
@@ -659,6 +659,11 @@ function EzPortalEditBlock()
 	WHERE l.id_layout = $block LIMIT 1
 	", __FILE__, __LINE__);
 	$row = mysql_fetch_assoc($dbresult);
+
+	if (empty($row['id_block']))
+		fatal_error($txt['ezp_err_no_block_selected'],false);
+
+
     if (isset($txt[$row['blocktitle']]['title']))
         $row['blocktitle'] = $txt[$row['blocktitle']]['title'];
 	$context['ezp_block_info'] = $row;
@@ -848,6 +853,11 @@ function EzPortalEditBlock2()
 	WHERE l.id_layout = $block LIMIT 1
 	", __FILE__, __LINE__);
 	$row = mysql_fetch_assoc($dbresult);
+
+	if (empty($row['id_block']))
+		fatal_error($txt['ezp_err_no_block_selected'],false);
+
+
 	$context['ezp_block_info'] = $row;
 	mysql_free_result($dbresult);
 

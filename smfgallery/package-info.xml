@@ -5,7 +5,7 @@
 	<id>vbgamer45:smfgallery</id>
 	<name>SMF Gallery Lite</name>
 	<type>modification</type>
-	<version>8.0.1</version>
+	<version>9.0.1</version>
 
 	<install for="1.0 - 1.1.99, 1.1 RC3, 1.1 RC2">
 		<readme>ReadMe.txt</readme>
@@ -108,15 +108,11 @@
 		<code>dohooks.php</code>
 		<code>GalleryUnInstall.php</code>
 	</uninstall>
-	
-	
-	
-	
-	
+
 	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
 		<readme>ReadMe.txt</readme>
 		<code>galleryinstall2.php</code>
-		
+		<modification type="file">smfgallerybeta21.xml</modification>
 		<require-file name="Gallery2.php" destination="$sourcedir" />
 		<require-file name="GalleryHooks.php" destination="$sourcedir" />
 		<require-file name="Gallery2.1.template.php" destination="$themedir" />
@@ -157,6 +153,7 @@
 		
 	</upgrade>
 	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2, 2.1 RC1,2.1 RC2, 2.1 RC3, 2.1 RC4">
+		<modification type="file" reverse="true">smfgallerybeta21.xml</modification>
 		<remove-file name="$sourcedir/Gallery2.php" />
 		<remove-file name="$sourcedir/Subs-ConvertAeva2.php" />
 		<remove-file name="$themedir/Gallery2.1.template.php" />

@@ -258,11 +258,11 @@ SELECT
 	id_cat
 FROM {db_prefix}down_cat");
 while($row = $smcFunc['db_fetch_assoc']($dbresult))
-	UpdateCategoryTotals($row['id_cat']);
+	InstallUpdateCategoryTotals($row['id_cat']);
 
 $smcFunc['db_free_result']($dbresult);
 
-function UpdateCategoryTotals($ID_CAT)
+function InstallUpdateCategoryTotals($ID_CAT)
 {
 	global $smcFunc;
 
@@ -276,7 +276,7 @@ function UpdateCategoryTotals($ID_CAT)
 	$smcFunc['db_free_result']($dbresult);
 
 	// Update the count
-	$dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_cat SET total = $total WHERE ID_CAT = $ID_CAT LIMIT 1");
+	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat SET total = $total WHERE ID_CAT = $ID_CAT LIMIT 1");
 
 }
 

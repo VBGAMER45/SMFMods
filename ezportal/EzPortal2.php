@@ -1,7 +1,7 @@
 <?php
 /*
 EzPortal
-Version 5.4
+Version 6.0
 by:vbgamer45
 https://www.ezportal.com
 Copyright 2010-2025 https://www.samsonsoftware.com
@@ -11,7 +11,7 @@ function EzPortalMain()
 	global $sourcedir, $ezPortalVersion, $context, $ezpSettings, $boardurl, $boarddir, $modSettings;
 
 	// Hold Current Version
-	$ezPortalVersion = '5.5.6';
+	$ezPortalVersion = '6.0.1';
 
 	// Subs for EzPortal
 	require_once($sourcedir . '/Subs-EzPortalMain2.php');
@@ -737,6 +737,11 @@ function EzPortalEditBlock()
 	WHERE l.id_layout = $block LIMIT 1
 	");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+
+	if (empty($row['id_block']))
+		fatal_error($txt['ezp_err_no_block_selected'],false);
+
+
     if (isset($txt[$row['blocktitle']]['title']))
         $row['blocktitle'] = $txt[$row['blocktitle']]['title'];
 
@@ -950,6 +955,10 @@ function EzPortalEditBlock2()
 	WHERE l.id_layout = $block LIMIT 1
 	");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+	if (empty($row['id_block']))
+		fatal_error($txt['ezp_err_no_block_selected'],false);
+
+
 	$context['ezp_block_info'] = $row;
 	$smcFunc['db_free_result']($dbresult);
 
@@ -1161,6 +1170,7 @@ function EzPortalDeleteBlock()
 	FROM {db_prefix}ezp_block_layout
 	WHERE id_layout = " . $context['ezp_block_layout_id'] . " LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+
 	$context['ezp_block_layout_title'] = $row['customtitle'];
 	$smcFunc['db_free_result']($dbresult);
 
@@ -1196,8 +1206,6 @@ function EzPortalDeleteBlock2()
 	$smcFunc['db_query']('', "
 	DELETE FROM {db_prefix}ezp_block_parameters_values
 	WHERE id_layout = " . $blockid);
-
-
 
 	cache_put_data('ezportal_columns', null, 60);
 
@@ -1451,6 +1459,11 @@ function EzPortalEditPage()
 	FROM {db_prefix}ezp_page
 	WHERE id_page = $pageID LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+
+	if (empty($row['id_page']))
+		fatal_error($txt['ezp_err_page_does_not_exist'],false);
+
+
 	$context['ezp_editpage_data'] = $row;
 	$context['ezp_editpage_data']['content'] = html_entity_decode($row['content']);
 
@@ -1487,7 +1500,7 @@ function EzPortalEditPage()
 
 function EzPortalEditPage2()
 {
-	global $smcFunc;
+	global $smcFunc, $txt;
 
 	checkSession();
 
@@ -1507,6 +1520,9 @@ function EzPortalEditPage2()
 	FROM {db_prefix}ezp_page
 	WHERE id_page = $pageID LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+
+	if (empty($row['id_page']))
+		fatal_error($txt['ezp_err_page_does_not_exist'],false);
 
 
 	$pagetitle = $smcFunc['htmlspecialchars']($_REQUEST['pagetitle'],ENT_QUOTES);
@@ -1604,6 +1620,9 @@ function EzPortalDeletePage()
 	FROM {db_prefix}ezp_page
 	WHERE id_page = $pageID LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+	if (empty($row['id_page']))
+		fatal_error($txt['ezp_err_page_does_not_exist'],false);
+
 	$context['ezp_deletepage_data'] = $row;
 	$smcFunc['db_free_result']($dbresult);
 
@@ -1987,7 +2006,7 @@ function EzPortalCollectStats()
 
 function EzPortalViewPage()
 {
-	global $context, $smcFunc, $user_info;
+	global $context, $smcFunc, $user_info, $ezpSettings, $scripturl, $boardurl;
 
 	if (empty($_REQUEST['p']))
 		fatal_lang_error('ezp_err_no_page_selected', false);
@@ -2028,6 +2047,13 @@ function EzPortalViewPage()
 
 	if ($has_Permission == false)
 		fatal_lang_error('ezp_err_no_page_permission', false);
+
+	if ($ezpSettings['ezp_pages_seourls'] == 1)
+	{
+		$context['canonical_url'] = $boardurl . '/pages/' . MakeSEOUrl($row['title']) . '-' . $pageID;
+	}
+	else
+		$context['canonical_url'] = $scripturl . 'action=ezportal;sa=page;p=' . $pageID;
 
 	// Set Page Title
 	$context['page_title'] = $row['title'];
@@ -2097,6 +2123,9 @@ function EzPortalEditColumn()
 	FROM {db_prefix}ezp_columns
 	WHERE id_column = $columnID LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
+	if (empty($row['id_column']))
+		fatal_error($txt['ezp_err_no_column_selected'] ,false);
+
 	$context['ezp_column_data'] = $row;
 	$smcFunc['db_free_result']($dbresult);
 
@@ -2189,7 +2218,7 @@ function EzPortalImportBlock()
 
 function SetupEzPortal()
 {
-	global $sourcedir, $context, $maintenance, $user_info, $ezpSettings, $boarddir, $boardurl, $smcFunc, $settings, $disableEzPortal, $modSettings;
+	global $sourcedir, $context, $maintenance, $user_info, $ezpSettings, $boarddir, $boardurl, $board, $smcFunc, $settings, $disableEzPortal, $modSettings;
 
 	if (function_exists("set_tld_regex"))
 	{
@@ -2556,7 +2585,7 @@ if (!empty($context['linktree']))
 		{
 			$columnBoards = explode(",",$row['visibileboards']);
 
-			if (in_array($_REQUEST['board'],$columnBoards))
+			if (in_array( $board,$columnBoards))
 				$visibleBoard = true;
 		}
 
@@ -2662,7 +2691,7 @@ if (!empty($context['linktree']))
 			{
 				$ezblockBoards = explode(",",$row2['visibileboards']);
 
-				if (in_array($_REQUEST['board'],$ezblockBoards))
+				if (in_array( $board,$ezblockBoards))
 					$visibleBlockBoard = true;
 			}
 
@@ -3066,13 +3095,15 @@ function EzPortalInstalledBlocks()
 
 function EzPortalForumHomePage()
 {
-	global $context, $mbname, $ezpSettings, $modSettings;
+	global $context, $mbname, $ezpSettings, $modSettings, $scripturl;
 
 	// Setup Page Title
 	if (empty($ezpSettings['ezp_portal_homepage_title']))
 		$context['page_title'] = $mbname;
 	else
 		$context['page_title'] = $ezpSettings['ezp_portal_homepage_title'];
+
+	$context['canonical_url'] = $scripturl;
 
     if (function_exists("set_tld_regex"))
     {
@@ -3504,8 +3535,8 @@ function EzPortalAddVisibleAction2()
 	// Check Permission
 	isAllowedTo('ezportal_blocks');
 
-	$actiontitle = $smcFunc['htmlspecialchars']($_REQUEST['actiontitle'],ENT_QUOTES);
-	$newaction = htmlspecialchars($_REQUEST['newaction'],ENT_QUOTES);
+	$actiontitle = $smcFunc['htmlspecialchars'](trim($_REQUEST['actiontitle']),ENT_QUOTES);
+	$newaction = htmlspecialchars(trim($_REQUEST['newaction']),ENT_QUOTES);
 
 	if ($actiontitle == '')
 		fatal_lang_error('ezp_err_actiontitle',false);
@@ -3710,7 +3741,7 @@ function EzPortalMenuAdd2()
 
 	$layoutid = (int) $_REQUEST['layoutid'];
 	$menutitle = $smcFunc['htmlspecialchars']($_REQUEST['menutitle'],ENT_QUOTES);
-	$menulink = $smcFunc['htmlspecialchars']($_REQUEST['menulink'], ENT_QUOTES);
+	$menulink = $smcFunc['htmlspecialchars'](trim($_REQUEST['menulink']), ENT_QUOTES);
 	$newwindow = isset($_REQUEST['newwindow']) ? 1 : 0;
 
 
@@ -3785,7 +3816,6 @@ function EzPortalMenuEdit()
 	$context['page_title'] = $txt['ezp_txt_menu_edit'];
 
 }
-
 function EzPortalMenuEdit2()
 {
 	global $txt, $smcFunc;
@@ -3797,7 +3827,7 @@ function EzPortalMenuEdit2()
 	$layoutid = (int) $_REQUEST['layoutid'];
 	$menuid = (int) $_REQUEST['menuid'];
 	$menutitle = $smcFunc['htmlspecialchars']($_REQUEST['menutitle'],ENT_QUOTES);
-	$menulink = $smcFunc['htmlspecialchars']($_REQUEST['menulink'], ENT_QUOTES);
+	$menulink = $smcFunc['htmlspecialchars'](trim($_REQUEST['menulink']), ENT_QUOTES);
 	$newwindow = isset($_REQUEST['newwindow']) ? 1 : 0;
 	$menuenabled = isset($_REQUEST['menuenabled']) ? 1 : 0;
 
@@ -3921,6 +3951,8 @@ function EzPortalMenuUp()
 	FROM {db_prefix}ezp_menu
 	WHERE id_menu = $id");
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
+	if (empty($row['id_menu']))
+		fatal_error($txt['ezp_err_no_block_selected'] ,false);
 
 	$id_layout = $row['id_layout'];
 	$oldrow = $row['id_order'];
@@ -3976,6 +4008,9 @@ function EzPortalMenuDown()
 	FROM {db_prefix}ezp_menu
 	WHERE id_menu = $id LIMIT 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
+	if (empty($row['id_menu']))
+		fatal_error($txt['ezp_err_no_block_selected'] ,false);
+
 	$id_layout = $row['id_layout'];
 
 	$oldrow = $row['id_order'];
@@ -4204,9 +4239,6 @@ function EzPortalDeleteAllShoutHistory2()
 function EzPortalUpdatePageCount()
 {
 	global $smcFunc;
-
-	$ezportal_menucount = 0;
-
 	$dbresult = $smcFunc['db_query']('', "
 	SELECT
 		COUNT(*) AS total
@@ -4214,7 +4246,7 @@ function EzPortalUpdatePageCount()
 	WHERE showinmenu = 1");
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
-	$ezportal_menucount = $row['total'];
+	$ezportal_menucount = (int) $row['total'];
 
 	    updateSettings(
     	array(

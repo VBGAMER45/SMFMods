@@ -1,10 +1,10 @@
 <?php
 /*
 EzPortal
-Version 5.5
+Version 5.6
 by:vbgamer45
 https://www.ezportal.com
-Copyright 2010-2022 http://www.samsonsoftware.com
+Copyright 2010-2025 https://www.samsonsoftware.com
 */
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:avifwebp</id>
+	<name>Avif and Webp Support</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
+		<readme>ReadMe.txt</readme>
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '8.1');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+?>]]></code>
+		<modification type="file">2.1.xml</modification>
+	</install>
+	<uninstall for="2.1 - 2.1.99,2.1 Beta 1,2.1 Beta 2,2.1 RC1,2.1 RC2,2.1 RC3,2.1 RC4">
+		<modification type="file" reverse="true">2.1.xml</modification>
+	</uninstall>
+
+</package-info>

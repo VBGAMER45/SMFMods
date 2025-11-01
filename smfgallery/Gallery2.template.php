@@ -705,7 +705,7 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp"  />';
+    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />';
 
   if(!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -867,7 +867,7 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp" />';
+    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />';
 
   if(!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];

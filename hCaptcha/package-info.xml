@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>vbgamer45:hcaptchaforsmf</id>
 	<name>hCaptcha for SMF</name>
-	<version>2.2</version>
+	<version>3.1</version>
 	<type>modification</type>
 	<install for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC">
 		<readme>README.md</readme>

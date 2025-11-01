@@ -402,7 +402,7 @@ echo '</td>
   </tr>
   <tr class="windowbg2">
     <td width="28%" colspan="2" align="center">
-    <input type="submit" value="' . $txt['gallery_text_addcategory'] . '" name="submit" /></td>
+    <input type="submit" class="button" value="' . $txt['gallery_text_addcategory'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -521,7 +521,7 @@ echo '</td>
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center">
     <input type="hidden" value="' . $context['gallery_cat_edit']['id_cat'] . '" name="catid" />
-    <input type="submit" value="' . $txt['gallery_text_editcategory'] . '" name="submit" /></td>
+    <input type="submit" class="button" value="' . $txt['gallery_text_editcategory'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -553,7 +553,7 @@ function template_delete_category()
     <b>', $txt['gallery_warn_category'], '</b>
     <br />
     <input type="hidden" value="' . $context['gallery_catid'] . '" name="catid" />
-    <input type="submit" value="' . $txt['gallery_text_delcategory'] . '" name="submit" /></td>
+    <input type="submit" class="button" value="' . $txt['gallery_text_delcategory'] . '" name="submit" /></td>
   </tr>
 </table>
 </form>
@@ -707,7 +707,7 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp" />';
+    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />';
 
   if (!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -731,7 +731,7 @@ echo '
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center">
 
-    <input type="submit" value="' . $txt['gallery_form_addpicture'] . '" name="submit" /><br />';
+    <input type="submit" class="button" value="' . $txt['gallery_form_addpicture'] . '" name="submit" /><br />';
 
   	if (!allowedTo('smfgallery_autoapprove'))
   		echo $txt['gallery_form_notapproved'];
@@ -869,7 +869,7 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp" />';
+    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />';
 
   if (!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -893,7 +893,7 @@ echo '
   <tr class="windowbg2">
     <td width="28%" colspan="2" align="center">
 	<input type="hidden" name="id" value="' . $context['gallery_pic']['id_picture'] . '" />
-    <input type="submit" value="' . $txt['gallery_form_editpicture'] . '" name="submit" /><br />';
+    <input type="submit" class="button" value="' . $txt['gallery_form_editpicture'] . '" name="submit" /><br />';
 
   	if (!allowedTo('smfgallery_autoapprove'))
   		echo $txt['gallery_form_notapproved'];
@@ -1169,7 +1169,7 @@ function template_delete_picture()
 			' . $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' .  $context['gallery_pic']['id_picture'] . '" target="blank">' .  $context['gallery_pic']['commenttotal'] . '</a>)<br />
 	</div><br />
 	<input type="hidden" name="id" value="' . $context['gallery_pic']['id_picture'] . '" />
-    <input type="submit" value="' . $txt['gallery_form_delpicture'] . '" name="submit" /><br />
+    <input type="submit" class="button" value="' . $txt['gallery_form_delpicture'] . '" name="submit" /><br />
     </td>
   </tr>
 </table>
@@ -1272,7 +1272,7 @@ echo '
    									<input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'cprofile\', \'message\');" />';
 
 echo '
-    <input type="submit" value="' . $txt['gallery_text_addcomment'] . '" name="submit" /></td>
+    <input type="submit" class="button" value="' . $txt['gallery_text_addcomment'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -1306,7 +1306,7 @@ function template_report_picture()
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center">
     <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />
-    <input type="submit" value="' . $txt['gallery_form_reportpicture'] . '" name="submit" /></td>
+    <input type="submit" class="button" value="' . $txt['gallery_form_reportpicture'] . '" name="submit" /></td>
 
   </tr>
 </table>
@@ -1453,7 +1453,7 @@ echo '
 
 
 
-				<tr class="windowbg2"><td colspan="2"><input type="submit" name="savesettings" value="',$txt['gallery_save_settings'],'" /></td></tr>
+				<tr class="windowbg2"><td colspan="2"><input type="submit" class="button" name="savesettings" value="',$txt['gallery_save_settings'],'" /></td></tr>
 				</table>
 			</form>
 			<br />
@@ -1664,7 +1664,7 @@ function template_search()
   </tr>
   <tr class="windowbg2">
     <td width="100%" colspan="2" align="center">
-    <input type="submit" value="', $txt['gallery_search'], '" name="submit" /></td>
+    <input type="submit" class="button" value="', $txt['gallery_search'], '" name="submit" /></td>
 
   </tr>
 </table>
@@ -1951,7 +1951,7 @@ function template_regenerate()
 
 			<br />
 			<input type="hidden" value="' . $context['catid'] . '" name="id" />
-			<input type="submit" value="' . $txt['gallery_text_regeneratethumbnails2'] . '" name="submit" />
+			<input type="submit" class="button" value="' . $txt['gallery_text_regeneratethumbnails2'] . '" name="submit" />
 			<br />
 			</td>
 		  </tr>
@@ -1986,7 +1986,7 @@ function template_regenerate2()
 					</div>';
 
 	echo '<form action="' . $scripturl . '?action=gallery;sa=regen2;' , $context['continue_get_data'], '" method="post" accept-charset="', $context['character_set'], '" style="margin: 0;" name="autoSubmit" id="autoSubmit">
-				<div style="margin: 1ex; text-align: right;"><input type="submit" name="cont" value="', $txt['gallery_txt_continue'], '" class="button_submit" /></div>
+				<div style="margin: 1ex; text-align: right;"><input type="submit" class="button" name="cont" value="', $txt['gallery_txt_continue'], '" class="button_submit" /></div>
 				', $context['continue_post_data'], '
 
 		    <input type="hidden" value="' . $context['catid'] . '" name="id" />
@@ -2041,7 +2041,7 @@ function template_gallerycopyright()
         <td colspan="2">' . $txt['gallery_txt_copyremovalnote'] . '</td>
     </tr>
 	<tr class="windowbg2">
-		<td valign="top" colspan="2" align="center"><input type="submit" value="' . $txt['gallery_save_settings'] . '" />
+		<td valign="top" colspan="2" align="center"><input type="submit" class="button" value="' . $txt['gallery_save_settings'] . '" />
 		</td>
 		</tr>
 	</table>
@@ -2079,7 +2079,7 @@ echo '<b>' . $context['import_step_title']. '</b><br />';
 					</div>';
 
 	echo '<form action="', '' .$scripturl . '?action=admin;area=gallery;sa=convert;importstep=' . $context['continue_action'], $context['continue_get_data'], '" method="post" accept-charset="', $context['character_set'], '" style="margin: 0;" name="autoSubmit" id="autoSubmit">
-				<div style="margin: 1ex; text-align: right;"><input type="submit" name="cont" value="', 'Continue', '" class="button_submit" /></div>
+				<div style="margin: 1ex; text-align: right;"><input type="submit" class="button" name="cont" value="', 'Continue', '" class="button_submit" /></div>
 				', $context['continue_post_data'], '
 			</form>
 
@@ -2129,7 +2129,7 @@ function template_import_welcomeaeva()
 		<br /><br />
 		<b>' . $txt['gallery_text_import_warning'] . '</b>
 		<br /><br />
-		<input type="submit" value="' . $txt['gallery_txt_begin_import'] . '" />
+		<input type="submit" class="button" value="' . $txt['gallery_txt_begin_import'] . '" />
         </td>
 		  </tr>
 
@@ -2189,7 +2189,7 @@ function template_convertgallery()
         if (isAevaInstalled() == true)
         {
             echo '<form action="' .$scripturl . '?action=admin;area=gallery;sa=convert;convertavea=1" method="post">';
-            echo '<input type="submit" value="' . $txt['gallery_txt_importaeva'] . '" />';
+            echo '<input type="submit" class="button" value="' . $txt['gallery_txt_importaeva'] . '" />';
             echo '</form>';
         }
         else

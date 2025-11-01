@@ -10,7 +10,7 @@
 	$total_items = count($verify_context['questions']) + ($verify_context['show_visual'] ? 1 : 0);
 ]]></search>
 			<add><![CDATA[
-	$total_items += ($verify_context['use_hcaptcha'] ? 1 : 0);
+	$total_items += ($verify_context['can_hcaptcha'] ? 1 : 0);
 ]]></add>
 		</operation>
 		<operation>
@@ -20,7 +20,7 @@
 
 ]]></search>
 			<add><![CDATA[
-        if ($i == 0 && $verify_context['use_hcaptcha'])
+        if ($i == 0 && $verify_context['can_hcaptcha'])
         {
             // Render the hCaptcha Widget. Also, add a hidden form element so we pass back the "*_vv" values expected
             //by some of the CAPTCHA-checking code in SMF to trigger the verification routines.
@@ -41,9 +41,9 @@
 		<operation>
 			<search position="replace"><![CDATA[$qIndex = $verify_context['show_visual'] ? $i - 1 : $i;]]></search>
 			<add><![CDATA[$qIndex = $verify_context['show_visual'] ? $i - 1 : $i;
-			if ($verify_context['use_hcaptcha'])
+			if ($verify_context['can_hcaptcha'])
 			{
-				$qIndex = $verify_context['use_hcaptcha'] ? $i - 1 : $i;
+				$qIndex = $verify_context['can_hcaptcha'] ? $i - 1 : $i;
 			}
 ]]></add>
 		</operation>

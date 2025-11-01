@@ -4,299 +4,105 @@
 <id>vbgamer45:smfgallerypro</id>
 <version>5.0</version>
 
-<file name="$languagedir/Modifications.english.php">
-	<operation>
-		<search position="end"></search>
-		<add><![CDATA[
-//Begin SMF Gallery Text Strings
-$txt['smfgallery_title'] = 'Gallery For SMF';
-$txt['smfgallery_menu'] = 'Gallery';
-$txt['smfgallery_version'] = '6.1 Lite';
-$txt['smfgallery_admin'] = 'Gallery Configuration';
-$txt['gallery_txt_convertors'] = 'Converters';
 
-//Permissions
-$txt['permissiongroup_smfgallery'] = 'SMF Gallery';
-$txt['permissiongroup_simple_smfgallery'] = 'Use SMF Gallery.';
+<file name="$sourcedir/Subs-Graphics.php"  error="skip">
 
-$txt['permissionname_smfgallery_view'] = 'View SMF Gallery';
-$txt['permissionhelp_smfgallery_view'] = 'Allows the user to view the Gallery';
-$txt['cannot_smfgallery_view'] = 'You are not allowed to view the Gallery';
-
-$txt['permissionname_smfgallery_add'] = 'Add Picture';
-$txt['permissionhelp_smfgallery_add'] = 'Allows the user to add a picture.';
-$txt['cannot_smfgallery_add'] = 'You are not allowed to add a picture.';
-
-$txt['permissionname_smfgallery_edit'] = 'Edit own Picture';
-$txt['permissionhelp_smfgallery_edit'] = 'Allows the user to edit a picture.';
-$txt['cannot_smfgallery_edit'] = 'You are not allowed to edit a picture.';
-
-$txt['permissionname_smfgallery_delete'] = 'Delete own Picture';
-$txt['permissionhelp_smfgallery_delete'] = 'Allows the user to delete a picture.';
-$txt['cannot_smfgallery_delete'] = 'You are not allowed to delete a picture.';
-
-$txt['permissionname_smfgallery_comment'] = 'Leave Comments';
-$txt['permissionhelp_smfgallery_comment'] = 'Allows the user to leave comments on a picture.';
-$txt['cannot_smfgallery_comment'] = 'You are not allowed to leave comments.';
-
-$txt['permissionname_smfgallery_report'] = 'Report Pictures/Comments';
-$txt['permissionhelp_smfgallery_report'] = 'Allows the user to report pictures and comments.';
-$txt['cannot_smfgallery_report'] = 'You are not allowed to report content.';
-
-$txt['permissionname_smfgallery_autoapprove'] = 'Auto Approve Pictures';
-$txt['permissionhelp_smfgallery_autoapprove'] = 'Pictures do not need to wait for approval.';
-
-$txt['permissionname_smfgallery_manage'] = 'Manage Gallery';
-$txt['permissionhelp_smfgallery_manage'] = 'Allows the user to add/delete/edit all catagories. Delete Comments, Delete Pictures, Approve Pictures';
-$txt['cannot_smfgallery_manage'] = 'You are not allowed to manage gallery.';
-
-
-$txt['gallery_form_managecats'] = 'Manage Categories';
-$txt['gallery_form_approveimages'] = 'Approve Images';
-$txt['gallery_form_reportimages'] = 'Reported Images';
-$txt['gallery_text_settings'] = 'Settings';
-$txt['gallery_txt_copyrightremoval'] = 'Copyright Removal';
-
-//END SMF Gallery Text Strings	
-]]></add>
-	</operation>
-</file>
-
-<file name="$languagedir/Who.english.php">
 	<operation error="ignore">
-		<search position="end"></search>
-		<add><![CDATA[
-// Begin SMF Gallery
-$txt['whoall_gallery'] = 'In the <a href="' . $scripturl . '?action=gallery">Gallery</a>';
-// END SMF Gallery Strings
-]]></add>
-	</operation>
-</file>
-
-
-<file name="$languagedir/Modifications.french.php" error="skip">
-	<operation>
-		<search position="end"></search>
-		<add><![CDATA[
-//Begin SMF Gallery Text Strings
-$txt['smfgallery_title'] = 'Galerie pour SMF';
-$txt['smfgallery_menu'] = 'Galerie';
-$txt['smfgallery_version'] = '6.1 Lite';
-$txt['smfgallery_admin'] = 'Configuration de la galerie';
-$txt['gallery_txt_convertors'] = 'Convertisseurs';
-
-//Permissions
-$txt['permissiongroup_smfgallery'] = 'Galerie SMF';
-$txt['permissiongroup_simple_smfgallery'] = 'Utiliser la galerie SMF.';
-
-$txt['permissionname_smfgallery_view'] = 'Voir la galerie SMF';
-$txt['permissionhelp_smfgallery_view'] = 'Permet à l'utilisateur de voir la Galerie';
-$txt['cannot_smfgallery_view'] = 'Vous n'êtes pas autorisé à voir la galerie';
-
-$txt['permissionname_smfgallery_add'] = 'Ajouter une image';
-$txt['permissionhelp_smfgallery_add'] = 'Permet à l'utilisateur d'ajouter une image.';
-$txt['cannot_smfgallery_add'] = 'Vous n'êtes pas autorisé à ajouter une image.';
-
-$txt['permissionname_smfgallery_edit'] = 'Modifier sa propre image';
-$txt['permissionhelp_smfgallery_edit'] = 'Permet à l'utilisateur de modifier une image.';
-$txt['cannot_smfgallery_edit'] = 'Vous n'êtes pas autorisé à modifier une image.';
-
-$txt['permissionname_smfgallery_delete'] = 'Supprimer sa propre image';
-$txt['permissionhelp_smfgallery_delete'] = 'Permet à l'utilisateur de supprimer une image.';
-$txt['cannot_smfgallery_delete'] = 'Vous n'êtes pas autorisé à supprimer une image.';
-
-$txt['permissionname_smfgallery_comment'] = 'Laisser des commentaires';
-$txt['permissionhelp_smfgallery_comment'] = 'Permet à l'utilisateur de laisser des commentaires sur une image.';
-$txt['cannot_smfgallery_comment'] = 'Vous n'êtes pas autorisé à laisser des commentaires.';
-
-$txt['permissionname_smfgallery_report'] = 'Signaler des images/commentaires';
-$txt['permissionhelp_smfgallery_report'] = 'Permet à l'utilisateur de signaler des images et des commentaires.';
-$txt['cannot_smfgallery_report'] = 'Vous n'êtes pas autorisé à signaler du contenu.';
-
-$txt['permissionname_smfgallery_autoapprove'] = 'Approuver automatiquement les images';
-$txt['permissionhelp_smfgallery_autoapprove'] = 'Les images n'ont pas besoin d'attendre l'approbation.';
-
-$txt['permissionname_smfgallery_manage'] = 'Gérer la galerie';
-$txt['permissionhelp_smfgallery_manage'] = 'Permet à l'utilisateur d'ajouter/supprimer/modifier toutes les catégories. Supprimer les commentaires, Supprimer les images, Approuver les images';
-$txt['cannot_smfgallery_manage'] = 'Vous n'êtes pas autorisé à gérer la galerie.';
-
-
-$txt['gallery_form_managecats'] = 'Gérer les catégories';
-$txt['gallery_form_approveimages'] = 'Approuver les images';
-$txt['gallery_form_reportimages'] = 'Images signalées';
-$txt['gallery_text_settings'] = 'Paramètres';
-$txt['gallery_txt_copyrightremoval'] = 'Suppression des droits d'auteur';
-
-
-//END SMF Gallery Text Strings
-]]></add>
-	</operation>
-</file>
-
-
-<file name="$languagedir/Modifications.german.php" error="skip">
-	<operation>
-		<search position="end"></search>
-		<add><![CDATA[
-//Begin SMF Gallery Text Strings
-$txt['smfgallery_title'] = 'Galerie für SMF';
-$txt['smfgallery_menu'] = 'Galerie';
-$txt['smfgallery_version'] = '6.1 Lite';
-$txt['smfgallery_admin'] = 'Galerie Konfiguration';
-$txt['gallery_txt_convertors'] = 'Konverter';
-
-//Berechtigungen
-$txt['permissiongroup_smfgallery'] = 'SMF Galerie';
-$txt['permissiongroup_simple_smfgallery'] = 'Verwendung der SMF Galerie';
-
-$txt['permissionname_smfgallery_view'] = 'SMF-Galerie anzeigen';
-$txt['permissionhelp_smfgallery_view'] = 'Erlaubt dem Benutzer, die Galerie anzuzeigen';
-$txt['cannot_smfgallery_view'] = 'Sie dürfen die Galerie nicht anschauen';
-
-$txt['permissionname_smfgallery_add'] = 'Bild hinzufügen';
-$txt['permissionhelp_smfgallery_add'] = 'Erlaubt dem Benutzer, ein Bild hinzuzufügen';
-$txt['cannot_smfgallery_add'] = 'Sie dürfen kein Bild hinzufügen';
-
-$txt['permissionname_smfgallery_edit'] = 'Eigenes Bild bearbeiten';
-$txt['permissionhelp_smfgallery_edit'] = 'Erlaubt dem Benutzer, ein Bild zu bearbeiten';
-$txt['cannot_smfgallery_edit'] = 'Sie dürfen kein Bild bearbeiten';
-
-$txt['permissionname_smfgallery_delete'] = 'Eigenes Bild löschen';
-$txt['permissionhelp_smfgallery_delete'] = 'Erlaubt dem Benutzer, ein Bild zu löschen';
-$txt['cannot_smfgallery_delete'] = 'Sie dürfen kein Bild löschen';
-
-$txt['permissionname_smfgallery_comment'] = 'Kommentare hinterlassen';
-$txt['permissionhelp_smfgallery_comment'] = 'Erlaubt dem Benutzer, Kommentare zu einem Bild zu hinterlassen';
-$txt['cannot_smfgallery_comment'] = 'Sie dürfen keine Kommentare hinterlassen';
-
-$txt['permissionname_smfgallery_report'] = 'Bilder/Kommentare melden';
-$txt['permissionhelp_smfgallery_report'] = 'Erlaubt dem Benutzer, Bilder und Kommentare zu melden';
-$txt['cannot_smfgallery_report'] = 'Sie dürfen keine Inhalte melden';
-
-$txt['permissionname_smfgallery_autoapprove'] = 'Bilder automatisch genehmigen';
-$txt['permissionhelp_smfgallery_autoapprove'] = 'Bilder müssen nicht auf Genehmigung warten';
-
-$txt['permissionname_smfgallery_manage'] = 'Galerie verwalten';
-$txt['permissionhelp_smfgallery_manage'] = 'Erlaubt dem Benutzer, alle Kategorien hinzuzufügen/löschen/bearbeiten. Kommentare löschen, Bilder löschen, Bilder genehmigen';
-$txt['cannot_smfgallery_manage'] = 'Sie dürfen die Galerie nicht verwalten';
-
-
-$txt['gallery_form_managecats'] = 'Kategorien verwalten';
-$txt['gallery_form_approveimages'] = 'Bilder genehmigen';
-$txt['gallery_form_reportimages'] = 'Gemeldete Bilder';
-$txt['gallery_text_settings'] = 'Einstellungen';
-$txt['gallery_txt_copyrightremoval'] = 'Urheberrechts-Entfernung';
-
-
-//END SMF Gallery Text Strings
-]]></add>
-	</operation>
-</file>
-
-
-<file name="$languagedir/Modifications.spanish_es.php" error="skip">
-	<operation>
-		<search position="end"></search>
-		<add><![CDATA[
-//Begin SMF Gallery Text Strings
-$txt['smfgallery_title'] = 'Galería para SMF';
-$txt['smfgallery_menu'] = 'Galería';
-$txt['smfgallery_version'] = '6.1 Lite';
-$txt['smfgallery_admin'] = 'Configuración de Galería';
-$txt['gallery_txt_convertors'] = 'Convertidores';
-
-// Permisos
-$txt['permissiongroup_smfgallery'] = 'Galería SMF';
-$txt['permissiongroup_simple_smfgallery'] = 'Usar Galería SMF.';
-
-$txt['permissionname_smfgallery_view'] = 'Ver Galería SMF';
-$txt['permissionhelp_smfgallery_view'] = 'Permite al usuario visualizar la Galería';
-$txt['cannot_smfgallery_view'] = 'No tienes permiso para ver la Galería';
-
-$txt['permissionname_smfgallery_add'] = 'Añadir Imagen';
-$txt['permissionhelp_smfgallery_add'] = 'Permite al usuario añadir una imagen.';
-$txt['cannot_smfgallery_add'] = 'No tienes permiso para añadir una imagen.';
-
-$txt['permissionname_smfgallery_edit'] = 'Editar imagen propia';
-$txt['permissionhelp_smfgallery_edit'] = 'Permite al usuario editar una imagen.';
-$txt['cannot_smfgallery_edit'] = 'No tienes permiso para editar una imagen.';
-
-$txt['permissionname_smfgallery_delete'] = 'Eliminar foto propia';
-$txt['permissionhelp_smfgallery_delete'] = 'Permite al usuario eliminar una imagen.';
-$txt['cannot_smfgallery_delete'] = 'No tienes permiso para eliminar una imagen.';
-
-$txt['permissionname_smfgallery_comment'] = 'Dejar Comentarios';
-$txt['permissionhelp_smfgallery_comment'] = 'Permite al usuario dejar comentarios en una imagen.';
-$txt['cannot_smfgallery_comment'] = 'No tienes permiso para dejar comentarios.';
-
-$txt['permissionname_smfgallery_report'] = 'Denunciar Imágenes/Comentarios';
-$txt['permissionhelp_smfgallery_report'] = 'Permite al usuario denunciar imágenes y comentarios.';
-$txt['cannot_smfgallery_report'] = 'No tienes permiso para reportar contenido.';
-
-$txt['permissionname_smfgallery_autoapprove'] = 'Aprobación automática de imágenes';
-$txt['permissionhelp_smfgallery_autoapprove'] = 'Las imágenes no necesitan esperar por aprobación.';
-
-$txt['permissionname_smfgallery_manage'] = 'Gestionar Galería';
-$txt['permissionhelp_smfgallery_manage'] = 'Permite al usuario añadir/eliminar/editar todas las categorías. Eliminar comentarios, Eliminar imágenes, Aprobar imágenes';
-$txt['cannot_smfgallery_manage'] = 'No estás autorizado para gestionar la galería.';
-
-$txt['gallery_form_managecats'] = 'Gestionar Categorías';
-$txt['gallery_form_approveimages'] = 'Aprobar Imágenes';
-$txt['gallery_form_reportimages'] = 'Imágenes denunciadas';
-$txt['gallery_text_settings'] = 'Ajustes';
-$txt['gallery_txt_copyrightremoval'] = 'Eliminación de Derechos de Autor';
-
-
-
-//END SMF Gallery Text Strings
-]]></add>
-	</operation>
-</file>
-
-
-<file name="$sourcedir/PrettyUrls-Filters.php" error="skip">
-		<operation>
-			<search position="end"></search>
-			<add><![CDATA[
-//	Filter SMF Gallery Lite
-function pretty_smf_gallery_lite_filter($urls)
+		<search position="replace"><![CDATA[function resizeImageFile($source, $destination, $max_width, $max_height, $preferred_format = 0)
 {
-	global $boardurl, $scripturl;
+	global $sourcedir;]]></search>
+	<add><![CDATA[function resizeImageFile($source, $destination, $max_width, $max_height, $preferred_format = 0)
+{
+	global $sourcedir;
 
+	// SMF Gallery
+	global $modSettings;
+	$extension = strtolower(substr(strrchr($source, '.'), 1));
+	if ($extension  == 'bmp')
+	{
+		$preferred_format = "6";
+	}
+	// End SMF Gallery
 
-	// Do Gallery Index replacement
-	/*
-	$pattern = '~' . $scripturl . '(.*)page=([^;]+)~S';
-	$replacement = $boardurl . '/index.php?action=gallery';
-	foreach ($urls as $url_id => $url)
-		if (!isset($url['replacement']))
-			if (preg_match($pattern, $url['url']))
-				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
-	*/
-	
-	// Do Gallery Category Replacement
-	$pattern = '~' . $scripturl . '(.*)action=gallery;cat=([^;]+)~S';
-	$replacement = $boardurl . '/gallery/category/$2';
-	foreach ($urls as $url_id => $url)
-		if (!isset($url['replacement']))
-			if (preg_match($pattern, $url['url']))
-				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
-	
-	
-	// Do Gallery Picture Replacement
-	$pattern = '~' . $scripturl . '(.*)sa=view;id=([^;]+)~S';
-	$replacement = $boardurl . '/gallery/picture/$2/';
-	foreach ($urls as $url_id => $url)
-		if (!isset($url['replacement']))
-			if (preg_match($pattern, $url['url']))
-				$urls[$url_id]['replacement'] = preg_replace($pattern, $replacement, $url['url']);
-	
-	
-	
-	
-	return $urls;
-}
 ]]></add>
-		</operation>
-	</file>
+	</operation>
+
+
+
+		<operation error="ignore">
+		<search position="replace"><![CDATA[$mime_valid = check_mime_type($source, implode('|', array_map('image_type_to_mime_type', array_keys($default_formats))), true);
+		if (empty($mime_valid))
+			return false;]]></search>
+	<add><![CDATA[$mime_valid = check_mime_type($source, implode('|', array_map('image_type_to_mime_type', array_keys($default_formats))), true);
+		// SMF Gallery Change
+		if (empty($mime_valid) && empty($modSettings['gallery_ovveride_mime']))
+			return false;
+
+
+]]></add>
+	</operation>
+
+		<operation error="ignore">
+		<search position="replace"><![CDATA[elseif (function_exists('imagejpeg'))]]></search>
+	<add><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 6) && function_exists('imagebmp'))
+		{
+			$success = imagebmp($dst_img, $destName);
+		}
+		elseif (function_exists('imagejpeg'))]]></add>
+	</operation>
+
+
+		<operation error="ignore">
+		<search position="replace"><![CDATA[static $default_formats = array(
+		'1' => 'gif',
+		'2' => 'jpeg',
+		'3' => 'png',
+		'6' => 'bmp',
+		'15' => 'wbmp'
+	);
+
+	// Get the image file, we have to work with something after all]]></search>
+	<add><![CDATA[static $default_formats = array(
+		'1' => 'gif',
+		'2' => 'jpeg',
+		'3' => 'png',
+		'6' => 'bmp',
+		'15' => 'wbmp',
+		'18' => 'webp',
+		'19' => 'avif',
+	);
+
+	// Get the image file, we have to work with something after all]]></add>
+	</operation>
+
+		<operation error="ignore">
+		<search position="replace"><![CDATA[static $default_formats = array(
+			'1' => 'gif',
+			'2' => 'jpeg',
+			'3' => 'png',
+			'6' => 'bmp',
+			'15' => 'wbmp'
+		);
+		$preferred_format = empty($preferred_format) || !isset($default_formats[$preferred_format]) ? 2 : $preferred_format;]]></search>
+	<add><![CDATA[static $default_formats = array(
+			'1' => 'gif',
+			'2' => 'jpeg',
+			'3' => 'png',
+			'6' => 'bmp',
+			'15' => 'wbmp',
+			'18' => 'webp',
+			'19' => 'avif',
+		);
+		$preferred_format = empty($preferred_format) || !isset($default_formats[$preferred_format]) ? 2 : $preferred_format;]]></add>
+	</operation>
+
+		<operation error="ignore">
+		<search position="before"><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 1) && function_exists('imagegif'))
+			$success = imagegif($dst_img, $destName);]]></search>
+	<add><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 18) && function_exists('imagewebp'))
+		$success = imagewebp($dst_img, $destName);
+		elseif (!empty($preferred_format) && ($preferred_format == 19) && function_exists('imageavif'))
+			$success = imageavif($dst_img, $destName);]]></add>
+	</operation>
+</file>
 </modification>

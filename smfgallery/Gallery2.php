@@ -1,10 +1,10 @@
 <?php
 /*
 SMF Gallery Lite Edition
-Version 8.0
+Version 9.0
 by:vbgamer45
 http://www.smfhacks.com
-Copyright 2008-2024 SMFHacks.com
+Copyright 2008-2025 SMFHacks.com
 
 ############################################
 License Information:
@@ -298,7 +298,7 @@ function mainview()
 
 function AddCategory()
 {
-	global $context, $mbname, $txt, $modSettings, $sourcedir;
+	global $context, $txt, $modSettings, $sourcedir;
 
 	isAllowedTo('smfgallery_manage');
 
@@ -914,6 +914,7 @@ function AddPicture2()
 					9 => 'jpeg',
 					14 => 'iff',
 					18 => 'webp',
+					19 => 'avif',
 					);
 				$extension = isset($extensions[$sizes[2]]) ? $extensions[$sizes[2]] : '.bmp';
 
@@ -932,7 +933,6 @@ function AddPicture2()
 				createThumbnail($modSettings['gallery_path'] . $filename, $modSettings['gallery_thumb_width'],$modSettings['gallery_thumb_height']);
 				rename($modSettings['gallery_path'] . $filename . '_thumb',  $modSettings['gallery_path'] . 'thumb_' . $filename);
 				$thumbname = 'thumb_' . $filename;
-
 
 
 				@chmod($modSettings['gallery_path'] . $thumbname, 0644);
@@ -991,8 +991,7 @@ function AddPicture2()
 
 function EditPicture()
 {
-	global $context, $mbname, $txt, $id_member, $modSettings, $smcFunc, $sourcedir;
-
+	global $context, $txt, $id_member, $modSettings, $smcFunc, $sourcedir;
 
 	is_not_guest();
 
@@ -1218,6 +1217,7 @@ function EditPicture2()
 						9 => 'jpeg',
 						14 => 'iff',
 						18 => 'webp',
+						19 => 'avif',
 						);
 					$extension = isset($extensions[$sizes[2]]) ? $extensions[$sizes[2]] : '.bmp';
 
@@ -1853,7 +1853,7 @@ function MyImages()
     SELECT
     	p.id_picture, p.commenttotal, p.title, p.filesize, p.thumbfilename, p.approved, p.views, p.id_member, m.real_name, p.date, p.filename, p.height, p.width
     FROM {db_prefix}gallery_pic as p, {db_prefix}members AS m
-    WHERE p.id_member = $userid AND p.id_member = m.id_member " . ($id_member == $userid ? '' : ' AND p.approved = 1 ')  . " LIMIT $context[start]," . $modSettings['gallery_set_images_per_page']);
+    WHERE p.id_member = $userid AND p.id_member = m.id_member " . ($id_member == $userid ? '' : ' AND p.approved = 1 ')  . " ORDER BY p.id_picture DESC LIMIT $context[start]," . $modSettings['gallery_set_images_per_page']);
 	$context['gallery_my_images'] = array();
  	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -2279,7 +2279,7 @@ function gallery_format_size($size, $round = 0)
 
 function ShowTopGalleryBar($title = '&nbsp;')
 {
-	global $txt, $context;
+	global $context;
 		echo '
 
 	 <div class="cat_bar">
@@ -2663,9 +2663,8 @@ function isAevaInstalled()
 
 function ConvertGallery()
 {
-	global $context, $mbname, $txt, $sourcedir;
+	global $context, $txt, $sourcedir;
 	isAllowedTo('smfgallery_manage');
-
 
 	DoGalleryAdminTabs();
 

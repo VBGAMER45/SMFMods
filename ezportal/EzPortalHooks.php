@@ -14,10 +14,13 @@ if (!defined('SMF'))
 // Hook Add Action
 function ezphook_actions(&$actionArray)
 {
-  global $sourcedir, $modSettings;
+  global $sourcedir, $modSettings, $context, $scripturl;
 
   $actionArray += array('ezportal' => array('EzPortal2.php', 'EzPortalMain'));
   $actionArray += array('forum' => array('BoardIndex.php', 'BoardIndex'));
+
+  if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'forum')
+	  $context['canonical_url'] = $scripturl . '?action=forum';
 
 }
 
@@ -104,7 +107,7 @@ function ezphook_integrate_pre_log_stats(&$no_stat_actions)
 
 function ezphook_integrate_mark_read_button()
 {
-	global $context;
+	global $context, $scripturl;
 
 		if (isset($_REQUEST['action']))
 		{
@@ -113,6 +116,9 @@ function ezphook_integrate_mark_read_button()
 					$context['robot_no_index'] = false;
 				}
 		}
+
+  	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'forum')
+	  $context['canonical_url'] = $scripturl . '?action=forum';
 
 }
 

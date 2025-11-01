@@ -1537,11 +1537,16 @@ function EzBlockSMFArticlesEzBlock($parameters = array(), $rows = 4, $articles =
 
 function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent', $files = 4, $category = 0, $startHtml = '', $endHtml = '')
 {
-	global $txt, $smcFunc, $scripturl,  $modSettings, $scripturl, $boardurl;
+	global $txt, $smcFunc, $scripturl,  $modSettings, $scripturl, $boardurl, $context, $user_info;
 
 	$rows = (int) $rows;
 	$files = (int) $files;
 	$category = (int) $category;
+
+	if (!$context['user']['is_guest'])
+		$groupsdata = implode(',',$user_info['groups']);
+	else
+		$groupsdata = -1;
 
 	// Pass all the parameters
 	foreach($parameters as $myparam)
@@ -1589,10 +1594,14 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 			//Check what type it is
 			$selectPro = '';
 			$selectProJoin = '';
+			$checkWhere = '';
 			if ($isPro == true)
 			{
 				$selectPro = " f.ID_PICTURE, f.thumbfilename, ";
-				$selectProJoin =  " LEFT JOIN {db_prefix}down_file_pic AS f ON (f.ID_PICTURE = p.ID_PICTURE) ";
+				$selectProJoin =  " LEFT JOIN {db_prefix}down_file_pic AS f ON (f.ID_PICTURE = p.ID_PICTURE)
+				LEFT JOIN  {db_prefix}down_cat AS c ON (c.ID_CAT = p.ID_CAT) 
+				 LEFT JOIN {db_prefix}down_catperm AS pa ON (pa.ID_GROUP IN ($groupsdata) AND c.ID_CAT = pa.ID_CAT) ";
+				$checkWhere = ' AND (pa.view IS NULL OR pa.view =1) ';
 			}
 
 			$query = ' ';
@@ -1601,18 +1610,18 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 
 				case 'random':
 					$query = "SELECT p.ID_FILE, p.commenttotal, $selectPro p.totalratings, p.rating, p.filesize, p.views, p.title, p.ID_MEMBER, m.real_name, p.date, p.description, p.totaldownloads
-					FROM {db_prefix}down_file as p
-					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
+					FROM ({db_prefix}down_file as p)
+					LEFT JOIN {db_prefix}members AS m ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE  p.approved = 1 ORDER BY RAND() DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY RAND() DESC LIMIT $files";
 				break;
 
 				case 'recent':
 					$query = "SELECT p.ID_FILE, p.commenttotal, $selectPro p.totalratings, p.rating, p.filesize, p.views, p.title, p.ID_MEMBER, m.real_name, p.date, p.description, p.totaldownloads
-					FROM {db_prefix}down_file as p
+					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE  p.approved = 1 ORDER BY p.ID_FILE DESC LIMIT $files";
+					WHERE  p.approved = 1 $checkWhere ORDER BY p.ID_FILE DESC LIMIT $files";
 				break;
 
 				case 'viewed':
@@ -1620,31 +1629,31 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM {db_prefix}down_file as p
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 ORDER BY  p.views DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY  p.views DESC LIMIT $files";
 				break;
 
 				case 'mostcomments':
 					$query = "SELECT p.ID_FILE, p.commenttotal, $selectPro p.totalratings, p.rating, p.filesize, p.views, p.title, p.ID_MEMBER, m.real_name, p.date, p.description, p.totaldownloads
-					FROM {db_prefix}down_file as p
+					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 ORDER BY p.commenttotal DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY p.commenttotal DESC LIMIT $files";
 				break;
 
 				case 'toprated':
 					$query = "SELECT p.ID_FILE,  (p.rating / p.totalratings ) AS ratingaverage, p.commenttotal, $selectPro p.totalratings, p.rating, p.filesize, p.views, p.title, p.ID_MEMBER, m.real_name, p.date, p.description, p.totaldownloads
-					FROM {db_prefix}down_file as p
+					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 ORDER BY ratingaverage DESC LIMIT $files ";
+					WHERE p.approved = 1 $checkWhere ORDER BY ratingaverage DESC LIMIT $files ";
 				break;
 
 				case 'downloads':
 					$query = "SELECT p.ID_FILE, p.commenttotal, $selectPro p.totalratings, p.rating, p.filesize, p.views, p.title, p.ID_MEMBER, m.real_name, p.date, p.description, p.totaldownloads
-					FROM {db_prefix}down_file as p
+					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 ORDER BY  p.totaldownloads DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY p.totaldownloads DESC LIMIT $files";
 				break;
 			}
 			// Execute the SQL query

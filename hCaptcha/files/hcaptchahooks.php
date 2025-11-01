@@ -42,6 +42,8 @@ function hcaptcha_integrate_create_control_verification_pre(&$verificationOption
 function hcaptcha_integrate_create_control_verification_test(&$thisVerification, &$verification_errors)
 {
     global $modSettings, $sourcedir;
+	$verification_errors = array();
+
     if ($thisVerification['can_hcaptcha'] == 1)
      {
 
@@ -54,11 +56,11 @@ function hcaptcha_integrate_create_control_verification_test(&$thisVerification,
              $response = json_decode($response, true);
 
              if (true != $response["success"])
-                 $verification_errors[] = 'wrong_verification_code';
+                 $verification_errors[] = 'hcaptcha_verification_code';
 
          }
          else
-             $verification_errors[] = 'need_verification_code';
+             $verification_errors[] = 'hcaptcha_verification_code';
 
 
 

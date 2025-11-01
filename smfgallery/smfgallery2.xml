@@ -361,4 +361,85 @@ function pretty_smf_gallery_lite_filter($urls)
 ]]></add>
 		</operation>
 	</file>
+
+
+<file name="$sourcedir/Subs-Graphics.php">
+
+	<operation error="ignore">
+		<search position="replace"><![CDATA[function resizeImageFile($source, $destination, $max_width, $max_height, $preferred_format = 0)
+{
+	global $sourcedir;]]></search>
+	<add><![CDATA[function resizeImageFile($source, $destination, $max_width, $max_height, $preferred_format = 0)
+{
+	global $sourcedir;
+
+	// SMF Gallery
+	global $modSettings;
+	$extension = strtolower(substr(strrchr($source, '.'), 1));
+	if ($extension  == 'bmp')
+	{
+		$preferred_format = "6";
+	}
+	// End SMF Gallery
+
+]]></add>
+	</operation>
+
+	<operation error="ignore">
+		<search position="replace"><![CDATA[static $default_formats = array(
+		'1' => 'gif',
+		'2' => 'jpeg',
+		'3' => 'png',
+		'6' => 'bmp',
+		'15' => 'wbmp'
+	);
+
+	require_once($sourcedir . '/Subs-Package.php');
+	@ini_set('memory_limit', '90M');]]></search>
+	<add><![CDATA[static $default_formats = array(
+		'1' => 'gif',
+		'2' => 'jpeg',
+		'3' => 'png',
+		'6' => 'bmp',
+		'15' => 'wbmp',
+		'18' => 'webp',
+		'19' => 'avif',
+	);
+
+	require_once($sourcedir . '/Subs-Package.php');
+	@ini_set('memory_limit', '900M');]]></add>
+	</operation>
+
+		<operation error="ignore">
+		<search position="replace"><![CDATA[$mime_valid = check_mime_type($source, implode('|', array_map('image_type_to_mime_type', array_keys($default_formats))), true);
+		if (empty($mime_valid))
+			return false;]]></search>
+	<add><![CDATA[$mime_valid = check_mime_type($source, implode('|', array_map('image_type_to_mime_type', array_keys($default_formats))), true);
+		// SMF Gallery Change
+		if (empty($mime_valid) && empty($modSettings['gallery_ovveride_mime']))
+			return false;
+
+]]></add>
+	</operation>
+
+		<operation error="ignore">
+		<search position="replace"><![CDATA[elseif (function_exists('imagejpeg'))]]></search>
+	<add><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 6) && function_exists('imagebmp'))
+		{
+			$success = imagebmp($dst_img, $destName);
+		}
+		elseif (function_exists('imagejpeg'))]]></add>
+	</operation>
+
+		<operation error="ignore">
+		<search position="before"><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 1) && function_exists('imagegif'))
+		$success = imagegif($dst_img, $destName);]]></search>
+	<add><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 18) && function_exists('imagewebp'))
+		$success = imagewebp($dst_img, $destName);
+	elseif (!empty($preferred_format) && ($preferred_format == 19) && function_exists('imageavif'))
+		$success = imageavif($dst_img, $destName);
+]]></add>
+	</operation>
+</file>
+
 </modification>

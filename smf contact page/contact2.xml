@@ -402,5 +402,40 @@ $txt['smfcontactpage_board'] = 'Página de Contacto - Foro para Publicar (Opcion
 		</operation>
 </file>
 
+<file name="$languagedir/Modifications.greek.php" error="skip">
+    <operation>
+        <search position="after"><![CDATA[
+?>]]></search>
+        <add><![CDATA[
+// Begin Contact Page Text Strings
+$txt['smfcontact_contact'] = 'Επικοινωνία';
+$txt['permissionname_view_contact'] = 'Προβολή σελίδας επικοινωνίας';
+$txt['permissionhelp_view_contact'] = 'Επιτρέπει στα μέλη να βλέπουν τη σελίδα επικοινωνίας και να στέλνουν email.';
+$txt['cannot_view_contact'] = 'Δεν μπορείτε να δείτε τη σελίδα επικοινωνίας.';
+$txt['smfcontact_name'] = 'Το όνομά σας:';
+$txt['smfcontact_subject'] = 'Θέμα';
+$txt['smfcontact_body'] = 'Μήνυμα';
+$txt['smfcontact_emailaddress'] = 'Διεύθυνση ηλεκτρονικού ταχυδρομείου';
+$txt['smfcontact_sendemail'] = 'Αποστολή email';
+$txt['smfcontact_messagesent'] = 'Το μήνυμά σας έχει σταλεί!';
+$txt['smfcontact_messagesent_click'] = 'Το μήνυμά σας έχει σταλεί! Κάντε κλικ ';
+$txt['smfcontact_messagesent_return'] = 'εδώ</a> για να επιστρέψετε στον πίνακα.';
+$txt['smfcontact_errname'] = 'Πρέπει να εισαγάγετε το όνομά σας.';
+$txt['smfcontact_errsubject'] = 'Πρέπει να εισαγάγετε ένα θέμα.';
+$txt['smfcontact_errmessage'] = 'Πρέπει να εισαγάγετε ένα μήνυμα.';
+$txt['smfcontact_erremail'] = 'Πρέπει να εισαγάγετε τη διεύθυνση email σας.';
+$txt['smfcontact_errbademail'] = 'Δεν έχετε εισαγάγει έγκυρη διεύθυνση email.';
+$txt['smfcontact_titlesent'] = ' - Το μήνυμα εστάλη.';
+$txt['smfcontact_form'] = 'Φόρμα σελίδας επικοινωνίας για ';
+$txt['smfcontact_formname'] = "Όνομα: ";
+$txt['smfcontact_formemail'] = "Ηλεκτρονικό ταχυδρομείο: ";
+$txt['smfcontact_ip'] = "IP: ";
+$txt['smfcontact_formmessage'] = "Μήνυμα: \n";
+$txt['smfcontactpage_email'] = 'Σελίδα επικοινωνίας - Ηλ. ταχυδρομείο: ';
+$txt['smfcontactpage_board'] = 'Σελίδα επικοινωνίας - Πίνακας για δημοσίευση (Προαιρετικό): ';
 
+// END Contact Page Text Strings
+]]></add>
+    </operation>
+</file>
 </modification>
