@@ -5,7 +5,7 @@
 	<id>vbgamer45:ipv6</id>
 	<name>IPv6</name>
 	<type>modification</type>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 
 	<install for="2.0 - 2.0.99, 2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC5">
 		<readme>ReadMe.txt</readme>

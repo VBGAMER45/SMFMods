@@ -55,6 +55,21 @@ function isValidIP($IPString)
 	return filter_var($IPString, FILTER_VALIDATE_IP) !== false;
 }
 
+/**
+ * Validates a IPv6 address. returns true if it is ipv6.
+ *
+ * @param string $ip The ip address to be validated
+ * @return boolean Whether the specified IP is a valid IPv6 address
+ */
+function isValidIPv6($ip)
+{
+	//looking for :
+	if (strpos($ip, ':') === false)
+		return false;
+
+	//check valid address
+	return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+}
 
 
 /**
@@ -1320,7 +1335,7 @@ function smf_db_quote($db_string, $db_values, $connection = null)
 				$smcFunc['db_insert']('',
 					'{db_prefix}ban_items',
 					array(
-						'id_ban_group' => 'int', 'ip_low' => 'int', 'ip_high' => 'int', 'ip_low2' => 'int', 'ip_high2' => 'int',
+						'id_ban_group' => 'int', 'ip_low' => 'inet', 'ip_high' => 'inet', 'ip_low2' => 'int', 'ip_high2' => 'int',
 						'ip_low3' => 'int', 'ip_high3' => 'int', 'ip_low4' => 'int', 'ip_high4' => 'int', 'hostname' => 'string-255',
 						'email_address' => 'string-255', 'id_member' => 'int',
 					),
@@ -1428,7 +1443,7 @@ function smf_db_quote($db_string, $db_values, $connection = null)
 					SELECT DISTINCT ip
 					FROM {db_prefix}log_errors
 					WHERE id_member = {int:current_user}
-						AND poster_ip IS NOT NULL
+						AND ip IS NOT NULL
 					ORDER BY ip',
 					array(
 						'current_user' => (int) $_REQUEST['u'],
