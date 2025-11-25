@@ -408,7 +408,7 @@ function smf_db_quote($db_string, $db_values, $connection = null)
 <file name="$sourcedir/Groups.php">
 		<operation>
 			<search position="replace"><![CDATA[$last_online = empty($row['last_login']) ? $txt['never'] : timeformat($row['last_login']);]]></search>
-			<add><![CDATA[$row['member_ip'] = inet_dtop($row['member_ip'])
+			<add><![CDATA[$row['member_ip'] = inet_dtop($row['member_ip']);
 		$last_online = empty($row['last_login']) ? $txt['never'] : timeformat($row['last_login']);]]></add>
 	</operation>
 
