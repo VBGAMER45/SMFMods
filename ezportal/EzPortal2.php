@@ -1,17 +1,17 @@
 <?php
 /*
 EzPortal
-Version 6.0
+Version 6.5
 by:vbgamer45
 https://www.ezportal.com
-Copyright 2010-2025 https://www.samsonsoftware.com
+Copyright 2010-2026 https://www.samsonsoftware.com
 */
 function EzPortalMain()
 {
 	global $sourcedir, $ezPortalVersion, $context, $ezpSettings, $boardurl, $boarddir, $modSettings;
 
 	// Hold Current Version
-	$ezPortalVersion = '6.0.1';
+	$ezPortalVersion = '6.5';
 
 	// Subs for EzPortal
 	require_once($sourcedir . '/Subs-EzPortalMain2.php');
@@ -112,6 +112,10 @@ function EzPortalMain()
         'copyright' => 'EzPortal_CopyrightRemoval',
         'deleteshouthistory' => 'EzPortalDeleteAllShoutHistory',
         'deleteshouthistory2' => 'EzPortalDeleteAllShoutHistory2',
+		// AJAX Shoutbox endpoints
+		'ajaxshouts' => 'EzPortalAjaxGetShouts',
+		'ajaxaddshout' => 'EzPortalAjaxAddShout',
+		'ajaxremoveshout' => 'EzPortalAjaxRemoveShout',
 	);
 
 	if (isset($_REQUEST['sa']))
@@ -3659,6 +3663,215 @@ function EzPortalRemoveShout()
 		redirectexit('');
 }
 
+/**
+ * AJAX endpoint to get shouts as JSON
+ */
+function EzPortalAjaxGetShouts()
+{
+	global $ezpSettings, $smcFunc, $context, $txt;
+
+	// Set JSON headers
+	header('Content-Type: application/json; charset=UTF-8');
+	$context['template_layers'] = array();
+
+	// Load language for error messages
+	loadLanguage('Errors');
+
+	// Check if shoutbox is enabled
+	if (empty($ezpSettings['ezp_shoutbox_enable']))
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['ezp_shoutbox_error_disabled']));
+		obExit(false);
+		return;
+	}
+
+	// Get number of shouts to display
+	$numShouts = isset($_REQUEST['num']) ? (int) $_REQUEST['num'] : 10;
+	if ($numShouts < 1) $numShouts = 10;
+	if ($numShouts > 100) $numShouts = 100;
+
+	$shouts = array();
+
+	// Query shouts from database
+	$dbresult = $smcFunc['db_query']('', "
+		SELECT
+			s.shout, s.date, s.id_shout, s.id_member, m.real_name, mg.online_color, mg.ID_GROUP
+		FROM {db_prefix}ezp_shoutbox AS s
+		LEFT JOIN {db_prefix}members AS m ON (s.ID_MEMBER = m.ID_MEMBER)
+		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(m.ID_GROUP = 0, m.ID_POST_GROUP, m.ID_GROUP))
+		ORDER BY s.id_shout DESC
+		LIMIT {int:limit}",
+		array(
+			'limit' => $numShouts,
+		)
+	);
+
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+	{
+		// Censor the shout
+		censorText($row['shout']);
+
+		$shouts[] = array(
+			'id' => (int) $row['id_shout'],
+			'member_id' => (int) $row['id_member'],
+			'member_name' => $row['real_name'],
+			'color' => !empty($row['online_color']) ? $row['online_color'] : '',
+			'date' => timeformat($row['date']),
+			'date_timestamp' => (int) $row['date'],
+			'shout_html' => parse_bbc($row['shout']),
+		);
+	}
+	$smcFunc['db_free_result']($dbresult);
+
+	echo json_encode(array('success' => true, 'shouts' => $shouts));
+	obExit(false);
+}
+
+/**
+ * AJAX endpoint to add a shout
+ */
+function EzPortalAjaxAddShout()
+{
+	global $ezpSettings, $smcFunc, $user_info, $context, $txt;
+
+	// Set JSON headers
+	header('Content-Type: application/json; charset=UTF-8');
+	$context['template_layers'] = array();
+
+	// Load language for error messages
+	loadLanguage('Errors');
+
+	// Guests can't shout
+	if ($user_info['is_guest'])
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['ezp_no_guest_shout']));
+		obExit(false);
+		return;
+	}
+
+	// Check for ban
+	if (isset($_SESSION['ban']['cannot_post']))
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['ezp_shoutbox_error_banned_post']));
+		obExit(false);
+		return;
+	}
+
+	// Check if shoutbox is enabled
+	if (empty($ezpSettings['ezp_shoutbox_enable']))
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['ezp_shoutbox_error_disabled']));
+		obExit(false);
+		return;
+	}
+
+	// Check session
+	if (checkSession('post', '', false) != '')
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['session_timeout']));
+		obExit(false);
+		return;
+	}
+
+	// Check for shout content
+	if (!isset($_REQUEST['shout']) || trim($_REQUEST['shout']) === '')
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['ezp_no_shout_entered']));
+		obExit(false);
+		return;
+	}
+
+	// Spam Protection
+	$result = ezp_spamProtection('ezportal', true);
+	if ($result == true)
+	{
+	
+			echo json_encode(array('success' => false, 'error' => $txt['ezportalWaitTime_broken']));
+			obExit(false);
+			return;
+	
+	}
+
+	$t = time();
+	$shout = $smcFunc['htmlspecialchars']($_REQUEST['shout'], ENT_QUOTES);
+	$shout = trim($shout);
+
+	// Insert the shout
+	$smcFunc['db_query']('', "
+		INSERT INTO {db_prefix}ezp_shoutbox
+			(id_member, date, shout)
+		VALUES ({int:member}, {int:time}, {string:shout})",
+		array(
+			'member' => $user_info['id'],
+			'time' => $t,
+			'shout' => $shout,
+		)
+	);
+
+	// Invalidate cache
+	cache_put_data('ezBlockshout', null, 60);
+
+	echo json_encode(array('success' => true));
+	obExit(false);
+}
+
+/**
+ * AJAX endpoint to remove a shout
+ */
+function EzPortalAjaxRemoveShout()
+{
+	global $smcFunc, $context, $txt;
+
+	// Set JSON headers
+	header('Content-Type: application/json; charset=UTF-8');
+	$context['template_layers'] = array();
+
+	// Load language for error messages
+	loadLanguage('Errors');
+
+	// Check admin permission
+	if (!allowedTo('admin_forum'))
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['cannot_access_page']));
+		obExit(false);
+		return;
+	}
+
+	// Check session
+	if (checkSession('post', '', false) != '')
+	{
+		echo json_encode(array('success' => false, 'error' => $txt['session_timeout']));
+		obExit(false);
+		return;
+	}
+
+	// Get shout ID
+	if (!isset($_REQUEST['shout']) || (int) $_REQUEST['shout'] < 1)
+	{
+		echo json_encode(array('success' => false, 'error' => 'Invalid shout ID'));
+		obExit(false);
+		return;
+	}
+
+	$shoutId = (int) $_REQUEST['shout'];
+
+	// Delete the shout
+	$smcFunc['db_query']('', "
+		DELETE FROM {db_prefix}ezp_shoutbox
+		WHERE id_shout = {int:shout_id}
+		LIMIT 1",
+		array(
+			'shout_id' => $shoutId,
+		)
+	);
+
+	// Invalidate cache
+	cache_put_data('ezBlockshout', null, 60);
+
+	echo json_encode(array('success' => true));
+	obExit(false);
+}
+
 function EzPortalViewShoutHistory()
 {
 	global $ezpSettings, $txt, $context, $scripturl, $smcFunc;
@@ -4300,5 +4513,69 @@ RewriteRule ^pages/([-_!~*()$a-zA-Z0-9]+)-([0-9]*)?$ ./index.php?action=ezportal
 
 	}
 
+}
+
+/**
+ * License BSD from smf_2-1-6
+ * This function attempts to protect from spammed messages and the like.
+ * The time taken depends on error_type - generally uses the modSetting.
+ *
+ * @param string $error_type The error type. Also used as a $txt index (not an actual string).
+ * @param boolean $only_return_result Whether you want the function to die with a fatal_lang_error.
+ * @return bool Whether they've posted within the limit
+ */
+function ezp_spamProtection($error_type, $only_return_result = false)
+{
+	global $modSettings, $user_info, $smcFunc;
+
+	// Certain types take less/more time.
+	$timeOverrides = array(
+		'login' => 2,
+		'register' => 2,
+		'remind' => 30,
+		'sendmail' => $modSettings['spamWaitTime'] * 5,
+		'reporttm' => $modSettings['spamWaitTime'] * 4,
+		'search' => !empty($modSettings['search_floodcontrol_time']) ? $modSettings['search_floodcontrol_time'] : 1,
+	);
+
+	call_integration_hook('integrate_spam_protection', array(&$timeOverrides));
+
+	// Moderators are free...
+	if (!allowedTo('moderate_board'))
+		$timeLimit = isset($timeOverrides[$error_type]) ? $timeOverrides[$error_type] : $modSettings['spamWaitTime'];
+	else
+		$timeLimit = 2;
+
+	// Delete old entries...
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}log_floodcontrol
+		WHERE log_time < {int:log_time}
+			AND log_type = {string:log_type}',
+		array(
+			'log_time' => time() - $timeLimit,
+			'log_type' => $error_type,
+		)
+	);
+
+	// Add a new entry, deleting the old if necessary.
+	$smcFunc['db_insert']('replace',
+		'{db_prefix}log_floodcontrol',
+		array('ip' => 'inet', 'log_time' => 'int', 'log_type' => 'string'),
+		array($user_info['ip'], time(), $error_type),
+		array('ip', 'log_type')
+	);
+
+	// If affected is 0 or 2, it was there already.
+	if ($smcFunc['db_affected_rows']() != 1)
+	{
+		// Spammer!  You only have to wait a *few* seconds!
+		if (!$only_return_result)
+			fatal_lang_error($error_type . '_WaitTime_broken', false, array($timeLimit));
+
+		return true;
+	}
+
+	// They haven't posted within the limit.
+	return false;
 }
 ?>

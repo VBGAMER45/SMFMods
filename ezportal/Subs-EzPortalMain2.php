@@ -1,10 +1,10 @@
 <?php
 /*
 EzPortal
-Version 5.6
+Version6.5
 by:vbgamer45
 https://www.ezportal.com
-Copyright 2010-2025 http://www.samsonsoftware.com
+Copyright 2010-2026 http://www.samsonsoftware.com
 */
 
 function LoadEzPortalSettings()
@@ -2732,272 +2732,430 @@ function EzBlockShoutBoxBlock($parameters = array(), $numberofShouts = 10, $ifra
 	{
 		echo $txt['ezp_shoutbox_error_disabled'];
 		return;
-
 	}
 
 	$context['save_embed_disable'] = 1;
 
-	// Pass all the parematers
+	// Pass all the parameters
 	foreach($parameters as $myparam)
 	{
 		if ($myparam['parameter_name'] == 'numberofShouts')
 			$numberofShouts = (int) $myparam['data'];
 	}
 
-
 	$adminShoutBox = allowedTo('admin_forum');
 
+	// Generate unique ID for this shoutbox instance (for multiple shoutboxes on same page)
+	$shoutboxId = 'ezp_shoutbox_' . mt_rand(1000, 9999);
 
-	$useIframe = empty($ezpSettings['ezp_shoutbox_refreshseconds']) ? false : true;
+	// Calculate refresh interval (0 = disabled, minimum 5 seconds)
+	$refreshSeconds = (int) $ezpSettings['ezp_shoutbox_refreshseconds'];
+	if ($refreshSeconds > 0 && $refreshSeconds < 5)
+		$refreshSeconds = 5;
 
-	if ($context['browser']['is_ie6'] == true || $context['browser']['is_gecko'] == true || strpos($_SERVER['HTTP_USER_AGENT'], 'WebKit') !== false)
-	{
-		$iframe = false;
-		$useIframe = false;
-	}
-
-
-	// Show latest shouts
-	if ($iframe == false)
-	{
-	echo '<table style="width: 100%;table-layout: fixed;">
-	<tr>
-	<td>
-	';
-	}
-
-	if ($useIframe == true && $iframe == false)
-		echo '<iframe src="' . $scripturl . '?action=ezportal;sa=shoutframe;num=' . $numberofShouts	. '" frameborder="0" width="100%" height="100%">';
-
-
-		if ($useIframe == true && $iframe == false)
-	{
-
-	}
-	else
-	{
-		echo '<div style="overflow: auto;">';
-
-		$ezBlockshout =array();
-
-		if (($ezBlockshout = cache_get_data('ezBlockshout', 60)) == null)
-		{
-
-			$dbresult = $smcFunc['db_query']('', "
-			SELECT
-				s.shout, s.date, s.id_shout, s.id_member, m.real_name,mg.online_color, mg.ID_GROUP
-			FROM {db_prefix}ezp_shoutbox AS s
-			LEFT JOIN {db_prefix}members AS m ON (s.ID_MEMBER = m.ID_MEMBER)
-			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(m.ID_GROUP = 0, m.ID_POST_GROUP, m.ID_GROUP))
-			ORDER BY s.id_shout DESC LIMIT $numberofShouts");
-			while ($row = $smcFunc['db_fetch_assoc']($dbresult))
-			{
-				$ezBlockshout[] = $row;
-			}
-			$smcFunc['db_free_result']($dbresult);
-
-
-			cache_put_data('ezBlockshout', $ezBlockshout, 60);
-
-		}
-
-
-		if (!empty($ezBlockshout))
-		foreach($ezBlockshout as $row)
-		{
-			// Censor the shout
-			censorText($row['shout']);
-
-			if ($ezpSettings['ezp_shoutbox_showdate'])
-				echo timeformat($row['date']) . ' ';
-
-			echo '<a href="',$scripturl,'?action=profile;u=',$row['id_member'],'" style="color: ' . $row['online_color'] . ';">',$row['real_name'],'</a>';
-
-			if (empty($ezpSettings['ezp_shoutbox_hidesays']))
-				echo $txt['ezp_shoutbox_says'];
-			else
-				echo ": ";
-
-			echo parse_bbc($row['shout']);
-
-			if ($adminShoutBox && empty($ezpSettings['ezp_shoutbox_hidedelete']))
-				echo '<br /><a href="',$scripturl,'?action=ezportal;sa=removeshout;shout=',$row['id_shout'],'" style="color: #FF0000">[X]</a>';
-
-			echo '<br /><hr>';
-
-		}
-
-
-
-	}
-
-	$context['save_embed_disable'] = 0;
-
-	if ($useIframe == true && $iframe == false)
-	{
-		echo '</iframe>';
-
-	}
-	if ($iframe == true)
-	{
-		echo '</div></body></html>';
-		return;
-	}
-
-    $context['save_embed_disable'] = 1;
-
+	// Store URL for noscript fallback
 	$_SESSION['shoutbox_url'] = $_SERVER['REQUEST_URI'];
 
-	if ($ezpSettings['ezp_shoutbox_archivehistory'] == 1)
-		echo '<span class="smalltext"><a href="',$scripturl,'?action=ezportal;sa=shouthistory">',$txt['ezp_txt_viewshouthistory'],'</a></span><br />';
+	// Main container
+	echo '<div id="', $shoutboxId, '" class="ezp_shoutbox_container" style="width: 100%;">';
 
-	// Show the shoutbox form
+	// AJAX-powered shoutbox (hidden from noscript users)
+	echo '<div class="ezp_shoutbox_ajax">';
+
+	// Messages container
+	echo '<div id="', $shoutboxId, '_messages" class="ezp_shoutbox_messages" style="overflow: auto; max-height: 300px;">';
+	echo '<div class="ezp_shoutbox_loading" style="text-align: center; padding: 10px;">', $txt['ezp_shoutbox_loading'] ?? 'Loading...', '</div>';
+	echo '</div>';
+
+	// History link
+	if ($ezpSettings['ezp_shoutbox_archivehistory'] == 1)
+		echo '<span class="smalltext"><a href="', $scripturl, '?action=ezportal;sa=shouthistory">', $txt['ezp_txt_viewshouthistory'], '</a></span><br />';
+
+	// Shout form (for logged in users only)
 	if (!$user_info['is_guest'])
 	{
-	echo '<hr />
-		<form action="', $scripturl, '?action=ezportal;sa=addshout" method="post"  id="ezpshoutform" accept-charset="', $context['character_set'], '">';
+		echo '<hr />';
+		echo '<div id="', $shoutboxId, '_form_container">';
 
+		// BBC buttons
 		if ($ezpSettings['ezp_shoutbox_showbbc'])
 		{
-			$context['bbc_tags2'] = array();
-			$context['bbc_tags2'][] = array(
-				'bold' => array('code' => 'b', 'before' => '[b]', 'after' => '[/b]', 'description' => $txt['ezp_bbc_bold'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'italicize' => array('code' => 'i', 'before' => '[i]', 'after' => '[/i]', 'description' => $txt['ezp_bbc_italic'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'underline' => array('code' => 'u', 'before' => '[u]', 'after' => '[/u]', 'description' => $txt['ezp_bbc_underline'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'strike' => array('code' => 's', 'before' => '[s]', 'after' => '[/s]', 'description' => $txt['ezp_bbc_strike'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				array(),
-				'img' => array('code' => 'img', 'before' => '[img]', 'after' => '[/img]', 'description' => $txt['ezp_bbc_img'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'url' => array('code' => 'url', 'before' => '[url]', 'after' => '[/url]', 'description' => $txt['ezp_bbc_link'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'move' => array('code' => 'move', 'before' => '[move]', 'after' => '[/move]', 'description' => $txt['ezp_bbc_move'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-			);
-			$context['bbc_tags2'][] = array(
-
-				'left' => array('code' => 'left', 'before' => '[left]', 'after' => '[/left]', 'description' => $txt['ezp_bbc_left'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/' ),
-				'center' => array('code' => 'center', 'before' => '[center]', 'after' => '[/center]', 'description' => $txt['ezp_bbc_center'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'right' => array('code' => 'right', 'before' => '[right]', 'after' => '[/right]', 'description' => $txt['ezp_bbc_right'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-
-				array(),
-				'size' => array('code' => 'size', 'before' => '[size=10pt]', 'after' => '[/size]', 'description' => $txt['ezp_bbc_size'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/'),
-				'face' => array('code' => 'font', 'before' => '[font=Verdana]', 'after' => '[/font]', 'description' => $txt['ezp_bbc_face'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/' ),
-				array(),
-				'hr' => array('code' => 'hr', 'before' => '[hr]', 'description' => $txt['ezp_bbc_hr'], 'imagebase' =>  $ezpSettings['ezp_url'] . 'icons/' ),
-
-			);
-
-			foreach ($context['bbc_tags2'] as $i => $row)
-			{
-				foreach ($row as $image => $tag)
-				{
-					// Is this tag disabled?
-					if (!empty($tag['code']) && !empty($context['disabled_tags'][$tag['code']]))
-						continue;
-
-					if (isset($tag['before']))
-                    {
-                        if (isset($tag['imagebase']))
-						  echo '<a href="javascript:' . (isset($tag['after']) ? 'surround' : 'replace') . 'Text(\'' . $tag['before'] . '\'' . (isset($tag['after']) ? ', \'' . $tag['after'] . '\'' : '') . ', document.forms.ezpshoutform.shout);"><img src="' . $tag['imagebase']  . $image . '.gif" align="bottom" width="23" height="22" alt="' . $tag['description'] . '" border="0" /></a>';
-                        else
-                            echo '<a href="javascript:' . (isset($tag['after']) ? 'surround' : 'replace') . 'Text(\'' . $tag['before'] . '\'' . (isset($tag['after']) ? ', \'' . $tag['after'] . '\'' : '') . ', document.forms.ezpshoutform.shout);"><img src="' . $settings['images_url'] . '/bbc/' . $image . '.gif" align="bottom" width="23" height="22" alt="' . $tag['description'] . '" border="0" /></a>';
-
-				    }
-
-                }
-
-				if ($i != count($context['bbc_tags2']) - 1)
-					echo '<br />';
-			}
+			EzBlockShoutBoxRenderBBCButtons($shoutboxId, $ezpSettings, $txt, $context, $settings);
 		}
 
-
-	if ($ezpSettings['ezp_shoutbox_showsmilies'])
-	{
-		echo '<br />';
-
-		if (function_exists("set_tld_regex"))
-        {
-
-            $context['shout_smileys'] = array(
-                'smileys' => array(
-                    array('code' => ':)', 'filename' => 'smiley.png'),
-                    array('code' => ';)', 'filename' => 'wink.png'),
-                    array('code' => ':D', 'filename' => 'cheesy.png'),
-                    array('code' => ';D', 'filename' => 'grin.png'),
-                    array('code' => '>:(', 'filename' => 'angry.png'),
-                    array('code' => ':(', 'filename' => 'sad.png'),
-                    array('code' => ':o', 'filename' => 'shocked.png'),
-                    array('code' => '8)', 'filename' => 'cool.png'),
-                    array('code' => '???', 'filename' => 'huh.png'),
-                    array('code' => '::)', 'filename' => 'rolleyes.png'),
-                    array('code' => ':P', 'filename' => 'tongue.png'),
-                    array('code' => ':-[', 'filename' => 'embarrassed.png'),
-                    array('code' => ':-X', 'filename' => 'lipsrsealed.png'),
-                    array('code' => ':-\\', 'filename' => 'undecided.png'),
-                    array('code' => ':-*', 'filename' => 'kiss.png'),
-                    array('code' => ':\'(', 'filename' => 'cry.png')
-                ),
-
-            );
-        }
-		else
-        {
-
-            $context['shout_smileys'] = array(
-                'smileys' => array(
-                    array('code' => ':)', 'filename' => 'smiley.gif'),
-                    array('code' => ';)', 'filename' => 'wink.gif'),
-                    array('code' => ':D', 'filename' => 'cheesy.gif'),
-                    array('code' => ';D', 'filename' => 'grin.gif'),
-                    array('code' => '>:(', 'filename' => 'angry.gif'),
-                    array('code' => ':(', 'filename' => 'sad.gif'),
-                    array('code' => ':o', 'filename' => 'shocked.gif'),
-                    array('code' => '8)', 'filename' => 'cool.gif'),
-                    array('code' => '???', 'filename' => 'huh.gif'),
-                    array('code' => '::)', 'filename' => 'rolleyes.gif'),
-                    array('code' => ':P', 'filename' => 'tongue.gif'),
-                    array('code' => ':-[', 'filename' => 'embarrassed.gif'),
-                    array('code' => ':-X', 'filename' => 'lipsrsealed.gif'),
-                    array('code' => ':-\\', 'filename' => 'undecided.gif'),
-                    array('code' => ':-*', 'filename' => 'kiss.gif'),
-                    array('code' => ':\'(', 'filename' => 'cry.gif')
-                ),
-
-            );
-        }
-
-
-
-
-		$settings['smileys_url'] = $modSettings['smileys_url'] . '/' . $user_info['smiley_set'];
-	// Show each row of smileys ;).
-		foreach ($context['shout_smileys'] as $smiley_row)
+		// Smileys
+		if ($ezpSettings['ezp_shoutbox_showsmilies'])
 		{
-
-			foreach (@$smiley_row as $smiley)
-			{
-				echo '
-				<a href="javascript:replaceText(\' ', addslashes($smiley['code']), '\', document.forms.ezpshoutform.shout);"><img src="', $settings['smileys_url'], '/', $smiley['filename'], '" align="bottom" alt="" title="" border="0" /></a>';
-			}
-
+			EzBlockShoutBoxRenderSmileys($shoutboxId, $modSettings, $user_info, $settings);
 		}
 
+		echo '<textarea id="', $shoutboxId, '_input" name="shout" rows="3" cols="30" style="width: 96%"></textarea><br />';
+		echo '<button type="button" id="', $shoutboxId, '_submit" onclick="ezpShoutbox_', $shoutboxId, '.addShout();">', $txt['ezp_shoutbox_add_shout'], '</button>';
+		echo '<span id="', $shoutboxId, '_status" style="margin-left: 10px;"></span>';
+		echo '</div>';
 	}
+
+	echo '</div>'; // End AJAX container
+
+	// Noscript fallback - static shouts and traditional form
+	echo '<noscript>';
+	EzBlockShoutBoxRenderNoscript($parameters, $numberofShouts, $ezpSettings, $txt, $smcFunc, $scripturl, $context, $user_info, $settings, $modSettings, $adminShoutBox);
+	echo '</noscript>';
+
+	echo '</div>'; // End main container
+
+	// JavaScript for AJAX shoutbox
+	$jsConfig = array(
+		'containerId' => $shoutboxId,
+		'scriptUrl' => $scripturl,
+		'sessionId' => $context['session_id'],
+		'sessionVar' => $context['session_var'],
+		'numShouts' => (int) $numberofShouts,
+		'refreshSeconds' => $refreshSeconds,
+		'isAdmin' => $adminShoutBox ? 1 : 0,
+		'isGuest' => $user_info['is_guest'] ? 1 : 0,
+		'showDate' => !empty($ezpSettings['ezp_shoutbox_showdate']) ? 1 : 0,
+		'hideSays' => !empty($ezpSettings['ezp_shoutbox_hidesays']) ? 1 : 0,
+		'hideDelete' => !empty($ezpSettings['ezp_shoutbox_hidedelete']) ? 1 : 0,
+		'txtSays' => addslashes($txt['ezp_shoutbox_says'] ?? ' says: '),
+		'txtDelete' => '[X]',
+		'txtLoading' => addslashes($txt['ezp_shoutbox_loading'] ?? 'Loading...'),
+		'txtError' => addslashes($txt['ezp_shoutbox_error'] ?? 'Error loading shouts'),
+	);
 
 	echo '
-			<textarea name="shout"  rows="3" cols="30" style="width: 96%"></textarea>
-			<br />
-			<input type="submit" value="', $txt['ezp_shoutbox_add_shout'], '" />
+<script type="text/javascript">
+(function() {
+	var config = {
+		containerId: "', $jsConfig['containerId'], '",
+		scriptUrl: "', $jsConfig['scriptUrl'], '",
+		sessionId: "', $jsConfig['sessionId'], '",
+		sessionVar: "', $jsConfig['sessionVar'], '",
+		numShouts: ', $jsConfig['numShouts'], ',
+		refreshSeconds: ', $jsConfig['refreshSeconds'], ',
+		isAdmin: ', $jsConfig['isAdmin'], ',
+		isGuest: ', $jsConfig['isGuest'], ',
+		showDate: ', $jsConfig['showDate'], ',
+		hideSays: ', $jsConfig['hideSays'], ',
+		hideDelete: ', $jsConfig['hideDelete'], ',
+		txtSays: "', $jsConfig['txtSays'], '",
+		txtDelete: "', $jsConfig['txtDelete'], '",
+		txtLoading: "', $jsConfig['txtLoading'], '",
+		txtError: "', $jsConfig['txtError'], '"
+	};
 
-		</form>';
+	var shoutbox = {
+		refreshTimer: null,
+		isLoading: false,
+
+		init: function() {
+			this.loadShouts();
+			if (config.refreshSeconds > 0) {
+				this.startAutoRefresh();
+			}
+		},
+
+		loadShouts: function() {
+			if (this.isLoading) return;
+			this.isLoading = true;
+
+			var self = this;
+			var xhr = new XMLHttpRequest();
+			var url = config.scriptUrl + (config.scriptUrl.indexOf("?") === -1 ? "?" : "&") +
+				"action=ezportal;sa=ajaxshouts;num=" + config.numShouts + ";" + new Date().getTime();
+
+			xhr.open("GET", url, true);
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4) {
+					self.isLoading = false;
+					if (xhr.status === 200) {
+						try {
+							var response = JSON.parse(xhr.responseText);
+							if (response.success) {
+								self.renderShouts(response.shouts);
+							} else {
+								self.showError(response.error || config.txtError);
+							}
+						} catch (e) {
+							self.showError(config.txtError);
+						}
+					} else {
+						self.showError(config.txtError);
+					}
+				}
+			};
+			xhr.send();
+		},
+
+		renderShouts: function(shouts) {
+			var container = document.getElementById(config.containerId + "_messages");
+			if (!container) return;
+
+			var html = "";
+			for (var i = 0; i < shouts.length; i++) {
+				var s = shouts[i];
+				if (config.showDate) {
+					html += s.date + " ";
+				}
+				html += \'<a href="\' + config.scriptUrl + \'?action=profile;u=\' + s.member_id + \'" style="color: \' + (s.color || "") + \';">\' + this.escapeHtml(s.member_name) + \'</a>\';
+				if (!config.hideSays) {
+					html += config.txtSays;
+				} else {
+					html += ": ";
+				}
+				html += s.shout_html;
+				if (config.isAdmin && !config.hideDelete) {
+					html += \'<br /><a href="javascript:void(0);" onclick="ezpShoutbox_\' + config.containerId + \'.removeShout(\' + s.id + \');" style="color: #FF0000">\' + config.txtDelete + \'</a>\';
+				}
+				html += "<br /><hr>";
+			}
+
+			if (shouts.length === 0) {
+				html = "<em>No shouts yet.</em>";
+			}
+
+			container.innerHTML = html;
+		},
+
+		addShout: function() {
+			if (config.isGuest) return;
+
+			var input = document.getElementById(config.containerId + "_input");
+			var status = document.getElementById(config.containerId + "_status");
+			var submitBtn = document.getElementById(config.containerId + "_submit");
+
+			if (!input || !input.value.trim()) return;
+
+			var shoutText = input.value;
+			submitBtn.disabled = true;
+			status.innerHTML = "Sending...";
+
+			var self = this;
+			var xhr = new XMLHttpRequest();
+			var url = config.scriptUrl + (config.scriptUrl.indexOf("?") === -1 ? "?" : "&") + "action=ezportal;sa=ajaxaddshout";
+
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4) {
+					submitBtn.disabled = false;
+					if (xhr.status === 200) {
+						try {
+							var response = JSON.parse(xhr.responseText);
+							if (response.success) {
+								input.value = "";
+								status.innerHTML = "";
+								self.loadShouts();
+							} else {
+								status.innerHTML = response.error || "Error";
+								status.style.color = "#FF0000";
+							}
+						} catch (e) {
+							status.innerHTML = "Error";
+							status.style.color = "#FF0000";
+						}
+					} else {
+						status.innerHTML = "Error";
+						status.style.color = "#FF0000";
+					}
+				}
+			};
+			xhr.send("shout=" + encodeURIComponent(shoutText) + "&" + config.sessionVar + "=" + encodeURIComponent(config.sessionId));
+		},
+
+		removeShout: function(shoutId) {
+			if (!config.isAdmin) return;
+			if (!confirm("Delete this shout?")) return;
+
+			var self = this;
+			var xhr = new XMLHttpRequest();
+			var url = config.scriptUrl + (config.scriptUrl.indexOf("?") === -1 ? "?" : "&") + "action=ezportal;sa=ajaxremoveshout";
+
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4) {
+					if (xhr.status === 200) {
+						try {
+							var response = JSON.parse(xhr.responseText);
+							if (response.success) {
+								self.loadShouts();
+							} else {
+								alert(response.error || "Error deleting shout");
+							}
+						} catch (e) {
+							alert("Error deleting shout");
+						}
+					}
+				}
+			};
+			xhr.send("shout=" + shoutId + "&" + config.sessionVar + "=" + encodeURIComponent(config.sessionId));
+		},
+
+		startAutoRefresh: function() {
+			var self = this;
+			this.refreshTimer = setInterval(function() {
+				self.loadShouts();
+			}, config.refreshSeconds * 1000);
+		},
+
+		stopAutoRefresh: function() {
+			if (this.refreshTimer) {
+				clearInterval(this.refreshTimer);
+				this.refreshTimer = null;
+			}
+		},
+
+		showError: function(message) {
+			var container = document.getElementById(config.containerId + "_messages");
+			if (container) {
+				container.innerHTML = "<span style=\"color: #FF0000;\">" + this.escapeHtml(message) + "</span>";
+			}
+		},
+
+		escapeHtml: function(text) {
+			var div = document.createElement("div");
+			div.appendChild(document.createTextNode(text));
+			return div.innerHTML;
+		}
+	};
+
+	// Make available globally for BBC/smiley buttons and delete links
+	window["ezpShoutbox_" + config.containerId] = shoutbox;
+
+	// Initialize when DOM is ready
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", function() { shoutbox.init(); });
+	} else {
+		shoutbox.init();
 	}
-
-	echo '</div>
-	</td>
-	</tr>
-	</table>';
+})();
+</script>';
 
 	$context['save_embed_disable'] = 0;
+}
 
+/**
+ * Render BBC buttons for shoutbox
+ */
+function EzBlockShoutBoxRenderBBCButtons($shoutboxId, $ezpSettings, $txt, $context, $settings)
+{
+	$bbc_tags = array(
+		array(
+			'bold' => array('code' => 'b', 'before' => '[b]', 'after' => '[/b]', 'description' => $txt['ezp_bbc_bold'] ?? 'Bold', 'imagebase' => $ezpSettings['ezp_url'] . 'icons/'),
+			'italicize' => array('code' => 'i', 'before' => '[i]', 'after' => '[/i]', 'description' => $txt['ezp_bbc_italic'] ?? 'Italic', 'imagebase' => $ezpSettings['ezp_url'] . 'icons/'),
+			'underline' => array('code' => 'u', 'before' => '[u]', 'after' => '[/u]', 'description' => $txt['ezp_bbc_underline'] ?? 'Underline', 'imagebase' => $ezpSettings['ezp_url'] . 'icons/'),
+			'strike' => array('code' => 's', 'before' => '[s]', 'after' => '[/s]', 'description' => $txt['ezp_bbc_strike'] ?? 'Strikethrough', 'imagebase' => $ezpSettings['ezp_url'] . 'icons/'),
+			array(),
+			'img' => array('code' => 'img', 'before' => '[img]', 'after' => '[/img]', 'description' => $txt['ezp_bbc_img'] ?? 'Image', 'imagebase' => $ezpSettings['ezp_url'] . 'icons/'),
+			'url' => array('code' => 'url', 'before' => '[url]', 'after' => '[/url]', 'description' => $txt['ezp_bbc_link'] ?? 'Link', 'imagebase' => $ezpSettings['ezp_url'] . 'icons/'),
+		),
+	);
 
+	foreach ($bbc_tags as $i => $row)
+	{
+		foreach ($row as $image => $tag)
+		{
+			if (empty($tag) || is_int($image)) continue;
+			if (!empty($tag['code']) && !empty($context['disabled_tags'][$tag['code']])) continue;
+
+			if (isset($tag['before']))
+			{
+				$jsFunc = isset($tag['after']) ? 'surroundText' : 'replaceText';
+				$jsArgs = isset($tag['after'])
+					? "'" . $tag['before'] . "', '" . $tag['after'] . "'"
+					: "'" . $tag['before'] . "'";
+
+				echo '<a href="javascript:void(0);" onclick="', $jsFunc, '(', $jsArgs, ', document.getElementById(\'', $shoutboxId, '_input\'));"><img src="', $tag['imagebase'], $image, '.gif" align="bottom" width="23" height="22" alt="', $tag['description'], '" border="0" /></a>';
+			}
+		}
+	}
+}
+
+/**
+ * Render smileys for shoutbox
+ */
+function EzBlockShoutBoxRenderSmileys($shoutboxId, $modSettings, $user_info, $settings)
+{
+	echo '<br />';
+
+	$smileys = array(
+		array('code' => ':)', 'filename' => function_exists("set_tld_regex") ? 'smiley.png' : 'smiley.gif'),
+		array('code' => ';)', 'filename' => function_exists("set_tld_regex") ? 'wink.png' : 'wink.gif'),
+		array('code' => ':D', 'filename' => function_exists("set_tld_regex") ? 'cheesy.png' : 'cheesy.gif'),
+		array('code' => ';D', 'filename' => function_exists("set_tld_regex") ? 'grin.png' : 'grin.gif'),
+		array('code' => '>:(', 'filename' => function_exists("set_tld_regex") ? 'angry.png' : 'angry.gif'),
+		array('code' => ':(', 'filename' => function_exists("set_tld_regex") ? 'sad.png' : 'sad.gif'),
+		array('code' => ':o', 'filename' => function_exists("set_tld_regex") ? 'shocked.png' : 'shocked.gif'),
+		array('code' => '8)', 'filename' => function_exists("set_tld_regex") ? 'cool.png' : 'cool.gif'),
+	);
+
+	$smileys_url = $modSettings['smileys_url'] . '/' . $user_info['smiley_set'];
+
+	foreach ($smileys as $smiley)
+	{
+		echo '<a href="javascript:void(0);" onclick="replaceText(\' ', addslashes($smiley['code']), '\', document.getElementById(\'', $shoutboxId, '_input\'));"><img src="', $smileys_url, '/', $smiley['filename'], '" align="bottom" alt="" title="" border="0" /></a>';
+	}
+}
+
+/**
+ * Render noscript fallback for shoutbox
+ */
+function EzBlockShoutBoxRenderNoscript($parameters, $numberofShouts, $ezpSettings, $txt, $smcFunc, $scripturl, $context, $user_info, $settings, $modSettings, $adminShoutBox)
+{
+	echo '<div style="overflow: auto;">';
+
+	// Load shouts from database
+	$dbresult = $smcFunc['db_query']('', "
+		SELECT
+			s.shout, s.date, s.id_shout, s.id_member, m.real_name, mg.online_color, mg.ID_GROUP
+		FROM {db_prefix}ezp_shoutbox AS s
+		LEFT JOIN {db_prefix}members AS m ON (s.ID_MEMBER = m.ID_MEMBER)
+		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(m.ID_GROUP = 0, m.ID_POST_GROUP, m.ID_GROUP))
+		ORDER BY s.id_shout DESC
+		LIMIT {int:limit}",
+		array('limit' => (int) $numberofShouts)
+	);
+
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+	{
+		censorText($row['shout']);
+
+		if (!empty($ezpSettings['ezp_shoutbox_showdate']))
+			echo timeformat($row['date']) . ' ';
+
+		echo '<a href="', $scripturl, '?action=profile;u=', $row['id_member'], '" style="color: ', $row['online_color'], ';">', $row['real_name'], '</a>';
+
+		if (empty($ezpSettings['ezp_shoutbox_hidesays']))
+			echo $txt['ezp_shoutbox_says'];
+		else
+			echo ": ";
+
+		echo parse_bbc($row['shout']);
+
+		if ($adminShoutBox && empty($ezpSettings['ezp_shoutbox_hidedelete']))
+			echo '<br /><a href="', $scripturl, '?action=ezportal;sa=removeshout;shout=', $row['id_shout'], '" style="color: #FF0000">[X]</a>';
+
+		echo '<br /><hr>';
+	}
+	$smcFunc['db_free_result']($dbresult);
+
+	echo '</div>';
+
+	// History link
+	if ($ezpSettings['ezp_shoutbox_archivehistory'] == 1)
+		echo '<span class="smalltext"><a href="', $scripturl, '?action=ezportal;sa=shouthistory">', $txt['ezp_txt_viewshouthistory'], '</a></span><br />';
+
+	// Traditional form for noscript
+	if (!$user_info['is_guest'])
+	{
+		echo '<hr />';
+		echo '<form action="', $scripturl, '?action=ezportal;sa=addshout" method="post" accept-charset="', $context['character_set'], '">';
+		echo '<textarea name="shout" rows="3" cols="30" style="width: 96%"></textarea><br />';
+		echo '<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
+		echo '<input type="submit" value="', $txt['ezp_shoutbox_add_shout'], '" />';
+		echo '</form>';
+	}
 }
 
 

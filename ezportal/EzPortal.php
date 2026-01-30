@@ -4,14 +4,14 @@ EzPortal
 Version 6.0
 by:vbgamer45
 https://www.ezportal.com
-Copyright 2010-2025 https://www.samsonsoftware.com
+Copyright 2010-2026 https://www.samsonsoftware.com
 */
 function EzPortalMain()
 {
 	global $sourcedir, $ezPortalVersion, $context, $ezpSettings, $boardurl, $boarddir;
 
 	// Hold Current Version
-	$ezPortalVersion = '6.0.1';
+	$ezPortalVersion = '6.5';
 
 	// Subs for EzPortal
 	require_once($sourcedir . '/Subs-EzPortalMain.php');

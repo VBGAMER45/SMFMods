@@ -456,4 +456,9 @@ $txt['ezp_txt_sticky'] = 'Fixar coluna';
 $txt['ezp_txt_sticky_note'] = 'Mantém uma coluna visível ao rolar para baixo em uma página';
 
 $txt['ezp_txt_fb_like'] = 'Facebook Like';
+
+// 7.0
+$txt['ezp_no_guest_shout'] = 'Guests not allowed to use shoutbox';
+$txt['ezp_no_shout_entered'] = 'No shout content entered';
+$txt['ezportalWaitTime_broken'] = 'Shouting too fast please wait a second.';
 ?>

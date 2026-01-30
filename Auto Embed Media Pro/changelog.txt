@@ -1,5 +1,5 @@
-7.0.6
-+Added support for youtu.be  ?si= urls
+7.0.6a
+!Minor fix to handle SMF 2.1.7 release for install/uninstall
 
 7.0.5
 +Fixed support for sendvid.com with https

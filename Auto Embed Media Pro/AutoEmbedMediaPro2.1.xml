@@ -31,7 +31,7 @@ $txt['attachment_redetect_mime_desc'] = 'This function will redetect the MIME ty
 
 <file name="$sourcedir/QueryString.php">
 		<operation>
-			<search position="replace"><![CDATA[// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></search>
+			<search position="after"><![CDATA[// If $scripturl is set to nothing]]></search>
 			<add><![CDATA[
 	// Auto Embed Media Pro
 	
@@ -51,7 +51,7 @@ $txt['attachment_redetect_mime_desc'] = 'This function will redetect the MIME ty
 	
 	// End Auto Embed Media Pro
 			
-	// If $scripturl is set to nothing, or the SID is not defined (SSI?) just quit.]]></add>
+	]]></add>
 	</operation>
 	<operation>
 		<search position="end" />
