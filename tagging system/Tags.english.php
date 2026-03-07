@@ -1,9 +1,9 @@
 <?php
 /*
 Tagging System
-Version 1.0
+Version 4.2
 by:vbgamer45
-http://www.smfhacks.com
+https://www.smfhacks.com
 */
 
 //Tags text strings
@@ -21,6 +21,12 @@ $txt['smftags_deletetag'] = '[Delete Tag]';
 $txt['smftags_addtag2'] = 'Add Tag';
 $txt['smftags_tagtoadd'] = 'Tag to Add';
 
+$txt['smftags_menu'] = 'Tags';
+$txt['smftags_admin'] = 'Tags Configuration';
+$txt['smftags_topic'] = 'Tags: ';
+$txt['smftags_seperate'] = 'Separate each tag by a comma';
+$txt['smftags_confirm_delete'] = 'Are you sure you want to remove this tag?';
+$txt['smftags_no_tags'] = 'No tags have been added yet.';
 
 //Tags Admin Settings
 $txt['smftags_set_mintaglength'] = 'Minimum Tag Length';
@@ -45,6 +51,7 @@ $txt['smftags_err_maxtag'] = 'The tag is greater than the maximum tag length of 
 $txt['smftags_err_toomaxtag'] = 'Tag limit per topic exceeded.';
 $txt['smftags_err_permaddtags'] = 'You are not allowed to add tags to that topic.';
 $txt['smftags_err_alreadyexists'] = 'That tag for that topic already exists.';
+$txt['smftags_err_ajax'] = 'An error occurred while adding the tag.';
 
 $txt['smftags_settings'] = 'Tags Settings';
 $txt['smftags_pages'] = 'Pages: ';
@@ -67,5 +74,21 @@ $txt['smftags_set_msgindex_max_show'] =   'Maximum number of tags to display und
 $txt['smftags_set_use_css_tags'] =  'Use CSS Tags to display tags';
 $txt['smftags_set_css_tag_background_color'] = 'CSS Tag Background Color';
 $txt['smftags_set_css_tag_font_color'] = 'CSS Tag Font Color';
+
+// Permissions
+$txt['permissiongroup_smftags'] = 'SMF Tags';
+$txt['permissiongroup_simple_smftags'] = 'SMF Tags';
+$txt['permissionname_smftags_suggest'] = 'Suggest Tags';
+$txt['permissionhelp_smftags_suggest'] = 'Users can suggest tags to add';
+$txt['cannot_smftags_suggest'] = 'You are not allowed to suggest tags.';
+$txt['permissionname_smftags_add'] = 'Add Tags to Own Topics';
+$txt['permissionhelp_smftags_add'] = 'Users can add tags';
+$txt['cannot_smftags_add'] = 'You are not allowed to add tags to topics';
+$txt['permissionname_smftags_del'] = 'Delete Tags to Own Topics';
+$txt['permissionhelp_smftags_del'] = 'Users can delete tags from topics they open';
+$txt['cannot_smftags_del'] = 'You are not allowed to delete this tags';
+$txt['permissionname_smftags_manage'] = 'Manage Tags';
+$txt['permissionhelp_smftags_manage'] = 'Users can modify the tag settings and add and remove ANY tags. This permission is normally given to forum admins only!';
+$txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 
 ?>

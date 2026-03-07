@@ -363,7 +363,7 @@ $txt['whoall_downloads'] = 'In de <a href="' . $scripturl . '?action=downloads">
 	</operation>
 </file>
 
-<file name="$languagedir/Modifications.german.php">
+<file name="$languagedir/Modifications.german.php" error="skip">
 	<operation>
 		<search position="end" />
 		<add><![CDATA[

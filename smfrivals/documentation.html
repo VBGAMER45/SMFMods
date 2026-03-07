@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMF Rivals - User Documentation</title>
+<style>
+	* { box-sizing: border-box; margin: 0; padding: 0; }
+	body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.7; color: #2d3748; background: #f7fafc; }
+	a { color: #3182ce; text-decoration: none; }
+	a:hover { text-decoration: underline; }
+
+	/* Layout */
+	.wrapper { display: flex; min-height: 100vh; }
+
+	/* Sidebar */
+	.sidebar { width: 280px; background: #1a202c; color: #e2e8f0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; padding: 0; z-index: 100; }
+	.sidebar-header { padding: 24px 20px; background: #2d3748; border-bottom: 1px solid #4a5568; }
+	.sidebar-header h1 { font-size: 1.25rem; color: #fff; margin-bottom: 4px; }
+	.sidebar-header .version { font-size: 0.8rem; color: #a0aec0; }
+	.sidebar nav { padding: 12px 0; }
+	.sidebar nav a { display: block; padding: 8px 20px; color: #cbd5e0; font-size: 0.9rem; transition: all 0.15s; border-left: 3px solid transparent; }
+	.sidebar nav a:hover { background: #2d3748; color: #fff; text-decoration: none; border-left-color: #63b3ed; }
+	.sidebar nav .section-title { padding: 16px 20px 6px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #718096; font-weight: 700; }
+
+	/* Main content */
+	.content { flex: 1; margin-left: 280px; padding: 40px 60px 80px; max-width: 900px; }
+
+	/* Headings */
+	h2 { font-size: 1.8rem; color: #1a202c; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+	h2:first-of-type { margin-top: 0; }
+	h3 { font-size: 1.3rem; color: #2d3748; margin: 32px 0 12px; }
+	h4 { font-size: 1.05rem; color: #4a5568; margin: 20px 0 8px; }
+
+	/* Content blocks */
+	p { margin-bottom: 12px; }
+	ul, ol { margin: 0 0 16px 24px; }
+	li { margin-bottom: 6px; }
+
+	/* Cards */
+	.card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+	.card h4 { margin-top: 0; color: #2d3748; }
+
+	/* Tables */
+	table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+	th { background: #edf2f7; color: #4a5568; font-weight: 600; text-align: left; padding: 10px 14px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.03em; }
+	td { padding: 10px 14px; border-top: 1px solid #e2e8f0; font-size: 0.93rem; }
+	tr:hover td { background: #f7fafc; }
+
+	/* Info boxes */
+	.info-box { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+	.info-box strong { color: #2b6cb0; }
+	.warn-box { background: #fffaf0; border-left: 4px solid #dd6b20; padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+	.warn-box strong { color: #c05621; }
+	.tip-box { background: #f0fff4; border-left: 4px solid #38a169; padding: 14px 18px; margin: 16px 0; border-radius: 0 6px 6px 0; }
+	.tip-box strong { color: #276749; }
+
+	/* Workflow steps */
+	.workflow { counter-reset: step; margin: 16px 0 24px; }
+	.workflow .step { display: flex; align-items: flex-start; margin-bottom: 12px; }
+	.workflow .step::before { counter-increment: step; content: counter(step); background: #3182ce; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; margin-right: 14px; margin-top: 2px; }
+	.workflow .step p { margin: 0; }
+
+	/* Flow arrow */
+	.flow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
+	.flow .flow-item { background: #fff; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; }
+	.flow .flow-arrow { color: #a0aec0; font-size: 1.2rem; }
+
+	/* Badge */
+	.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
+	.badge-blue { background: #ebf8ff; color: #2b6cb0; }
+	.badge-green { background: #f0fff4; color: #276749; }
+	.badge-orange { background: #fffaf0; color: #c05621; }
+	.badge-red { background: #fff5f5; color: #c53030; }
+
+	/* Code */
+	code { background: #edf2f7; padding: 2px 6px; border-radius: 4px; font-size: 0.88rem; font-family: "SFMono-Regular", Consolas, monospace; }
+
+	/* Responsive */
+	@media (max-width: 960px) {
+		.sidebar { display: none; }
+		.content { margin-left: 0; padding: 24px 20px 60px; }
+	}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar">
+	<div class="sidebar-header">
+		<h1>SMF Rivals</h1>
+		<div class="version">Version 1.0.0 &mdash; User Guide</div>
+	</div>
+	<nav>
+		<div class="section-title">Getting Started</div>
+		<a href="#overview">Overview</a>
+		<a href="#installation">Installation</a>
+		<a href="#permissions">Permissions</a>
+
+		<div class="section-title">For Players</div>
+		<a href="#profile">Your Profile</a>
+		<a href="#clans">Clans</a>
+		<a href="#ladders">Ladders &amp; Standings</a>
+		<a href="#challenges">Challenges &amp; Matches</a>
+		<a href="#tournaments">Tournaments</a>
+		<a href="#leagues">Leagues &amp; Seasons</a>
+		<a href="#matchfinder">Match Finder</a>
+		<a href="#mvp">MVP Awards</a>
+		<a href="#leaderboard">Leaderboard</a>
+		<a href="#alerts">Notifications</a>
+
+		<div class="section-title">Game Systems</div>
+		<a href="#ranking-elo">ELO Ranking</a>
+		<a href="#ranking-swap">Swap Ranking</a>
+		<a href="#ranking-rth">RTH Ranking</a>
+		<a href="#decerto">Decerto &amp; CPC</a>
+		<a href="#football">Football Mode</a>
+		<a href="#status-icons">Status Icons</a>
+
+		<div class="section-title">For Administrators</div>
+		<a href="#admin-settings">General Settings</a>
+		<a href="#admin-platforms">Managing Platforms</a>
+		<a href="#admin-ladders">Managing Ladders</a>
+		<a href="#admin-clans">Managing Clans</a>
+		<a href="#admin-tournaments">Managing Tournaments</a>
+		<a href="#admin-seasons">Managing Seasons</a>
+		<a href="#admin-gamemodes">Game Modes &amp; Maps</a>
+		<a href="#admin-mvp">MVP Definitions</a>
+		<a href="#admin-random">Random Map of the Day</a>
+		<a href="#admin-matches">Match Moderation</a>
+	</nav>
+</aside>
+
+<!-- Main Content -->
+<main class="content">
+
+<!-- ========== OVERVIEW ========== -->
+<h2 id="overview">Overview</h2>
+
+<p>SMF Rivals is a comprehensive competitive gaming modification for Simple Machines Forum (SMF) 2.1. It transforms your forum into a full-featured competitive gaming hub with clan management, ranked ladders, tournaments, leagues, and more.</p>
+
+<h3>Key Features</h3>
+<ul>
+	<li><strong>Clan System</strong> &mdash; Create and manage gaming teams with members, rosters, and internal chat</li>
+	<li><strong>Ranked Ladders</strong> &mdash; Compete on ladders with ELO, Swap, or RTH ranking systems</li>
+	<li><strong>Challenge &amp; Match System</strong> &mdash; Challenge opponents, report results, track detailed statistics</li>
+	<li><strong>Tournaments</strong> &mdash; Single elimination, double elimination, round robin, and league formats</li>
+	<li><strong>Seasons &amp; Leagues</strong> &mdash; Organize competitions into seasons with archived standings</li>
+	<li><strong>MVP Awards</strong> &mdash; Recognize top performers in matches and tournaments</li>
+	<li><strong>Decerto &amp; CPC Modes</strong> &mdash; Multi-round match formats with random map/mode selection</li>
+	<li><strong>Football (Calcio) Mode</strong> &mdash; Goal-based ladder variant for sports games</li>
+	<li><strong>Profile Integration</strong> &mdash; Gamer tags, clan info, and stats on user profiles</li>
+	<li><strong>Alerts</strong> &mdash; Real-time notifications for challenges, match results, clan invites, and more</li>
+</ul>
+
+<!-- ========== INSTALLATION ========== -->
+<h2 id="installation">Installation</h2>
+
+<div class="workflow">
+	<div class="step"><p>Log in to your SMF forum as an administrator.</p></div>
+	<div class="step"><p>Go to <strong>Admin &gt; Packages</strong>.</p></div>
+	<div class="step"><p>Upload the <code>smfrivals.tar.gz</code> or <code>smfrivals.zip</code> package.</p></div>
+	<div class="step"><p>Click <strong>Install</strong> and follow the prompts. The installer will create all database tables, register hooks, and add the Rivals menu to your forum.</p></div>
+	<div class="step"><p>Go to <strong>Admin &gt; Rivals</strong> to configure your settings.</p></div>
+</div>
+
+<div class="info-box">
+	<strong>Note:</strong> After installation, you must enable the mod by setting <em>Rivals Enabled</em> to <strong>Yes</strong> in the admin settings before it becomes visible to users.
+</div>
+
+<!-- ========== PERMISSIONS ========== -->
+<h2 id="permissions">Permissions</h2>
+
+<p>SMF Rivals uses a permission system to control access. Administrators can configure these under <strong>Admin &gt; Permissions</strong>.</p>
+
+<table>
+	<thead>
+		<tr><th>Permission</th><th>Description</th><th>Default</th></tr>
+	</thead>
+	<tbody>
+		<tr><td><code>rivals_view</code></td><td>View all Rivals pages</td><td>All users</td></tr>
+		<tr><td><code>rivals_manage_clan</code></td><td>Create and manage clans</td><td>Registered members</td></tr>
+		<tr><td><code>rivals_challenge</code></td><td>Send match challenges</td><td>Registered members</td></tr>
+		<tr><td><code>rivals_report</code></td><td>Report match results</td><td>Registered members</td></tr>
+		<tr><td><code>rivals_moderate</code></td><td>Moderate disputed matches</td><td>Moderators</td></tr>
+		<tr><td><code>rivals_admin</code></td><td>Full administrative access</td><td>Administrators</td></tr>
+	</tbody>
+</table>
+
+<div class="warn-box">
+	<strong>Important:</strong> Guests cannot manage clans, send challenges, report matches, or access moderation features regardless of permission settings.
+</div>
+
+<!-- ========== PROFILE ========== -->
+<h2 id="profile">Your Profile</h2>
+
+<p>Once Rivals is installed, a new <strong>Rivals</strong> section appears in every user's profile page. Here you can see and manage your competitive identity.</p>
+
+<h3>Gamer Name</h3>
+<p>Your gamer name is your in-game identity displayed throughout the Rivals system. You can set or change it on your own profile. Administrators can also edit any user's gamer name.</p>
+
+<h3>Profile Stats</h3>
+<p>Your profile displays the following information:</p>
+<ul>
+	<li><strong>Clan</strong> &mdash; Your current clan and role (Leader, Co-Leader, or Member)</li>
+	<li><strong>Ladder Standings</strong> &mdash; Every ladder you're enrolled in, with your rank, score, and W-L-D record</li>
+	<li><strong>Tournament History</strong> &mdash; Your last 10 tournament participations</li>
+	<li><strong>Experience &amp; Level</strong> &mdash; Your accumulated XP and current level</li>
+	<li><strong>MVP Count</strong> &mdash; Total MVP awards received</li>
+</ul>
+
+<!-- ========== CLANS ========== -->
+<h2 id="clans">Clans</h2>
+
+<p>Clans are the heart of team-based competition in Rivals. They represent your gaming team and allow you to challenge other clans on ladders and enter tournaments together.</p>
+
+<h3>Browsing Clans</h3>
+<p>The <strong>Clans</strong> page shows all active clans in a sortable directory. You can filter clans by:</p>
+<ul>
+	<li><strong>Alphabetical</strong> &mdash; Click any letter A-Z to filter by name</li>
+	<li><strong>Ladder</strong> &mdash; Filter to show only clans in a specific ladder</li>
+</ul>
+
+<h3>Creating a Clan</h3>
+<div class="workflow">
+	<div class="step"><p>Go to <strong>Rivals &gt; Clans</strong> and click <strong>Create Clan</strong>.</p></div>
+	<div class="step"><p>Enter your clan name (must be unique, at least 2 characters).</p></div>
+	<div class="step"><p>Add an optional description, website URL, and logo image.</p></div>
+	<div class="step"><p>Click <strong>Create</strong>. You automatically become the clan Leader.</p></div>
+</div>
+
+<div class="info-box">
+	<strong>Note:</strong> The administrator may require a minimum number of forum posts before you can create a clan. You also cannot lead more than one clan at the same time.
+</div>
+
+<h3>Joining a Clan</h3>
+<p>To join an existing clan, visit the clan's profile page and click <strong>Join Clan</strong>. Your request will be marked as <em>Pending</em> until a clan leader approves it.</p>
+
+<h3>Clan Profile Page</h3>
+<p>Each clan has a profile page with four tabs:</p>
+
+<table>
+	<thead><tr><th>Tab</th><th>Contents</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Info</strong></td><td>Description, website, GUID/UAC codes, favorite maps and teams, W-L-D record, achievements</td></tr>
+		<tr><td><strong>Members</strong></td><td>Full member roster with gamer names, roles, and individual stats (kills, deaths, assists, MVPs)</td></tr>
+		<tr><td><strong>Stats</strong></td><td>Performance on each ladder the clan is enrolled in &mdash; rank, score, W-L-D, streak</td></tr>
+		<tr><td><strong>History</strong></td><td>Last 10 completed matches with scores and results</td></tr>
+	</tbody>
+</table>
+
+<h3>Managing Your Clan</h3>
+<p>If you are a clan Leader or Co-Leader, the <strong>Manage Clan</strong> dashboard gives you access to:</p>
+
+<table>
+	<thead><tr><th>Section</th><th>What You Can Do</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Edit Clan</strong></td><td>Change name, description, website, logo, favorite maps/teams, GUID, UAC, or close the clan to new members</td></tr>
+		<tr><td><strong>Members</strong></td><td>Promote members to Co-Leader, demote Co-Leaders, or kick members from the clan</td></tr>
+		<tr><td><strong>Pending</strong></td><td>Approve or deny join requests from prospective members</td></tr>
+		<tr><td><strong>Invite</strong></td><td>Search for forum members and send them a clan invitation (they receive an alert)</td></tr>
+		<tr><td><strong>Rosters</strong></td><td>Create named sub-teams from your members for tournament entry</td></tr>
+		<tr><td><strong>Clan Chat</strong></td><td>A private internal message board visible only to clan members</td></tr>
+		<tr><td><strong>Challenges</strong></td><td>View incoming match challenges awaiting your response</td></tr>
+	</tbody>
+</table>
+
+<h3>Clan Roles</h3>
+<table>
+	<thead><tr><th>Role</th><th>Abilities</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Leader</strong></td><td>Full control: edit clan, manage all members, accept challenges, enter tournaments</td></tr>
+		<tr><td><strong>Co-Leader</strong></td><td>Same as Leader (can be demoted by the Leader)</td></tr>
+		<tr><td><strong>Member</strong></td><td>Participate in matches, view clan chat, use clan rosters</td></tr>
+	</tbody>
+</table>
+
+<!-- ========== LADDERS ========== -->
+<h2 id="ladders">Ladders &amp; Standings</h2>
+
+<p>Ladders are the core competitive structure. Each ladder represents a competitive arena where clans or individual players compete for rankings.</p>
+
+<h3>Platform &amp; Ladder Hierarchy</h3>
+<p>Ladders are organized in a hierarchy:</p>
+
+<div class="flow">
+	<div class="flow-item">Platform (e.g. Xbox)</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Parent Ladder (e.g. Call of Duty)</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Sub-Ladder (e.g. Team Deathmatch)</div>
+</div>
+
+<p>Start by visiting <strong>Rivals &gt; Platforms</strong> to browse available platforms, then drill down into ladders.</p>
+
+<h3>Ladder Types</h3>
+<table>
+	<thead><tr><th>Type</th><th>Description</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Clan Ladder</strong></td><td>Teams of players compete as clans</td></tr>
+		<tr><td><strong>1v1 Ladder</strong></td><td>Individual players compete against each other</td></tr>
+	</tbody>
+</table>
+
+<h3>Ladder Styles</h3>
+<table>
+	<thead><tr><th>Style</th><th>Description</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Standard</strong></td><td>Simple score-based competition. Report a single match score.</td></tr>
+		<tr><td><strong>Decerto</strong></td><td>3-round format with random game modes AND random maps each round. See <a href="#decerto">Decerto &amp; CPC</a>.</td></tr>
+		<tr><td><strong>CPC</strong></td><td>3-round format with random maps only (one fixed game mode). See <a href="#decerto">Decerto &amp; CPC</a>.</td></tr>
+		<tr><td><strong>Football</strong></td><td>Goal-based scoring with goals for/against tracking. See <a href="#football">Football Mode</a>.</td></tr>
+	</tbody>
+</table>
+
+<h3>Joining a Ladder</h3>
+<p>To compete on a ladder, visit the ladder's standings page and click <strong>Join Ladder</strong>. You (or your clan) will be added to the bottom of the standings with a starting score (1500 for ELO, 50 for RTH).</p>
+
+<h3>Reading the Standings</h3>
+<p>The standings table shows each competitor's current position. Columns include:</p>
+<ul>
+	<li><strong>Rank</strong> &mdash; Current position (with arrow showing movement since last update)</li>
+	<li><strong>Name</strong> &mdash; Clan or player name</li>
+	<li><strong>Score</strong> &mdash; Current rating (ELO points, swap rank, or RTH points)</li>
+	<li><strong>W-L-D</strong> &mdash; Wins, Losses, and Draws</li>
+	<li><strong>Streak</strong> &mdash; Recent results (e.g. WWLWW)</li>
+	<li><strong>Status</strong> &mdash; Activity icons (see <a href="#status-icons">Status Icons</a>)</li>
+</ul>
+
+<p>If <strong>Advanced Stats</strong> are enabled for the ladder, you'll also see per-player statistics: kills, deaths, assists, K/D ratio, goals, and MVP count.</p>
+
+<h3>Freezing Your Position</h3>
+<p>If you need a break from competition, you can <strong>Freeze</strong> your position on a ladder. While frozen, your rank is preserved but you cannot challenge or be challenged. Unfreezing restores you to active competition.</p>
+
+<div class="warn-box">
+	<strong>Freeze Cost:</strong> Freezing may incur a score penalty (configured by the administrator, default 25%). This prevents abuse of the freeze system.
+</div>
+
+<!-- ========== CHALLENGES & MATCHES ========== -->
+<h2 id="challenges">Challenges &amp; Matches</h2>
+
+<p>The challenge and match system is how competition happens on ladders. Here's the complete workflow from challenge to confirmed result.</p>
+
+<h3>Match Workflow</h3>
+
+<div class="flow">
+	<div class="flow-item">Create Challenge</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Accept/Decline</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Play Match</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Report Result</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Confirm/Dispute</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item">Rankings Updated</div>
+</div>
+
+<h4>Step 1: Creating a Challenge</h4>
+<div class="workflow">
+	<div class="step"><p>Navigate to the ladder standings where you want to compete.</p></div>
+	<div class="step"><p>Click on an opponent's name and select <strong>Challenge</strong>, or go to <strong>Rivals &gt; Challenge</strong>.</p></div>
+	<div class="step"><p>Select the ladder, choose your opponent, and optionally add match details.</p></div>
+	<div class="step"><p>Choose whether the match is <strong>Ranked</strong> (affects standings) or <strong>Unranked</strong> (practice only).</p></div>
+	<div class="step"><p>Submit the challenge. Your opponent receives an alert notification.</p></div>
+</div>
+
+<div class="info-box">
+	<strong>Challenge Rules:</strong>
+	<ul style="margin-top:8px; margin-bottom:0;">
+		<li>Both parties must be enrolled in the same ladder</li>
+		<li>You cannot challenge yourself or your own clan</li>
+		<li>Only one open challenge per opponent per ladder at a time</li>
+		<li>In <strong>Swap</strong> ranking mode, your opponent must be within 3 ranks of you</li>
+	</ul>
+</div>
+
+<h4>Step 2: Accepting or Declining</h4>
+<p>The challenged party views their incoming challenges and can:</p>
+<ul>
+	<li><strong>Accept</strong> &mdash; A match record is created. For Decerto/CPC ladders, random maps and modes are generated at this point.</li>
+	<li><strong>Decline</strong> &mdash; The challenge is cancelled. In <strong>RTH</strong> mode, declining 3 or more times earns a "Chicken" penalty (see <a href="#ranking-rth">RTH Ranking</a>).</li>
+</ul>
+
+<h4>Step 3: Reporting the Result</h4>
+<p>After playing your match, the winner goes to <strong>Rivals &gt; My Match</strong> and reports the result:</p>
+<ul>
+	<li>Enter the final score for each side</li>
+	<li>For Decerto/CPC matches, enter per-round scores with maps and modes</li>
+	<li>Optionally select up to 3 <strong>MVP players</strong> (if enabled on the ladder)</li>
+	<li>Add any match notes or comments</li>
+</ul>
+
+<div class="warn-box">
+	<strong>Time Limit:</strong> Match results must be reported within the reporting window (default: 72 hours). After this period, the match expires and cannot be reported.
+</div>
+
+<h4>Step 4: Confirmation</h4>
+<p>The other party receives an alert to confirm the reported result. They can:</p>
+<ul>
+	<li><strong>Confirm</strong> &mdash; The match is finalized. Rankings are updated based on the result and the ladder's ranking system.</li>
+	<li><strong>Dispute</strong> &mdash; The match is flagged for moderator review. An administrator or the ladder's assigned moderator will review the evidence and decide the outcome.</li>
+</ul>
+
+<h3>Match Chat</h3>
+<p>Each match has a comments section where both parties can discuss the match, coordinate schedules, or resolve minor disagreements before the result is finalized.</p>
+
+<h3>Match History</h3>
+<p>All completed matches are visible on the <strong>Matches</strong> page, showing recent results across all ladders with scores, participants, and completion dates.</p>
+
+<!-- ========== TOURNAMENTS ========== -->
+<h2 id="tournaments">Tournaments</h2>
+
+<p>Tournaments provide structured bracket-based or league-based competition for clans or individual players.</p>
+
+<h3>Tournament Types</h3>
+<table>
+	<thead><tr><th>Type</th><th>How It Works</th></tr></thead>
+	<tbody>
+		<tr>
+			<td><strong>Single Elimination</strong></td>
+			<td>Standard knockout bracket. Lose one match and you're out. The last team standing wins.</td>
+		</tr>
+		<tr>
+			<td><strong>Double Elimination</strong></td>
+			<td>Two brackets: Winners and Losers. You must lose twice to be eliminated. If the Losers bracket champion beats the Winners bracket champion, a Grand Final is played.</td>
+		</tr>
+		<tr>
+			<td><strong>Round Robin</strong></td>
+			<td>Every team plays every other team. Final standings based on total wins/points.</td>
+		</tr>
+		<tr>
+			<td><strong>League</strong></td>
+			<td>Season-based round robin with divisions and multiple cycles. See <a href="#leagues">Leagues &amp; Seasons</a>.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3>Tournament Status</h3>
+<div class="flow">
+	<div class="flow-item"><span class="badge badge-blue">Draft</span> Setup</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item"><span class="badge badge-green">Signups</span> Open</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item"><span class="badge badge-orange">Active</span> In Progress</div>
+	<div class="flow-arrow">&rarr;</div>
+	<div class="flow-item"><span class="badge badge-red">Archived</span> Complete</div>
+</div>
+
+<h3>Signing Up</h3>
+<div class="workflow">
+	<div class="step"><p>Go to <strong>Rivals &gt; Tournaments</strong> and find a tournament with <strong>Signups Open</strong> status.</p></div>
+	<div class="step"><p>Click <strong>Sign Up</strong>. If the tournament requires a roster, select which team members will participate.</p></div>
+	<div class="step"><p>If the tournament is <strong>invite-only</strong>, you can only sign up if your clan or user ID is on the invite list.</p></div>
+	<div class="step"><p>Wait for the tournament to go <strong>Active</strong>. You'll receive an alert when it starts.</p></div>
+</div>
+
+<h3>Bracket Play</h3>
+<p>Once the tournament is active, you can view the bracket at <strong>Rivals &gt; Brackets</strong>. The bracket shows:</p>
+<ul>
+	<li>All matchups organized by round (Round 1, Quarter-Finals, Semi-Finals, Final, etc.)</li>
+	<li>Completed matches with scores highlighted</li>
+	<li>Winners advancing to the next round</li>
+	<li>BYE rounds if the number of entrants isn't a perfect power of 2</li>
+	<li>For double elimination: both the Winners Bracket and Losers Bracket</li>
+</ul>
+
+<h3>Tournament Options</h3>
+<ul>
+	<li><strong>Clan or Individual</strong> &mdash; Tournaments can be team-based (clans enter) or user-based (individuals enter)</li>
+	<li><strong>Bracket Size</strong> &mdash; 4, 8, 16, 32, 64, or 128 slots</li>
+	<li><strong>Roster Restrictions</strong> &mdash; Minimum and maximum team size requirements</li>
+	<li><strong>Advanced Stats</strong> &mdash; Track per-player kills/deaths/assists throughout the tournament</li>
+	<li><strong>Decerto Mode</strong> &mdash; Use the multi-round Decerto format for tournament matches</li>
+</ul>
+
+<!-- ========== LEAGUES & SEASONS ========== -->
+<h2 id="leagues">Leagues &amp; Seasons</h2>
+
+<h3>Seasons</h3>
+<p>Ladders can be organized into <strong>Seasons</strong>. A season represents a competitive period (e.g. "Spring 2026" or "Season 3"). When a season ends:</p>
+<ul>
+	<li>All current standings are archived for historical viewing</li>
+	<li>Standings are reset (scores return to 1500, ranks are reassigned)</li>
+	<li>A new season can begin with everyone starting fresh</li>
+</ul>
+
+<p>You can view past seasons on the <strong>Season History</strong> page, which shows final standings for each completed season.</p>
+
+<h3>League Standings</h3>
+<p>League-type tournaments use a football-style points system:</p>
+
+<table>
+	<thead><tr><th>Result</th><th>Points</th></tr></thead>
+	<tbody>
+		<tr><td>Win</td><td><strong>3 points</strong></td></tr>
+		<tr><td>Draw</td><td><strong>1 point</strong></td></tr>
+		<tr><td>Loss</td><td><strong>0 points</strong></td></tr>
+	</tbody>
+</table>
+
+<p>Tiebreakers are resolved in this order: total points, then goal difference (GF - GA), then goals scored.</p>
+
+<!-- ========== MATCH FINDER ========== -->
+<h2 id="matchfinder">Match Finder</h2>
+
+<p>The Match Finder is a matchmaking queue that helps you find opponents quickly.</p>
+
+<div class="workflow">
+	<div class="step"><p>Go to <strong>Rivals &gt; Match Finder</strong>.</p></div>
+	<div class="step"><p>Select a ladder and choose whether you want a ranked or unranked match.</p></div>
+	<div class="step"><p>Click <strong>Join Queue</strong>. You'll be added to the waiting list.</p></div>
+	<div class="step"><p>When a suitable opponent joins the same queue, a challenge is automatically created for both of you.</p></div>
+</div>
+
+<p>You can leave the queue at any time before a match is found.</p>
+
+<!-- ========== MVP ========== -->
+<h2 id="mvp">MVP Awards</h2>
+
+<p>MVP (Most Valuable Player) awards recognize outstanding individual performances in matches.</p>
+
+<ul>
+	<li>After a match is reported, up to <strong>3 MVP players</strong> can be selected from the participants</li>
+	<li>MVP awards are only available on ladders and tournaments where the administrator has enabled them</li>
+	<li>Your total MVP count is displayed on your profile and clan membership</li>
+</ul>
+
+<h3>MVP Leaderboard</h3>
+<p>The <strong>MVP</strong> page shows the top players by total MVP count across all ladders. The <strong>MVP Chart</strong> breaks this down per ladder.</p>
+
+<!-- ========== LEADERBOARD ========== -->
+<h2 id="leaderboard">Leaderboard</h2>
+
+<p>The global <strong>Leaderboard</strong> page shows the top 100 players across the entire Rivals system, ranked by their combined experience, level, and performance stats.</p>
+
+<!-- ========== ALERTS ========== -->
+<h2 id="alerts">Notifications</h2>
+
+<p>Rivals integrates with SMF's built-in alert system. You'll receive notifications for:</p>
+
+<table>
+	<thead><tr><th>Event</th><th>Alert</th><th>Email</th></tr></thead>
+	<tbody>
+		<tr><td>Challenge received</td><td>Yes</td><td>Yes</td></tr>
+		<tr><td>Challenge accepted</td><td>Yes</td><td>No</td></tr>
+		<tr><td>Match result reported</td><td>Yes</td><td>Yes</td></tr>
+		<tr><td>Match confirmed</td><td>Yes</td><td>No</td></tr>
+		<tr><td>Match disputed</td><td>Yes</td><td>Yes</td></tr>
+		<tr><td>Clan invitation</td><td>Yes</td><td>Yes</td></tr>
+		<tr><td>Clan join request (to leaders)</td><td>Yes</td><td>No</td></tr>
+		<tr><td>Clan join approved</td><td>Yes</td><td>No</td></tr>
+		<tr><td>Tournament starting</td><td>Yes</td><td>Yes</td></tr>
+		<tr><td>Tournament match ready</td><td>Yes</td><td>No</td></tr>
+	</tbody>
+</table>
+
+<p>You can customize which notifications you receive in your <strong>Profile &gt; Notifications</strong> settings.</p>
+
+<!-- ========== RANKING SYSTEMS ========== -->
+<h2 id="ranking-elo">ELO Ranking System</h2>
+
+<p>The <strong>ELO system</strong> is the default ranking method, based on the same algorithm used in chess. It provides a fair skill-based rating where your score changes based on both the result and the relative strength of your opponent.</p>
+
+<h3>How It Works</h3>
+<ul>
+	<li><strong>Starting Score:</strong> 1500 points</li>
+	<li>Beating a higher-rated opponent gains more points than beating a lower-rated one</li>
+	<li>Losing to a lower-rated opponent costs more points than losing to a higher-rated one</li>
+	<li>Draws give a small adjustment toward the expected outcome</li>
+</ul>
+
+<h3>K-Factor</h3>
+<p>The K-factor determines how much a single match can change your score. It decreases as your rating increases, providing stability for established players:</p>
+
+<table>
+	<thead><tr><th>Rating Range</th><th>K-Factor</th><th>Effect</th></tr></thead>
+	<tbody>
+		<tr><td>Below 2000</td><td><strong>30</strong></td><td>Large swings &mdash; developing players move quickly to their true rating</td></tr>
+		<tr><td>2000 &ndash; 2400</td><td><strong>20</strong></td><td>Moderate changes &mdash; intermediate stability</td></tr>
+		<tr><td>Above 2400</td><td><strong>10</strong></td><td>Small adjustments &mdash; established players maintain consistent ratings</td></tr>
+	</tbody>
+</table>
+
+<!-- ========== SWAP RANKING ========== -->
+<h2 id="ranking-swap">Swap Ranking System</h2>
+
+<p>The <strong>Swap system</strong> is a simple positional ranking. Instead of numerical scores, competitors hold rank positions (1st, 2nd, 3rd, etc.).</p>
+
+<h3>How It Works</h3>
+<ul>
+	<li>When you <strong>win</strong> against a higher-ranked opponent, you <strong>take their rank</strong> and they drop one position.</li>
+	<li>If you beat a <em>lower</em>-ranked opponent, nothing changes &mdash; you keep your own rank.</li>
+	<li>You can only challenge opponents within <strong>3 ranks</strong> of your current position.</li>
+	<li>The system tracks your best rank (highest achieved) and worst rank (lowest dropped to).</li>
+</ul>
+
+<div class="tip-box">
+	<strong>Tip:</strong> The Swap system is ideal for smaller, tight-knit ladders where a clear "king of the hill" ranking is preferred over numerical scores.
+</div>
+
+<!-- ========== RTH RANKING ========== -->
+<h2 id="ranking-rth">RTH (Race to the Top) Ranking</h2>
+
+<p>The <strong>RTH system</strong> is a points accumulation race. The goal is to be the first competitor to reach the target score.</p>
+
+<h3>How It Works</h3>
+<ul>
+	<li><strong>Starting Score:</strong> 50 points</li>
+	<li>Win matches to gain points toward the goal</li>
+	<li>First to reach the top score wins the ladder</li>
+</ul>
+
+<h3>Chicken Penalty</h3>
+<p>In RTH mode, declining challenges has consequences:</p>
+<ul>
+	<li>After <strong>3 or more declined challenges</strong>, you receive the <strong>"Chicken"</strong> status</li>
+	<li>A chicken icon appears next to your name in the standings</li>
+	<li>This mechanic encourages active competition and discourages avoiding tough opponents</li>
+</ul>
+
+<!-- ========== DECERTO & CPC ========== -->
+<h2 id="decerto">Decerto &amp; CPC Match Formats</h2>
+
+<p>Decerto and CPC are multi-round match formats designed for competitive FPS (First-Person Shooter) games. They add variety and fairness by randomizing the conditions for each round.</p>
+
+<h3>Decerto Mode</h3>
+<p>A Decerto match consists of <strong>3 rounds</strong>, each with a randomly selected game mode AND a randomly selected map:</p>
+
+<div class="card">
+	<h4>Example Decerto Match (Call of Duty)</h4>
+	<table>
+		<thead><tr><th>Round</th><th>Game Mode</th><th>Map</th><th>Score</th></tr></thead>
+		<tbody>
+			<tr><td>1</td><td>Search &amp; Destroy</td><td>Crash</td><td>6 - 4</td></tr>
+			<tr><td>2</td><td>Domination</td><td>Backlot</td><td>185 - 200</td></tr>
+			<tr><td>3</td><td>Capture the Flag</td><td>Strike</td><td>3 - 1</td></tr>
+		</tbody>
+	</table>
+	<p style="margin-top:8px;margin-bottom:0;">The winner is determined by the aggregate score across all 3 rounds.</p>
+</div>
+
+<h3>CPC Mode</h3>
+<p>CPC is similar to Decerto but simpler. It consists of <strong>3 rounds</strong> with <strong>random maps</strong> only &mdash; the game mode stays the same for all rounds.</p>
+
+<div class="card">
+	<h4>Example CPC Match</h4>
+	<table>
+		<thead><tr><th>Round</th><th>Game Mode</th><th>Map</th><th>Score</th></tr></thead>
+		<tbody>
+			<tr><td>1</td><td>Team Deathmatch</td><td>Overgrown</td><td>75 - 60</td></tr>
+			<tr><td>2</td><td>Team Deathmatch</td><td>Vacant</td><td>62 - 75</td></tr>
+			<tr><td>3</td><td>Team Deathmatch</td><td>Pipeline</td><td>75 - 68</td></tr>
+		</tbody>
+	</table>
+</div>
+
+<h3>How Random Selection Works</h3>
+<p>When a challenge is accepted on a Decerto or CPC ladder, the system automatically:</p>
+<ol>
+	<li>Selects game modes and maps from the pool configured by the administrator</li>
+	<li>Ensures no duplicate modes (Decerto) or maps (both) are picked</li>
+	<li>Displays the selections to both parties so they know what to play</li>
+</ol>
+
+<div class="info-box">
+	<strong>Admin Setup Required:</strong> Decerto and CPC modes require the administrator to configure game modes and maps in <strong>Admin &gt; Rivals &gt; Game Modes</strong>. Each mode needs at least 3 maps configured before it can be used.
+</div>
+
+<!-- ========== FOOTBALL ========== -->
+<h2 id="football">Football (Calcio) Mode</h2>
+
+<p>The Football ladder style is designed for sports games (FIFA, PES, etc.) where goals are the primary scoring metric.</p>
+
+<h3>Key Differences from Standard</h3>
+<ul>
+	<li><strong>Goals For / Goals Against</strong> are tracked instead of generic scores</li>
+	<li><strong>Goal Difference</strong> (GF - GA) is used as a tiebreaker</li>
+	<li>Draws are common and expected (unlike FPS ladders where ties are rare)</li>
+</ul>
+
+<h3>Special Awards</h3>
+<table>
+	<thead><tr><th>Award</th><th>Criteria</th><th>Icon</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Golden Shoe</strong></td><td>Best goal difference with at least 10 goals scored</td><td>Golden boot icon</td></tr>
+		<tr><td><strong>Soap Award</strong></td><td>Worst goal difference with at least 10 goals conceded</td><td>Soap icon</td></tr>
+	</tbody>
+</table>
+
+<!-- ========== STATUS ICONS ========== -->
+<h2 id="status-icons">Status Icons</h2>
+
+<p>Various icons appear next to names in the standings to provide at-a-glance information about a competitor's status and achievements.</p>
+
+<h3>Activity Icons</h3>
+<table>
+	<thead><tr><th>Icon</th><th>Meaning</th><th>Criteria</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Hot</strong></td><td>Very active</td><td>Played within the last 7 days</td></tr>
+		<tr><td><strong>Warm</strong></td><td>Moderately active</td><td>Played within the last 30 days</td></tr>
+		<tr><td><strong>Cool</strong></td><td>Cooling down</td><td>Played within the last 60 days</td></tr>
+		<tr><td><strong>Cold</strong></td><td>Inactive</td><td>No matches in 60+ days</td></tr>
+		<tr><td><strong>Frozen</strong></td><td>Hibernating</td><td>Player chose to freeze their position</td></tr>
+	</tbody>
+</table>
+
+<h3>Achievement Icons</h3>
+<table>
+	<thead><tr><th>Icon</th><th>Meaning</th><th>Criteria</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Crown</strong></td><td>Best W/L ratio on the ladder</td><td>At least 8 wins</td></tr>
+		<tr><td><strong>Tomb</strong></td><td>Worst W/L ratio on the ladder</td><td>At least 8 losses</td></tr>
+		<tr><td><strong>Hot Streak</strong></td><td>On a winning streak</td><td>4 or more consecutive wins</td></tr>
+		<tr><td><strong>Cold Streak</strong></td><td>On a losing streak</td><td>4 or more consecutive losses</td></tr>
+		<tr><td><strong>Chicken</strong></td><td>Declining challenges (RTH only)</td><td>3+ declined challenges</td></tr>
+	</tbody>
+</table>
+
+<h3>Rank Movement</h3>
+<table>
+	<thead><tr><th>Arrow</th><th>Meaning</th></tr></thead>
+	<tbody>
+		<tr><td><strong>&uarr; Up</strong></td><td>Rank improved since last update</td></tr>
+		<tr><td><strong>&darr; Down</strong></td><td>Rank dropped since last update</td></tr>
+		<tr><td><strong>&ndash; Same</strong></td><td>No change in rank</td></tr>
+	</tbody>
+</table>
+
+<!-- ======================================== -->
+<!-- ADMINISTRATOR SECTIONS -->
+<!-- ======================================== -->
+
+<h2 id="admin-settings">Admin: General Settings</h2>
+
+<p>Access via <strong>Admin &gt; Rivals &gt; Settings</strong>. These control the global behavior of the mod.</p>
+
+<table>
+	<thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Rivals Enabled</strong></td><td>No</td><td>Master switch. When disabled, all Rivals pages are hidden.</td></tr>
+		<tr><td><strong>Minimum Posts</strong></td><td>0</td><td>Number of forum posts required before a user can create a clan. Set to 0 for no requirement.</td></tr>
+		<tr><td><strong>Banned Group</strong></td><td>0</td><td>SMF membergroup ID. Members in this group are blocked from all Rivals features.</td></tr>
+		<tr><td><strong>Freeze Cost</strong></td><td>25</td><td>Percentage of score deducted when a player freezes their ladder position. Set to 0 to disable the penalty.</td></tr>
+		<tr><td><strong>Inactivity Penalty</strong></td><td>No</td><td>Enable automatic rank decay for inactive competitors.</td></tr>
+		<tr><td><strong>Max Report Hours</strong></td><td>72</td><td>Number of hours after a match is played that results can be reported. After this window, the match expires.</td></tr>
+		<tr><td><strong>Kickout Days</strong></td><td>30</td><td>Days of inactivity before a clan member is automatically removed.</td></tr>
+		<tr><td><strong>Moderator Override</strong></td><td>No</td><td>Allow ladder moderators to override disputed match decisions.</td></tr>
+		<tr><td><strong>Logo Max Size</strong></td><td>160 KB</td><td>Maximum file size for uploaded logos (clan, ladder, tournament).</td></tr>
+		<tr><td><strong>Logo Max Width</strong></td><td>500 px</td><td>Maximum pixel width for uploaded logos.</td></tr>
+		<tr><td><strong>Logo Max Height</strong></td><td>500 px</td><td>Maximum pixel height for uploaded logos.</td></tr>
+	</tbody>
+</table>
+
+<!-- ========== ADMIN: PLATFORMS ========== -->
+<h2 id="admin-platforms">Admin: Managing Platforms</h2>
+
+<p>Platforms represent gaming systems (PC, Xbox, PlayStation, Nintendo, Mobile, etc.). They serve as the top-level organizational structure for ladders.</p>
+
+<h3>Adding a Platform</h3>
+<ul>
+	<li><strong>Name</strong> &mdash; Platform display name (e.g. "PlayStation 5")</li>
+	<li><strong>Logo</strong> &mdash; Optional platform icon (JPG/PNG/GIF, within size limits)</li>
+</ul>
+
+<p>Platforms can be edited or deleted. Deleting a platform does <em>not</em> automatically delete its ladders &mdash; reassign them first.</p>
+
+<!-- ========== ADMIN: LADDERS ========== -->
+<h2 id="admin-ladders">Admin: Managing Ladders</h2>
+
+<p>Ladders are the competitive arenas. This is where most of the configuration happens.</p>
+
+<h3>Ladder Fields</h3>
+<table>
+	<thead><tr><th>Field</th><th>Description</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Name</strong></td><td>Full ladder name (e.g. "Call of Duty - Team Deathmatch")</td></tr>
+		<tr><td><strong>Short Name</strong></td><td>Abbreviated name (max 20 characters)</td></tr>
+		<tr><td><strong>Platform</strong></td><td>Which platform this ladder belongs to</td></tr>
+		<tr><td><strong>Parent Ladder</strong></td><td>If this is a sub-ladder, select the parent. Leave empty for top-level.</td></tr>
+		<tr><td><strong>Description</strong></td><td>Public description shown on the ladder page</td></tr>
+		<tr><td><strong>Rules</strong></td><td>Detailed rules text. Extended rules can be added in a separate Rules section (requirements, general rules, configuration, prohibitions).</td></tr>
+		<tr><td><strong>Logo</strong></td><td>Ladder icon/logo image</td></tr>
+		<tr><td><strong>1v1 Mode</strong></td><td>Check for individual player ladders. Leave unchecked for clan-based ladders.</td></tr>
+		<tr><td><strong>Ladder Style</strong></td><td>Standard, Decerto, CPC, or Football (see <a href="#ladders">Ladders</a> section)</td></tr>
+		<tr><td><strong>Ranking System</strong></td><td>ELO, Swap, or RTH (see ranking system sections)</td></tr>
+		<tr><td><strong>Win System</strong></td><td>Score-based (total points determine winner) or Win-based (match result only)</td></tr>
+		<tr><td><strong>Enable MVP</strong></td><td>Allow MVP selection in matches on this ladder</td></tr>
+		<tr><td><strong>Enable Adv. Stats</strong></td><td>Track per-player kills/deaths/assists/goals</td></tr>
+		<tr><td><strong>Limit Level</strong></td><td>Restrict ladder to users of a certain experience level</td></tr>
+		<tr><td><strong>Moderator</strong></td><td>Assign a user as the ladder-specific moderator for handling disputes</td></tr>
+		<tr><td><strong>Locked</strong></td><td>When locked, no one can join or leave the ladder</td></tr>
+		<tr><td><strong>Display Order</strong></td><td>Numeric value controlling the sort order among sibling ladders</td></tr>
+	</tbody>
+</table>
+
+<!-- ========== ADMIN: CLANS ========== -->
+<h2 id="admin-clans">Admin: Managing Clans</h2>
+
+<p>The Clans section gives administrators oversight of all registered clans.</p>
+
+<h3>Available Actions</h3>
+<ul>
+	<li><strong>View</strong> all clans with member count, W-L-D record, and status</li>
+	<li><strong>Edit</strong> any clan's details (name, description, level, open/closed status)</li>
+	<li><strong>Delete</strong> a clan entirely (removes all memberships and standings)</li>
+	<li><strong>Set Level</strong> &mdash; Assign a numeric clan level for progression purposes</li>
+</ul>
+
+<!-- ========== ADMIN: TOURNAMENTS ========== -->
+<h2 id="admin-tournaments">Admin: Managing Tournaments</h2>
+
+<p>Create and manage tournaments from <strong>Admin &gt; Rivals &gt; Tournaments</strong>.</p>
+
+<h3>Creating a Tournament</h3>
+<table>
+	<thead><tr><th>Field</th><th>Description</th></tr></thead>
+	<tbody>
+		<tr><td><strong>Name</strong></td><td>Tournament name</td></tr>
+		<tr><td><strong>Short Name</strong></td><td>Abbreviated identifier</td></tr>
+		<tr><td><strong>Info</strong></td><td>Description and rules for participants</td></tr>
+		<tr><td><strong>Bracket Size</strong></td><td>Number of slots: 4, 8, 16, 32, 64, or 128. Must be a power of 2.</td></tr>
+		<tr><td><strong>Type</strong></td><td>Single Elimination, Double Elimination, Round Robin, or League</td></tr>
+		<tr><td><strong>Signup Type</strong></td><td><em>Open</em> (anyone can enter) or <em>Invite Only</em> (restricted to invited teams/players)</td></tr>
+		<tr><td><strong>Status</strong></td><td>Draft, Signups Open, Active, or Archived</td></tr>
+		<tr><td><strong>Individual Mode</strong></td><td>Check for 1v1 player tournaments. Leave unchecked for clan tournaments.</td></tr>
+		<tr><td><strong>Advanced Stats</strong></td><td>Track per-player statistics during the tournament</td></tr>
+		<tr><td><strong>Decerto</strong></td><td>Use the multi-round Decerto format for all matches in this tournament</td></tr>
+		<tr><td><strong>Roster Restricted</strong></td><td>Require teams to submit a roster with min/max member limits</td></tr>
+		<tr><td><strong>Logo</strong></td><td>Tournament logo image</td></tr>
+	</tbody>
+</table>
+
+<h3>Tournament Workflow</h3>
+<div class="workflow">
+	<div class="step"><p><strong>Create</strong> the tournament with status <em>Draft</em>. Configure all settings.</p></div>
+	<div class="step"><p>Change status to <strong>Signups Open</strong>. Teams/players can now register.</p></div>
+	<div class="step"><p>When enough entries are received, change status to <strong>Active</strong>. The bracket is generated automatically.</p></div>
+	<div class="step"><p>Participants play and report matches. The bracket advances automatically.</p></div>
+	<div class="step"><p>After the final match, change status to <strong>Archived</strong> for permanent record-keeping.</p></div>
+</div>
+
+<!-- ========== ADMIN: SEASONS ========== -->
+<h2 id="admin-seasons">Admin: Managing Seasons</h2>
+
+<p>Seasons allow you to organize ladder competition into time-bounded periods.</p>
+
+<h3>Season Lifecycle</h3>
+<div class="workflow">
+	<div class="step"><p><strong>Start Season</strong> &mdash; Select a ladder and name the season (e.g. "Season 5 - Summer 2026"). The season becomes active.</p></div>
+	<div class="step"><p>Competition runs normally on the ladder. All results count toward the active season.</p></div>
+	<div class="step"><p><strong>End Season</strong> &mdash; All current standings are archived. Scores reset to 1500. Ranks are reassigned sequentially. The season is marked as completed.</p></div>
+</div>
+
+<div class="warn-box">
+	<strong>Important:</strong> Only one season can be active per ladder at a time. You must end the current season before starting a new one.
+</div>
+
+<p>Archived seasons are viewable by all users on the Season History page.</p>
+
+<!-- ========== ADMIN: GAME MODES ========== -->
+<h2 id="admin-gamemodes">Admin: Game Modes &amp; Maps</h2>
+
+<p>This section manages the game modes and maps used by Decerto and CPC ladder styles.</p>
+
+<h3>Structure</h3>
+<p>Game modes are organized in a parent-child hierarchy:</p>
+<ul>
+	<li><strong>Game Modes</strong> (parent) &mdash; e.g. "Search &amp; Destroy", "Domination", "Capture the Flag"</li>
+	<li><strong>Maps</strong> (child) &mdash; e.g. "Crash", "Backlot", "Strike" &mdash; each linked to a parent mode</li>
+</ul>
+
+<h3>Adding a Game Mode</h3>
+<ul>
+	<li><strong>Name</strong> &mdash; Full mode name</li>
+	<li><strong>Short Name</strong> &mdash; Abbreviated identifier (used to link modes to ladders)</li>
+	<li><strong>Type</strong> &mdash; "Game Mode" or "Map"</li>
+	<li><strong>Parent Mode</strong> &mdash; For maps, select which game mode they belong to</li>
+	<li><strong>CPC Flag</strong> &mdash; Mark as CPC-only mode</li>
+	<li><strong>Active</strong> &mdash; Toggle availability. Modes need at least 3 maps before they can be used.</li>
+</ul>
+
+<div class="tip-box">
+	<strong>Tip:</strong> For Decerto to work properly, configure exactly 3 game modes per game, each with at least 3 maps. The system will randomly select one mode and one map per round.
+</div>
+
+<!-- ========== ADMIN: MVP ========== -->
+<h2 id="admin-mvp">Admin: MVP Definitions</h2>
+
+<p>Define custom MVP award categories that can be assigned per platform or per ladder.</p>
+
+<h3>Fields</h3>
+<ul>
+	<li><strong>Name</strong> &mdash; Award name (e.g. "Best Sniper", "Play of the Game", "Top Scorer")</li>
+	<li><strong>Description</strong> &mdash; What this award recognizes</li>
+	<li><strong>Platform</strong> &mdash; Optional: restrict to a specific platform</li>
+	<li><strong>Ladder</strong> &mdash; Optional: restrict to a specific ladder</li>
+</ul>
+
+<!-- ========== ADMIN: RANDOM MAP ========== -->
+<h2 id="admin-random">Admin: Random Map of the Day</h2>
+
+<p>The Random Map feature displays a randomly selected map each day on a dedicated page. It adds variety and discussion to the community.</p>
+
+<h3>Managing the Map Pool</h3>
+<ul>
+	<li>Add maps with a name, short name, and optional image</li>
+	<li>The system randomly selects one map each day for display</li>
+	<li>Add as many maps as you like &mdash; more maps mean more variety</li>
+</ul>
+
+<!-- ========== ADMIN: MATCHES ========== -->
+<h2 id="admin-matches">Admin: Match Moderation</h2>
+
+<p>The Matches section provides tools for moderating and resolving match disputes.</p>
+
+<h3>Features</h3>
+<ul>
+	<li><strong>Filter by status</strong> &mdash; View pending, completed, or disputed matches</li>
+	<li><strong>View details</strong> &mdash; See full match data including scores, participants, maps, and timestamps</li>
+	<li><strong>Resolve disputes</strong> &mdash; Choose the winner for disputed matches (Challenger wins, Challengee wins, or Draw)</li>
+	<li><strong>Delete matches</strong> &mdash; Remove invalid or test matches from the system</li>
+</ul>
+
+<h3>Dispute Resolution Workflow</h3>
+<div class="workflow">
+	<div class="step"><p>A match is disputed by one of the participants.</p></div>
+	<div class="step"><p>The match appears in the admin panel with <span class="badge badge-orange">Disputed</span> status.</p></div>
+	<div class="step"><p>Review match chat, submitted scores, and any evidence provided by both parties.</p></div>
+	<div class="step"><p>Select a resolution: <strong>Challenger Wins</strong>, <strong>Challengee Wins</strong>, or <strong>Draw</strong>.</p></div>
+	<div class="step"><p>Rankings are automatically updated based on your decision.</p></div>
+</div>
+
+<div class="info-box">
+	<strong>Ladder Moderators:</strong> If a ladder has an assigned moderator (set in ladder configuration), that user can also resolve disputes for that specific ladder without needing full admin access.
+</div>
+
+<!-- Footer -->
+<div style="margin-top: 80px; padding-top: 24px; border-top: 1px solid #e2e8f0; color: #a0aec0; font-size: 0.85rem;">
+	<p>SMF Rivals v1.0.0 &mdash; A competitive gaming modification for Simple Machines Forum 2.1</p>
+</div>
+
+</main>
+</div>
+
+</body>
+</html>

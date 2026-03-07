@@ -1214,6 +1214,11 @@ echo '
 				<input type="checkbox" name="smflinks_disp_membername" ' . ($modSettings['smflinks_disp_membername'] ? ' checked="checked" ' : '') . ' />' . $txt['smflinks_disp_membername'] . '<br />
 				<input type="checkbox" name="smflinks_disp_date" ' . ($modSettings['smflinks_disp_date'] ? ' checked="checked" ' : '') . ' />' . $txt['smflinks_disp_date'] . '<br />
 				<br />
+				<strong>' . $txt['smflinks_linkchecksettings'] . '</strong><br />
+				' . $txt['smflinks_check_batch_size'] . '&nbsp;<input type="text" name="smflinks_check_batch_size" value="' . (!empty($modSettings['smflinks_check_batch_size']) ? $modSettings['smflinks_check_batch_size'] : '25') . '" size="5" /><br />
+				<span class="smalltext">' . $txt['smflinks_check_batch_size_hint'] . '</span><br />
+				<input type="checkbox" name="smflinks_check_notify_pm" ' . (!empty($modSettings['smflinks_check_notify_pm']) ? ' checked="checked" ' : '') . ' />' . $txt['smflinks_check_notify_pm'] . '<br />
+				<br />
                 <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="submit" class="button_submit"  name="savesettings" value="' . $txt['smflinks_settings_save'] .'" />
 			</form>
@@ -1325,6 +1330,77 @@ echo '
 	</td>
 	</tr>
 	</table>';
+
+	LinksCopyright();
+}
+
+function template_disallowed_domains()
+{
+	global $scripturl, $txt, $context;
+
+	echo '
+<div class="cat_bar">
+	<h3 class="catbg">' . $txt['smflinks_disallowed_domains'] . '</h3>
+</div>
+<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
+	<tr class="windowbg">
+		<td class="windowbg">' . $txt['smflinks_disallowed_domains_desc'] . '</td>
+	</tr>
+</table>
+<br />';
+
+	// List current disallowed domains
+	if (!empty($context['disallowed_domains']))
+	{
+		echo '
+<table border="0" width="100%" cellspacing="1" align="center" cellpadding="4" class="tborder">
+	<tr class="titlebg">
+		<td><strong>' . $txt['smflinks_domain'] . '</strong></td>
+		<td width="100" align="center"><strong>' . $txt['smflinks_options'] . '</strong></td>
+	</tr>';
+
+		foreach ($context['disallowed_domains'] as $domain)
+		{
+			echo '
+	<tr class="windowbg">
+		<td class="windowbg2">' . $domain . '</td>
+		<td class="windowbg2" align="center"><a href="' . $scripturl . '?action=links;sa=disalloweddomainsdelete;domain=' . urlencode($domain) . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdel'] . '</a></td>
+	</tr>';
+		}
+
+		echo '
+</table>
+<br />';
+	}
+	else
+	{
+		echo '
+<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
+	<tr class="windowbg">
+		<td class="windowbg">' . $txt['smflinks_no_disallowed_domains'] . '</td>
+	</tr>
+</table>
+<br />';
+	}
+
+	// Add domain form
+	echo '
+<div class="cat_bar">
+	<h3 class="catbg">' . $txt['smflinks_add_domain'] . '</h3>
+</div>
+<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
+	<tr class="windowbg">
+		<td class="windowbg">
+			<form method="post" action="' . $scripturl . '?action=links;sa=disalloweddomains2">
+				' . $txt['smflinks_domain'] . ':&nbsp;<input type="text" name="domain" size="40" />
+				<br /><span class="smalltext">' . $txt['smflinks_domain_hint'] . '</span>
+				<br /><br />
+				<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
+				<input type="submit" value="' . $txt['smflinks_add_domain'] . '" />
+			</form>
+		</td>
+	</tr>
+</table>';
 
 	LinksCopyright();
 }
@@ -1586,6 +1662,180 @@ function template_catpermlist()
 	</td>
 	</tr>
 </table>';
+}
+
+function template_checklinks()
+{
+	global $scripturl, $txt, $context;
+
+	$notify_enabled = !empty($context['check_notify_pm']);
+	$batch_size = !empty($context['check_batch_size']) ? (int) $context['check_batch_size'] : 25;
+
+	echo '
+<div class="cat_bar">
+	<h3 class="catbg">' . $txt['smflinks_checklinks'] . '</h3>
+</div>
+<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
+	<tr class="windowbg">
+		<td class="windowbg">
+			<p>' . $txt['smflinks_checklinks_desc'] . '</p>
+			<p><strong>' . $txt['smflinks_totallinks'] . ':</strong> <span id="links_total">' . $context['links_total'] . '</span></p>
+
+			<div id="checklinks_progress" style="display:none; margin:10px 0;">
+				<div style="background:#ddd; border-radius:4px; overflow:hidden; height:20px;">
+					<div id="checklinks_bar" style="background:#5b9bd5; height:100%; width:0%; transition:width 0.3s;"></div>
+				</div>
+				<p id="checklinks_status" style="margin-top:4px;"></p>
+			</div>
+
+			<input type="button" id="btn_start_check" class="button_submit" onclick="startLinkCheck();" value="' . $txt['smflinks_start_check'] . '" />
+
+			<form method="post" action="' . $scripturl . '?action=links;sa=deletebadlinks" id="deleteform" style="display:none; margin-top:12px;">
+				<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%" class="tborder">
+					<tr class="titlebg">
+						<td width="30"><input type="checkbox" id="checkall" onclick="toggleAllChecks(this, \'delete\');" /></td>
+						<td>' . $txt['smflinks_ctitle'] . '</td>
+						<td>' . $txt['smflinks_url'] . '</td>
+						<td>' . $txt['smflinks_category'] . '</td>
+						<td align="center">' . $txt['smflinks_status'] . '</td>
+						<td align="center">' . $txt['smflinks_check_fails'] . '</td>';
+
+	if ($notify_enabled)
+		echo '
+						<td align="center">' . $txt['smflinks_notify'] . '</td>';
+
+	echo '
+					</tr>
+				</table>
+				<table cellspacing="1" cellpadding="4" border="0" align="center" width="100%" class="tborder">
+					<tbody id="checklinks_results">
+					</tbody>
+				</table>
+				<br />
+				<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
+				<input type="submit" class="button_submit" value="' . $txt['smflinks_delete_selected'] . '" />
+			</form>';
+
+	if ($notify_enabled)
+		echo '
+			<form method="post" action="' . $scripturl . '?action=links;sa=notifybadlinks" id="notifyform" style="display:none; margin-top:8px;">
+				<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
+				<div id="notify_ids_container"></div>
+				<input type="submit" class="button_submit" value="' . $txt['smflinks_notify_selected'] . '" />
+			</form>';
+
+	echo '
+			<p id="checklinks_complete" style="display:none; color:green; font-weight:bold; margin-top:10px;">' . $txt['smflinks_check_complete'] . '</p>
+			<p id="checklinks_noerrors" style="display:none; color:green; font-weight:bold; margin-top:10px;">' . $txt['smflinks_no_bad_links'] . '</p>
+		</td>
+	</tr>
+</table>
+
+<script>
+var linksTotal = ' . $context['links_total'] . ';
+var linksBatchSize = ' . $batch_size . ';
+var linksChecked = 0;
+var hasBadLinks = false;
+var notifyEnabled = ' . ($notify_enabled ? 'true' : 'false') . ';
+
+function startLinkCheck() {
+	document.getElementById("btn_start_check").style.display = "none";
+	document.getElementById("checklinks_progress").style.display = "block";
+	linksChecked = 0;
+	hasBadLinks = false;
+	checkBatch(0);
+}
+
+function checkBatch(offset) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "' . $scripturl . '?action=links;sa=checklinks2;offset=" + offset + ";' . $context['session_var'] . '=' . $context['session_id'] . '", true);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var data = JSON.parse(xhr.responseText);
+			if (data.results && data.results.length > 0) {
+				linksChecked += data.results.length;
+				var pct = Math.round((linksChecked / linksTotal) * 100);
+				document.getElementById("checklinks_bar").style.width = pct + "%";
+				document.getElementById("checklinks_status").textContent = "Checked " + linksChecked + " of " + linksTotal + " links";
+
+				var tbody = document.getElementById("checklinks_results");
+				for (var i = 0; i < data.results.length; i++) {
+					var r = data.results[i];
+					var isCF = r.cloudflare || false;
+					var isBad = !isCF && (r.status_code == 0 || r.status_code >= 400);
+					if (isBad) {
+						hasBadLinks = true;
+						document.getElementById("deleteform").style.display = "block";
+						if (notifyEnabled)
+							document.getElementById("notifyform").style.display = "block";
+					}
+
+					var color = "green";
+					if (isCF) color = "#b8860b";
+					else if (r.status_code == 301 || r.status_code == 302) color = "orange";
+					else if (r.status_code >= 400 || r.status_code == 0) color = "red";
+
+					var failsCell = \'<td align="center">\' + (r.check_fails || 0) + \'</td>\';
+
+					var notifyCell = "";
+					if (notifyEnabled)
+						notifyCell = \'<td align="center">\' + (isBad && r.member_id > 0 ? \'<input type="checkbox" class="notify_check" data-id="\' + r.id + \'" checked />\' : \'\') + \'</td>\';
+
+					var tr = document.createElement("tr");
+					tr.className = (i % 2 == 0) ? "windowbg" : "windowbg2";
+					tr.innerHTML = \'<td width="30">\' + (isBad ? \'<input type="checkbox" name="delete_ids[]" value="\' + r.id + \'" checked />\' : \'\') + \'</td>\' +
+						\'<td>\' + r.title + \'</td>\' +
+						\'<td><a href="\' + r.url + \'" target="_blank">\' + r.url + \'</a></td>\' +
+						\'<td>\' + (r.catname || \'\') + \'</td>\' +
+						\'<td align="center" style="color:\' + color + \'; font-weight:bold;">\' + r.status_code + \' \' + r.status_text + \'</td>\' +
+						failsCell + notifyCell;
+					tbody.appendChild(tr);
+				}
+
+				checkBatch(offset + linksBatchSize);
+			} else {
+				document.getElementById("checklinks_bar").style.width = "100%";
+				document.getElementById("checklinks_complete").style.display = "block";
+				if (!hasBadLinks) {
+					document.getElementById("checklinks_noerrors").style.display = "block";
+				}
+			}
+		}
+	};
+	xhr.send();
+}
+
+function toggleAllChecks(src, type) {
+	var selector = type === "delete" ? \'#checklinks_results input[name="delete_ids[]"]\' : \'#checklinks_results input.notify_check\';
+	var checks = document.querySelectorAll(selector);
+	for (var i = 0; i < checks.length; i++) {
+		checks[i].checked = src.checked;
+	}
+}';
+
+	if ($notify_enabled)
+		echo '
+document.getElementById("notifyform").addEventListener("submit", function(e) {
+	var container = document.getElementById("notify_ids_container");
+	container.innerHTML = "";
+	var checks = document.querySelectorAll("#checklinks_results input.notify_check:checked");
+	if (checks.length === 0) {
+		e.preventDefault();
+		return;
+	}
+	for (var i = 0; i < checks.length; i++) {
+		var inp = document.createElement("input");
+		inp.type = "hidden";
+		inp.name = "notify_ids[]";
+		inp.value = checks[i].getAttribute("data-id");
+		container.appendChild(inp);
+	}
+});';
+
+	echo '
+</script>';
+
+	LinksCopyright();
 }
 
 function LinksCopyright()

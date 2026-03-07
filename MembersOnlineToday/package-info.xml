@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:MembersOnlineToday</id>
+	<name>Members Online Today</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.1.0 - 2.1.99">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<require-file name="Subs-MembersOnlineToday.php" destination="$sourcedir" />
+		<require-file name="MembersOnlineToday.template.php" destination="$themedir" />
+		<require-file name="MembersOnlineToday.english.php" destination="$languagedir" />
+		<database>install_mod.php</database>
+		<hook hook="integrate_pre_include" function="$sourcedir/Subs-MembersOnlineToday.php" />
+		<hook hook="integrate_general_mod_settings" function="MembersOnlineToday_Settings" />
+		<hook hook="integrate_mark_read_button" function="MembersOnlineToday_InfoCenter" />
+	</install>
+
+	<uninstall for="2.1.0 - 2.1.99">
+		<hook hook="integrate_pre_include" function="$sourcedir/Subs-MembersOnlineToday.php" reverse="true" />
+		<hook hook="integrate_general_mod_settings" function="MembersOnlineToday_Settings" reverse="true" />
+		<hook hook="integrate_mark_read_button" function="MembersOnlineToday_InfoCenter" reverse="true" />
+		<database>install_mod.php</database>
+		<remove-file name="$sourcedir/Subs-MembersOnlineToday.php" />
+		<remove-file name="$themedir/MembersOnlineToday.template.php" />
+		<remove-file name="$languagedir/MembersOnlineToday.english.php" />
+	</uninstall>
+</package-info>

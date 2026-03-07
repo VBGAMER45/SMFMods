@@ -4,7 +4,7 @@ Download System
 Version 2.5
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2009-2022 SMFHacks.com
+Copyright 2009-2026 SMFHacks.com
 
 ############################################
 License Information:
@@ -27,12 +27,12 @@ function template_mainview()
 	{
 		// Warn the user if they are managing the downloads that the path it is not writable
 		if (!is_writable($modSettings['down_path']))
-			echo '<font color="#FF0000"><b>', $txt['downloads_write_error'], $modSettings['down_path'], '</b></font>';
+			echo '<span class="error"><strong>', $txt['downloads_write_error'], htmlspecialchars($modSettings['down_path'], ENT_QUOTES, 'UTF-8'), '</strong></span>';
 	}
 
 
 	// Get the Category if present
-	@$cat = (int) $_REQUEST['cat'];
+	$cat = isset($_REQUEST['cat']) ? (int) $_REQUEST['cat'] : 0;
 
 	// Check if a category is selected
 	if (!empty($cat))
@@ -43,7 +43,7 @@ function template_mainview()
 		$g_edit_own = allowedTo('downloads_edit');
 		$g_delete_own = allowedTo('downloads_delete');
 
-		ShowTopDownloadBar2($context['downloads_cat_name']);
+		ShowTopDownloadBar2(htmlspecialchars($context['downloads_cat_name'], ENT_QUOTES, 'UTF-8'));
 
 		// Show sub categories
 		Downloads_ShowSubCats($cat,$g_manage);
@@ -92,7 +92,7 @@ function template_mainview()
 
 			if (!empty($modSettings['down_set_t_filesize']))
 			{
-				echo '<th  class="lefttext"><a href="' . $scripturl . '?action=downloads;cat=' . $cat . ';start=' . $context['start'] . 'sortby=filesize;orderby=' . $neworder . '">',$txt['downloads_cat_filesize'], '</a></th>';
+				echo '<th  class="lefttext"><a href="' . $scripturl . '?action=downloads;cat=' . $cat . ';start=' . $context['start'] . ';sortby=filesize;orderby=' . $neworder . '">',$txt['downloads_cat_filesize'], '</a></th>';
 				$count++;
 			}
 
@@ -131,10 +131,10 @@ function template_mainview()
 		foreach ($context['downloads_files'] as $i => $file)
 		{
 
-			echo '<tr  class="windowbg2">';
+			echo '<tr  class="windowbg">';
 
 			if (!empty($modSettings['down_set_t_title']))
-				echo  '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=', $file['ID_FILE'], '">', $file['title'], '</a></td>';
+				echo  '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=', $file['ID_FILE'], '">', htmlspecialchars($file['title'], ENT_QUOTES, 'UTF-8'), '</a></td>';
 
 
 			if (!empty($modSettings['down_set_t_rating']) && $context['downloads_cat_norate'] != 1)
@@ -157,7 +157,7 @@ function template_mainview()
 			if (!empty($modSettings['down_set_t_username']))
 			{
 				if ($file['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . $file['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . htmlspecialchars($file['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 				else
 					echo '<td>', $txt['downloads_guest'], '</td>';
 			}
@@ -168,11 +168,11 @@ function template_mainview()
 			{
 				echo '<td>';
 				if ($g_manage)
-					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit;id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a>';
 
 				echo '</td>';
 			}
@@ -187,7 +187,7 @@ function template_mainview()
 		// Display who is viewing the downloads.
 		if (!empty($modSettings['down_who_viewing']))
 		{
-			echo '<tr>
+			echo '<tr class="windowbg">
 			<td align="center" colspan="', $count, '"><span class="smalltext">';
 
 			// Show just numbers...?
@@ -195,7 +195,7 @@ function template_mainview()
 			echo empty($context['view_members_list']) ? '0 ' . $txt['downloads_who_members'] : implode(', ', $context['view_members_list']) . (empty($context['view_num_hidden']) || $context['can_moderate_forum'] ? '' : ' (+ ' . $context['view_num_hidden'] . ' ' . $txt['downloads_who_hidden'] . ')');
 
 			// Now show how many guests are here too.
-			echo $txt['who_and'], @$context['view_num_guests'], ' ', @$context['view_num_guests'] == 1 ? $txt['guest'] : $txt['guests'], $txt['downloads_who_viewdownload'], '</span></td></tr>';
+			echo $txt['who_and'], ($context['view_num_guests'] ?? 0), ' ', ($context['view_num_guests'] ?? 0) == 1 ? $txt['guest'] : $txt['guests'], $txt['downloads_who_viewdownload'], '</span></td></tr>';
 		}
 
 
@@ -263,13 +263,13 @@ function template_mainview()
 		echo '<table border="0" cellspacing="1" cellpadding="4" class="table_grid"  align="center" width="100%">
 <thead>
 <tr class="title_bar">
-				<th  class="lefttext first_th" colspan="2">', $txt['downloads_text_categoryname'], '</th>
-				<th  class="centertext' . ($g_manage ? '' : ' last_th') . '" align="center">', $txt['downloads_text_totalfiles'], '</th>
+				<th  class="lefttext" colspan="2">', $txt['downloads_text_categoryname'], '</th>
+				<th  class="centertext' . ($g_manage ? '' : '') . '" align="center">', $txt['downloads_text_totalfiles'], '</th>
 				';
 		if	($g_manage)
 			echo '
 				<th  class="lefttext">', $txt['downloads_text_reorder'], '</th>
-				<th  class="lefttext last_th">', $txt['downloads_text_options'], '</th>';
+				<th  class="lefttext">', $txt['downloads_text_options'], '</th>';
 
 		echo '</tr>
 		</thead>';
@@ -290,16 +290,16 @@ function template_mainview()
 			echo '<tr class="windowbg">';
 
 				if ($cat_info['image'] == '' && $cat_info['filename'] == '')
-					echo '<td ></td><td  class="windowbg2"><b><a href="' . $cat_url . '">' . parse_bbc($cat_info['title']) . '</a></b><br />' . parse_bbc($cat_info['description']) . '</td>';
+					echo '<td ></td><td  class="windowbg"><b><a href="' . $cat_url . '">' . parse_bbc($cat_info['title']) . '</a></b><br />' . parse_bbc($cat_info['description']) . '</td>';
 				else
 				{
 					if ($cat_info['filename'] == '')
-						echo '<td class="windowbg" width="10%"><a href="' . $cat_url . '"><img src="' . $cat_info['image'] . '" /></a></td>';
+						echo '<td class="windowbg" width="10%"><a href="' . $cat_url . '"><img src="' . htmlspecialchars($cat_info['image'], ENT_QUOTES, 'UTF-8') . '" /></a></td>';
 					else
-						echo '<td class="windowbg" width="10%"><a href="' . $cat_url . '"><img src="' . $modSettings['down_url'] . 'catimgs/' . $cat_info['filename'] . '" /></a></td>';
+						echo '<td class="windowbg" width="10%"><a href="' . $cat_url . '"><img src="' . $modSettings['down_url'] . 'catimgs/' . htmlspecialchars($cat_info['filename'], ENT_QUOTES, 'UTF-8') . '" /></a></td>';
 
 
-					echo '<td class="windowbg2"><b><a href="' . $cat_url . '">' . parse_bbc($cat_info['title']) . '</a></b><br />' . parse_bbc($cat_info['description']) . '</td>';
+					echo '<td class="windowbg"><b><a href="' . $cat_url . '">' . parse_bbc($cat_info['title']) . '</a></b><br />' . parse_bbc($cat_info['description']) . '</td>';
 				}
 
 
@@ -310,7 +310,7 @@ function template_mainview()
 			// Show Edit Delete and Order category
 			if ($g_manage)
 			{
-				echo '<td class="windowbg2"><a href="' . $scripturl . '?action=downloads;sa=catup;cat=' . $cat_info['ID_CAT'] . '">' . $txt['downloads_text_up'] . '</a>&nbsp;<a href="' . $scripturl . '?action=downloads;sa=catdown;cat=' . $cat_info['ID_CAT'] . '">' . $txt['downloads_text_down'] . '</a></td>
+				echo '<td class="windowbg"><a href="' . $scripturl . '?action=downloads;sa=catup;cat=' . $cat_info['ID_CAT'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_up'] . '</a>&nbsp;<a href="' . $scripturl . '?action=downloads;sa=catdown;cat=' . $cat_info['ID_CAT'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_down'] . '</a></td>
 				<td class="windowbg"><a href="' . $scripturl . '?action=downloads;sa=editcat;cat=' . $cat_info['ID_CAT'] . '">' . $txt['downloads_text_edit'] . '</a>&nbsp;
 				<a href="' . $scripturl . '?action=downloads;sa=deletecat;cat=' . $cat_info['ID_CAT'] . '">' . $txt['downloads_text_delete'] . '</a>
 				<br /><br />
@@ -325,7 +325,7 @@ function template_mainview()
 			// Show any subcategory links
 			if ($subcats_linktree != '')
 			echo '
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td colspan="', ($g_manage ? '5' : '3'),'">&nbsp;<span class="smalltext">',($subcats_linktree != '' ? '<b>' . $txt['downloads_sub_cats'] . '</b>' . $subcats_linktree : ''),'</span></td>
 			</tr>';
 
@@ -364,7 +364,7 @@ function template_mainview()
         </h3>
 </div>
             <table class="table_grid">
- 					<tr class="windowbg2">
+ 					<tr class="windowbg">
 						<td align="center"><a href="' . $scripturl . '?action=downloads;sa=stats">', $txt['downloads_stats_viewstats'] ,'</a></td>
 					</tr>
 				</table><br />';
@@ -380,7 +380,7 @@ function template_mainview()
 </div>
 
             <table class="table_grid">
- 				<tr class="windowbg2">
+ 				<tr class="windowbg">
 			<td align="center"><a href="' . $scripturl . '?action=downloads;sa=addcat">' . $txt['downloads_text_addcategory'] . '</a>&nbsp;
 			<a href="' . $scripturl . '?action=admin;area=downloads;sa=adminset">' . $txt['downloads_text_settings'] . '</a>&nbsp;';
 
@@ -413,7 +413,7 @@ function template_add_category()
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
 
 	echo '
@@ -423,25 +423,25 @@ function template_add_category()
         ', $txt['downloads_text_addcategory'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr class="windowbg2">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
+  <tr class="windowbg">
     <td width="28%" align="right"><b>' . $txt['downloads_form_title'] .'</b>&nbsp;</td>
     <td width="72%"><input type="text" name="title" size="64" maxlength="100" /></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" align="right"><b>' . $txt['downloads_text_parentcategory'] .'</b>&nbsp;</td>
     <td width="72%"><select name="parent">
     <option value="0">',$txt['downloads_text_catnone'],'</option>
     ';
 
 	foreach ($context['downloads_cat'] as $i => $category)
-		echo '<option value="' . $category['ID_CAT']  . '" ' . (($context['cat_parent'] == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . $category['title'] . '</option>';
+		echo '<option value="' . $category['ID_CAT']  . '" ' . (($context['cat_parent'] == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . htmlspecialchars($category['title'], ENT_QUOTES, 'UTF-8') . '</option>';
 
 	echo '</select>
 	</td>
   </tr>
-  <tr  class="windowbg2">
-    <td width="28%"  valign="top" align="right"><b>' . $txt['downloads_form_description'] . '&nbsp;</span><br />'. $txt['downloads_text_bbcsupport'] .'</td>
+  <tr  class="windowbg">
+    <td width="28%"  valign="top" align="right"><b>' . $txt['downloads_form_description'] . '&nbsp;</strong><br />'. $txt['downloads_text_bbcsupport'] .'</td>
     <td width="72%"><textarea rows="6" name="description" cols="54"></textarea>';
 
    	if ($context['show_spellchecking'])
@@ -449,28 +449,33 @@ function template_add_category()
    									<br /><input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'catform\', \'description\');" />';
 echo '</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" align="right"><b>' . $txt['downloads_form_icon'] . '</b>&nbsp;</td>
     <td width="72%"><input type="text" name="image" size="64" maxlength="100" /></td>
   </tr>
-   <tr  class="windowbg2">
+   <tr  class="windowbg">
     <td width="28%" align="right"><b>' . $txt['downloads_form_uploadicon'] . '</b></td>
     <td width="72%">';
 
 
 		// Warn the user if the category image path is not writable
 		if (!is_writable($modSettings['down_path'] . 'catimgs'))
-			echo '<font color="#FF0000"><b>' . $txt['downloads_write_catpatherror']  . $modSettings['down_path'] . 'catimgs' . '</b></font>';
+			echo '<span class="error"><b>' . $txt['downloads_write_catpatherror']  . $modSettings['down_path'] . 'catimgs' . '</b></span>';
 
 
 echo '
-    <input type="file" size="48" name="picture" /></td>
+    <div class="downloads-drop-zone">
+		<span class="drop-icon">&#128194;</span>
+		<div class="drop-text">Drag &amp; drop image here or <a>browse</a></div>
+		<input type="file" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .bmp" />
+		<div class="drop-preview"></div>
+	</div></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%"   align="right"><b>' .   $txt['downloads_text_cat_disableratings'] . '</b></td>
     <td width="72%"><input type="checkbox" name="disablerating" /></td>
   </tr>
-  <tr  class="windowbg2">
+  <tr  class="windowbg">
     <td width="28%"  align="right"><b>' .   $txt['downloads_txt_sortby']  . '</b>&nbsp</td>
     <td width="72%"><select name="sortby">
 		<option value="date">',$txt['downloads_txt_sort_date'],'</option>
@@ -483,47 +488,50 @@ echo '
 		<option value="membername">',$txt['downloads_txt_sort_membername'],'</option>
 		</select></td>
   </tr>
-  <tr  class="windowbg2">
+  <tr  class="windowbg">
     <td width="28%" align="right"><b>' .   $txt['downloads_txt_orderby'] . '</b></td>
     <td width="72%"><select name="orderby">
 		<option value="desc">',$txt['downloads_txt_sort_desc'],'</option>
 		<option value="asc">',$txt['downloads_txt_sort_asc'],'</option>
 		</select></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td colspan="2" align="center">
   	<b>' . $txt['downloads_text_postingoptions'] . '</b>
   	<hr />
   	' . $txt['downloads_postingoptions_info'] . '
   	</td>
   </tr>
-  <tr  class="windowbg2">
+  <tr  class="windowbg">
     <td width="28%" align="right"><b>' . $txt['downloads_text_boardname'] . '</b></td>
     <td width="72%">
   	<select name="boardselect" id="boardselect">
   ';
 
 	foreach ($context['downloads_boards'] as $key => $option)
-		 echo '<option value="' . $key . '">' . $option . '</option>';
+		 echo '<option value="' . $key . '">' . htmlspecialchars($option, ENT_QUOTES, 'UTF-8') . '</option>';
 
 echo '</select>
 	</td>
   </tr>
-   <tr  class="windowbg2">
+   <tr  class="windowbg">
     <td colspan="2" align="center">
     <input type="checkbox" name="locktopic" /><b>' . $txt['downloads_posting_locktopic'] . '</b>&nbsp;
     </td>
   </tr>
-   <tr class="windowbg2">
+   <tr class="windowbg">
   	<td colspan="2"><hr /></td>
   </tr>
-  <tr  class="windowbg2">
+  <tr  class="windowbg">
     <td width="28%" colspan="2"  align="center">
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="', $txt['downloads_text_addcategory'], '" name="submit" /></td>
 
   </tr>
 </table>
 </form>';
+
+	downloads_dropzone_js();
 
 	if ($context['show_spellchecking'])
 			echo '<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
@@ -535,13 +543,13 @@ echo '</select>
 
 function template_edit_category()
 {
-	global $scripturl, $txt, $context, $settings, $context, $modSettings;
+	global $scripturl, $txt, $context, $settings, $modSettings;
 
 
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
 
 	echo '
@@ -551,12 +559,12 @@ function template_edit_category()
         ', $txt['downloads_text_editcategory'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr class="windowbg2">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
+  <tr class="windowbg">
     <td width="28%"  align="right"><b>', $txt['downloads_form_title'], '</b>&nbsp;</td>
-    <td width="72%"><input type="text" name="title" size="64" maxlength="100" value="', $context['down_catinfo']['title'], '" /></td>
+    <td width="72%"><input type="text" name="title" size="64" maxlength="100" value="', htmlspecialchars($context['down_catinfo']['title'], ENT_QUOTES, 'UTF-8'), '" /></td>
   </tr>
-    <tr class="windowbg2">
+    <tr class="windowbg">
     <td width="28%"  align="right"><b>', $txt['downloads_text_parentcategory'], '</b>&nbsp;</td>
     <td width="72%"><select name="parent">
     <option value="0">', $txt['downloads_text_catnone'], '</option>
@@ -564,44 +572,49 @@ function template_edit_category()
 
 		foreach ($context['downloads_cat'] as $i => $category)
 		{
-			echo '<option value="' . $category['ID_CAT']  . '" ' . (($context['down_catinfo']['ID_PARENT'] == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . $category['title'] . '</option>';
+			echo '<option value="' . $category['ID_CAT']  . '" ' . (($context['down_catinfo']['ID_PARENT'] == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . htmlspecialchars($category['title'], ENT_QUOTES, 'UTF-8') . '</option>';
 		}
 
 	echo '</select>
 	</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%"  valign="top" align="right"><b>' . $txt['downloads_form_description'] . '</b>&nbsp;<br />' . $txt['downloads_text_bbcsupport'] . '</td>
-    <td width="72%"><textarea rows="6" name="description" cols="54">' . $context['down_catinfo']['description'] . '</textarea>';
+    <td width="72%"><textarea rows="6" name="description" cols="54">' . htmlspecialchars($context['down_catinfo']['description'], ENT_QUOTES, 'UTF-8') . '</textarea>';
 
    	if ($context['show_spellchecking'])
    		echo '
    									<br /><input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'catform\', \'description\');" />';
 echo '</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%"  align="right"><b>' . $txt['downloads_form_icon'] . '</b>&nbsp;</td>
-    <td width="72%"><input type="text" name="image" size="64" maxlength="100" value="' . $context['down_catinfo']['image'] . '" /></td>
+    <td width="72%"><input type="text" name="image" size="64" maxlength="100" value="' . htmlspecialchars($context['down_catinfo']['image'], ENT_QUOTES, 'UTF-8') . '" /></td>
   </tr>
-   <tr class="windowbg2">
+   <tr class="windowbg">
     <td width="28%"  align="right"><b>' . $txt['downloads_form_uploadicon'] . '</b>&nbsp;</td>
     <td width="72%">';
 
 
 		// Warn the user if the category image path is not writable
 		if (!is_writable($modSettings['down_path'] . 'catimgs'))
-			echo '<font color="#FF0000"><b>' . $txt['downloads_write_catpatherror']  . $modSettings['down_path'] . 'catimgs' . '</b></font>';
+			echo '<span class="error"><b>' . $txt['downloads_write_catpatherror']  . $modSettings['down_path'] . 'catimgs' . '</b></span>';
 
 
 echo '
-    <input type="file" size="48" name="picture" /></td>
+    <div class="downloads-drop-zone">
+		<span class="drop-icon">&#128194;</span>
+		<div class="drop-text">Drag &amp; drop image here or <a>browse</a></div>
+		<input type="file" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .bmp" />
+		<div class="drop-preview"></div>
+	</div></td>
   </tr>';
 
 if ($context['down_catinfo']['filename'] != '')
 echo '
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%"  align="right"><b>' .   $txt['downloads_form_filenameicon'] . '</b>&nbsp</td>
-    <td width="72%">' . $context['down_catinfo']['filename'] .  '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=catimgdel&id=' . $context['down_catinfo']['ID_CAT'] . '">' . $txt['downloads_rep_deletefile'] . '</a></td>
+    <td width="72%">' . htmlspecialchars($context['down_catinfo']['filename'], ENT_QUOTES, 'UTF-8') .  '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=catimgdel;id=' . $context['down_catinfo']['ID_CAT'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_rep_deletefile'] . '</a></td>
   </tr>';
 
 
@@ -669,11 +682,11 @@ echo '
 
 
 	echo '
-	  <tr class="windowbg2">
+	  <tr class="windowbg">
 	    <td width="28%"  align="right"><b>' .   $txt['downloads_text_cat_disableratings'] . '</b>&nbsp</td>
 	    <td width="72%"><input type="checkbox" name="disablerating" ' . ($context['down_catinfo']['disablerating'] ? ' checked="checked"' : '') . ' /></td>
 	  </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" align="right"><b>' .   $txt['downloads_txt_sortby']  . '</b>&nbsp;</td>
     <td width="72%" ><select name="sortby">
     	',$sortselect,'
@@ -687,7 +700,7 @@ echo '
 		<option value="membername">',$txt['downloads_cat_membername'],'</option>
 		</select></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%"  align="right"><b>' .   $txt['downloads_txt_orderby'] . '</b>&nbsp;</td>
     <td width="72%"><select name="orderby">
     	',$orderselect,'
@@ -695,43 +708,44 @@ echo '
 		<option value="asc">',$txt['downloads_txt_sort_asc'],'</option>
 		</select></td>
   </tr>
-	  <tr class="windowbg2">
+	  <tr class="windowbg">
 	  	<td colspan="2" align="center">
 	  	<b>' . $txt['downloads_text_postingoptions'] . '</b>
 	  	<hr />
 	  	' . $txt['downloads_postingoptions_info'] . '
 	  	</td>
 	  </tr>
-	  <tr  class="windowbg2">
+	  <tr  class="windowbg">
 	    <td width="28%" align="right"><b>' . $txt['downloads_text_boardname'] . '</b>&nbsp;</td>
 	    <td width="72%">
 	  	<select name="boardselect" id="boardselect">
 	  ';
 
 		foreach ($context['downloads_boards'] as $key => $option)
-			 echo '<option value="' . $key . '"' . (($context['down_catinfo']['ID_BOARD']==$key) ? ' selected="selected"' : '') . '>' . $option . '</option>';
+			 echo '<option value="' . $key . '"' . (($context['down_catinfo']['ID_BOARD']==$key) ? ' selected="selected"' : '') . '>' . htmlspecialchars($option, ENT_QUOTES, 'UTF-8') . '</option>';
 
 	echo '</select>
 		</td>
 	  </tr>
-	   <tr  class="windowbg2">
+	   <tr  class="windowbg">
 	    <td colspan="2"  align="center">
     <input type="checkbox" name="locktopic" ' . ($context['down_catinfo']['locktopic'] ? ' checked="checked"' : '') . ' /><b>' . $txt['downloads_posting_locktopic'] . '</b>&nbsp;
 	    </td>
 	  </tr>
-   <tr  class="windowbg2">
+   <tr  class="windowbg">
   	<td colspan="2"><hr /></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" colspan="2"  align="center">
     <input type="hidden" value="' . $context['down_catinfo']['ID_CAT'] . '" name="catid" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_text_editcategory'] . '" name="submit" /></td>
 
   </tr>
 </table>
 </form><br />';
 
-
+	downloads_dropzone_js();
 
 	echo'
 	<hr />
@@ -742,6 +756,7 @@ echo '
   	', $txt['downloads_custom_default_value'], '<input type="text" name="defaultvalue" />
   	<input type="hidden" name="id" value="',$context['down_catinfo']['ID_CAT'],'" />
   	<input type="checkbox" name="required" />', $txt['downloads_custom_required'], '
+  	<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
   	<input type="submit" name="addfield" value="',$txt['downloads_custom_addfield'],'" />
   	</form>
   	</div><br />
@@ -759,12 +774,12 @@ echo '
 	// Get all the custom fields
 	foreach ($context['down_custom'] as $i => $custom)
 	{
-		echo '<tr  class="windowbg2">
- 	 		<td>', $custom['title'], '</td>
- 	 		<td>', $custom['defaultvalue'], '</td>
+		echo '<tr  class="windowbg">
+ 	 		<td>', htmlspecialchars($custom['title'], ENT_QUOTES, 'UTF-8'), '</td>
+ 	 		<td>', htmlspecialchars($custom['defaultvalue'], ENT_QUOTES, 'UTF-8'), '</td>
 			<td>', ($custom['is_required'] ? 'TRUE' : 'FALSE'), '</td>
-			<td><a href="' . $scripturl . '?action=downloads;sa=cusup&id=' . $custom['ID_CUSTOM'] . '">' . $txt['downloads_text_up'] . '</a>&nbsp;<a href="' . $scripturl . '?action=downloads;sa=cusdown&id=' . $custom['ID_CUSTOM'] . '">' . $txt['downloads_text_down'] . '</a>
-			&nbsp;&nbsp;<a href="' . $scripturl . '?action=downloads;sa=cusdelete&id=' . $custom['ID_CUSTOM'] . '">' . $txt['downloads_text_delete'] . '</a>
+			<td><a href="' . $scripturl . '?action=downloads;sa=cusup;id=' . $custom['ID_CUSTOM'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_up'] . '</a>&nbsp;<a href="' . $scripturl . '?action=downloads;sa=cusdown;id=' . $custom['ID_CUSTOM'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_down'] . '</a>
+			&nbsp;&nbsp;<a href="' . $scripturl . '?action=downloads;sa=cusdelete;id=' . $custom['ID_CUSTOM'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a>
 			</td>
  	 	</tr>
  	 ';
@@ -793,19 +808,20 @@ function template_delete_category()
 	global $context, $scripturl, $txt;
 
 	echo '
-	<form method="post" action="' . $scripturl . '?action=downloads&sa=deletecat2">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr>
+	<form method="post" action="' . $scripturl . '?action=downloads;sa=deletecat2">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
+  <tr class="windowbg">
     <td width="50%" colspan="2"  align="center" class="catbg">
     <b>' . $txt['downloads_text_delcategory'] . '</b></td>
   </tr>
-  <tr>
-    <td width="28%" colspan="2"  align="center" class="windowbg2">
+  <tr class="windowbg">
+    <td width="28%" colspan="2"  align="center" class="windowbg">
     <b>' . $txt['downloads_warn_category'] . '</b>
     <br />
-    <i>' . $txt['downloads_text_categoryname'] . '&nbsp;"' . $context['cat_title'] . '"&nbsp;' . $txt['downloads_text_totalfiles'] . '&nbsp;' . $context['totalfiles'] . '</i>
+    <i>' . $txt['downloads_text_categoryname'] . '&nbsp;"' . htmlspecialchars($context['cat_title'], ENT_QUOTES, 'UTF-8') . '"&nbsp;' . $txt['downloads_text_totalfiles'] . '&nbsp;' . $context['totalfiles'] . '</i>
      <br />
     <input type="hidden" value="' . $context['catid'] . '" name="catid" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_text_delcategory'] . '" name="submit" /></td>
   </tr>
 </table>
@@ -825,33 +841,33 @@ function template_add_download()
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
 
-	echo '<form method="post" enctype="multipart/form-data" name="picform" id="picform" action="' . $scripturl . '?action=downloads&sa=add2" onsubmit="submitonce(this);">
+	echo '<form method="post" enctype="multipart/form-data" name="picform" id="picform" action="' . $scripturl . '?action=downloads;sa=add2" onsubmit="submitonce(this);">
     <div class="cat_bar">
 		<h3 class="catbg centertext">
         ', $txt['downloads_form_adddownload'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr class="windowbg2">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_title'] . '</b>&nbsp;</td>
   	<td><input type="text" name="title" size="50" /></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_category'] . '</b>&nbsp;</td>
   	<td><select name="cat">';
 
  	foreach ($context['downloads_cat'] as $i => $category)
 	{
-		echo '<option value="' . $category['ID_CAT']  . '" ' . (($cat == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . $category['title'] . '</option>';
+		echo '<option value="' . $category['ID_CAT']  . '" ' . (($cat == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . htmlspecialchars($category['title'], ENT_QUOTES, 'UTF-8') . '</option>';
 	}
 
  echo '</select>
   	</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_description'] . '</b>&nbsp;</td>
   	<td> <table>
    ';
@@ -862,7 +878,7 @@ function template_add_download()
 		if ($context['show_bbc'])
 		{
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'bbc'), '
@@ -873,7 +889,7 @@ function template_add_download()
 		// What about smileys?
 		if (!empty($context['smileys']['postform']))
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'smileys'), '
@@ -882,7 +898,7 @@ function template_add_download()
 
 		// Show BBC buttons, smileys and textbox.
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'message'), '
@@ -892,7 +908,7 @@ function template_add_download()
 	else
 	{
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 		<td>';
 			// Showing BBC?
 		if ($context['show_bbc'])
@@ -925,30 +941,36 @@ function template_add_download()
 echo '
   	</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>', $txt['downloads_form_keywords'], '</b>&nbsp;</td>
   	<td><input type="text" name="keywords" maxlength="100" size="50" /></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>', $txt['downloads_form_uploadfile'], '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="download" />
+    <td>
+	<div class="downloads-drop-zone">
+		<span class="drop-icon">&#128206;</span>
+		<div class="drop-text">Drag &amp; drop file here or <a>browse</a></div>
+		<input type="file" name="download" />
+		<div class="drop-preview"></div>
+	</div>
     </td>
   </tr>
-   <tr class="windowbg2">
+   <tr class="windowbg">
   	<td align="right"><b>', $txt['downloads_form_uploadurl'], '</b>&nbsp;</td>
   	<td><input type="text" name="fileurl" size="50" /></td>
   </tr>
-  <tr  class="windowbg2">
+  <tr  class="windowbg">
   	<td colspan="2"><hr /></td>
   </tr>';
 
 
 	foreach ($context['downloads_custom'] as $i => $custom)
 	{
-		echo '<tr class="windowbg2">
- 	 		<td align="right"><b>', $custom['title'], ($custom['is_required'] ? '<font color="#FF0000">*</font>' : ''), '</b></td>
- 	 		<td><input type="text" name="cus_', $custom['ID_CUSTOM'],'" value="' , $custom['defaultvalue'], '" /></td>
+		echo '<tr class="windowbg">
+ 	 		<td align="right"><b>', htmlspecialchars($custom['title'], ENT_QUOTES, 'UTF-8'), ($custom['is_required'] ? '<span class="error">*</span>' : ''), '</b></td>
+ 	 		<td><input type="text" name="cus_', $custom['ID_CUSTOM'],'" value="' , htmlspecialchars($custom['defaultvalue'], ENT_QUOTES, 'UTF-8'), '" /></td>
 
  	 	</tr>
  	 ';
@@ -956,7 +978,7 @@ echo '
 
 
 	echo '
-  	   <tr class="windowbg2">
+  	   <tr class="windowbg">
 		<td align="right"><b>' . $txt['downloads_form_additionaloptions'] . '</b>&nbsp;</td>
 		<td><input type="checkbox" name="sendemail" checked="checked" /><b>' . $txt['downloads_notify_title'] .'</b>
 	  </tr>
@@ -965,7 +987,7 @@ echo '
   if ($modSettings['down_commentchoice'])
   {
 	echo '
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">&nbsp;</td>
 		<td><input type="checkbox" name="allowcomments" checked="checked" /><b>' . $txt['downloads_form_allowcomments'] .'</b>
 	  </tr>';
@@ -975,15 +997,15 @@ echo '
   if ($context['quotalimit'] != 0)
   {
 	echo '
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">',$txt['downloads_quotagrouplimit'],'&nbsp;</td>
 		<td>',Downloads_format_size($context['quotalimit'], 2),'</td>
 	  </tr>
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">',$txt['downloads_quotagspaceused'],'&nbsp;</td>
 		<td>',Downloads_format_size($context['userspace'], 2),'</td>
 	  </tr>
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">',$txt['downloads_quotaspaceleft'],'&nbsp;</td>
 		<td><b>' . Downloads_format_size(($context['quotalimit']-$context['userspace']), 2) . '</b></td>
 	  </tr>
@@ -992,9 +1014,10 @@ echo '
   }
 
 echo '
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" colspan="2"  align="center">
 
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="', $txt['downloads_form_adddownload'], '" name="submit" /><br />';
 
   	if (!allowedTo('downloads_autoapprove'))
@@ -1007,6 +1030,8 @@ echo '
 
 		</form>
 ';
+
+	downloads_dropzone_js();
 
 	if ($context['show_spellchecking'])
 			echo '<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
@@ -1024,34 +1049,34 @@ function template_edit_download()
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
 
-	echo '<form method="post" enctype="multipart/form-data" name="picform" id="picform" action="' . $scripturl . '?action=downloads&sa=edit2" onsubmit="submitonce(this);">
+	echo '<form method="post" enctype="multipart/form-data" name="picform" id="picform" action="' . $scripturl . '?action=downloads;sa=edit2" onsubmit="submitonce(this);">
 <div class="cat_bar">
 		<h3 class="catbg centertext">
         ', $txt['downloads_form_editdownload'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr class="windowbg2">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_title'] . '</b>&nbsp;</td>
-  	<td><input type="text" name="title" size="50" value="' . $context['downloads_file']['title'] . '" /></td>
+  	<td><input type="text" name="title" size="50" value="' . htmlspecialchars($context['downloads_file']['title'], ENT_QUOTES, 'UTF-8') . '" /></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_category'] . '</b>&nbsp;</td>
   	<td><select name="cat">';
 
  	foreach ($context['downloads_cat'] as $i => $category)
 	{
-		echo '<option value="' . $category['ID_CAT']  . '" ' . (($context['downloads_file']['ID_CAT'] == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . $category['title'] . '</option>';
+		echo '<option value="' . $category['ID_CAT']  . '" ' . (($context['downloads_file']['ID_CAT'] == $category['ID_CAT']) ? ' selected="selected"' : '') .'>' . htmlspecialchars($category['title'], ENT_QUOTES, 'UTF-8') . '</option>';
 	}
 
 
  echo '</select>
   	</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_description'] . '</b>&nbsp;</td>
   	<td><table>
    ';
@@ -1062,7 +1087,7 @@ function template_edit_download()
 		if ($context['show_bbc'])
 		{
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'bbc'), '
@@ -1073,7 +1098,7 @@ function template_edit_download()
 		// What about smileys?
 		if (!empty($context['smileys']['postform']))
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'smileys'), '
@@ -1082,7 +1107,7 @@ function template_edit_download()
 
 		// Show BBC buttons, smileys and textbox.
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'message'), '
@@ -1092,7 +1117,7 @@ function template_edit_download()
 	else
 	{
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 		<td>';
 			// Showing BBC?
 		if ($context['show_bbc'])
@@ -1129,37 +1154,43 @@ function template_edit_download()
 echo '
   	</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>' . $txt['downloads_form_keywords'] . '</b>&nbsp;</td>
-  	<td><input type="text" name="keywords" size="50" maxlength="100" value="' . $context['downloads_file']['keywords'] . '" />
+  	<td><input type="text" name="keywords" size="50" maxlength="100" value="' . htmlspecialchars($context['downloads_file']['keywords'], ENT_QUOTES, 'UTF-8') . '" />
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td align="right"><b>', $txt['downloads_form_uploadfile'], '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="download" />
+    <td>
+	<div class="downloads-drop-zone">
+		<span class="drop-icon">&#128206;</span>
+		<div class="drop-text">Drag &amp; drop file here or <a>browse</a></div>
+		<input type="file" name="download" />
+		<div class="drop-preview"></div>
+	</div>
     </td>
   </tr>
-   <tr class="windowbg2">
+   <tr class="windowbg">
   	<td align="right"><b>', $txt['downloads_form_uploadurl'], '</b>&nbsp;</td>
-  	<td><input type="text" name="fileurl" size="50" value="' . $context['downloads_file']['fileurl'] . '" /></td>
+  	<td><input type="text" name="fileurl" size="50" value="' . htmlspecialchars($context['downloads_file']['fileurl'], ENT_QUOTES, 'UTF-8') . '" /></td>
   </tr>
 
-   <tr class="windowbg2">
+   <tr class="windowbg">
   	<td colspan="2"><hr /></td>
   </tr>';
 
 	foreach ($context['downloads_custom'] as $i => $custom)
 	{
-		echo '<tr class="windowbg2">
- 	 		<td align="right"><b>', $custom['title'], ($custom['is_required'] ? '<font color="#FF0000">*</font>' : ''), '</b></td>
- 	 		<td><input type="text" name="cus_', $custom['ID_CUSTOM'],'" value="' , $custom['value'], '" /></td>
+		echo '<tr class="windowbg">
+ 	 		<td align="right"><b>', htmlspecialchars($custom['title'], ENT_QUOTES, 'UTF-8'), ($custom['is_required'] ? '<span class="error">*</span>' : ''), '</b></td>
+ 	 		<td><input type="text" name="cus_', $custom['ID_CUSTOM'],'" value="' , htmlspecialchars($custom['value'], ENT_QUOTES, 'UTF-8'), '" /></td>
 
  	 	</tr>';
 	}
 
 
  echo '
-   	   <tr class="windowbg2">
+   	   <tr class="windowbg">
 		<td align="right"><b>' . $txt['downloads_form_additionaloptions'] . '</b>&nbsp;</td>
 		<td><input type="checkbox" name="sendemail" ' . ($context['downloads_file']['sendemail'] ? 'checked="checked"' : '' ) . ' /><b>' . $txt['downloads_notify_title'] .'</b>
 	  </tr>';
@@ -1167,7 +1198,7 @@ echo '
   if ($modSettings['down_commentchoice'])
   {
 	echo '
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">&nbsp;</td>
 		<td><input type="checkbox" name="allowcomments" ' . ($context['downloads_file']['allowcomments'] ? 'checked="checked"' : '' ) . ' /><b>',$txt['downloads_form_allowcomments'],'</b>
 	  </tr>';
@@ -1176,7 +1207,7 @@ echo '
   // If the user can manage the downloads give them the option to change the download owner.
   if ($g_manage == true)
   {
-	  echo '<tr class="windowbg2">
+	  echo '<tr class="windowbg">
 	  <td align="right">', $txt['downloads_text_changeowner'], '</td>
 	  <td><input type="text" name="pic_postername" id="pic_postername" value="" />
 	  <a href="', $scripturl, '?action=findmember;input=pic_postername;quote=1;sesc=', $context['session_id'], '" onclick="return reqWin(this.href, 350, 400);"><img src="', $settings['images_url'], '/icons/members.png" alt="', $txt['find_members'], '" /></a>
@@ -1191,15 +1222,15 @@ echo '
   if ($context['quotalimit'] != 0)
   {
 	echo '
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">',$txt['downloads_quotagrouplimit'],'&nbsp;</td>
 		<td>',Downloads_format_size($context['quotalimit'], 2),'</td>
 	  </tr>
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">',$txt['downloads_quotagspaceused'],'&nbsp;</td>
 		<td>',Downloads_format_size($context['userspace'], 2),'</td>
 	  </tr>
-	   <tr class="windowbg2">
+	   <tr class="windowbg">
 		<td align="right">',$txt['downloads_quotaspaceleft'],'&nbsp;</td>
 		<td><b>', Downloads_format_size(($context['quotalimit']-$context['userspace']), 2), '</b></td>
 	  </tr>
@@ -1208,16 +1239,17 @@ echo '
   }
 
 echo '
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" colspan="2"  align="center">
 	<input type="hidden" name="id" value="' . $context['downloads_file']['ID_FILE'] . '" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_form_editdownload'] . '" name="submit" /><br />';
 
   	if (!allowedTo('downloads_autoapprove'))
   		echo $txt['downloads_form_notapproved'];
 
 echo '<div align="center"><br /><b>' . $txt['downloads_text_olddownload'] . '</b><br />
-' . $context['downloads_file']['orginalfilename'] . '<br />
+' . htmlspecialchars($context['downloads_file']['orginalfilename'], ENT_QUOTES, 'UTF-8') . '<br />
 			<span class="smalltext">' . $txt['downloads_text_views']  . $context['downloads_file']['views'] . '<br />
 			' . $txt['downloads_text_filesize']  . Downloads_format_size($context['downloads_file']['filesize'],2) . '<br />
 			' . $txt['downloads_text_date'] . $context['downloads_file']['date'] . '<br />
@@ -1228,6 +1260,8 @@ echo '<div align="center"><br /><b>' . $txt['downloads_text_olddownload'] . '</b
 
 		</form>
 ';
+
+	downloads_dropzone_js();
 
 	if ($context['show_spellchecking'])
 			echo '<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
@@ -1259,25 +1293,25 @@ function template_view_download()
         echo '
         <div class="cat_bar">
         		<h3 class="catbg centertext">
-                ', $context['downloads_file']['title'], '
+                ', htmlspecialchars($context['downloads_file']['title'], ENT_QUOTES, 'UTF-8'), '
                 </h3>
         </div>';
 
-	echo '<table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="tborder">';
+	echo '<table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="tborder downloads_form">';
 
 		// Show the main download
 		echo '
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td align="center">';
 
-					echo '<a href="' . $scripturl . '?action=downloads;sa=downfile&id=', $context['downloads_file']['ID_FILE'], '">', ($context['downloads_file']['fileurl'] == '' ? $context['downloads_file']['orginalfilename'] : $txt['downloads_app_download']), '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=downfile&id=', $context['downloads_file']['ID_FILE'], '">', ($context['downloads_file']['fileurl'] == '' ? htmlspecialchars($context['downloads_file']['orginalfilename'], ENT_QUOTES, 'UTF-8') : $txt['downloads_app_download']), '</a>';
 
 			echo '
 				</td>
 			</tr>';
 
 		echo '
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td align="center"><span class="smalltext"><b>';
 
 			if ($modSettings['down_set_file_showfilesize'] && $context['downloads_file']['fileurl'] == '')
@@ -1299,7 +1333,7 @@ function template_view_download()
 
 		// Show the previous and next links
 		if ($modSettings['down_set_file_prevnext'])
-			echo '<tr class="windowbg2">
+			echo '<tr class="windowbg">
 			<td align="center"><b>
 				<a href="', $scripturl, '?action=downloads;sa=prev&id=', $context['downloads_file']['ID_FILE'], '">', $txt['downloads_text_prev'], '</a> |
 				<a href="', $scripturl, '?action=downloads;sa=next&id=', $context['downloads_file']['ID_FILE'], '">', $txt['downloads_text_next'], '</a>
@@ -1309,7 +1343,7 @@ function template_view_download()
 			</tr>';
 
 			echo '
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td>';
 
 			// Show description
@@ -1327,7 +1361,7 @@ function template_view_download()
 
 					for($i = 0; $i < $keywordscount;$i++)
 					{
-						echo '<a href="' . $scripturl . '?action=downloads;sa=search2;key=' . $keywords[$i] . '">' . $keywords[$i] . '</a>&nbsp;';
+						echo '<a href="' . $scripturl . '?action=downloads;sa=search2;key=' . urlencode($keywords[$i]) . '">' . htmlspecialchars($keywords[$i], ENT_QUOTES, 'UTF-8') . '</a>&nbsp;';
 
 					}
 					echo '<br />';
@@ -1338,7 +1372,7 @@ function template_view_download()
 			{
 
 				if ($context['downloads_file']['real_name'] != '')
-					echo $txt['downloads_text_postedby'] . '<a href="' . $scripturl . '?action=profile;u=' . $context['downloads_file']['id_member'] . '">'  . $context['downloads_file']['real_name'] . '</a>&nbsp;';
+					echo $txt['downloads_text_postedby'] . '<a href="' . $scripturl . '?action=profile;u=' . $context['downloads_file']['id_member'] . '">'  . htmlspecialchars($context['downloads_file']['real_name'], ENT_QUOTES, 'UTF-8') . '</a>&nbsp;';
 				else
 					echo $txt['downloads_text_postedby'] . ' ' . $txt['downloads_guest'] . '&nbsp;';
 
@@ -1353,7 +1387,7 @@ function template_view_download()
 				{
 					// No reason to show empty custom fields on the display page
 					if ($custom['value'] != '')
-						echo '<b>', $custom['title'], ':</b>&nbsp;',$custom['value'], '<br />';
+						echo '<b>', htmlspecialchars($custom['title'], ENT_QUOTES, 'UTF-8'), ':</b>&nbsp;',htmlspecialchars($custom['value'], ENT_QUOTES, 'UTF-8'), '<br />';
 
 				}
 
@@ -1388,6 +1422,7 @@ function template_view_download()
 
 					echo '
 							 <input type="hidden" name="id" value="' . $context['downloads_file']['ID_FILE'] . '" />
+							 <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 							 <input type="submit" name="submit" value="' . $txt['downloads_form_ratedownload'] . '" />
 						';
 
@@ -1409,11 +1444,11 @@ function template_view_download()
 
 					if ($modSettings['down_set_showcode_directlink'])
 					{
-						echo '<tr><td width="30%">', $txt['downloads_txt_directlink'], '</td><td> <input type="text" value="' . $scripturl . '?action=downloads;sa=downfile&id=' . $context['downloads_file']['ID_FILE']  . '" size="50"></td></tr>';
+						echo '<tr class="windowbg"><td width="30%">', $txt['downloads_txt_directlink'], '</td><td> <input type="text" value="' . $scripturl . '?action=downloads;sa=downfile&id=' . $context['downloads_file']['ID_FILE']  . '" size="50"></td></tr>';
 					}
 					if ($modSettings['down_set_showcode_htmllink'])
 					{
-						echo '<tr><td width="30%">', $txt['downloads_set_showcode_htmllink'], '</td><td> <input type="text" value="<a href=&#34;' . $scripturl . '?action=downloads;sa=downfile&id=' . $context['downloads_file']['ID_FILE']  . '&#34;>', ($context['downloads_file']['fileurl'] == '' ? $context['downloads_file']['orginalfilename'] : $txt['downloads_app_download']), '</a>" size="50"></td></tr>';
+						echo '<tr class="windowbg"><td width="30%">', $txt['downloads_set_showcode_htmllink'], '</td><td> <input type="text" value="<a href=&#34;' . $scripturl . '?action=downloads;sa=downfile&id=' . $context['downloads_file']['ID_FILE']  . '&#34;>', ($context['downloads_file']['fileurl'] == '' ? htmlspecialchars($context['downloads_file']['orginalfilename'], ENT_QUOTES, 'UTF-8') : $txt['downloads_app_download']), '</a>" size="50"></td></tr>';
 					}
 
 					echo '</table>';
@@ -1422,11 +1457,11 @@ function template_view_download()
 
 				// Show edit download links if allowed
 				if ($g_manage)
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $context['downloads_file']['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=unapprove;id=' . $context['downloads_file']['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $context['downloads_file']['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $context['downloads_file']['ID_FILE']. '">' . $txt['downloads_text_edit'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit;id=' . $context['downloads_file']['ID_FILE']. '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $context['downloads_file']['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $context['downloads_file']['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $context['downloads_file']['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a>';
 
 
 				// Show report download link
@@ -1442,7 +1477,7 @@ function template_view_download()
 		// Display who is viewing the download.
 		if (!empty($modSettings['down_who_viewing']))
 		{
-			echo '<tr class="windowbg2">
+			echo '<tr class="windowbg">
 			<td align="center"><span class="smalltext">';
 
 			// Show just numbers...?
@@ -1465,14 +1500,14 @@ echo '
                 ', $txt['downloads_text_comments'], '
                 </h3>
         </div>
-        <table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="tborder">
+        <table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="tborder downloads_form">
 		';
 
 		if (allowedTo('downloads_comment'))
 		{
 			// Show Add Comment
 			echo '
-				<tr class="windowbg2"><td colspan="2">
+				<tr class="windowbg"><td colspan="2">
 				<a href="' . $scripturl . '?action=downloads;sa=comment&id=' . $context['downloads_file']['ID_FILE'] . '">' . $txt['downloads_text_addcomment']  . '</a></td>
 				</tr>';
 		}
@@ -1486,7 +1521,7 @@ echo '
 
 		foreach ($context['downloads_comments'] as $i => $comment)
 		{
-			echo '<tr class="windowbg2">';
+			echo '<tr class="windowbg">';
 			// Display member info
 			echo '<td width="10%" valign="top"><a name="c' . $comment['ID_COMMENT'] . '"></a>';
 
@@ -1521,7 +1556,7 @@ echo '
 			if ($comment['modified_id_member'] != 0)
 			{
 
-				echo '<br /><span class="smalltext"><i>' . $txt['downloads_text_commodifiedby']  . '<a href="' . $scripturl . '?action=profile;u=' . $comment['modified_id_member'] . '">'  . $comment['modmember'] . '</a> ' . timeformat($comment['lastmodified']) .  ' </i></span>';
+				echo '<br /><span class="smalltext"><i>' . $txt['downloads_text_commodifiedby']  . '<a href="' . $scripturl . '?action=profile;u=' . $comment['modified_id_member'] . '">'  . htmlspecialchars($comment['modmember'], ENT_QUOTES, 'UTF-8') . '</a> ' . timeformat($comment['lastmodified']) .  ' </i></span>';
 
 
 			}
@@ -1542,7 +1577,7 @@ echo '
 
 			// Check if the user is allowed to delete the comment.
 			if ($g_manage)
-				echo '<br /><a href="' . $scripturl . '?action=downloads;sa=delcomment&id=' . $comment['ID_COMMENT'] . '">' . $txt['downloads_text_delcomment'] .'</a>';
+				echo '<br /><a href="' . $scripturl . '?action=downloads;sa=delcomment;id=' . $comment['ID_COMMENT'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delcomment'] .'</a>';
 
 
 			echo '</td>';
@@ -1571,22 +1606,23 @@ echo '
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
-				echo '<form method="post" action="' . $scripturl . '?action=downloads&sa=comment2" id="cprofile" name="cprofile">
+				echo '<form method="post" action="' . $scripturl . '?action=downloads;sa=comment2" id="cprofile" name="cprofile">
                          <div class="cat_bar">
         		<h3 class="catbg centertext">
                 ',  $txt['downloads_text_addcomment'], '
                 </h3>
         </div>
 				<table border="0" cellpadding="0" cellspacing="0" width="100%" class="tborder" align="center">
-				  <tr class="windowbg2" >
+				  <tr class="windowbg" >
 				    <td width="28%"  valign="top"align="right"><b>' . $txt['downloads_form_comment'] . '</b>&nbsp;</td>
 				    <td width="72%"><textarea rows="6" name="comment" cols="54"></textarea></td>
 				  </tr>
-				  <tr class="windowbg2">
+				  <tr class="windowbg">
 				    <td width="28%" colspan="2"  align="center">
-				    <input type="hidden" name="id" value="' . $context['downloads_file']['ID_FILE'] . '" />';
+				    <input type="hidden" name="id" value="' . $context['downloads_file']['ID_FILE'] . '" />
+				    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
 
 				   	if (allowedTo('downloads_autocomment') == false)
 				   		echo $txt['downloads_text_commentwait'] . '<br />';
@@ -1639,20 +1675,21 @@ function template_delete_download()
         ', $txt['downloads_form_deldownload'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
 
-  <tr class="windowbg2">
-    <td width="28%" colspan="2"  align="center" class="windowbg2">
+  <tr class="windowbg">
+    <td width="28%" colspan="2"  align="center" class="windowbg">
 	' . $txt['downloads_warn_deletedownload'] . '
 	<br />
 <div align="center"><br /><b>' . $txt['downloads_text_deldownload'] . '</b><br />
-<a href="' . $scripturl . '?action=downloads;sa=view;down=' . $context['downloads_file']['ID_FILE'] . '" target="blank">',$context['downloads_file']['title'],'</a><br />
+<a href="' . $scripturl . '?action=downloads;sa=view;down=' . $context['downloads_file']['ID_FILE'] . '" target="_blank">',htmlspecialchars($context['downloads_file']['title'], ENT_QUOTES, 'UTF-8'),'</a><br />
 			<span class="smalltext">Views: ' . $context['downloads_file']['views'] . '<br />
 			' . $txt['downloads_text_filesize']  . Downloads_format_size($context['downloads_file']['filesize'],2) . '<br />
 			' . $txt['downloads_text_date'] . $context['downloads_file']['date'] . '<br />
-			' . $txt['downloads_text_comments'] . ' (<a href="' . $scripturl . '?action=downloads;sa=view;down=' .  $context['downloads_file']['ID_FILE'] . '" target="blank">' .  $context['downloads_file']['commenttotal'] . '</a>)<br />
+			' . $txt['downloads_text_comments'] . ' (<a href="' . $scripturl . '?action=downloads;sa=view;down=' .  $context['downloads_file']['ID_FILE'] . '" target="_blank">' .  $context['downloads_file']['commenttotal'] . '</a>)<br />
 	</div><br />
 	<input type="hidden" name="id" value="' . $context['downloads_file']['ID_FILE'] . '" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_form_deldownload'] . '" name="submit" /><br />
     </td>
   </tr>
@@ -1671,19 +1708,19 @@ function template_add_comment()
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
 
 ShowTopDownloadBar2();
 
 echo '
-<form method="post" name="cprofile" id="cprofile" action="' . $scripturl . '?action=downloads&sa=comment2" onsubmit="submitonce(this);">
+<form method="post" name="cprofile" id="cprofile" action="' . $scripturl . '?action=downloads;sa=comment2" onsubmit="submitonce(this);">
 <div class="cat_bar">
 		<h3 class="catbg centertext">
         ', $txt['downloads_text_addcomment'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
 ';
 
 // Showing BBC?
@@ -1692,7 +1729,7 @@ echo '
 		if ($context['show_bbc'])
 		{
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'bbc'), '
@@ -1703,7 +1740,7 @@ echo '
 		// What about smileys?
 		if (!empty($context['smileys']['postform']))
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'smileys'), '
@@ -1712,7 +1749,7 @@ echo '
 
 		// Show BBC buttons, smileys and textbox.
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'message'), '
@@ -1723,7 +1760,7 @@ echo '
 		else
 	{
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 		<td colspan="2">';
 			// Showing BBC?
 		if ($context['show_bbc'])
@@ -1747,9 +1784,10 @@ echo '
 
 
 echo '
-  <tr>
-    <td width="28%" colspan="2" align="center" class="windowbg2">
-    <input type="hidden" name="id" value="' . $context['downloads_file_id'] . '" />';
+  <tr class="windowbg">
+    <td width="28%" colspan="2" align="center" class="windowbg">
+    <input type="hidden" name="id" value="' . $context['downloads_file_id'] . '" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
 
    	if (allowedTo('downloads_autocomment') == false)
    		echo $txt['downloads_text_commentwait'] . '<br />';
@@ -1788,14 +1826,15 @@ function template_report_download()
         ', $txt['downloads_form_reportdownload'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr class="windowbg2">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
+  <tr class="windowbg">
     <td width="28%"  valign="top" align="right"><b>' . $txt['downloads_form_comment'] . '</b>&nbsp;</td>
     <td width="72%" ><textarea rows="6" name="comment" cols="54"></textarea></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" colspan="2" align="center">
     <input type="hidden" name="id" value="' . $context['downloads_file_id'] . '" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_form_reportdownload'] . '" name="submit" /></td>
 
   </tr>
@@ -1818,15 +1857,16 @@ function template_report_comment()
         ', $txt['downloads_text_reportcomment'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
 
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%"  valign="top" align="right"><b>' . $txt['downloads_form_comment'] . '</b>&nbsp;</td>
     <td width="72%"><textarea rows="6" name="comment" cols="54"></textarea></td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="28%" colspan="2"  align="center">
     <input type="hidden" name="id" value="' . $context['downloads_comment_id'] . '" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_text_reportcomment'] . '" name="submit" /></td>
   </tr>
 </table>
@@ -1837,31 +1877,31 @@ function template_report_comment()
 
 function template_settings()
 {
-	global $scripturl, $modSettings, $txt;
+	global $scripturl, $modSettings, $txt, $context;
 
 echo '
 			<div class="cat_bar">
 								<h3 class="catbg">' . $txt['downloads_text_settings'] . '</h3>
             </div>
-	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg2">
+	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder downloads_form">
+		<tr class="windowbg">
 			<td>
 
 			<form method="post" action="' . $scripturl . '?action=downloads;sa=adminset2">
-				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
-					<tr><td width="30%">' . $txt['downloads_set_filesize'] . '</td><td><input type="text" name="down_max_filesize" value="' .  $modSettings['down_max_filesize'] . '" /> (bytes)</td></tr>
-				<tr><td width="30%">' . $txt['downloads_set_path'] . '</td><td><input type="text" name="down_path" value="' .  $modSettings['down_path'] . '" size="50" /></td></tr>
-				<tr><td width="30%">' . $txt['downloads_set_url'] . '</td><td><input type="text" name="down_url" value="' .  $modSettings['down_url'] . '" size="50" /></td></tr>
+				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="downloads_form">
+					<tr class="windowbg"><td width="30%">' . $txt['downloads_set_filesize'] . '</td><td><input type="text" name="down_max_filesize" value="' .  $modSettings['down_max_filesize'] . '" /> (bytes)</td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_set_path'] . '</td><td><input type="text" name="down_path" value="' .  $modSettings['down_path'] . '" size="50" /></td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_set_url'] . '</td><td><input type="text" name="down_url" value="' .  $modSettings['down_url'] . '" size="50" /></td></tr>
 
-				<tr><td width="30%">' . $txt['downloads_upload_max_filesize'] . '</td><td><a href="https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize" target="_blank">' . @ini_get("upload_max_filesize") . '</a></td></tr>
-				<tr><td width="30%">' . $txt['downloads_post_max_size'] . '</td><td><a href="https://www.php.net/manual/en/ini.core.php#ini.post-max-size" target="_blank">' . @ini_get("post_max_size") . '</a></td></tr>
-				<tr><td colspan="2">',$txt['downloads_upload_limits_notes'] ,'</td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_upload_max_filesize'] . '</td><td><a href="https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize" target="_blank">' . @ini_get("upload_max_filesize") . '</a></td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_post_max_size'] . '</td><td><a href="https://www.php.net/manual/en/ini.core.php#ini.post-max-size" target="_blank">' . @ini_get("post_max_size") . '</a></td></tr>
+				<tr class="windowbg"><td colspan="2">',$txt['downloads_upload_limits_notes'] ,'</td></tr>
 
 
 
-				<tr><td width="30%">' . $txt['downloads_set_files_per_page'] . '</td><td><input type="text" name="down_set_files_per_page" value="' .  $modSettings['down_set_files_per_page'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['downloads_set_cat_width'] . '</td><td><input type="text" name="down_set_cat_width" value="' .  $modSettings['down_set_cat_width'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['downloads_set_cat_height'] . '</td><td><input type="text" name="down_set_cat_height" value="' .  $modSettings['down_set_cat_height'] . '" /></td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_set_files_per_page'] . '</td><td><input type="text" name="down_set_files_per_page" value="' .  $modSettings['down_set_files_per_page'] . '" /></td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_set_cat_width'] . '</td><td><input type="text" name="down_set_cat_width" value="' .  $modSettings['down_set_cat_width'] . '" /></td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_set_cat_height'] . '</td><td><input type="text" name="down_set_cat_height" value="' .  $modSettings['down_set_cat_height'] . '" /></td></tr>
 				</table>
 				<input type="checkbox" name="down_who_viewing" ' . ($modSettings['down_who_viewing'] ? ' checked="checked" ' : '') . ' />' . $txt['downloads_set_whoonline'] . '<br />
 				<input type="checkbox" name="down_set_count_child" ' . ($modSettings['down_set_count_child'] ? ' checked="checked" ' : '') . ' />' . $txt['downloads_set_count_child'] . '<br />
@@ -1902,9 +1942,9 @@ echo '
 				<input type="checkbox" name="down_set_file_keywords" ' . ($modSettings['down_set_file_keywords'] ? ' checked="checked" ' : '') . ' />' . $txt['downloads_set_file_keywords'] . '<br />
 
 				<br />' . $txt['downloads_shop_settings'] . '<br />
-				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
-				<tr><td width="30%">' . $txt['downloads_shop_fileadd'] . '</td><td><input type="text" name="down_shop_fileadd" value="' .  $modSettings['down_shop_fileadd'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['downloads_shop_commentadd'] . '</td><td><input type="text" name="down_shop_commentadd" value="' .  $modSettings['down_shop_commentadd'] . '" /></td></tr>
+				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="downloads_form">
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_shop_fileadd'] . '</td><td><input type="text" name="down_shop_fileadd" value="' .  $modSettings['down_shop_fileadd'] . '" /></td></tr>
+				<tr class="windowbg"><td width="30%">' . $txt['downloads_shop_commentadd'] . '</td><td><input type="text" name="down_shop_commentadd" value="' .  $modSettings['down_shop_commentadd'] . '" /></td></tr>
 				</table>
 				<br /><b>' . $txt['downloads_txt_download_linking'] . '</b><br />
 				<input type="checkbox" name="down_set_showcode_directlink" ' . ($modSettings['down_set_showcode_directlink'] ? ' checked="checked" ' : '') . ' />' . $txt['downloads_set_showcode_directlink'] . '<br />
@@ -1913,10 +1953,11 @@ echo '
 				';
 
 				if (!is_writable($modSettings['down_path']))
-					echo '<font color="#FF0000"><b>' . $txt['downloads_write_error']  . $modSettings['down_path'] . '</b></font>';
+					echo '<span class="error"><b>' . $txt['downloads_write_error']  . $modSettings['down_path'] . '</b></span>';
 
 				echo '
 
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="submit" name="savesettings" value="' . $txt['downloads_save_settings'] . '" />
 			</form>
 			<br />
@@ -1965,20 +2006,20 @@ echo '
 								<h3 class="catbg">' . $txt['downloads_form_approvedownloads']. '</h3>
             </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 			<form method="post" action="', $scripturl, '?action=downloads;sa=bulkactions">
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="tborder">
 				<thead>
 			<tr class="title_bar">
-				<td>&nbsp;</th>
-				<th  class="lefttext first_th">', $txt['downloads_app_download'], '</th>
+				<td>&nbsp;</td>
+				<th  class="lefttext">', $txt['downloads_app_download'], '</th>
 				<th  class="lefttext">', $txt['downloads_text_category'], '</th>
 				<th  class="lefttext">', $txt['downloads_app_title'], '</th>
 				<th  class="lefttext">', $txt['downloads_app_description'], '</th>
 				<th  class="lefttext">', $txt['downloads_app_date'], '</th>
 				<th  class="lefttext">', $txt['downloads_app_membername'], '</th>
-				<th  class="lefttext last_th">', $txt['downloads_text_options'], '</th>
+				<th  class="lefttext">', $txt['downloads_text_options'], '</th>
 				</tr>
 				</thead>
 				';
@@ -1990,20 +2031,20 @@ echo '
 				echo '<td><input type="checkbox" name="files[]" value="',$file['ID_FILE'],'" /></td>';
 
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $file['ID_FILE'] . '">',$txt['downloads_rep_viewdownload'],'</a></td>';
-				echo '<td>' . (empty($file['catname']) ? $file['catname2'] : $file['catname']) . '</td>';
-				echo '<td>', $file['title'], '</td>';
-				echo '<td>', $file['description'], '</td>';
+				echo '<td>' . htmlspecialchars((empty($file['catname']) ? $file['catname2'] : $file['catname']), ENT_QUOTES, 'UTF-8') . '</td>';
+				echo '<td>', htmlspecialchars($file['title'], ENT_QUOTES, 'UTF-8'), '</td>';
+				echo '<td>', htmlspecialchars($file['description'], ENT_QUOTES, 'UTF-8'), '</td>';
 				echo '<td>', timeformat($file['date']), '</td>';
 				if ($file['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . $file['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . htmlspecialchars($file['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 				else
 					echo '<td>',$txt['downloads_guest'],'</td>';
 
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=approve&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=approve;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=edit;id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
-    				$styleclass = 'windowbg2';
+    				$styleclass = 'windowbg';
     			else
     				$styleclass = 'windowbg';
 
@@ -2023,6 +2064,7 @@ echo '
 			<option value="approve">',$txt['downloads_form_approvedownloads'],'</option>
 			<option value="delete">',$txt['downloads_form_deldownload'],'</option>
 			</select>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			<input type="submit" value="',$txt['downloads_text_performaction'],'" />
 			</form>
 			';
@@ -2045,16 +2087,16 @@ echo '
 								<h3 class="catbg">' . $txt['downloads_form_reportdownloads'] . '</h3>
             </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
 				<thead>
 			<tr class="title_bar">
-				<th  class="lefttext first_th">', $txt['downloads_rep_filelink'], '</th>
+				<th  class="lefttext">', $txt['downloads_rep_filelink'], '</th>
 				<th  class="lefttext">', $txt['downloads_rep_comment'], '</th>
 				<th  class="lefttext">', $txt['downloads_app_date'], '</th>
 				<th  class="lefttext">', $txt['downloads_rep_reportby'], '</th>
-				<th  class="lefttext last_th">', $txt['downloads_text_options'], '</th>
+				<th  class="lefttext">', $txt['downloads_text_options'], '</th>
 				</tr>
 				</thead>
 				';
@@ -2066,20 +2108,20 @@ echo '
 
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $report['ID_FILE'] . '">' . $txt['downloads_rep_viewdownload'] .'</a></td>';
-				echo '<td>', $report['comment'], '</td>';
+				echo '<td>', htmlspecialchars($report['comment'], ENT_QUOTES, 'UTF-8'), '</td>';
 				echo '<td>', timeformat($report['date']), '</td>';
 
 				if ($report['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $report['id_member'] . '">'  . $report['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $report['id_member'] . '">'  . htmlspecialchars($report['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 				else
 					echo '<td>',$txt['downloads_guest'],'</td>';
 
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $report['ID_FILE'] . '">' . $txt['downloads_form_deldownload2']  . '</a>';
-				echo '<br /><br /><a href="' . $scripturl . '?action=downloads;sa=deletereport&id=' . $report['ID'] . '">' . $txt['downloads_rep_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $report['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_form_deldownload2']  . '</a>';
+				echo '<br /><br /><a href="' . $scripturl . '?action=downloads;sa=deletereport;id=' . $report['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_rep_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
-    				$styleclass = 'windowbg2';
+    				$styleclass = 'windowbg';
     			else
     				$styleclass = 'windowbg';
 
@@ -2104,21 +2146,22 @@ echo '
             </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 			<b>', $txt['downloads_form_approvecomments'], '</b><br />
 			<form method="post" action="', $scripturl, '?action=downloads;sa=apprcomall">
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			<input type="submit" value="', $txt['downloads_form_approveallcomments'], '" />
 			</form>
 			<br />
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
 				<thead>
 			<tr class="title_bar">
-				<th  class="lefttext first_th">' . $txt['downloads_rep_filelink'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_rep_filelink'] . '</th>
 				<th  class="lefttext">' . $txt['downloads_rep_comment']  . '</th>
 				<th  class="lefttext">' . $txt['downloads_app_date'] . '</th>
 				<th  class="lefttext">' . $txt['downloads_app_membername'] . '</th>
-				<th  class="lefttext last_th">' . $txt['downloads_text_options'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_text_options'] . '</th>
 				</tr>
 				</thead>
 				';
@@ -2130,18 +2173,18 @@ echo '
 
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $comment['ID_FILE'] . '">' . $txt['downloads_rep_viewdownload'] .'</a></td>';
-				echo '<td>' . $comment['comment'] . '</td>';
+				echo '<td>' . htmlspecialchars($comment['comment'], ENT_QUOTES, 'UTF-8') . '</td>';
 				echo '<td>' . timeformat($comment['date']) . '</td>';
 				if ($comment['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $comment['id_member'] . '">'  . $comment['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $comment['id_member'] . '">'  . htmlspecialchars($comment['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 				else
 					echo '<td>'  . $txt['downloads_guest']. '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=apprcomment&id=' . $comment['ID_COMMENT'] . '">' . $txt['downloads_text_approve']  . '</a>';
-				echo '<br /><br /><a href="' . $scripturl . '?action=downloads;sa=delcomment&id=' . $comment['ID_COMMENT'] . '">' . $txt['downloads_text_delcomment'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=apprcomment;id=' . $comment['ID_COMMENT'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_approve']  . '</a>';
+				echo '<br /><br /><a href="' . $scripturl . '?action=downloads;sa=delcomment;id=' . $comment['ID_COMMENT'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delcomment'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
-    				$styleclass = 'windowbg2';
+    				$styleclass = 'windowbg';
     			else
     				$styleclass = 'windowbg';
 
@@ -2169,12 +2212,12 @@ echo '
 				<thead>
 			<tr class="title_bar">
 
-				<th  class="lefttext first_th">' . $txt['downloads_rep_filelink'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_rep_filelink'] . '</th>
 				<th  class="lefttext">' . $txt['downloads_rep_org_comment']  . '</th>
 				<th  class="lefttext">' . $txt['downloads_rep_comment']  . '</th>
 				<th  class="lefttext">' . $txt['downloads_app_date'] . '</th>
 				<th  class="lefttext">' . $txt['downloads_rep_reportby'] . '</th>
-				<th  class="lefttext last_th">' . $txt['downloads_text_options'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_text_options'] . '</th>
 				</tr>
 			</thead>';
 
@@ -2182,14 +2225,14 @@ echo '
 			foreach ($context['downloads_reports'] as $i => $report)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $report['ID_FILE'] . '#c' . $report['ID_COMMENT'] . '">' . $txt['downloads_rep_viewdownload'] .'</a></td>';
-				echo '<td>' . $report['OringalComment'] . '</td>';
-				echo '<td>' . $report['comment'] . '</td>';
+				echo '<td>' . htmlspecialchars($report['OringalComment'], ENT_QUOTES, 'UTF-8') . '</td>';
+				echo '<td>' . htmlspecialchars($report['comment'], ENT_QUOTES, 'UTF-8') . '</td>';
 				echo '<td>' . timeformat($report['date']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=profile;u=' . $report['id_member'] . '">'  . $report['real_name'] . '</a></td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletecomment&id=' . $report['ID_COMMENT'] . ';ret=admin">' . $txt['downloads_text_delcomment'] . '</a>
-				<br /><a href="' . $scripturl . '?action=downloads;sa=delcomreport&id=' . $report['ID'] . '">' . $txt['downloads_rep_delete'] . '</a>
+				echo '<td><a href="' . $scripturl . '?action=profile;u=' . $report['id_member'] . '">'  . htmlspecialchars($report['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletecomment;id=' . $report['ID_COMMENT'] . ';ret=admin;', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delcomment'] . '</a>
+				<br /><a href="' . $scripturl . '?action=downloads;sa=delcomreport;id=' . $report['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_rep_delete'] . '</a>
 				</td>';
 				echo '</tr>';
 
@@ -2218,18 +2261,18 @@ function template_search()
         ', $txt['downloads_search_download'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%" class="tborder" align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="tborder downloads_form" align="center">
 
-  <tr class="windowbg2">
+  <tr class="windowbg">
     <td width="50%"   align="right"><b>' . $txt['downloads_search_for'] . '</b>&nbsp;</td>
     <td width="50%" ><input type="text" name="searchfor" size= "50" />
     </td>
   </tr>
-  <tr class="windowbg2" align="center">
+  <tr class="windowbg" align="center">
   	<td colspan="2"><input type="checkbox" name="searchtitle" checked="checked" />' . $txt['downloads_search_title'] . '&nbsp;<input type="checkbox" name="searchdescription" checked="checked" />' . $txt['downloads_search_description'] . '&nbsp;
   	<input type="checkbox" name="searchkeywords" />' . $txt['downloads_search_keyword'] . '</td>
   </tr>
-  <tr class="windowbg2">
+  <tr class="windowbg">
   	<td colspan="2" align="center">
   	<hr />
   	<b>',$txt['downloads_search_advsearch'],'</b><br />
@@ -2237,7 +2280,7 @@ function template_search()
 
   	</td>
   </tr>
-    <tr class="windowbg2">
+    <tr class="windowbg">
     <td width="30%"  align="right">' . $txt['downloads_text_category'] . '&nbsp;</td>
   	<td width="70%">
 		<select name="cat">
@@ -2246,12 +2289,12 @@ function template_search()
 
 	foreach ($context['downloads_cat'] as $i => $category)
 	{
-		echo '<option value="' . $category['ID_CAT']  . '" >' . $category['title'] . '</option>';
+		echo '<option value="' . $category['ID_CAT']  . '" >' . htmlspecialchars($category['title'], ENT_QUOTES, 'UTF-8') . '</option>';
 	}
 
 	echo '</select></td>
     </tr>
-    <tr class="windowbg2">
+    <tr class="windowbg">
      <td width="30%"  align="right">' . $txt['downloads_search_daterange']. '&nbsp;</td>
   	<td width="70%">
 		<select name="daterange">
@@ -2265,7 +2308,7 @@ function template_search()
 </select></td>
     </tr>
 
-    <tr class="windowbg2">
+    <tr class="windowbg">
      <td width="30%"  align="right">' . $txt['downloads_search_membername']. '&nbsp;</td>
   	<td width="70%">
 		<input type="text" name="pic_postername" id="pic_postername" value="" />
@@ -2275,8 +2318,9 @@ function template_search()
     </tr>
 
 
-  <tr>
-    <td width="100%" colspan="2"  align="center" class="windowbg2"><br />
+  <tr class="windowbg">
+    <td width="100%" colspan="2"  align="center" class="windowbg"><br />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" value="' . $txt['downloads_search'] . '" name="submit" />
 
     <br /></td>
@@ -2376,10 +2420,10 @@ function template_search_results()
 	foreach ($context['downloads_files'] as $i => $file)
 	{
 
-			echo '<tr class="windowbg2">';
+			echo '<tr class="windowbg">';
 
 			if (!empty($modSettings['down_set_t_title']))
-				echo  '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=', $file['ID_FILE'], '">', $file['title'], '</a></td>';
+				echo  '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=', $file['ID_FILE'], '">', htmlspecialchars($file['title'], ENT_QUOTES, 'UTF-8'), '</a></td>';
 
 			if (!empty($modSettings['down_set_t_rating']))
 				echo '<td>', Downloads_GetStarsByPrecent(($file['totalratings'] != 0) ? ($file['rating'] / ($file['totalratings']* 5) * 100) : 0), '</td>';
@@ -2401,7 +2445,7 @@ function template_search_results()
 			if (!empty($modSettings['down_set_t_username']))
 			{
 				if ($file['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . $file['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . htmlspecialchars($file['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 				else
 					echo '<td>', $txt['downloads_guest'], '</td>';
 			}
@@ -2411,11 +2455,11 @@ function template_search_results()
 			{
 				echo '<td>';
 				if ($g_manage)
-					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit;id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a>';
 
 				echo '</td>';
 			}
@@ -2479,7 +2523,7 @@ function template_myfiles()
 	$g_delete_own = allowedTo('downloads_delete');
 
 
-	ShowTopDownloadBar2($context['downloads_userdownloads_name']);
+	ShowTopDownloadBar2(htmlspecialchars($context['downloads_userdownloads_name'], ENT_QUOTES, 'UTF-8'));
 
 // Show table header
 		$count = 0;
@@ -2554,7 +2598,7 @@ function template_myfiles()
 		// Show page listing
 		if ($context['downloads_total'] > 0)
 		{
-			echo '<tr  class="windowbg2">
+			echo '<tr  class="windowbg">
 					<td align="left" colspan="' . $count . '">
 					';
 
@@ -2571,11 +2615,11 @@ function template_myfiles()
 	foreach ($context['downloads_files'] as $i => $file)
 	{
 
-			echo '<tr class="windowbg2">';
+			echo '<tr class="windowbg">';
 
 			if (!empty($modSettings['down_set_t_title']))
 			{
-				echo  '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=', $file['ID_FILE'], '">', $file['title'], '</a><br />';
+				echo  '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=', $file['ID_FILE'], '">', htmlspecialchars($file['title'], ENT_QUOTES, 'UTF-8'), '</a><br />';
 				if ($file['approved'] == 1)
 					echo '<b>', $txt['downloads_myfiles_app'], '</b>';
 				else
@@ -2605,7 +2649,7 @@ function template_myfiles()
 			if (!empty($modSettings['down_set_t_username']))
 			{
 				if ($file['real_name'] != '')
-					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . $file['real_name'] . '</a></td>';
+					echo '<td><a href="' . $scripturl . '?action=profile;u=' . $file['id_member'] . '">'  . htmlspecialchars($file['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 				else
 					echo '<td>', $txt['downloads_guest'], '</td>';
 			}
@@ -2616,11 +2660,11 @@ function template_myfiles()
 			{
 				echo '<td>';
 				if ($g_manage)
-					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit;id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a>';
 
 				echo '</td>';
 			}
@@ -2675,18 +2719,18 @@ function template_edit_comment()
 	// Load the spell checker?
 	if ($context['show_spellchecking'])
 		echo '
-									<script language="JavaScript" type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
+									<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/spellcheck.js"></script>';
 
 
 
 	echo '
-<form method="post" name="cprofile" id="cprofile" action="', $scripturl, '?action=downloads&sa=editcomment2" onsubmit="submitonce(this);">
+<form method="post" name="cprofile" id="cprofile" action="', $scripturl, '?action=downloads;sa=editcomment2" onsubmit="submitonce(this);">
 <div class="cat_bar">
 		<h3 class="catbg centertext">
         ', $txt['downloads_text_editcomment'], '
         </h3>
 </div>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="downloads_form">
 ';
 
 
@@ -2696,7 +2740,7 @@ function template_edit_comment()
 		if ($context['show_bbc'])
 		{
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'bbc'), '
@@ -2707,7 +2751,7 @@ function template_edit_comment()
 		// What about smileys?
 		if (!empty($context['smileys']['postform']))
 			echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'smileys'), '
@@ -2716,7 +2760,7 @@ function template_edit_comment()
 
 		// Show BBC buttons, smileys and textbox.
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 
 									<td colspan="2" align="center">
 										', template_control_richedit($context['post_box_name'], 'message'), '
@@ -2726,7 +2770,7 @@ function template_edit_comment()
 	else
 	{
 		echo '
-								<tr class="windowbg2">
+								<tr class="windowbg">
 		<td colspan="2">';
 			// Showing BBC?
 		if ($context['show_bbc'])
@@ -2751,9 +2795,10 @@ function template_edit_comment()
 
 
 echo '
-  <tr>
-    <td width="28%" colspan="2"  align="center" class="windowbg2">
-    <input type="hidden" name="id" value="' . $context['downloads_comment']['ID_COMMENT'] . '" />';
+  <tr class="windowbg">
+    <td width="28%" colspan="2"  align="center" class="windowbg">
+    <input type="hidden" name="id" value="' . $context['downloads_comment']['ID_COMMENT'] . '" />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
 
 	// Check if comments are autoapproved
    	if (allowedTo('downloads_autocomment') == false)
@@ -2796,15 +2841,15 @@ function template_view_rating()
 
 	foreach ($context['downloads_rating'] as $i => $rating)
 	{
-		echo '<tr class="windowbg2">
-				<td align="center"><a href="' . $scripturl . '?action=profile;u=' . $rating['id_member'] . '">'  . $rating['real_name'] . '</a></td>
+		echo '<tr class="windowbg">
+				<td align="center"><a href="' . $scripturl . '?action=profile;u=' . $rating['id_member'] . '">'  . htmlspecialchars($rating['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>
 				<td align="center">';
 		// Show the star images
 		for($i=0; $i < $rating['value']; $i++)
 			echo '<img src="', $settings['images_url'], '/membericons/icon.png" alt="*" border="0" />';
 
 		echo '</td>
-			  <td align="center"><a href="' . $scripturl . '?action=downloads;sa=delrating&id=' . $rating['ID'] . '">'  . $txt['downloads_text_delete'] . '</a></td>
+			  <td align="center"><a href="' . $scripturl . '?action=downloads;sa=delrating;id=' . $rating['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">'  . $txt['downloads_text_delete'] . '</a></td>
 		      </tr>';
 	}
 	echo '
@@ -2841,14 +2886,14 @@ echo '
 			<tr class="catbg">
 				<td colspan="2">&nbsp;</td>
 			</tr>
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td width="50%" valign="top">
 					<table border="0" cellpadding="1" cellspacing="0" width="100%">
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td  width="50%">', $txt['downloads_stats_totalfiles'] ,  '</td>
 							<td width="50%"  align="right">', comma_format($context['total_files']) , '</td>
 						</tr>
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td width="50%">', $txt['downloads_stats_totalviews'] ,  '</td>
 							<td width="50%"  align="right">', comma_format($context['total_views']) , '</td>
 						</tr>
@@ -2857,11 +2902,11 @@ echo '
 				</td>
 				<td width="50%" valign="top">
 					<table border="0" cellpadding="1" cellspacing="0" width="100%">
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td width="50%">', $txt['downloads_stats_totalcomments'] , '</td>
 							<td width="50%"  align="right">', comma_format($context['total_comments']), '</td>
 						</tr>
-						<tr class="windowbg2">
+						<tr class="windowbg">
 							<td width="50%">', $txt['downloads_stats_totalfize'] ,  '</td>
 							<td width="50%" align="right">', $context['total_filesize'] , '</td>
 						</tr>
@@ -2873,12 +2918,12 @@ echo '
 				<td width="50%"><b>', $txt['downloads_stats_viewed'], '</b></td>
 				<td width="50%"><b>', $txt['downloads_stats_toprated'], '</b></td>
 			</tr>
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td width="50%" valign="top">
 					<table border="0" cellpadding="1" cellspacing="0" width="100%">';
 						foreach ($context['top_viewed'] as $file)
 						{
-							echo '<tr class="windowbg2">
+							echo '<tr class="windowbg">
 									<td width="60%" valign="top">', $file['link'], '</td>
 									<td width="20%" align="left" valign="top">', $file['views'] > 0 ? '<img src="' . $settings['images_url'] . '/bar_stats.png" width="' . $file['percent'] . '" height="15" alt="" />' : '&nbsp;', '</td>
 									<td width="20%" align="right" valign="top">', $file['views'], '</td>
@@ -2891,7 +2936,7 @@ echo '
 					<table border="0" cellpadding="1" cellspacing="0" width="100%">';
 						foreach ($context['top_rating'] as $file)
 						{
-							echo '<tr class="windowbg2">
+							echo '<tr class="windowbg">
 									<td width="60%" valign="top">', $file['link'], '</td>
 									<td width="20%" align="left" valign="top">', $file['rating'] > 0 ? '<img src="' . $settings['images_url'] . '/bar_stats.png" width="' . $file['percent'] . '" height="15" alt="" />' : '&nbsp;', '</td>
 									<td width="20%" align="right" valign="top">', $file['rating'], '</td>
@@ -2905,12 +2950,12 @@ echo '
 				<td width="50%"><b>', $txt['downloads_stats_mostcomments'], '</b></td>
 				<td width="50%"><b>',$txt['downloads_stats_last'], '</b></td>
 			</tr>
-			<tr class="windowbg2">
+			<tr class="windowbg">
 				<td width="50%" valign="top">
 					<table border="0" cellpadding="1" cellspacing="0" width="100%">';
 						foreach ($context['most_comments'] as $file)
 						{
-							echo '<tr class="windowbg2">
+							echo '<tr class="windowbg">
 									<td width="60%" valign="top">', $file['link'], '</td>
 									<td width="20%" align="left" valign="top">', $file['commenttotal'] > 0 ? '<img src="' . $settings['images_url'] . '/bar_stats.png" width="' . $file['percent'] . '" height="15" alt="" />' : '&nbsp;', '</td>
 									<td width="20%" align="right" valign="top">', $file['commenttotal'], '</td>
@@ -2924,7 +2969,7 @@ echo '
 					<table border="0" cellpadding="1" cellspacing="0" width="100%">';
 						foreach ($context['last_upload'] as $file)
 						{
-							echo '<tr class="windowbg2">
+							echo '<tr class="windowbg">
 									<td width="100%" colspan="3" valign="top">', $file['link'], '</td>
 								</tr>';
 						}
@@ -2957,15 +3002,15 @@ function template_filespace()
 								<h3 class="catbg">' . $txt['downloads_filespace']. '</h3>
             </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
             <b>' .$txt['downloads_filespace_groupquota_title'] . '</b><br />
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
                 <thead>
 			<tr class="title_bar">
-				<th  class="lefttext first_th">' . $txt['downloads_filespace_groupname'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_filespace_groupname'] . '</th>
 				<th  class="lefttext">' .$txt['downloads_filespace_limit']  . '</th>
-				<th  class="lefttext last_th">' .  $txt['downloads_text_options']  . '</th>
+				<th  class="lefttext">' .  $txt['downloads_text_options']  . '</th>
 				</tr>
                 </thead>';
 
@@ -2977,11 +3022,11 @@ function template_filespace()
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td>'  . $group['group_name'] . '</td>';
 				echo '<td>' . Downloads_format_size($group['totalfilesize'], 2) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletequota&id=' . $group['ID_GROUP'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletequota;id=' . $group['ID_GROUP'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
-    				$styleclass = 'windowbg2';
+    				$styleclass = 'windowbg';
     			else
     				$styleclass = 'windowbg';
 
@@ -2993,11 +3038,11 @@ function template_filespace()
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td>', $txt['membergroups_members'], '</td>';
 				echo '<td>' . Downloads_format_size($group['totalfilesize'], 2) . '</td>';
-				echo '<td><a href="',$scripturl, '?action=downloads;sa=deletequota&id=' . $group['ID_GROUP'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="',$scripturl, '?action=downloads;sa=deletequota;id=' . $group['ID_GROUP'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
-    				$styleclass = 'windowbg2';
+    				$styleclass = 'windowbg';
     			else
     				$styleclass = 'windowbg';
 
@@ -3014,6 +3059,7 @@ function template_filespace()
 
 							echo '</select><br />' . $txt['downloads_filespace_limit'] . '&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="filelimit" /> (bytes)
 							<br /><br />
+						<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 						<input type="submit" value="' . $txt['downloads_filespace_addquota'] . '" />
 						</form>
 					</td>
@@ -3027,9 +3073,9 @@ function template_filespace()
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
 				<thead>
 			<tr class="title_bar">
-				<th  class="lefttext first_th">' . $txt['downloads_app_membername'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_app_membername'] . '</th>
 				<th  class="lefttext">' . $txt['downloads_text_options'] . '</th>
-				<th  class="lefttext last_th">' . $txt['downloads_filespace_filesize']  . '</th>
+				<th  class="lefttext">' . $txt['downloads_filespace_filesize']  . '</th>
 				</tr>
                 </thead>';
 
@@ -3040,13 +3086,13 @@ function template_filespace()
 	{
 
 		echo '<tr class="' . $styleclass . '">';
-		echo '<td><a href="' . $scripturl . '?action=profile;u=' . $member['id_member'] . '">'  . $member['real_name'] . '</a></td>';
+		echo '<td><a href="' . $scripturl . '?action=profile;u=' . $member['id_member'] . '">'  . htmlspecialchars($member['real_name'], ENT_QUOTES, 'UTF-8') . '</a></td>';
 		echo '<td><a href="' . $scripturl . '?action=downloads;sa=filelist&id=' . $member['id_member'] . '">'  . $txt['downloads_filespace_list'] . '</a></td>';
 		echo '<td>' . Downloads_format_size($member['totalfilesize'], 2) . '</td>';
 		echo '</tr>';
 
         if ($styleclass == 'windowbg')
-		  $styleclass = 'windowbg2';
+		  $styleclass = 'windowbg';
 		else
 		  $styleclass = 'windowbg';
 
@@ -3066,6 +3112,7 @@ function template_filespace()
 			<tr class="titlebg">
 					<td align="left" colspan="3">
 					<form method="post" action="' . $scripturl . '?action=downloads;sa=recountquota">
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 					<input type="submit" value="' . $txt['downloads_filespace_recount'] . '" />
 					</form>
 					</td>
@@ -3083,11 +3130,11 @@ function template_filelist()
 
 	echo '
 	<div class="cat_bar">
-								<h3 class="catbg">' . $txt['downloads_filespace_list_title'] . ' - ' . $context['downloads_filelist_real_name'] . '</h3>
+								<h3 class="catbg">' . $txt['downloads_filespace_list_title'] . ' - ' . htmlspecialchars($context['downloads_filelist_real_name'], ENT_QUOTES, 'UTF-8') . '</h3>
             </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="table_grid">
 				<tr class="catbg">
@@ -3103,13 +3150,13 @@ function template_filelist()
 			{
 
 				echo '<tr class="' . $styleclass . '">';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $file['ID_FILE'] . '">', $file['title'],'</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $file['ID_FILE'] . '">', htmlspecialchars($file['title'], ENT_QUOTES, 'UTF-8'),'</a></td>';
 				echo '<td>' . Downloads_format_size($file['filesize'], 2) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete;id=' . $file['ID_FILE'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
-    				$styleclass = 'windowbg2';
+    				$styleclass = 'windowbg';
     			else
     				$styleclass = 'windowbg';
 
@@ -3152,19 +3199,19 @@ function template_catpermlist()
 								<h3 class="catbg">' . $txt['downloads_text_catpermlist'] . '</h3>
             </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 			<table border="0" cellspacing="1" cellpadding="4" class="table_grid"  align="center" width="100%">
 <thead>
 <tr class="title_bar">
-				<th  class="lefttext first_th">' . $txt['downloads_filespace_groupname'] . '</th>
+				<th  class="lefttext">' . $txt['downloads_filespace_groupname'] . '</th>
 				<th  class="lefttext">' . $txt['downloads_text_category']  . '</th>
 				<th  class="lefttext">' .  $txt['downloads_perm_view']  . '</th>
 				<th  class="lefttext">' .  $txt['downloads_perm_add']  . '</th>
 				<th  class="lefttext">' .  $txt['downloads_perm_edit']  . '</th>
 				<th  class="lefttext">' .  $txt['downloads_perm_delete']  . '</th>
 				<th  class="lefttext">' .  $txt['downloads_perm_addcomment']  . '</th>
-				<th  class="lefttext last_th">' .  $txt['downloads_text_options']  . '</th>
+				<th  class="lefttext">' .  $txt['downloads_text_options']  . '</th>
 				</tr>
 				</thead>';
 
@@ -3172,7 +3219,7 @@ function template_catpermlist()
 			foreach ($context['downloads_membergroups'] as $i => $row)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td>'  . $row['group_name'] . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catperm;cat=' . $row['ID_CAT'] . '">'  . $row['catname'] . '</a></td>';
 				echo '<td>' . ($row['view'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
@@ -3180,7 +3227,7 @@ function template_catpermlist()
 				echo '<td>' . ($row['editfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['delfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addcomment'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete;id=' . $row['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
 			}
@@ -3189,7 +3236,7 @@ function template_catpermlist()
 			foreach ($context['downloads_regmem'] as $i => $row)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td>'  . $txt['membergroups_members'] . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catperm;cat=' . $row['ID_CAT'] . '">'  . $row['catname'] . '</a></td>';
 				echo '<td>' . ($row['view'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
@@ -3197,7 +3244,7 @@ function template_catpermlist()
 				echo '<td>' . ($row['editfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['delfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addcomment'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete;id=' . $row['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 			}
 
@@ -3205,7 +3252,7 @@ function template_catpermlist()
 			foreach ($context['downloads_guestmem'] as $i => $row)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td>'  . $txt['membergroups_guests'] . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catperm;cat=' . $row['ID_CAT'] . '">'  . $row['catname'] . '</a></td>';
 				echo '<td>' . ($row['view'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
@@ -3213,7 +3260,7 @@ function template_catpermlist()
 				echo '<td>' . ($row['editfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['delfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addcomment'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete;id=' . $row['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 			}
 
@@ -3236,12 +3283,12 @@ function template_catperm()
 
     <div class="cat_bar">
 		<h3 class="catbg centertext">
-        ' .$txt['downloads_text_catperm'] . ' - ' . $context['downloads_cat_name']  . '
+        ' .$txt['downloads_text_catperm'] . ' - ' . htmlspecialchars($context['downloads_cat_name'], ENT_QUOTES, 'UTF-8')  . '
         </h3>
 </div>
 	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
-		<tr class="windowbg2">
+		<tr class="windowbg">
 		<td>
 		<form method="post" action="' . $scripturl . '?action=downloads;sa=catperm2">
 		<table align="center" class="tborder">
@@ -3249,7 +3296,7 @@ function template_catperm()
 			<td colspan="2">'  . $txt['downloads_text_addperm'] . '</td>
 		</tr>
 
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="right"><b>' . $txt['downloads_filespace_groupname'] . '</b>&nbsp;</td>
 			  	<td><select name="groupname">
 			  					<option value="-1">' . $txt['membergroups_guests'] . '</option>
@@ -3260,29 +3307,30 @@ function template_catperm()
 							echo '</select>
 				</td>
 			  </tr>
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="right"><input type="checkbox" name="view" checked="checked" /></td>
 			  	<td><b>' . $txt['downloads_perm_view'] .'</b></td>
 			  </tr>
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="right"><input type="checkbox" name="add" checked="checked" /></td>
 			  	<td><b>' . $txt['downloads_perm_add'] .'</b></td>
 			  </tr>
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="right"><input type="checkbox" name="edit" checked="checked" /></td>
 			  	<td><b>' . $txt['downloads_perm_edit'] .'</b></td>
 			  </tr>
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="right"><input type="checkbox" name="delete" checked="checked" /></td>
 			  	<td><b>' . $txt['downloads_perm_delete'] .'</b></td>
 			  </tr>
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="right"><input type="checkbox" name="addcomment" checked="checked" /></td>
 			  	<td><b>' . $txt['downloads_perm_addcomment'] .'</b></td>
 			  </tr>
-			  <tr class="windowbg2">
+			  <tr class="windowbg">
 			  	<td align="center" colspan="2">
 			  	<input type="hidden" name="cat" value="' . $context['downloads_cat'] . '" />
+			  	<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			  	<input type="submit" value="' . $txt['downloads_text_addperm'] . '" /></td>
 
 			  </tr>
@@ -3290,7 +3338,7 @@ function template_catperm()
 		</form>
 		</td>
 		</tr>
-			<tr class="windowbg2">
+			<tr class="windowbg">
 			<td>
 			<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="tborder">
 			<tr class="catbg">
@@ -3307,14 +3355,14 @@ function template_catperm()
 			foreach ($context['downloads_membergroups'] as $i => $row)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td>', $row['group_name'], '</td>';
 				echo '<td>' . ($row['view'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['editfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['delfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addcomment'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete;id=' . $row['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
 			}
@@ -3323,14 +3371,14 @@ function template_catperm()
 			foreach ($context['downloads_reggroup'] as $i => $row)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td>', $txt['membergroups_members'], '</td>';
 				echo '<td>' . ($row['view'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['editfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['delfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addcomment'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete;id=' . $row['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 			}
 
@@ -3338,14 +3386,14 @@ function template_catperm()
 			foreach ($context['downloads_guestgroup'] as $i => $row)
 			{
 
-				echo '<tr class="windowbg2">';
+				echo '<tr class="windowbg">';
 				echo '<td>', $txt['membergroups_guests'], '</td>';
 				echo '<td>' . ($row['view'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['editfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['delfile'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
 				echo '<td>' . ($row['addcomment'] ? $txt['downloads_perm_allowed'] : $txt['downloads_perm_denied']) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete&id=' . $row['ID'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=catpermdelete;id=' . $row['ID'] . ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 			}
 
@@ -3384,7 +3432,7 @@ function template_import_results()
     <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
 
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 				',$txt['downloads_txt_categories_imported'],' ',$context['tp_imported_categories'],'<br />
 				',$txt['downloads_txt_files_imported'], ' ',$context['tp_imported_files'],'<br />
@@ -3400,7 +3448,7 @@ function template_import_results()
 
 function template_import()
 {
-	global $txt, $scripturl;
+	global $txt, $scripturl, $context;
 
 echo '
 <div class="cat_bar">
@@ -3410,10 +3458,11 @@ echo '
 </div>
 <table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
 
-		<tr class="windowbg2">
+		<tr class="windowbg">
 			<td>
 				',$txt['downloads_txt_import_note'],'<br />
 			<form method="post" action="',$scripturl,'?action=downloads;sa=importtp">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="submit" value="',$txt['downloads_txt_import_tiny_portal'],'" />
 			</form>
 
@@ -3440,6 +3489,77 @@ function ShowTopDownloadBar2($title = '&nbsp;')
 
     echo '<br /><br />';
 
+}
+
+function downloads_dropzone_js()
+{
+	echo '
+<script type="text/javascript">
+(function() {
+	function initDropZone(zone) {
+		var input = zone.querySelector("input[type=file]");
+		if (!input) return;
+		var previewEl = zone.querySelector(".drop-preview");
+		var textEl = zone.querySelector(".drop-text");
+		var acceptStr = input.getAttribute("accept") || "";
+		zone.addEventListener("click", function(e) {
+			if (e.target.tagName !== "A") input.click();
+		});
+		zone.addEventListener("dragover", function(e) {
+			e.preventDefault();
+			zone.classList.add("dragover");
+		});
+		zone.addEventListener("dragleave", function() {
+			zone.classList.remove("dragover");
+		});
+		zone.addEventListener("drop", function(e) {
+			e.preventDefault();
+			zone.classList.remove("dragover");
+			if (e.dataTransfer.files.length) {
+				var file = e.dataTransfer.files[0];
+				if (acceptStr && !fileMatchesAccept(file, acceptStr)) {
+					previewEl.innerHTML = \'<span style="color:#c00;">Invalid file type.</span>\';
+					return;
+				}
+				input.files = e.dataTransfer.files;
+				showPreview(file, previewEl, textEl);
+			}
+		});
+		input.addEventListener("change", function() {
+			if (input.files.length)
+				showPreview(input.files[0], previewEl, textEl);
+		});
+	}
+	function fileMatchesAccept(file, acceptStr) {
+		var types = acceptStr.split(",").map(function(s) { return s.trim().toLowerCase(); });
+		var ext = "." + file.name.split(".").pop().toLowerCase();
+		for (var i = 0; i < types.length; i++) {
+			if (types[i] === ext) return true;
+			if (types[i].indexOf("/") !== -1 && file.type && file.type.match(new RegExp("^" + types[i].replace("*", ".*") + "$"))) return true;
+		}
+		return false;
+	}
+	function showPreview(file, previewEl, textEl) {
+		var info = file.name + " (" + formatSize(file.size) + ")";
+		if (file.type && file.type.indexOf("image/") === 0) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				previewEl.innerHTML = info + \'<br /><img src="\' + e.target.result + \'" alt="" />\';
+			};
+			reader.readAsDataURL(file);
+		} else {
+			previewEl.innerHTML = info;
+		}
+	}
+	function formatSize(bytes) {
+		if (bytes < 1024) return bytes + " B";
+		if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+		return (bytes / 1048576).toFixed(1) + " MB";
+	}
+	var zones = document.querySelectorAll(".downloads-drop-zone");
+	for (var i = 0; i < zones.length; i++) initDropZone(zones[i]);
+})();
+</script>';
 }
 
 ?>

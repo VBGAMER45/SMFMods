@@ -1,19 +1,9 @@
 <?php
 /*
-SMF Gallery Lite Edition
+SMF Links
 Version 5.0
 by:vbgamer45
-http://www.smfhacks.com
-Copyright 2008-2014 SMFHacks.com
-
-############################################
-License Information:
-SMF Gallery is NOT free software.
-This software may not be redistributed.
-
-Links to http://www.smfhacks.com must remain unless
-branding free option is purchased.
-#############################################
+https://www.smfhacks.com
 */
 
 if (!defined('SMF'))
@@ -71,8 +61,8 @@ function links_admin_areas(&$admin_areas)
 						'admincat' => array($txt['smflinks_managecats']),
 						'alist' => array($txt['smflinks_approvelinks']),
 						'adminperm' => array($txt['smflinks_catpermlist']),
-
-
+						'checklinks' => array($txt['smflinks_checklinks']),
+						'disalloweddomains' => array($txt['smflinks_disallowed_domains']),
 					),
 	);
 

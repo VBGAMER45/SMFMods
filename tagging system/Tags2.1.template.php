@@ -1,7 +1,7 @@
 <?php
 /*
 Tagging System
-Version 4.1
+Version 4.2
 by:vbgamer45
 https://www.smfhacks.com
 */
@@ -9,54 +9,63 @@ function template_main()
 {
 	global $txt, $context, $scripturl;
 
+	// Tag Cloud
 	echo '
-<div class="cat_bar">
-		<h3 class="catbg centertext">
-		', $txt['smftags_popular'], '
-		</h3>
-  </div>
-	<table border="0" cellpadding="0" cellspacing="0" align="center" width="100%">
-  <tr>
-  	<td align="center" class="windowbg2">';
+	<div class="cat_bar">
+		<h3 class="catbg">', $txt['smftags_popular'], '</h3>
+	</div>
+	<div class="windowbg centertext">';
 
-  	if (isset($context['poptags']))
-  		echo $context['poptags'];
+	if (isset($context['poptags']))
+		echo $context['poptags'];
+	else
+		echo $txt['smftags_no_tags'];
 
- echo '
-  	</td>
-  	</tr>
-  	</table>
-  	<br />
-<div class="cat_bar">
-		<h3 class="catbg centertext">
-		', $txt['smftags_latest'], '
-		</h3>
-  </div>
+	echo '
+	</div>';
 
-  	<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
-					<tr>
-						<td class="catbg">',$txt['smftags_subject'],'</td>
-						<td class="catbg" width="11%">',$txt['smftags_topictag'],'</td>
-						<td class="catbg" width="11%">',$txt['smftags_startedby'],'</td>
-						<td class="catbg" width="4%" align="center">',$txt['smftags_replies'],'</td>
-						<td class="catbg" width="4%" align="center">', $txt['smftags_views'], '</td>
-					</tr>';
-		foreach ($context['tags_topics'] as $i => $topic)
+	// Latest Tagged Posts
+	echo '
+	<div class="cat_bar">
+		<h3 class="catbg">', $txt['smftags_latest'], '</h3>
+	</div>
+	<table class="table_grid">
+		<thead>
+			<tr class="title_bar">
+				<th scope="col">', $txt['smftags_subject'], '</th>
+				<th scope="col" class="centercol" style="width: 11%;">', $txt['smftags_topictag'], '</th>
+				<th scope="col" class="centercol" style="width: 11%;">', $txt['smftags_startedby'], '</th>
+				<th scope="col" class="centercol" style="width: 6%;">', $txt['smftags_replies'], '</th>
+				<th scope="col" class="centercol" style="width: 6%;">', $txt['smftags_views'], '</th>
+			</tr>
+		</thead>
+		<tbody>';
+
+	if (empty($context['tags_topics']))
+	{
+		echo '
+			<tr class="windowbg">
+				<td colspan="5" class="centertext">', $txt['smftags_no_tags'], '</td>
+			</tr>';
+	}
+	else
+	{
+		foreach ($context['tags_topics'] as $topic)
 		{
-				echo '<tr>';
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?topic=' . $topic['id_topic'] . '.0">' . $topic['subject'] . '</a></td>';
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=tags;tagid=' . $topic['ID_TAG'] . '">' . $topic['tag'] . '</a></td>';
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=profile;u=' . $topic['id_member'] . '">' . $topic['poster_name'] . '</a></td>';
-					echo '<td class="windowbg2">' . $topic['num_replies'] . '</td>';
-					echo '<td class="windowbg2">' . $topic['num_views'] . '</td>';
-				echo '</tr>';
-
+			echo '
+			<tr class="windowbg">
+				<td><a href="', $scripturl, '?topic=', $topic['id_topic'], '.0">', $topic['subject'], '</a></td>
+				<td class="centertext"><a href="', $scripturl, '?action=tags;tagid=', $topic['id_tag'], '">', $topic['tag'], '</a></td>
+				<td class="centertext"><a href="', $scripturl, '?action=profile;u=', $topic['id_member'], '">', $topic['poster_name'], '</a></td>
+				<td class="centertext">', $topic['num_replies'], '</td>
+				<td class="centertext">', $topic['num_views'], '</td>
+			</tr>';
 		}
-echo '
+	}
 
-  	</table>
-  	<br />
-  	';
+	echo '
+		</tbody>
+	</table>';
 
 	TagsCopyright();
 }
@@ -64,166 +73,211 @@ echo '
 function template_results()
 {
 	global $scripturl, $txt, $context;
-echo '
-<div class="cat_bar">
-		<h3 class="catbg centertext">
-		' . $txt['smftags_resultsfor'] . $context['tag_search'] . '
-		</h3>
-  </div>
-		<table border="0" width="100%" cellspacing="1" cellpadding="4" class="bordercolor">
-					<tr>
-						<td class="catbg">',$txt['smftags_subject'],'</td>
-						<td class="catbg" width="11%">',$txt['smftags_startedby'],'</td>
-						<td class="catbg" width="4%" align="center">',$txt['smftags_replies'],'</td>
-						<td class="catbg" width="4%" align="center">', $txt['smftags_views'], '</td>
-					</tr>';
-		foreach ($context['tags_topics'] as $i => $topic)
-		{
-				echo '<tr>';
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?topic=' . $topic['id_topic'] . '.0">' . $topic['subject'] . '</a></td>';
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=profile;u=' . $topic['id_member'] . '">' . $topic['poster_name'] . '</a></td>';
-					echo '<td class="windowbg2">', $topic['num_replies'], '</td>';
-					echo '<td class="windowbg2">', $topic['num_views'], '</td>';
-				echo '</tr>';
 
+	echo '
+	<div class="cat_bar">
+		<h3 class="catbg">', $txt['smftags_resultsfor'], $context['tag_search'], '</h3>
+	</div>
+	<div class="pagesection">
+		<div class="pagelinks">', $context['page_index'], '</div>
+	</div>
+	<table class="table_grid">
+		<thead>
+			<tr class="title_bar">
+				<th scope="col">', $txt['smftags_subject'], '</th>
+				<th scope="col" class="centercol" style="width: 11%;">', $txt['smftags_startedby'], '</th>
+				<th scope="col" class="centercol" style="width: 6%;">', $txt['smftags_replies'], '</th>
+				<th scope="col" class="centercol" style="width: 6%;">', $txt['smftags_views'], '</th>
+			</tr>
+		</thead>
+		<tbody>';
+
+	if (empty($context['tags_topics']))
+	{
+		echo '
+			<tr class="windowbg">
+				<td colspan="4" class="centertext">', $txt['smftags_no_tags'], '</td>
+			</tr>';
+	}
+	else
+	{
+		foreach ($context['tags_topics'] as $topic)
+		{
+			echo '
+			<tr class="windowbg">
+				<td><a href="', $scripturl, '?topic=', $topic['id_topic'], '.0">', $topic['subject'], '</a></td>
+				<td class="centertext"><a href="', $scripturl, '?action=profile;u=', $topic['id_member'], '">', $topic['poster_name'], '</a></td>
+				<td class="centertext">', $topic['num_replies'], '</td>
+				<td class="centertext">', $topic['num_views'], '</td>
+			</tr>';
 		}
-echo '
-	<tr>
-	<td colspan="4">' . $context['page_index'] . '</td>
-  	</tr>
-  	</table><br />
-  	';
+	}
+
+	echo '
+		</tbody>
+	</table>
+	<div class="pagesection">
+		<div class="pagelinks">', $context['page_index'], '</div>
+	</div>';
 
 	TagsCopyright();
-
 }
 
 function template_addtag()
 {
-		global $scripturl, $txt, $context;
+	global $scripturl, $txt, $context;
 
 	echo '
-<form method="post" action="', $scripturl, '?action=tags;sa=addtag2">
-<div class="cat_bar">
-		<h3 class="catbg centertext">
-        ',  $txt['smftags_addtag2'], '
-        </h3>
-</div>
-<table border="0" cellpadding="0" cellspacing="0" align="center" width="100%">
-  <tr>
-    <td width="28%"  class="windowbg2" align="right"><span class="gen"><b>', $txt['smftags_tagtoadd'], '</b></span></td>
-    <td width="72%" class="windowbg2"><input type="text" name="tag" size="64" maxlength="100" /></td>
-  </tr>
+	<form method="post" action="', $scripturl, '?action=tags;sa=addtag2">
+		<div class="cat_bar">
+			<h3 class="catbg">', $txt['smftags_addtag2'], '</h3>
+		</div>
+		<div class="roundframe">
+			<dl class="settings">
+				<dt>
+					<strong>', $txt['smftags_tagtoadd'], '</strong><br>
+					<span class="smalltext">', $txt['smftags_seperate'], '</span>
+				</dt>
+				<dd>
+					<input type="text" name="tag" size="64" maxlength="100">
+				</dd>
+			</dl>
+			<input type="hidden" name="topic" value="', $context['tags_topic'], '">
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			<input type="submit" value="', $txt['smftags_addtag2'], '" class="button">
+		</div>
+	</form>';
 
-  <tr>
-    <td width="28%" colspan="2" align="center" class="windowbg2">
-    <input type="hidden" name="topic" value="', $context['tags_topic'], '" />
-    <input type="submit" value="', $txt['smftags_addtag2'], '" name="submit" /></td>
-
-  </tr>
-</table>
-</form>
-';
-	
-	
 	TagsCopyright();
-
 }
 
 function template_admin_settings()
 {
-	global $scripturl, $txt, $modSettings;
+	global $scripturl, $txt, $modSettings, $context;
 
 	echo '
-<div class="cat_bar">
-		<h3 class="catbg centertext">
-        ', $txt['smftags_settings'], '
-        </h3>
-</div>
-	<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4" class="tborder">
-		<tr class="windowbg2">
-			<td>
-			<b>' . $txt['smftags_settings']. '</b><br />
-			<form method="post" action="' . $scripturl . '?action=tags;sa=admin2">
-				<table border="0" width="100%" cellspacing="0" align="center" cellpadding="4">
-				<tr><td width="30%">' . $txt['smftags_set_mintaglength'] . '</td><td><input type="text" name="smftags_set_mintaglength" value="' .  $modSettings['smftags_set_mintaglength'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_maxtaglength'] . '</td><td><input type="text" name="smftags_set_maxtaglength" value="' .  $modSettings['smftags_set_maxtaglength'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_maxtags'] . '</td><td><input type="text" name="smftags_set_maxtags" value="' .  $modSettings['smftags_set_maxtags'] . '" /></td></tr>
-				
-				
-				<tr><td width="30%">' . $txt['smftags_set_msgindex'] . '</td><td><input type="checkbox" name="smftags_set_msgindex" ' .  ($modSettings['smftags_set_msgindex'] ? ' checked="checked"' : '') . '" /></td></tr>
-				
-				<tr><td width="30%">' . $txt['smftags_set_msgindex_max_show'] . '</td><td><input type="text" name="smftags_set_msgindex_max_show" value="' .  $modSettings['smftags_set_msgindex_max_show'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_use_css_tags'] . '</td><td><input type="checkbox" name="smftags_set_use_css_tags" ' .  ($modSettings['smftags_set_use_css_tags'] ? ' checked="checked"' : '') . '" /></td></tr>
-				
-				<tr><td width="30%">' . $txt['smftags_set_css_tag_background_color'] . '</td><td><input type="text" name="smftags_set_css_tag_background_color" value="' .  $modSettings['smftags_set_css_tag_background_color'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_css_tag_font_color'] . '</td><td><input type="text" name="smftags_set_css_tag_font_color" value="' .  $modSettings['smftags_set_css_tag_font_color'] . '" /></td></tr>
-
-				<tr>
-				<td colspan="2"><b>',$txt['smftags_tagcloud_settings'],'</b></td>
-				</tr>
-				<tr><td width="30%">' . $txt['smftags_set_cloud_tags_to_show'] . '</td><td><input type="text" name="smftags_set_cloud_tags_to_show" value="' .  $modSettings['smftags_set_cloud_tags_to_show'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_cloud_tags_per_row'] . '</td><td><input type="text" name="smftags_set_cloud_tags_per_row" value="' .  $modSettings['smftags_set_cloud_tags_per_row'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_cloud_max_font_size_precent'] . '</td><td><input type="text" name="smftags_set_cloud_max_font_size_precent" value="' .  $modSettings['smftags_set_cloud_max_font_size_precent'] . '" /></td></tr>
-				<tr><td width="30%">' . $txt['smftags_set_cloud_min_font_size_precent'] . '</td><td><input type="text" name="smftags_set_cloud_min_font_size_precent" value="' .  $modSettings['smftags_set_cloud_min_font_size_precent'] . '" /></td></tr>
-				</table>
-
-				<input type="submit" name="savesettings" value="', $txt['smftags_savesettings'],  '" />
-			</form>
-<b>Has SMF Tags helped you?</b> Then support the developers:<br />
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-	<input type="hidden" name="cmd" value="_xclick">
-	<input type="hidden" name="business" value="sales@visualbasiczone.com">
-	<input type="hidden" name="item_name" value="SMF Tags">
-	<input type="hidden" name="no_shipping" value="1">
-	<input type="hidden" name="no_note" value="1">
-	<input type="hidden" name="currency_code" value="USD">
-	<input type="hidden" name="tax" value="0">
-	<input type="hidden" name="bn" value="PP-DonationsBF">
-	<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-butcc-donate.gif" border="0" name="submit" alt="Make payments with PayPal - it is fast, free and secure!">
-	<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-</form>
-
-			</td>
-		</tr>
-</table>';
+	<form method="post" action="', $scripturl, '?action=tags;sa=admin2">
+		<div class="cat_bar">
+			<h3 class="catbg">', $txt['smftags_settings'], '</h3>
+		</div>
+		<div class="windowbg">
+			<dl class="settings">
+				<dt>
+					<strong>', $txt['smftags_set_mintaglength'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_mintaglength" value="', $modSettings['smftags_set_mintaglength'], '" min="1">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_maxtaglength'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_maxtaglength" value="', $modSettings['smftags_set_maxtaglength'], '" min="1">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_maxtags'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_maxtags" value="', $modSettings['smftags_set_maxtags'], '" min="1">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_msgindex'], '</strong>
+				</dt>
+				<dd>
+					<input type="checkbox" name="smftags_set_msgindex"', !empty($modSettings['smftags_set_msgindex']) ? ' checked' : '', '>
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_msgindex_max_show'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_msgindex_max_show" value="', $modSettings['smftags_set_msgindex_max_show'], '" min="1">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_use_css_tags'], '</strong>
+				</dt>
+				<dd>
+					<input type="checkbox" name="smftags_set_use_css_tags"', !empty($modSettings['smftags_set_use_css_tags']) ? ' checked' : '', '>
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_css_tag_background_color'], '</strong>
+				</dt>
+				<dd>
+					<input type="color" name="smftags_set_css_tag_background_color" value="', $modSettings['smftags_set_css_tag_background_color'], '">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_css_tag_font_color'], '</strong>
+				</dt>
+				<dd>
+					<input type="color" name="smftags_set_css_tag_font_color" value="', $modSettings['smftags_set_css_tag_font_color'], '">
+				</dd>
+			</dl>
+		</div>
+		<div class="cat_bar">
+			<h3 class="catbg">', $txt['smftags_tagcloud_settings'], '</h3>
+		</div>
+		<div class="windowbg">
+			<dl class="settings">
+				<dt>
+					<strong>', $txt['smftags_set_cloud_tags_to_show'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_cloud_tags_to_show" value="', $modSettings['smftags_set_cloud_tags_to_show'], '" min="1">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_cloud_tags_per_row'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_cloud_tags_per_row" value="', $modSettings['smftags_set_cloud_tags_per_row'], '" min="1">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_cloud_max_font_size_precent'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_cloud_max_font_size_precent" value="', $modSettings['smftags_set_cloud_max_font_size_precent'], '" min="50">
+				</dd>
+				<dt>
+					<strong>', $txt['smftags_set_cloud_min_font_size_precent'], '</strong>
+				</dt>
+				<dd>
+					<input type="number" name="smftags_set_cloud_min_font_size_precent" value="', $modSettings['smftags_set_cloud_min_font_size_precent'], '" min="50">
+				</dd>
+			</dl>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			<input type="submit" name="savesettings" value="', $txt['smftags_savesettings'], '" class="button">
+		</div>
+	</form>';
 
 	TagsCopyright();
 }
 
-function template_suggesttag()
+function template_suggest()
 {
-	global $scripturl, $txt;
+	global $scripturl, $txt, $context;
 
 	echo '
-<form method="POST" action="', $scripturl, '?action=tags;sa=suggest2">
-<div class="cat_bar">
-		<h3 class="catbg centertext">
-		' . $txt['smftags_suggest'] . '
-		</h3>
-  </div>
-<table border="1" cellpadding="0" cellspacing="0" width="100%">
-  <tr>
-    <td width="28%" class="windowbg2" align="right"><span class="gen"><b>', $txt['smftags_tagtosuggest'], '</b></span></td>
-    <td width="72%"  class="windowbg2"><input type="text" name="tag" size="64" maxlength="100" /></td>
-  </tr>
-  <tr>
-    <td width="28%" colspan="2" align="center" class="windowbg2">
-    <input type="submit" value="', $txt['smftags_suggest'], '" name="submit" /></td>
-  </tr>
-</table>
-</form>
-';
-	
+	<form method="post" action="', $scripturl, '?action=tags;sa=suggest2">
+		<div class="cat_bar">
+			<h3 class="catbg">', $txt['smftags_suggest'], '</h3>
+		</div>
+		<div class="roundframe">
+			<dl class="settings">
+				<dt>
+					<strong>', $txt['smftags_tagtosuggest'], '</strong>
+				</dt>
+				<dd>
+					<input type="text" name="tag" size="64" maxlength="100">
+				</dd>
+			</dl>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '">
+			<input type="submit" value="', $txt['smftags_suggest'], '" class="button">
+		</div>
+	</form>';
+
 	TagsCopyright();
-	
 }
 
 function TagsCopyright()
 {
-	//The Copyright is required to remain or contact me to purchase link removal.
-	//http://www.smfhacks.com/copyright_removal.php
-	echo '<br /><div align="center"><span class="smalltext">Powered by: <a href="https://www.smfhacks.com" target="blank">SMF Tags</a></span></div>';
-
+	echo '<div class="centertext smalltext">Powered by: <a href="https://www.smfhacks.com" target="_blank" rel="noopener">SMF Tags</a></div>';
 }
 ?>

@@ -1,0 +1,1428 @@
+/**
+ * Ultimate Shoutbox & Chatroom - Styles
+ *
+ * @package Shoutbox
+ * @version 1.1.0
+ * By: vbgamer45
+ * https://www.smfhacks.com
+ */
+
+/* =========================================================================
+   FamFamFam Silk Icon for menu/headers
+   ========================================================================= */
+
+.main_icons.shoutbox {
+	background: url(../images/shoutbox/comments.png) center center no-repeat;
+	background-size: 16px 16px;
+}
+
+.shoutbox-icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	margin-right: 4px;
+}
+
+/* =========================================================================
+   Variables (inherits SMF theme colors where possible)
+   ========================================================================= */
+
+:root {
+	--shoutbox-bg: #f5f5f5;
+	--shoutbox-header-bg: #3a5f8a;
+	--shoutbox-header-text: #fff;
+	--shoutbox-border: #ccc;
+	--shoutbox-msg-bg: #fff;
+	--shoutbox-msg-hover: #f0f4f8;
+	--shoutbox-input-bg: #fff;
+	--shoutbox-input-border: #ccc;
+	--shoutbox-text: #333;
+	--shoutbox-text-muted: #888;
+	--shoutbox-whisper-bg: #fff8e1;
+	--shoutbox-whisper-border: #f0c36d;
+	--shoutbox-action-color: #6a5acd;
+	--shoutbox-mention-color: #1a73e8;
+	--shoutbox-btn-primary: #3a5f8a;
+	--shoutbox-btn-primary-hover: #2c4a6e;
+	--shoutbox-online-dot: #4caf50;
+	--shoutbox-scrollbar-thumb: #bbb;
+	--shoutbox-scrollbar-track: #f0f0f0;
+	--shoutbox-bg-alt: #eee;
+	--shoutbox-hover: rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================================================
+   Widget Container
+   ========================================================================= */
+
+.shoutbox-widget {
+	margin-bottom: 12px;
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 6px;
+	overflow: hidden;
+	position: relative;
+}
+
+.shoutbox-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 12px;
+	background: var(--shoutbox-header-bg);
+	color: var(--shoutbox-header-text);
+	cursor: default;
+	user-select: none;
+}
+
+.shoutbox-title {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: #fff !important;
+}
+
+.shoutbox-title .main_icons {
+	opacity: 0.9;
+}
+
+.shoutbox-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.shoutbox-btn-link,
+.shoutbox-btn-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border: none;
+	background: transparent;
+	color: var(--shoutbox-header-text);
+	cursor: pointer;
+	border-radius: 4px;
+	opacity: 0.8;
+	transition: opacity 0.15s, background 0.15s;
+	text-decoration: none;
+}
+
+.shoutbox-btn-link:hover,
+.shoutbox-btn-icon:hover {
+	opacity: 1;
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.shoutbox-body {
+	background: var(--shoutbox-bg);
+	transition: max-height 0.3s ease;
+	overflow: hidden;
+}
+
+.shoutbox-body.collapsed {
+	max-height: 0 !important;
+	padding: 0;
+}
+
+/* =========================================================================
+   Messages Area
+   ========================================================================= */
+
+.shoutbox-messages {
+	height: 280px;
+	overflow-y: auto;
+	padding: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	scrollbar-width: thin;
+	scrollbar-color: var(--shoutbox-scrollbar-thumb) var(--shoutbox-scrollbar-track);
+}
+
+.shoutbox-messages::-webkit-scrollbar {
+	width: 6px;
+}
+
+.shoutbox-messages::-webkit-scrollbar-thumb {
+	background: var(--shoutbox-scrollbar-thumb);
+	border-radius: 3px;
+}
+
+.shoutbox-messages::-webkit-scrollbar-track {
+	background: var(--shoutbox-scrollbar-track);
+}
+
+.shoutbox-messages-chatroom {
+	height: calc(100vh - 280px);
+	min-height: 400px;
+}
+
+.shoutbox-loading {
+	text-align: center;
+	padding: 20px;
+	color: var(--shoutbox-text-muted);
+	font-style: italic;
+}
+
+.shoutbox-no-messages {
+	text-align: center;
+	padding: 30px 20px;
+	color: var(--shoutbox-text-muted);
+}
+
+/* Individual Message */
+
+.shoutbox-message {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 4px 8px;
+	border-radius: 4px;
+	transition: background 0.1s;
+	position: relative;
+	line-height: 1.4;
+}
+
+.shoutbox-message:hover {
+	background: var(--shoutbox-msg-hover);
+}
+
+.shoutbox-message-avatar {
+	flex-shrink: 0;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.shoutbox-message-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.shoutbox-message-content {
+	flex: 1;
+	min-width: 0;
+	font-size: 13px;
+	color: var(--shoutbox-text);
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+.shoutbox-message-author {
+	font-weight: 600;
+	color: inherit;
+	text-decoration: none;
+	margin-right: 4px;
+}
+
+.shoutbox-message-author:hover {
+	text-decoration: underline;
+}
+
+.shoutbox-message-time {
+	font-size: 11px;
+	color: var(--shoutbox-text-muted);
+	margin-left: 4px;
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
+.shoutbox-message-edited {
+	font-size: 10px;
+	color: var(--shoutbox-text-muted);
+	font-style: italic;
+}
+
+/* Reaction Bar */
+.shoutbox-reactions-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 4px;
+}
+
+.shoutbox-reaction-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	padding: 2px 6px;
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 12px;
+	background: var(--shoutbox-msg-bg);
+	cursor: pointer;
+	font-size: 11px;
+	color: var(--shoutbox-text);
+	transition: background 0.15s, border-color 0.15s;
+	font-family: inherit;
+	line-height: 1;
+}
+
+.shoutbox-reaction-pill:hover {
+	background: var(--shoutbox-msg-hover);
+	border-color: #aaa;
+}
+
+.shoutbox-reaction-pill.reacted {
+	border-color: var(--shoutbox-btn-primary);
+	background: rgba(58, 95, 138, 0.08);
+}
+
+.shoutbox-reaction-pill img {
+	width: 14px;
+	height: 14px;
+	vertical-align: middle;
+}
+
+.reaction-count {
+	font-weight: 600;
+	font-size: 11px;
+}
+
+/* React Popup */
+.shoutbox-react-popup {
+	position: absolute;
+	display: flex;
+	gap: 2px;
+	padding: 6px 8px;
+	background: var(--shoutbox-msg-bg);
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 8px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	z-index: 10001;
+}
+
+.shoutbox-react-popup-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border: none;
+	background: transparent;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: transform 0.1s, background 0.1s;
+	padding: 0;
+}
+
+.shoutbox-react-popup-btn:hover {
+	background: var(--shoutbox-msg-hover);
+	transform: scale(1.2);
+}
+
+.shoutbox-react-popup-btn img {
+	width: 16px;
+	height: 16px;
+}
+
+.shoutbox-message-body {
+	display: inline;
+}
+
+.shoutbox-message-body img.bbc_img {
+	max-width: 250px;
+	max-height: 200px;
+	border-radius: 4px;
+	display: block;
+	margin: 4px 0;
+}
+
+.shoutbox-message-body img {
+	max-width: 250px;
+	max-height: 200px;
+	vertical-align: middle;
+}
+
+/* Whisper message styling */
+.shoutbox-message-whisper {
+	background: var(--shoutbox-whisper-bg);
+	border-left: 3px solid var(--shoutbox-whisper-border);
+}
+
+.shoutbox-message-whisper:hover {
+	background: #fff3cd;
+}
+
+.shoutbox-whisper-badge {
+	display: inline-block;
+	padding: 1px 6px;
+	font-size: 10px;
+	font-weight: 600;
+	background: var(--shoutbox-whisper-border);
+	color: #7a5d00;
+	border-radius: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+
+/* Admin message (/admin, /a) */
+.shoutbox-message-admin {
+	background: #f3e8ff;
+	border-left: 3px solid #9b59b6;
+}
+
+.shoutbox-message-admin:hover {
+	background: #eddcff;
+}
+
+.shoutbox-admin-badge {
+	display: inline-block;
+	padding: 1px 6px;
+	font-size: 10px;
+	font-weight: 600;
+	background: #9b59b6;
+	color: #fff;
+	border-radius: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+
+/* Mutelist system message (local-only, not stored in DB) */
+.shoutbox-system-message {
+	padding: 8px 12px;
+	margin: 4px 0;
+	background: var(--shoutbox-msg-hover);
+	border-radius: 4px;
+	font-size: 12px;
+	color: var(--shoutbox-text-muted);
+	line-height: 1.5;
+}
+
+.shoutbox-system-message strong {
+	color: var(--shoutbox-text);
+}
+
+/* Action message (/me) */
+.shoutbox-message-action {
+	font-style: italic;
+	color: var(--shoutbox-action-color);
+}
+
+.shoutbox-message-action .shoutbox-message-author {
+	color: var(--shoutbox-action-color);
+}
+
+/* Mention highlight */
+.shoutbox-mention {
+	color: var(--shoutbox-mention-color);
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.shoutbox-mention-self {
+	background: rgba(26, 115, 232, 0.1);
+	padding: 0 2px;
+	border-radius: 2px;
+}
+
+/* Message actions (shown on hover) */
+.shoutbox-message-actions {
+	position: absolute;
+	right: 4px;
+	top: 4px;
+	display: none;
+	gap: 2px;
+}
+
+.shoutbox-message:hover .shoutbox-message-actions {
+	display: flex;
+}
+
+.shoutbox-msg-action-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border: none;
+	background: rgba(0, 0, 0, 0.06);
+	color: var(--shoutbox-text-muted);
+	cursor: pointer;
+	border-radius: 3px;
+	font-size: 11px;
+	transition: background 0.1s, color 0.1s;
+}
+
+.shoutbox-msg-action-btn:hover {
+	background: rgba(0, 0, 0, 0.12);
+	color: var(--shoutbox-text);
+}
+
+/* =========================================================================
+   Input Area
+   ========================================================================= */
+
+.shoutbox-input-area {
+	display: flex;
+	align-items: flex-end;
+	gap: 6px;
+	padding: 8px;
+	background: var(--shoutbox-msg-bg);
+	border-top: 1px solid var(--shoutbox-border);
+}
+
+.shoutbox-input-wrapper {
+	flex: 1;
+	position: relative;
+}
+
+.shoutbox-input {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid var(--shoutbox-input-border);
+	border-radius: 6px;
+	background: var(--shoutbox-input-bg);
+	color: var(--shoutbox-text);
+	font-size: 13px;
+	font-family: inherit;
+	resize: none;
+	overflow: hidden;
+	line-height: 1.4;
+	box-sizing: border-box;
+	transition: border-color 0.15s;
+}
+
+.shoutbox-input:focus {
+	outline: none;
+	border-color: var(--shoutbox-btn-primary);
+	box-shadow: 0 0 0 2px rgba(58, 95, 138, 0.15);
+}
+
+.shoutbox-char-count {
+	position: absolute;
+	right: 8px;
+	bottom: 6px;
+	font-size: 10px;
+	color: var(--shoutbox-text-muted);
+	pointer-events: none;
+}
+
+.shoutbox-char-count.warning {
+	color: #e65100;
+}
+
+.shoutbox-char-count.danger {
+	color: #d32f2f;
+	font-weight: 600;
+}
+
+.shoutbox-input-buttons {
+	display: flex;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+.shoutbox-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	border: 1px solid var(--shoutbox-input-border);
+	border-radius: 6px;
+	background: var(--shoutbox-msg-bg);
+	color: var(--shoutbox-text);
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.15s, border-color 0.15s;
+	white-space: nowrap;
+}
+
+.shoutbox-btn:hover {
+	background: var(--shoutbox-msg-hover);
+	border-color: #aaa;
+}
+
+.shoutbox-btn-primary {
+	background: var(--shoutbox-btn-primary);
+	color: #fff;
+	border-color: var(--shoutbox-btn-primary);
+}
+
+.shoutbox-btn-primary:hover {
+	background: var(--shoutbox-btn-primary-hover);
+	border-color: var(--shoutbox-btn-primary-hover);
+}
+
+.shoutbox-guest-notice {
+	padding: 10px;
+	text-align: center;
+	color: var(--shoutbox-text-muted);
+	font-size: 13px;
+	background: var(--shoutbox-msg-bg);
+	border-top: 1px solid var(--shoutbox-border);
+}
+
+/* =========================================================================
+   Chatroom Layout
+   ========================================================================= */
+
+.shoutbox-chatroom {
+	margin: 0;
+}
+
+.shoutbox-chatroom-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 12px 16px;
+	background: var(--shoutbox-header-bg);
+	color: var(--shoutbox-header-text);
+	border-radius: 6px 6px 0 0;
+}
+
+.shoutbox-chatroom-title {
+	margin: 0;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: #fff !important;
+}
+
+.shoutbox-chatroom-actions {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	align-items: stretch;
+}
+
+.shoutbox-chatroom-actions .button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	padding: 6px 14px;
+	min-height: 30px;
+	line-height: 1;
+	box-sizing: border-box;
+	white-space: nowrap;
+	text-decoration: none;
+	vertical-align: middle;
+}
+
+/* Room Tabs */
+
+.shoutbox-room-tabs {
+	display: flex;
+	overflow-x: auto;
+	background: var(--shoutbox-msg-bg);
+	border: 1px solid var(--shoutbox-border);
+	border-top: none;
+	padding: 0 8px;
+	gap: 0;
+	scrollbar-width: thin;
+}
+
+.shoutbox-room-tabs::-webkit-scrollbar {
+	height: 3px;
+}
+
+.shoutbox-room-tabs::-webkit-scrollbar-thumb {
+	background: var(--shoutbox-scrollbar-thumb);
+	border-radius: 3px;
+}
+
+.shoutbox-room-tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 10px 16px;
+	border: none;
+	border-bottom: 2px solid transparent;
+	background: transparent;
+	color: var(--shoutbox-text-muted);
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: color 0.15s, border-color 0.15s, background 0.15s;
+	font-family: inherit;
+}
+
+.shoutbox-room-tab:hover {
+	color: var(--shoutbox-text);
+	background: var(--shoutbox-msg-hover);
+}
+
+.shoutbox-room-tab.active {
+	color: var(--shoutbox-btn-primary);
+	border-bottom-color: var(--shoutbox-btn-primary);
+	font-weight: 600;
+}
+
+.shoutbox-room-lock {
+	font-size: 11px;
+	opacity: 0.7;
+}
+
+.shoutbox-chatroom-layout {
+	display: flex;
+	gap: 0;
+	border: 1px solid var(--shoutbox-border);
+	border-top: none;
+	border-radius: 0 0 6px 6px;
+	overflow: hidden;
+}
+
+.shoutbox-chatroom-main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.shoutbox-chatroom-sidebar {
+	width: 220px;
+	flex-shrink: 0;
+	background: var(--shoutbox-msg-bg);
+	border-left: 1px solid var(--shoutbox-border);
+	overflow-y: auto;
+}
+
+.shoutbox-sidebar-section {
+	padding: 12px;
+}
+
+.shoutbox-sidebar-section h4 {
+	margin: 0 0 10px;
+	font-size: 13px;
+	color: var(--shoutbox-text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.shoutbox-input-area-chatroom {
+	border-radius: 0;
+}
+
+.shoutbox-input-area-chatroom .shoutbox-btn {
+	padding: 8px 16px;
+	min-height: 34px;
+	font-size: 13px;
+}
+
+/* Online Users */
+
+.shoutbox-online-users {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.shoutbox-online-user {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 0;
+}
+
+.shoutbox-online-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--shoutbox-online-dot);
+	flex-shrink: 0;
+}
+
+.shoutbox-online-user a {
+	font-size: 13px;
+	color: var(--shoutbox-text);
+	text-decoration: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.shoutbox-online-user a:hover {
+	text-decoration: underline;
+}
+
+.shoutbox-online-count {
+	font-size: 12px;
+	color: var(--shoutbox-text-muted);
+	padding-top: 6px;
+	border-top: 1px solid var(--shoutbox-border);
+	margin-top: 4px;
+}
+
+/* =========================================================================
+   GIF Picker
+   ========================================================================= */
+
+.shoutbox-gif-picker {
+	position: absolute;
+	bottom: 60px;
+	right: 10px;
+	width: 360px;
+	max-height: 420px;
+	background: var(--shoutbox-msg-bg);
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 8px;
+	z-index: 1000;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.gif-picker-header {
+	display: flex;
+	padding: 8px;
+	gap: 6px;
+	border-bottom: 1px solid var(--shoutbox-border);
+}
+
+.gif-search-input {
+	flex: 1;
+	padding: 6px 10px;
+	border: 1px solid var(--shoutbox-input-border);
+	border-radius: 4px;
+	background: var(--shoutbox-input-bg);
+	color: var(--shoutbox-text);
+	font-size: 13px;
+}
+
+.gif-search-input:focus {
+	outline: none;
+	border-color: var(--shoutbox-btn-primary);
+}
+
+.gif-close-btn {
+	background: none;
+	border: none;
+	color: var(--shoutbox-text-muted);
+	font-size: 20px;
+	cursor: pointer;
+	padding: 0 6px;
+	line-height: 1;
+}
+
+.gif-close-btn:hover {
+	color: var(--shoutbox-text);
+}
+
+.gif-results {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 4px;
+	padding: 4px;
+	overflow-y: auto;
+	max-height: 320px;
+	scrollbar-width: thin;
+}
+
+.gif-results img {
+	width: 100%;
+	height: 120px;
+	object-fit: cover;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: transform 0.1s, outline-color 0.1s;
+	outline: 2px solid transparent;
+}
+
+.gif-results img:hover {
+	transform: scale(1.03);
+	outline-color: var(--shoutbox-btn-primary);
+}
+
+.gif-loading {
+	text-align: center;
+	padding: 16px;
+	color: var(--shoutbox-text-muted);
+	font-size: 13px;
+}
+
+.gif-attribution {
+	text-align: center;
+	padding: 4px;
+	font-size: 10px;
+	color: var(--shoutbox-text-muted);
+	border-top: 1px solid var(--shoutbox-border);
+}
+
+.gif-no-results {
+	text-align: center;
+	padding: 30px 20px;
+	color: var(--shoutbox-text-muted);
+}
+
+/* =========================================================================
+   BBCode Toolbar
+   ========================================================================= */
+
+.shoutbox-bbc-toolbar {
+	display: flex;
+	gap: 2px;
+	padding: 4px 6px;
+	border-bottom: 1px solid var(--shoutbox-border);
+	background: var(--shoutbox-bg-alt);
+}
+
+.shoutbox-bbc-btn {
+	background: transparent;
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 3px;
+	padding: 2px 8px;
+	cursor: pointer;
+	font-size: 12px;
+	color: var(--shoutbox-text);
+	min-width: 28px;
+	line-height: 1.4;
+	font-family: inherit;
+	transition: background 0.1s;
+}
+
+.shoutbox-bbc-btn:hover {
+	background: var(--shoutbox-hover);
+}
+
+/* =========================================================================
+   Smiley Picker Popup
+   ========================================================================= */
+
+.shoutbox-smiley-picker {
+ /*position: fixed;*/
+ z-index: 10000;
+ background: var(--shoutbox-msg-bg);
+ border: 1px solid var(--shoutbox-border);
+ border-radius: 6px;
+ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+ padding: 8px;
+ /*max-width: 280px;*/
+	max-height: 200px;
+	overflow-y: auto;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	scrollbar-width: thin;
+	scrollbar-color: var(--shoutbox-scrollbar-thumb) var(--shoutbox-scrollbar-track);
+}
+
+.shoutbox-smiley-picker img {
+	cursor: pointer;
+	padding: 2px;
+	border-radius: 3px;
+ /*width: 20px;*/
+	height: 20px;
+	transition: background 0.1s;
+}
+
+.shoutbox-smiley-picker img:hover {
+	background: var(--shoutbox-hover);
+}
+
+/* =========================================================================
+   Mention Dropdown
+   ========================================================================= */
+
+.shoutbox-mention-dropdown {
+	position: absolute;
+	background: var(--shoutbox-msg-bg);
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+	z-index: 1001;
+	max-height: 200px;
+	overflow-y: auto;
+	min-width: 180px;
+}
+
+.shoutbox-mention-item {
+	padding: 6px 12px;
+	cursor: pointer;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	transition: background 0.1s;
+}
+
+.shoutbox-mention-item:hover,
+.shoutbox-mention-item.active {
+	background: var(--shoutbox-msg-hover);
+}
+
+.shoutbox-mention-item img {
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+}
+
+/* =========================================================================
+   Command Autocomplete
+   ========================================================================= */
+
+.shoutbox-command-item {
+	padding: 8px 12px;
+	cursor: pointer;
+	transition: background 0.1s;
+}
+
+.shoutbox-command-item:hover,
+.shoutbox-command-item.active {
+	background: var(--shoutbox-msg-hover);
+}
+
+.shoutbox-command-name {
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--shoutbox-text);
+}
+
+.shoutbox-command-desc {
+	font-size: 11px;
+	color: var(--shoutbox-text-muted);
+	margin-top: 2px;
+}
+
+/* =========================================================================
+   Context Menu
+   ========================================================================= */
+
+.shoutbox-context-menu {
+	position: fixed;
+	background: var(--shoutbox-msg-bg);
+	border: 1px solid var(--shoutbox-border);
+	border-radius: 6px;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	z-index: 1002;
+	min-width: 150px;
+	padding: 4px 0;
+}
+
+.shoutbox-context-item {
+	padding: 8px 16px;
+	cursor: pointer;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	transition: background 0.1s;
+	border: none;
+	background: none;
+	width: 100%;
+	text-align: left;
+	color: var(--shoutbox-text);
+}
+
+.shoutbox-context-item:hover {
+	background: var(--shoutbox-msg-hover);
+}
+
+.shoutbox-context-item.danger {
+	color: #d32f2f;
+}
+
+.shoutbox-context-item.danger:hover {
+	background: #ffebee;
+}
+
+.shoutbox-context-separator {
+	height: 1px;
+	background: var(--shoutbox-border);
+	margin: 4px 0;
+}
+
+/* =========================================================================
+   Inline Edit
+   ========================================================================= */
+
+.shoutbox-inline-edit {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-top: 4px;
+}
+
+.shoutbox-inline-edit input {
+	flex: 1;
+	padding: 4px 8px;
+	border: 1px solid var(--shoutbox-btn-primary);
+	border-radius: 4px;
+	font-size: 12px;
+	background: var(--shoutbox-input-bg);
+	color: var(--shoutbox-text);
+}
+
+.shoutbox-inline-edit button {
+	padding: 4px 10px;
+	font-size: 11px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.shoutbox-inline-edit .save-btn {
+	background: var(--shoutbox-btn-primary);
+	color: #fff;
+}
+
+.shoutbox-inline-edit .cancel-btn {
+	background: var(--shoutbox-border);
+	color: var(--shoutbox-text);
+}
+
+/* =========================================================================
+   History Page
+   ========================================================================= */
+
+.shoutbox-history {
+	margin: 0;
+}
+
+.shoutbox-history-filters {
+	padding: 12px 0;
+}
+
+.shoutbox-filter-row {
+	display: flex;
+	align-items: flex-end;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.shoutbox-filter-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.shoutbox-filter-group label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--shoutbox-text-muted);
+}
+
+.shoutbox-filter-group input {
+	padding: 6px 10px;
+	border: 1px solid var(--shoutbox-input-border);
+	border-radius: 4px;
+	font-size: 13px;
+}
+
+.shoutbox-filter-actions {
+	display: flex;
+	gap: 6px;
+}
+
+.shoutbox-export-actions {
+	display: flex;
+	gap: 6px;
+	margin-top: 8px;
+}
+
+.shoutbox-history-messages {
+	padding: 0;
+}
+
+.shoutbox-history-message {
+	padding: 10px 16px;
+	border-bottom: 1px solid var(--shoutbox-border);
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.shoutbox-history-message:last-child {
+	border-bottom: none;
+}
+
+.shoutbox-history-message.shoutbox-whisper {
+	background: var(--shoutbox-whisper-bg);
+	border-left: 3px solid var(--shoutbox-whisper-border);
+}
+
+.shoutbox-history-meta {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 12px;
+}
+
+.shoutbox-history-time {
+	color: var(--shoutbox-text-muted);
+	white-space: nowrap;
+}
+
+.shoutbox-history-author {
+	font-weight: 600;
+	color: inherit;
+	text-decoration: none;
+}
+
+.shoutbox-history-author:hover {
+	text-decoration: underline;
+}
+
+.shoutbox-history-body {
+	font-size: 13px;
+	color: var(--shoutbox-text);
+	word-wrap: break-word;
+}
+
+.shoutbox-history-body img {
+	max-width: 200px;
+	max-height: 150px;
+}
+
+.shoutbox-no-results {
+	text-align: center;
+	padding: 30px;
+	color: var(--shoutbox-text-muted);
+}
+
+/* =========================================================================
+   Notification Badge
+   ========================================================================= */
+
+.shoutbox-unread-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	background: #d32f2f;
+	color: #fff;
+	font-size: 10px;
+	font-weight: 700;
+	border-radius: 10px;
+	position: absolute;
+	top: -4px;
+	right: -4px;
+}
+
+/* =========================================================================
+   Responsive Design
+   ========================================================================= */
+
+@media (max-width: 768px) {
+	.shoutbox-room-tab {
+		padding: 8px 12px;
+		font-size: 12px;
+	}
+
+	.shoutbox-chatroom-layout {
+		flex-direction: column;
+	}
+
+	.shoutbox-chatroom-sidebar {
+		width: 100%;
+		border-left: none;
+		border-top: 1px solid var(--shoutbox-border);
+		max-height: 200px;
+		overflow-y: auto;
+	}
+
+	.shoutbox-online-users {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.shoutbox-online-user {
+		padding: 2px 4px;
+	}
+
+	.shoutbox-messages-chatroom {
+		height: 50vh;
+		min-height: 300px;
+	}
+
+	.shoutbox-chatroom-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.shoutbox-gif-picker {
+		width: 300px;
+		right: 5px;
+		bottom: 55px;
+	}
+
+	.gif-results {
+		max-height: 250px;
+	}
+
+	.shoutbox-filter-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.shoutbox-filter-group {
+		width: 100%;
+	}
+
+	.shoutbox-filter-group input {
+		width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.shoutbox-messages {
+		height: 200px;
+	}
+
+	.shoutbox-message-avatar {
+		width: 22px;
+		height: 22px;
+	}
+
+	.shoutbox-message-content {
+		font-size: 12px;
+	}
+
+	.shoutbox-input {
+		font-size: 14px; /* prevent zoom on iOS */
+	}
+
+	.shoutbox-gif-picker {
+		width: calc(100vw - 20px);
+		left: 10px;
+		right: 10px;
+	}
+
+	.shoutbox-reaction-pill {
+		padding: 1px 4px;
+		font-size: 10px;
+		gap: 2px;
+	}
+
+	.shoutbox-reaction-pill img {
+		width: 12px;
+		height: 12px;
+	}
+
+	.reaction-count {
+		font-size: 10px;
+	}
+
+	.shoutbox-bbc-btn {
+		padding: 2px 6px;
+		font-size: 11px;
+		min-width: 24px;
+	}
+
+	.shoutbox-smiley-picker {
+		max-width: 240px;
+	}
+}
+
+/* =========================================================================
+   Dark Theme Support
+   SMF 2.1 doesn't have native dark mode, but many custom themes do.
+   We detect via common patterns.
+   ========================================================================= */
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--shoutbox-bg: #1e1e2e;
+		--shoutbox-header-bg: #2d3748;
+		--shoutbox-header-text: #e2e8f0;
+		--shoutbox-border: #4a5568;
+		--shoutbox-msg-bg: #2d2d3e;
+		--shoutbox-msg-hover: #3a3a4e;
+		--shoutbox-input-bg: #2d2d3e;
+		--shoutbox-input-border: #4a5568;
+		--shoutbox-text: #e2e8f0;
+		--shoutbox-text-muted: #a0aec0;
+		--shoutbox-whisper-bg: #3d3520;
+		--shoutbox-whisper-border: #d69e2e;
+		--shoutbox-scrollbar-thumb: #4a5568;
+		--shoutbox-scrollbar-track: #1e1e2e;
+		--shoutbox-bg-alt: #252538;
+		--shoutbox-hover: rgba(255, 255, 255, 0.08);
+	}
+
+	.shoutbox-context-item.danger:hover {
+		background: #4a2020;
+	}
+
+	.shoutbox-reaction-pill.reacted {
+		background: rgba(58, 95, 138, 0.2);
+	}
+
+	.shoutbox-message-admin {
+		background: #2d1f3d;
+		border-left-color: #7c3aed;
+	}
+
+	.shoutbox-message-admin:hover {
+		background: #362548;
+	}
+
+	.shoutbox-admin-badge {
+		background: #7c3aed;
+	}
+}
+
+/* Support for themes that use a .dark-theme or similar class */
+body.dark-theme,
+body[data-theme="dark"],
+.dark_mode {
+	--shoutbox-bg: #1e1e2e;
+	--shoutbox-header-bg: #2d3748;
+	--shoutbox-header-text: #e2e8f0;
+	--shoutbox-border: #4a5568;
+	--shoutbox-msg-bg: #2d2d3e;
+	--shoutbox-msg-hover: #3a3a4e;
+	--shoutbox-input-bg: #2d2d3e;
+	--shoutbox-input-border: #4a5568;
+	--shoutbox-text: #e2e8f0;
+	--shoutbox-text-muted: #a0aec0;
+	--shoutbox-whisper-bg: #3d3520;
+	--shoutbox-whisper-border: #d69e2e;
+	--shoutbox-scrollbar-thumb: #4a5568;
+	--shoutbox-scrollbar-track: #1e1e2e;
+	--shoutbox-bg-alt: #252538;
+	--shoutbox-hover: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-theme .shoutbox-reaction-pill.reacted,
+body[data-theme="dark"] .shoutbox-reaction-pill.reacted,
+.dark_mode .shoutbox-reaction-pill.reacted {
+	background: rgba(58, 95, 138, 0.2);
+}
+
+body.dark-theme .shoutbox-message-admin,
+body[data-theme="dark"] .shoutbox-message-admin,
+.dark_mode .shoutbox-message-admin {
+	background: #2d1f3d;
+	border-left-color: #7c3aed;
+}
+
+body.dark-theme .shoutbox-message-admin:hover,
+body[data-theme="dark"] .shoutbox-message-admin:hover,
+.dark_mode .shoutbox-message-admin:hover {
+	background: #362548;
+}
+
+body.dark-theme .shoutbox-admin-badge,
+body[data-theme="dark"] .shoutbox-admin-badge,
+.dark_mode .shoutbox-admin-badge {
+	background: #7c3aed;
+}
+
+/* =========================================================================
+   Print Styles
+   ========================================================================= */
+
+@media print {
+	.shoutbox-widget,
+	.shoutbox-chatroom {
+		display: none !important;
+	}
+}

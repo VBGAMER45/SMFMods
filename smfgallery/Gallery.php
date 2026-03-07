@@ -4,7 +4,7 @@ SMF Gallery Lite Edition
 Version 8.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2008-2024 SMFHacks.com
+Copyright 2008-2026 SMFHacks.com
 
 ############################################
 License Information:
@@ -25,7 +25,7 @@ function GalleryMain()
 {
 	global $modSettings, $boardurl, $boarddir;
 
-	$currentVersion = '8.0';
+	$currentVersion = '10.0';
 
 	if (empty($modSettings['gallery_url']))
 		$modSettings['gallery_url'] = $boardurl . '/gallery/';

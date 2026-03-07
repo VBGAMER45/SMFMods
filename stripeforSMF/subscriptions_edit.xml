@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>stripesmf:stripe-payment-gateway_subscriptions</id>
+	<version>1.0.0</version>
+
+	<file name="$boarddir/subscriptions.php">
+		<!-- Change A: Insert Stripe checkout session handler after loadLanguage('ManagePaid') -->
+		<operation>
+			<search position="after"><![CDATA[loadLanguage('ManagePaid');]]></search>
+			<add><![CDATA[
+// Stripe: Handle checkout session creation (user clicked "Pay with Stripe")
+if (!empty($_POST['stripe_session_create']))
+{
+	if (empty($modSettings['paid_enabled']))
+		exit;
+	require_once($sourcedir . '/Subscriptions-Stripe.php');
+	stripe_create_checkout_session();
+}]]></add>
+		</operation>
+
+		<!-- Change B: Replace the empty($_POST) block to accept JSON webhook bodies -->
+		<operation>
+			<search position="replace"><![CDATA[// If there's literally nothing coming in, let's take flight!
+if (empty($_POST))
+{
+	header('content-type: text/html; charset=' . (empty($modSettings['global_character_set']) ? (empty($txt['lang_character_set']) ? 'ISO-8859-1' : $txt['lang_character_set']) : $modSettings['global_character_set']));
+	die($txt['paid_no_data']);
+}]]></search>
+			<add><![CDATA[// If there's literally nothing coming in, let's take flight!
+$smf_raw_post_body = '';
+if (empty($_POST))
+{
+	$smf_raw_post_body = file_get_contents('php://input');
+	if (!empty($smf_raw_post_body))
+	{
+		$json_data = json_decode($smf_raw_post_body, true);
+		if (!empty($json_data))
+			$_POST = $json_data;
+	}
+	if (empty($_POST))
+	{
+		header('content-type: text/html; charset=' . (empty($modSettings['global_character_set']) ? (empty($txt['lang_character_set']) ? 'ISO-8859-1' : $txt['lang_character_set']) : $modSettings['global_character_set']));
+		die($txt['paid_no_data']);
+	}
+}]]></add>
+		</operation>
+	</file>
+</modification>

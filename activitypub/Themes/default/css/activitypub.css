@@ -1,0 +1,112 @@
+/**
+ * ActivityPub Federation - Styles
+ *
+ * @package ActivityPub
+ * @version 1.0.0
+ */
+
+/* Status dashboard grid */
+.ap-status-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 15px;
+	padding: 10px 0;
+}
+
+.ap-status-card {
+	background: #f5f5f5;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	padding: 15px;
+	text-align: center;
+}
+
+.ap-status-card h4 {
+	margin: 0 0 8px;
+	font-size: 0.9em;
+	color: #666;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.ap-status-value {
+	margin: 0;
+	font-size: 1.1em;
+}
+
+.ap-big-number {
+	font-size: 2em;
+	font-weight: bold;
+	color: #333;
+}
+
+.ap-color-success {
+	color: #2e7d32;
+}
+
+.ap-color-warning {
+	color: #f57f17;
+}
+
+.ap-color-error {
+	color: #c62828;
+}
+
+/* Board settings table */
+.ap-board-table code {
+	background: #f0f0f0;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-size: 0.9em;
+}
+
+/* Federated badge */
+.ap-federated-badge {
+	display: inline-block;
+	background: #6750a4;
+	color: #fff;
+	font-size: 0.75em;
+	padding: 2px 8px;
+	border-radius: 10px;
+	margin-left: 6px;
+	vertical-align: middle;
+}
+
+/* Remote post styling */
+.ap-remote-post {
+	border-left: 3px solid #6750a4;
+	padding-left: 10px;
+}
+
+.ap-remote-attribution {
+	font-size: 0.85em;
+	color: #666;
+	margin-bottom: 5px;
+}
+
+.ap-remote-attribution img {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	vertical-align: middle;
+	margin-right: 4px;
+}
+
+/* Admin table fixes */
+#admincenter .table_grid {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#admincenter .table_grid th,
+#admincenter .table_grid td {
+	padding: 8px 12px;
+	text-align: left;
+}
+
+/* Profile page */
+.ap-profile-handle {
+	font-family: monospace;
+	font-size: 1.1em;
+	color: #6750a4;
+}

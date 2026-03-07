@@ -174,11 +174,11 @@ function template_mainview()
 			{
 				echo '<td>';
 				if ($g_manage)
-					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $file['id_member'] == $user_info['id'])
 					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a>';
 
 				echo '</td>';
 			}
@@ -527,6 +527,7 @@ echo '</select>
 
   </tr>
 </table>
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 </form>';
 
 	if ($context['show_spellchecking'])
@@ -733,6 +734,7 @@ echo '
 
   </tr>
 </table>
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 </form><br />';
 
 
@@ -746,6 +748,7 @@ echo '
   	', $txt['downloads_custom_default_value'], '<input type="text" name="defaultvalue" />
   	<input type="hidden" name="id" value="',$context['down_catinfo']['ID_CAT'],'" />
   	<input type="checkbox" name="required" />', $txt['downloads_custom_required'], '
+  	<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
   	<input type="submit" class="button_submit"  name="addfield" value="',$txt['downloads_custom_addfield'],'" />
   	</form>
   	</div><br />
@@ -813,6 +816,7 @@ function template_delete_category()
     <input type="submit" class="button_submit"  value="' . $txt['downloads_text_delcategory'] . '" name="submit" /></td>
   </tr>
 </table>
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 </form>';
 
 	downloads_copyright();
@@ -1008,7 +1012,7 @@ echo '
     </td>
   </tr>
 </table>
-
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 		</form>
 ';
 
@@ -1229,7 +1233,7 @@ echo '<div align="center"><br /><b>' . $txt['downloads_text_olddownload'] . '</b
     </td>
   </tr>
 </table>
-
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 		</form>
 ';
 
@@ -1389,6 +1393,7 @@ function template_view_download()
 
 					echo '
 							 <input type="hidden" name="id" value="' . $context['downloads_file']['ID_FILE'] . '" />
+							 <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 							 <input type="submit" class="button_submit"  name="submit" value="' . $txt['downloads_form_ratedownload'] . '" />
 						';
 
@@ -1426,11 +1431,11 @@ function template_view_download()
 					echo '<br />';
 
 				if ($g_manage)
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $context['downloads_file']['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $context['downloads_file']['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $context['downloads_file']['id_member'] == $user_info['id'])
 					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $context['downloads_file']['ID_FILE']. '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $context['downloads_file']['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $context['downloads_file']['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $context['downloads_file']['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a>';
 
 
 				// Show report download link
@@ -1602,6 +1607,7 @@ echo '
 				echo '</td>
 				  </tr>
 				</table>
+				<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 				</form>';
 
 
@@ -1648,7 +1654,7 @@ function template_delete_download()
     </td>
   </tr>
 </table>
-
+<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 		</form>
 ';
 
@@ -1756,6 +1762,7 @@ echo '
 
   </tr>
 </table>
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 </form>';
 
 
@@ -1787,6 +1794,7 @@ function template_report_download()
   <tr>
     <td width="28%" colspan="2" align="center" class="windowbg2">
     <input type="hidden" name="id" value="' . $context['downloads_file_id'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['downloads_form_reportdownload'] . '" name="submit" /></td>
 
   </tr>
@@ -1818,6 +1826,7 @@ function template_report_comment()
   <tr>
     <td width="28%" colspan="2"  align="center" class="windowbg2">
     <input type="hidden" name="id" value="' . $context['downloads_comment_id'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['downloads_text_reportcomment'] . '" name="submit" /></td>
 
   </tr>
@@ -1830,7 +1839,7 @@ function template_report_comment()
 
 function template_settings()
 {
-	global $scripturl, $modSettings, $txt;
+	global $scripturl, $modSettings, $txt, $context;
 
 echo '
 	<table border="0" width="80%" cellspacing="0" align="center" cellpadding="4" class="tborder">
@@ -1910,6 +1919,7 @@ echo '
 
 				echo '
 
+				<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 				<input type="submit" class="button_submit"  name="savesettings" value="' . $txt['downloads_save_settings'] . '" />
 			</form>
 			<br />
@@ -1993,7 +2003,7 @@ echo '
 				else
 					echo '<td>',$txt['downloads_guest'],'</td>';
 
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=approve&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=approve&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -2017,6 +2027,7 @@ echo '
 			<option value="approve">',$txt['downloads_form_approvedownloads'],'</option>
 			<option value="delete">',$txt['downloads_form_deldownload'],'</option>
 			</select>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			<input type="submit" class="button_submit"  value="',$txt['downloads_text_performaction'],'" />
 			</form>
 			';
@@ -2069,8 +2080,8 @@ echo '
 				else
 					echo '<td>',$txt['downloads_guest'],'</td>';
 
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $report['ID_FILE'] . '">' . $txt['downloads_form_deldownload2']  . '</a>';
-				echo '<br /><br /><a href="' . $scripturl . '?action=downloads;sa=deletereport&id=' . $report['ID'] . '">' . $txt['downloads_rep_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $report['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_form_deldownload2']  . '</a>';
+				echo '<br /><br /><a href="' . $scripturl . '?action=downloads;sa=deletereport&id=' . $report['ID'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_rep_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -2103,6 +2114,7 @@ echo '
 			<td>
 			<b>', $txt['downloads_form_approvecomments'], '</b><br />
 			<form method="post" action="', $scripturl, '?action=downloads;sa=apprcomall">
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			<input type="submit" class="button_submit"  value="', $txt['downloads_form_approveallcomments'], '" />
 			</form>
 			<br />
@@ -2183,7 +2195,7 @@ echo '
 				echo '<td>' . $report['comment'] . '</td>';
 				echo '<td>' . timeformat($report['date']) . '</td>';
 				echo '<td><a href="' . $scripturl . '?action=profile;u=' . $report['id_member'] . '">'  . $report['real_name'] . '</a></td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletecomment&id=' . $report['ID_COMMENT'] . ';ret=admin">' . $txt['downloads_text_delcomment'] . '</a>
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletecomment&id=' . $report['ID_COMMENT'] . ';ret=admin;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delcomment'] . '</a>
 				<br /><a href="' . $scripturl . '?action=downloads;sa=delcomreport&id=' . $report['ID'] . '">' . $txt['downloads_rep_delete'] . '</a>
 				</td>';
 				echo '</tr>';
@@ -2272,6 +2284,7 @@ function template_search()
 
   <tr>
     <td width="100%" colspan="2"  align="center" class="windowbg2"><br />
+    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
     <input type="submit" class="button_submit"  value="' . $txt['downloads_search'] . '" name="submit" />
 
     <br /></td>
@@ -2406,11 +2419,11 @@ function template_search_results()
 			{
 				echo '<td>';
 				if ($g_manage)
-					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $file['id_member'] == $user_info['id'])
 					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a>';
 
 				echo '</td>';
 			}
@@ -2610,11 +2623,11 @@ function template_myfiles()
 			{
 				echo '<td>';
 				if ($g_manage)
-					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
+					echo '<a href="' . $scripturl . '?action=downloads;sa=unapprove&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $file['id_member'] == $user_info['id'])
 					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=edit&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $file['id_member'] == $user_info['id'])
-					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a>';
 
 				echo '</td>';
 			}
@@ -2757,6 +2770,7 @@ echo '
 
   </tr>
 </table>
+<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 </form>';
 
 
@@ -2952,7 +2966,7 @@ function template_filespace()
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td>'  . $group['group_name'] . '</td>';
 				echo '<td>' . Downloads_format_size($group['totalfilesize'], 2) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletequota&id=' . $group['ID_GROUP'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=deletequota&id=' . $group['ID_GROUP'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -2969,7 +2983,7 @@ function template_filespace()
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td>', $txt['membergroups_members'], '</td>';
 				echo '<td>' . Downloads_format_size($group['totalfilesize'], 2) . '</td>';
-				echo '<td><a href="',$scripturl, '?action=downloads;sa=deletequota&id=' . $group['ID_GROUP'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="',$scripturl, '?action=downloads;sa=deletequota&id=' . $group['ID_GROUP'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -2992,6 +3006,7 @@ function template_filespace()
 
 							echo '</select><br />' . $txt['downloads_filespace_limit'] . '&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="filelimit" /> (bytes)
 							<br /><br />
+						<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 						<input type="submit" class="button_submit"  value="' . $txt['downloads_filespace_addquota'] . '" />
 						</form>
 					</td>
@@ -3042,6 +3057,7 @@ function template_filespace()
 			<tr class="titlebg">
 					<td align="left" colspan="3">
 					<form method="post" action="' . $scripturl . '?action=downloads;sa=recountquota">
+					<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 					<input type="submit" class="button_submit"  value="' . $txt['downloads_filespace_recount'] . '" />
 					</form>
 					</td>
@@ -3082,7 +3098,7 @@ function template_filelist()
 				echo '<tr class="' . $styleclass . '">';
 				echo '<td><a href="' . $scripturl . '?action=downloads;sa=view;down=' . $file['ID_FILE'] . '">', $file['title'],'</a></td>';
 				echo '<td>' . Downloads_format_size($file['filesize'], 2) . '</td>';
-				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=downloads;sa=delete&id=' . $file['ID_FILE'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['downloads_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -3261,6 +3277,7 @@ function template_catperm()
 			  <tr class="windowbg2">
 			  	<td align="center" colspan="2">
 			  	<input type="hidden" name="cat" value="' . $context['downloads_cat'] . '" />
+			  	<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 			  	<input type="submit" class="button_submit"  value="' . $txt['downloads_text_addperm'] . '" /></td>
 
 			  </tr>
@@ -3379,7 +3396,7 @@ function template_import_results()
 
 function template_import()
 {
-	global $txt, $scripturl;
+	global $txt, $scripturl, $context;
 
 echo '
 <div class="cat_bar">
@@ -3393,6 +3410,7 @@ echo '
 			<td>
 				',$txt['downloads_txt_import_note'],'<br />
 			<form method="post" action="',$scripturl,'?action=downloads;sa=importtp">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="submit" class="button_submit"  value="',$txt['downloads_txt_import_tiny_portal'],'" />
 			</form>
 

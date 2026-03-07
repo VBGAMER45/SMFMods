@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:UltimateShoutbox</id>
+	<name>Ultimate Shoutbox &amp; Chatroom</name>
+	<version>1.2.5</version>
+	<type>modification</type>
+
+	<install  for="2.1 - 2.1.99">
+		<readme>readme.txt</readme>
+		<require-dir name="Sources" destination="$boarddir" />
+		<require-file name="Themes/default/languages/Shoutbox.english.php" destination="$languagedir" />
+		<require-file name="Themes/default/Shoutbox.template.php" destination="$themedir" />
+		<require-file name="Themes/default/css/shoutbox.css" destination="$themedir/css" />
+		<require-dir name="Themes/default/scripts" destination="$themedir" />
+		<require-dir name="Themes/default/images/shoutbox" destination="$imagesdir" />
+		<code>install.php</code>
+		<redirect url="?action=admin;area=shoutbox">Thank you for installing redirecting to settings page</redirect>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<code>uninstall.php</code>
+		<remove-file name="$sourcedir/Shoutbox.php" />
+		<remove-file name="$sourcedir/Shoutbox-Admin.php" />
+		<remove-file name="$sourcedir/Shoutbox-History.php" />
+		<remove-file name="$themedir/Shoutbox.template.php" />
+		<remove-file name="$themedir/css/shoutbox.css" />
+		<remove-file name="$themedir/scripts/shoutbox.js" />
+		<remove-file name="$themedir/scripts/shoutbox-gif.js" />
+		<remove-dir name="$themedir/scripts/shoutbox-sounds" />
+		<remove-dir name="$themedir/images/shoutbox" />
+		<remove-file name="$languagedir/Shoutbox.english.php" />
+		<database>uninstalldb.php</database>
+	</uninstall>
+</package-info>

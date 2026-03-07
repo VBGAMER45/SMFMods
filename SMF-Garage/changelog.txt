@@ -1,0 +1,232 @@
+/**********************************************************************************
+* changelog.txt                                                                   *
+***********************************************************************************
+* SMF Garage: Simple Machines Forum Garage (MOD)                                  *
+* =============================================================================== *
+* Software Version:           SMF Garage 3.0.0                                    *
+* Install for:                2.0.9-2.0.99, 2.1.0-2.1.99                         *
+* Original Developer:         RRasco (http://www.smfgarage.com)                   *
+* Copyright 2026 by:          vbgamer45 (https://www.smfhacks.com)               *
+* Copyright 2015 by:          Bruno Alves (margarett.pt@gmail.com                 *
+* Copyright 2007-2011 by:     SMF Garage (http://www.smfgarage.com)               *
+*                             RRasco (rrasco@smfgarage.com)                       *
+* phpBB Garage by:            Esmond Poynton (esmond.poynton@gmail.com)           *
+***********************************************************************************
+* See the "SMF_Garage_License.txt" file for details.                              *
+*              http://www.opensource.org/licenses/BSD-3-Clause                    *
+**********************************************************************************/
+*
+*    Changelog:
+*    2026 - Version 3.0.0
+*       - Added SMF 2.1.x compatibility
+*       - Hook-based integration for SMF 2.1 via dohooks.php + GarageHooks.php
+*         (replaces file edits for: actions, admin areas, menu buttons, permissions,
+*          heavy permissions, and Who's Online)
+*       - Added famfamfam silk car icon for garage main menu button
+*       - Fixed $smcFunc case bug in Who.php integration
+*       - Fixed XSS vulnerabilities in select/option generator functions
+*       - Removed duplicate CSRF-vulnerable notification update block
+*       - Added safety comments for disableQueryCheck pattern
+*       - Use loadCSSFile()/loadJavascriptFile() for SMF 2.1 CSS/JS loading
+*       - Eliminated disableQueryCheck for SMF 2.1 (uses per-member vehicle lookup)
+*       - Skip bundled jQuery 1.6.1 on SMF 2.1 (uses built-in jQuery 3.x)
+*       - Updated admin menu icons for SMF 2.1 (no .gif suffix)
+*       - Updated constructPageIndex patch for SMF 2.1 signature
+*       - Added error="skip" for patches that may not match in SMF 2.1
+*       - Fixed PHP 8+ "Unsupported operand types" errors (bitwise OR used instead of logical OR)
+*       - Fixed MySQL ONLY_FULL_GROUP_BY errors across Garage.php, GarageFunctions.php, SSI_Garage.php
+*       - Fixed $smfgSettings['version'] null access error in language files
+*       - Updated remote image URL inputs to default to https:// instead of http://
+*       - Updated remote image URL validation to accept both https:// and http://
+*       - Modernized displayVideo() function: removed all dead Flash-based video sites,
+*         added modern iframe embeds for YouTube, Vimeo, Dailymotion, Facebook, Twitch,
+*         TikTok, Streamable, Rumble, Instagram, Odysee, Bitchute, ItemFix, and direct
+*         MP4/WEBM via HTML5 video tag
+*       - Updated install version to 3.0.0
+*       - Bumped version to 3.0.0
+*
+*    29/01/2015 - Version 2.3
+*       - Removed support for SMF 1.1.x
+*       - Removed upgrade options from ancient versions
+*       - Fixed installer to work with 2.0.9+
+*
+*    6/16/2011 - Version 2.1
+*       - Fixed some template issues from RC3 to 2.0 Gold
+*       - Fixed two edits from modification-smf2.xml to work with 2.0 Gold
+*       - Fixed an issue when adding a business through management console
+*       - Added a missing operation to modification-smf2.xml for Display.php (vehicle link not showing on posts)
+*
+*    5/24/2011 - Version 2.0
+*       - Updated to work with SMF 2.0
+*
+*    11/25/2008 - Version 0.6.0RC1
+*       - Fixed Shadowbox to work with SEO4SMF mod
+*       - Fixed SSI_Garage.php (Blank Page Issue)
+*       - Fixed tooltip trimming
+*       - Fixed editing a "Business" doesn't update pending status
+*       - Fixed error log entry "Undefined variable: VID"
+*       - Fixed error log entry "Undefined index: author_vehicle"
+*       - Fixed error log entry "Division by zero"
+*       - Fixed when adding a video or image to a vehicle "updated" timestamp gets updated.
+*       - Fixed when adding a video or image to a modifcation "updated" timestamp gets updated.
+*       - Optimized MySQL Queries
+*       - Optimized browse pages code (1 function VS many)
+*       - Added browse pages for all blocks (using the new browse function)
+*       - Added user friendly error message VS MySQL errors on all view_ pages
+*       - Added shadowbox for all user submitted data
+*       - Added "Featured Vehicle Image Required" to Admin CP
+*       - Added view_garage with guestbook
+*       - Added tooltips on modification titles
+*
+*    4/3/2008 - Version 0.6.0b2
+*       - Added video support for all modules
+*       - New Lightbox added (Shadowbox), works off of Mootools framework
+*       - SSI_Garage.php is now available for use
+*       - Updated 'Who' to display more information
+*       - Post count in guestbooks now has thousands separator
+*       - Image regeneration now utilizes AJAX and works properly
+*       - Alt text for thumbs and icons now utilize Mootools tool tips
+*       - Fixed search pagination, was not working previously
+*       - Implemented an option to disable the garage main menu for custom themes
+*       - Added avatars to guestbook comments
+*       - Fixed bug in forumProfile for users without vehicles and using IE.
+*       - Notification to user on new guestbook comments, can be disabled via User CP.
+*       - Added (3) new blocks: Latest Service, Latest Blogs, Latest Video Entry.
+*       - Guestbook query optimization.
+*       - ucwords() is now utliized to standardize vehicle color, businesses, product, track titles.
+*
+*    12/14/2007 - Version 0.6.0b
+*       - Added footer with link to smfgarage.com and built in copyright
+*       - Added ability to add one business to multiple Types
+*       - Vehicle views increment on unique ips
+*       - Added manufacturer and dynocenter review pages
+*       - Added inter page links ie: to a manufacturer from a mod listing
+*       - Business type is now autoselected for the user when adding a new one
+*       - Added pending warnings and red highlighting on pending items
+*       - Added Best - Worst, Cheap - Expensive scale to select boxes
+*       - Fixed pending fields form int to string in php compares
+*       - All joomla embedded links are now complete (Required modified version of jsmf, sending upstream)
+*       - Moved all processed images to a new cache folder, and keep originals this will allow for thumb and watermark rebuilds/regens
+*       - Added regen/rebuild all checkbox to Tools page
+*       - Changed from Lightbox v2 to Lightboxgallery
+*
+*    9/14/2007 - Version 0.5.3a
+*       - Removed mysql_real_escape_string from comments and blog insert and updates (Garage.php)
+*       - Added str_replace() to blog_title to support ';' (Garage.php)
+*       - Changed method of total spent on view vehicle pages from PHP based to sub-select (Garage.php)
+*       - Added GD support for Image Processing
+*       - Fixed Imagemagick detection on safe_mode setups, Added GD Detection
+*       - Added Watermarking Opacity Option
+*       - Added Watermarking Position Option
+*       - Added Watermarking Before Thumbnailing, and Thumbnail Watermarking
+*
+*    9/13/2007 - Version 0.5.2a
+*        - More single quotes missing in queries (Garage.php)
+*        - Changed link alt text in view_own_vehicle from '1 vehicle' to 'View Vehicle' (Garage.template.php, Garage.english.php)
+*        - Moved body onLoad for dynamic option list to dynamicoptionlist.js (dynamicoptionlist.js)
+*        - Changed edit in place onload function init() to garageInit() (modification.xml)
+*        - Yet again another missing single quote (GarageManagement.php)
+*        - Added ability to add the same business of different types (ie, Garage, Shop) (Garage.php)
+*
+*    9/12/2007 - Version 0.5.1a
+*        - Fixed more bugs in queries (Garage.php)
+*        - Fixed more numerical values erroring out queries due to them being empty (GarageFunctions.php)
+*
+*    9/7/2007-9/12/2007 - Version 0.5a
+*        - Fixed PHP notice undefined index 'installer' on view_modification (Garage.template.php)
+*        - Corrected ACP form name for add_product (GarageManagement.template.php)
+*        - Added "Website (http:// required)" to submit business (Garage.template.php)
+*        - Added text at top of add or edit modification to inform users of logic behind chained selects (Garage.template.php, Garage.english.php)
+*        - Added 'Manufacturer Successfully Added' after....submitting a manufacturer (Garage.php, Garage.template.php)
+*        - Added 'Successful' message after all user submissions (Garage.php, Garage.template.php)
+*        - Got rid of title and border on 'Manage Vehicle' (Garage.template.php)
+*        - Removed 'Reviews' from main menu bar to shorten tab length (Garage.php)
+*        - Escaped double quotes product_options(), also used str_replace() on product and business titles in ACP MGMT (GarageManagement.php, GarageFunctions.php)
+*        - Added support if search was submitted with no data (Garage.php, Errors.english.php)
+*        - Changed model_divs() to support make ids up to 3 digits (GarageFunctions.php)
+*        - Reformatted all LEFT OUTER JOINs syntax (Garage.php)
+*        - ORDER BY title in ACP Business Management (GarageMangement.php)
+*        - Changed 2 hardcoded 'index.php' to $scripturl (Garage.template.php)
+*        - Removed single quotes from table name and changed CHARSET to utf8 (install_db.php)
+*        - Adding 'Pending' messages to inform vehicle owners items are pending (Garage.template.php)
+*        - Added ability to create businesses from ACP (GarageManagement.php, GarageManagement.template.php)
+*        - Re-wrote queries to support filenames with uni-code chars, changed to single quotes (Garage.php, GarageManagement.php, GarageSettings.php)
+*        - Added mysql_real_escape_string() to any queries that may encounter odd characters (Garage.php, GarageManagement.php)
+*        - Changed 'href =' to 'href=' that were causing some Joomla bridging issues (Garage.php, Garage.template.php)
+*        - Fixed some bugs from query changes (Garage.php)
+*        - Moved 'action' in forms to be first property defined (Garage.template.php, GarageManagement.template.php, GarageSettings.template.php)
+*
+*    9/6/2007-9/7/2007 - Version 0.4a
+*        - Changed vehicle validations to allow for spaces in color (Garage.template.php)
+*        - Last Updated Vehicles block on main page was linking to view_modification (Garage.php)
+*        - Enable Make and Model Approval had no queries to update values (GarageSettings.php)
+*        - Fixed typo in view_vehicle query for guestbook comments (Garage.php)
+*        - Moved comment to below hilite image on view_modification (Garage.template.php)
+*        - Added additional validation for dynoruns (Garage.template.php, Garage.english.php)
+*        - Changed total vehicles on profile to show (1 of 2) instead of (of 2) (modification.xml)
+*        - Changed user names from displaying actual username to user display name instead (Garage.php, GarageSettings.php, GarageManagement.php)
+*        - Fixed issue with validating business type radio buttons (Garage.template.php)
+*        - Fixed sorting of most modified block (Garage.php)
+*        - Added error message to prompt when an image is not supplied while inserting new images (Garage.php)
+*        - Changed all non-fatal errors to not log in the forum log. (Garage.php, GarageSettings.php)
+*        - Added conditionals to check for shop or installer ID before running queries on view_modification (Garage.php)
+*
+*    8/23/2007-9/5/2007 - Version: 0.3a
+*        - Fixed js validation errors in general ACP settings (GarageSettings.template.php)
+*        - Corrected mispelled entry in language file (Garage.english.php)
+*        - Changed td class from 'windowbg2' to 'windowbg' in search template (Garage.template.php)
+*        - If a user has no vehicles and creates a new vehicle, it will be automatically set to 'main vehicle' (Garage.php)
+*        - Package was not executing an operation on Profile.php, '<operation>' was missing (modification.xml)
+*        - Location of 'Vehicle' in Profile was moved to above 'Gender' (modification.xml)
+*        - Added values for index includes
+*        - Added warnings if ImageMagick directories are incorrect (GarageSettings.php, GarageSettings.template.php)
+*        - Added warning to alert users if vehicle is pending (Garage.php, Garage.template.php)
+*        - Added 'Engine Type' spec to view_vehicle and view_own_vehicle (Garage.php, Garage.template.php)
+*        - Fixed redirect issue when editing pending items; used $_SESSION['old_url'] (Garage.php, Garage.template.php)
+*        - Added link to view_track on 'Tracks' in Management ACP (GarageManagement.template.php)
+*        - Other, Tools, and Pending were all showing as active tab on 'sa=pt_edit' and 'as=et_edit' (GarageManagement.php)
+*        - Delete_currency type was using $_GET['STID'] instead of $_GET['CTID'] (GarageManagement.php)
+*        - All queries in delete_currency were incorrectly referring to {$db_prefix}garage_currency_types (GarageManagement.php)
+*        - Fixed conditions that allow add_comment form to be shown on view_vehicle (Garage.template.php)
+*        - Changed language entry for $txt['smfg_no_comments'] (Garage.english.php)
+*        - Changed $_GET['CID'] to $_POST['CID'] in update_comment (Garage.php)
+*        - Fixed redirect issue when adding comment (Garage.php)
+*        - Fixed typo which was not setting comments to pending if option was enabled (Garage.php)
+*        - Fixed URL reference to 'comment_delete' when it should have been 'delete_comment' (Garage.template.php, GarageManagement.template.php)
+*        - Added links in vehicle profile under premiums to link to insurance_review (Garage.php, Garage.template.php)
+*        - Added links in vehicle profile under services to link to garage_review (Garage.php, Garage.template.php)
+*        - Added 'Manufacturer' to view_modification (Garage.php, Garage.template.php)
+*        - Made Insurance, Shop, and Garage website links open in new window (Garage.template.php)
+*        - Added missing operation for pagination to Subs.php (modification.xml)
+*        - Set modifications 'price' and 'install_price' to default to 0 instead of NULL
+*        - Added support if modules already have hilite or not, newly inserted images will automaticaly be hilite if there is not already one set (Garage.php)
+*        - Fixed that unholy query for 'Most Spent' (Garage.php, GarageFunctions.php)
+*        - Fixed rating issue that would display 'Cannot rate twice' error everytime (Garage.php)
+*        - Fixed 'Undefined Index' errors in forum error log (Garage.php, GarageSettings.php, GarageManagement.php)
+*        - Removed mysql_free_result() from INSERT, UPDATE, and DELETE queries (Garage.php, GarageSettings.php, GarageManagement.php)
+*        - Debugged all PHP notices. w00t!
+*        - Fixed issue under garage_review, modifications without comments would repeat "No Comments" as many times as there were mods without comments.
+*        - Changed dol to dol2 on edit_modification to set forField() (Garage.template.php)
+*        - Changed data types for price fields in db from int() to varchar() for decimal support (install_db.php)
+*        - Changed JS validation standards on price files from 'numeric' to 'regexp' (Garage.template.php)
+*        - Added currency type to main page 'Most Spent' block (Garage.php)
+*        - Used number_format() to ensure two decimal places show on 'Most Spent' block (Garage.php)
+*        - HAHAHA, fixed that horror of a nightmare IE onload issue. (modification.xml)
+*
+*    8/21/2007 - Version: 0.2a
+*        - Fixed package insallation issue for Profile.php (modification.xml)
+*        - Added missing quote on main() and removed 'colspan=3' (Garage.template.php)
+*        - Corrected duplicate language entries (Garage.english.php)
+*        - Added subselect to posts query (Display.php)
+*        - Fixed lightbox next, prev, and close images not showing (lightbox.js)
+*        - ImageMagick 'Convert' and 'Composite' directories were not saving in ACP (GarageSettings.php)
+*        - User's only vehicle was not being inserted as 'main vehicle' (Garage.php)
+*        - Corrected placement of '<script>' tags in head of Index.template.php (modification.xml)
+*        - Setup default for if featured vehicle ID was not specified, but FV was enabled (Garage.php, Garage.template.php)
+*        - Fixed hardcoded {$db_prefix} (Garage.php)
+*
+*    8/17/2007 - Version: 0.1a
+*        - Begin compilation of package version 0.1a
+*        - Yeah, as expected, looks like the garage was nuked :( It's okay, we fiX0red! :D
+*
+/*********************************************************************************

@@ -165,8 +165,8 @@ $txt['whoall_links'] = 'Viewing the <a href="' . $scripturl . '?action=links">' 
 						'admincat' => array($txt['smflinks_managecats']),
 						'alist' => array($txt['smflinks_approvelinks']),
 						'adminperm' => array($txt['smflinks_catpermlist']),
-						
-						
+						'checklinks' => array($txt['smflinks_checklinks']),
+						'disalloweddomains' => array($txt['smflinks_disallowed_domains']),
 					),
 				),
 ]]></add>

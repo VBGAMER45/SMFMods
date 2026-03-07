@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<name>Avif and Webp Support</name>
+<version>1.0</version>
+
+<file name="$themedir/Profile.template.php" error="skip">
+	<operation>
+		<search position="replace"><![CDATA[accept="image/gif, image/jpeg, image/jpg, image/png"]]></search>
+		<add><![CDATA[accept="image/gif, image/jpeg, image/jpg, image/png, image/webp, image/avif"]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/ShowAttachments.php">
+		<operation>
+		<search position="replace"><![CDATA[elseif (!empty($file['mime_type']) && (isset($_REQUEST['image']) || !in_array($file['fileext'], array('jpg', 'gif', 'jpeg', 'x-ms-bmp', 'png', 'psd', 'tiff', 'iff'))))]]></search>
+	<add><![CDATA[elseif (!empty($file['mime_type']) && (isset($_REQUEST['image']) || !in_array($file['fileext'], array('jpg', 'gif', 'jpeg', 'x-ms-bmp', 'png', 'psd', 'tiff', 'iff','webp','avif'))))]]></add>
+	</operation>
+
+		<operation>
+		<search position="replace"><![CDATA[if (!isset($_REQUEST['image']) && in_array($file['fileext'], array('gif', 'jpg', 'bmp', 'png', 'jpeg', 'tiff')))]]></search>
+	<add><![CDATA[if (!isset($_REQUEST['image']) && in_array($file['fileext'], array('gif', 'jpg', 'bmp', 'png', 'jpeg', 'tiff','webp','avif')))]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Load.php">
+		<operation>
+		<search position="replace"><![CDATA[IMAGETYPE_PSD => 'psd',]]></search>
+	<add><![CDATA[IMAGETYPE_PSD => 'psd',
+		IMAGETYPE_WEBP => 'webp',
+		IMAGETYPE_AVIF => 'avif',]]></add>
+	</operation>
+</file>
+<file name="$sourcedir/Profile-Modify.php">
+		<operation>
+		<search position="replace"><![CDATA[if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0)]]></search>
+	<add><![CDATA[if (strcasecmp($extension, 'gif') != 0 && strcasecmp($extension, 'jpg') != 0 && strcasecmp($extension, 'jpeg') != 0 && strcasecmp($extension, 'png') != 0 && strcasecmp($extension, 'bmp') != 0 && strcasecmp($extension, 'avif') != 0 && strcasecmp($extension, 'webp') != 0)]]></add>
+	</operation>
+<operation>
+		<search position="replace"><![CDATA[$extensions = array(
+					'1' => 'gif',
+					'2' => 'jpg',
+					'3' => 'png',
+					'6' => 'bmp'
+				);]]></search>
+	<add><![CDATA[$extensions = array(
+					'1' => 'gif',
+					'2' => 'jpg',
+					'3' => 'png',
+					'6' => 'bmp',
+					'18' => 'webp',
+					'19' => 'avif',
+				);]]></add>
+	</operation>
+
+</file>
+<file name="$sourcedir/Subs-Graphics.php">
+		<operation>
+		<search position="replace"><![CDATA[elseif (function_exists('imagejpeg'))]]></search>
+	<add><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 6) && function_exists('imagebmp'))
+		{
+			$success = imagebmp($dst_img, $destName);
+		}
+		elseif (function_exists('imagejpeg'))]]></add>
+	</operation>
+		<operation>
+		<search position="replace"><![CDATA[static $default_formats = array(
+		'1' => 'gif',
+		'2' => 'jpeg',
+		'3' => 'png',
+		'6' => 'bmp',
+		'15' => 'wbmp'
+	);
+
+	// Get the image file, we have to work with something after all]]></search>
+	<add><![CDATA[static $default_formats = array(
+		'1' => 'gif',
+		'2' => 'jpeg',
+		'3' => 'png',
+		'6' => 'bmp',
+		'15' => 'wbmp',
+		'18' => 'webp',
+		'19' => 'avif',
+	);
+
+	// Get the image file, we have to work with something after all]]></add>
+	</operation>
+
+		<operation>
+		<search position="replace"><![CDATA[static $default_formats = array(
+			'1' => 'gif',
+			'2' => 'jpeg',
+			'3' => 'png',
+			'6' => 'bmp',
+			'15' => 'wbmp'
+		);
+		$preferred_format = empty($preferred_format) || !isset($default_formats[$preferred_format]) ? 2 : $preferred_format;]]></search>
+	<add><![CDATA[static $default_formats = array(
+			'1' => 'gif',
+			'2' => 'jpeg',
+			'3' => 'png',
+			'6' => 'bmp',
+			'15' => 'wbmp',
+			'18' => 'webp',
+			'19' => 'avif',
+		);
+		$preferred_format = empty($preferred_format) || !isset($default_formats[$preferred_format]) ? 2 : $preferred_format;]]></add>
+	</operation>
+	<operation>
+		<search position="before"><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 1) && function_exists('imagegif'))
+			$success = imagegif($dst_img, $destName);]]></search>
+	<add><![CDATA[elseif (!empty($preferred_format) && ($preferred_format == 18) && function_exists('imagewebp'))
+		$success = imagewebp($dst_img, $destName);
+		elseif (!empty($preferred_format) && ($preferred_format == 19) && function_exists('imageavif'))
+			$success = imageavif($dst_img, $destName);]]></add>
+	</operation>
+</file>
+</modification>

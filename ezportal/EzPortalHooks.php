@@ -1,7 +1,7 @@
 <?php
 /*
 EzPortal
-Version 3.0
+Version 7.0
 by:vbgamer45
 http://www.ezportal.com
 Copyright 2010-2018 http://www.samsonsoftware.com

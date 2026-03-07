@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>smfrivals:Rivals</id>
+	<name>SMF Rivals</name>
+	<version>1.0.0</version>
+	<type>modification</type>
+
+	<install for="2.1.0 - 2.1.99">
+		<readme>readme.txt</readme>
+
+		<!-- Database setup -->
+		<database>installDatabase.php</database>
+
+		<!-- Copy source files -->
+		<require-dir name="Sources/Rivals" destination="$sourcedir" />
+		<require-file name="Sources/tasks/RivalsNotify.php" destination="$sourcedir/tasks" />
+
+		<!-- Copy template files -->
+		<require-file name="Themes/default/Rivals.template.php" destination="$themedir" />
+		<require-file name="Themes/default/RivalsAdmin.template.php" destination="$themedir" />
+		<require-file name="Themes/default/RivalsClan.template.php" destination="$themedir" />
+		<require-file name="Themes/default/RivalsMatch.template.php" destination="$themedir" />
+		<require-file name="Themes/default/RivalsTournament.template.php" destination="$themedir" />
+
+		<!-- Copy CSS/JS -->
+		<require-file name="Themes/default/css/rivals.css" destination="$themedir/css" />
+		<require-file name="Themes/default/scripts/rivals.js" destination="$themedir/scripts" />
+
+		<!-- Copy language file -->
+		<require-file name="Themes/default/languages/Rivals.english.php" destination="$languagedir" />
+
+		<!-- Copy images -->
+		<require-dir name="Themes/default/images/rivals" destination="$imagesdir" />
+
+		<!-- Register hooks + insert settings -->
+		<code>install.php</code>
+
+		<redirect url="?action=admin;area=rivals;sa=settings">Thank you for installing SMF Rivals. Redirecting to settings.</redirect>
+	</install>
+
+	<uninstall for="2.1.0 - 2.1.99">
+		<!-- Remove hooks + settings -->
+		<code>uninstall.php</code>
+
+		<!-- Remove source files -->
+		<remove-dir name="$sourcedir/Rivals" />
+		<remove-file name="$sourcedir/tasks/RivalsNotify.php" />
+
+		<!-- Remove template files -->
+		<remove-file name="$themedir/Rivals.template.php" />
+		<remove-file name="$themedir/RivalsAdmin.template.php" />
+		<remove-file name="$themedir/RivalsClan.template.php" />
+		<remove-file name="$themedir/RivalsMatch.template.php" />
+		<remove-file name="$themedir/RivalsTournament.template.php" />
+
+		<!-- Remove CSS/JS -->
+		<remove-file name="$themedir/css/rivals.css" />
+		<remove-file name="$themedir/scripts/rivals.js" />
+
+		<!-- Remove language file -->
+		<remove-file name="$languagedir/Rivals.english.php" />
+
+		<!-- Remove images -->
+		<remove-dir name="$imagesdir/rivals" />
+
+		<!-- Drop tables -->
+		<database>uninstallDatabase.php</database>
+	</uninstall>
+</package-info>

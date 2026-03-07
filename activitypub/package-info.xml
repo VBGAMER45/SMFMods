@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:ActivityPub</id>
+	<name>ActivityPub Federation</name>
+	<version>1.0.0</version>
+	<type>modification</type>
+
+	<install for="2.1 - 2.1.99">
+		<readme>readme.txt</readme>
+		<require-dir name=".well-known" destination="$boarddir" />
+		<require-dir name="Sources" destination="$boarddir" />
+		<require-file name="Themes/default/languages/ActivityPub.english.php" destination="$languagedir" />
+		<require-file name="Themes/default/ActivityPub.template.php" destination="$themedir" />
+		<require-file name="Themes/default/css/activitypub.css" destination="$themedir/css" />
+		<code>install.php</code>
+		<redirect url="?action=admin;area=activitypub;sa=settings">Thank you for installing. Redirecting to settings.</redirect>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<code>uninstall.php</code>
+		<remove-file name="$sourcedir/ActivityPub.php" />
+		<remove-file name="$sourcedir/ActivityPub-Admin.php" />
+		<remove-file name="$sourcedir/ActivityPub-Inbox.php" />
+		<remove-file name="$sourcedir/ActivityPub-Outbox.php" />
+		<remove-file name="$sourcedir/ActivityPub-WebFinger.php" />
+		<remove-file name="$sourcedir/ActivityPub-Actor.php" />
+		<remove-file name="$sourcedir/ActivityPub-Object.php" />
+		<remove-file name="$sourcedir/ActivityPub-Collection.php" />
+		<remove-file name="$sourcedir/ActivityPub-NodeInfo.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-Actor.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-Activity.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-Object.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-HttpSig.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-Delivery.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-Fetch.php" />
+		<remove-file name="$sourcedir/Subs-ActivityPub-Content.php" />
+		<remove-file name="$sourcedir/tasks/ActivityPub-Deliver.php" />
+		<remove-file name="$sourcedir/tasks/ActivityPub-Process.php" />
+		<remove-file name="$themedir/ActivityPub.template.php" />
+		<remove-file name="$themedir/css/activitypub.css" />
+		<remove-file name="$languagedir/ActivityPub.english.php" />
+		<database>uninstalldb.php</database>
+	</uninstall>
+</package-info>

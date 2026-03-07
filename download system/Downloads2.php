@@ -59,7 +59,7 @@ function DownloadsMain()
 {
 	global $boardurl, $modSettings, $boarddir, $smcFunc, $currentVersion, $context;
 
-	$currentVersion = '3.0.14';
+	$currentVersion = '4.0';
 
 	if (empty($modSettings['down_url']))
 		$modSettings['down_url'] = $boardurl . '/downloads/';
@@ -80,29 +80,31 @@ function DownloadsMain()
 	   loadtemplate('Downloads2.1');
         $context['downloads21beta'] = true;
         $context['show_bbc'] = 1;
-
-
-
-			$modSettings['disableQueryCheck'] = 1;
-			$smcFunc['db_query']('', "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
-			$modSettings['disableQueryCheck'] = 0;
+        $context['html_headers'] .= '<style>
+.downloads-drop-zone { border: 2px dashed #ccc; border-radius: 6px; padding: 24px 16px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; background: #f8f9fa; margin-bottom: 4px; }
+.downloads-drop-zone:hover, .downloads-drop-zone.dragover { border-color: #5ba4cf; background: #edf4fa; }
+.downloads-drop-zone input[type="file"] { display: none; }
+.downloads-drop-zone .drop-icon { font-size: 2em; color: #aaa; display: block; margin-bottom: 6px; }
+.downloads-drop-zone .drop-text { color: #888; font-size: 0.9em; }
+.downloads-drop-zone .drop-text a { color: #5ba4cf; text-decoration: underline; cursor: pointer; }
+.downloads-drop-zone .drop-preview { margin-top: 10px; font-size: 0.85em; color: #555; }
+.downloads-drop-zone .drop-preview img { max-width: 120px; max-height: 120px; border-radius: 4px; margin-top: 6px; display: block; margin-left: auto; margin-right: auto; }
+.downloads_form tr.windowbg:hover { background: var(--row-bg) !important; }
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+	var rows = document.querySelectorAll(".downloads_form tr.windowbg");
+	for (var i = 0; i < rows.length; i++) {
+		rows[i].style.setProperty("--row-bg", window.getComputedStyle(rows[i]).backgroundColor);
+	}
+});
+</script>';
 
 
     }
     else
     {
         loadtemplate('Downloads2');
-
-
- 	if (!empty($modSettings['smfhacks_sqlmode']))
-	{
-		$modSettings['disableQueryCheck'] = 1;
-		$smcFunc['db_query']('', "SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
-		$modSettings['disableQueryCheck'] = 0;
-
-	}
-
-
 
 	}
     TopDownloadTabs();
@@ -223,12 +225,15 @@ function Downloads_MainView()
 		Downloads_GetCatPermission($cat,'view');
 
 		// Get category name used for the page title
-		$dbresult1 = $smcFunc['db_query']('', "
+		$dbresult1 = $smcFunc['db_query']('', '
 		SELECT
 			ID_CAT, title, roworder, description, image,
 			disablerating, orderby, sortby,ID_PARENT
 		FROM {db_prefix}down_cat
-		WHERE ID_CAT = $cat LIMIT 1");
+		WHERE ID_CAT = {int:cat} LIMIT 1',
+		array(
+			'cat' => $cat,
+		));
 		$row1 = $smcFunc['db_fetch_assoc']($dbresult1);
 
 		if (empty($row1['ID_CAT']))
@@ -238,7 +243,7 @@ function Downloads_MainView()
 		$context['downloads_sortby'] = $row1['sortby'];
 		$context['downloads_orderby'] = $row1['orderby'];
 		$context['downloads_cat_norate'] = $row1['disablerating'];
-		if ($context['downloads_cat_norate'] == '')
+		if (empty($context['downloads_cat_norate']))
 			$context['downloads_cat_norate'] = 0;
 
 		$smcFunc['db_free_result']($dbresult1);
@@ -258,7 +263,7 @@ function Downloads_MainView()
 		$total = Downloads_GetTotalByCATID($cat);
 
 
-		$context['start'] = (int) $_REQUEST['start'];
+		$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 		$context['downloads_total'] = $total;
 
@@ -361,16 +366,20 @@ function Downloads_MainView()
 
 
 		// Show the downloads
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			p.ID_FILE, p.totalratings, p.rating, p.commenttotal,
 		 	p.filesize, p.views, p.title, p.id_member, m.real_name,
 		 	 p.date, p.description, p.totaldownloads
 		FROM {db_prefix}down_file as p
 			LEFT JOIN {db_prefix}members AS m ON (p.id_member = m.id_member)
-		WHERE  p.ID_CAT = $cat AND p.approved = 1
-		ORDER BY $sortby $orderby
-		LIMIT $context[start]," . $modSettings['down_set_files_per_page']);
+		WHERE  p.ID_CAT = {int:cat} AND p.approved = 1
+		ORDER BY ' . $sortby . ' ' . $orderby . '
+		LIMIT {int:start},' . $modSettings['down_set_files_per_page'],
+		array(
+			'cat' => $cat,
+			'start' => $context['start'],
+		));
 		$context['downloads_files'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -413,14 +422,18 @@ function Downloads_MainView()
 				$whoID = (string) $cat;
 
 				// Search for members who have this downloads id set in their GET data.
-				$request = $smcFunc['db_query']('', "
+				$request = $smcFunc['db_query']('', '
 					SELECT
 						lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online,
 						mg.online_color, mg.ID_GROUP, mg.group_name
 					FROM {db_prefix}log_online AS lo
 						LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = lo.id_member)
 						LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))
-					WHERE INSTR(lo.url, 's:9:\"downloads\";s:3:\"cat\";s:" . strlen($whoID ) .":\"$cat\";') OR lo.session = '" . ($user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id()) . "'");
+					WHERE INSTR(lo.url, {string:url_match}) OR lo.session = {string:session}',
+				array(
+					'url_match' => 's:9:"downloads";s:3:"cat";s:' . strlen($whoID) . ':"' . $cat . '";',
+					'session' => $user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id(),
+				));
 				while ($row = $smcFunc['db_fetch_assoc']($request))
 				{
 					if (empty($row['id_member']))
@@ -469,12 +482,15 @@ function Downloads_MainView()
 	{
 		$context['page_title'] = $mbname . ' - ' . $txt['downloads_text_title'];
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.title, p.view, c.roworder, c.description, c.image, c.filename, c.redirect
 	FROM {db_prefix}down_cat AS c
-	LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = $groupid AND c.ID_CAT = p.ID_CAT)
-	WHERE c.ID_PARENT = 0 ORDER BY c.roworder ASC");
+	LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = {int:groupid} AND c.ID_CAT = p.ID_CAT)
+	WHERE c.ID_PARENT = 0 ORDER BY c.roworder ASC',
+	array(
+		'groupid' => $groupid,
+	));
 	$context['downloads_cats'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -494,41 +510,45 @@ function Downloads_MainView()
 
 
 		// Downloads waiting for approval
-		$dbresult3 = $smcFunc['db_query']('', "
+		$dbresult3 = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) as totalfiles
 		FROM {db_prefix}down_file
-		WHERE approved = 0");
+		WHERE approved = 0',
+		array());
 		$row2 = $smcFunc['db_fetch_assoc']($dbresult3);
 		$totalfiles = $row2['totalfiles'];
 		$smcFunc['db_free_result']($dbresult3);
 		$context['downloads_waitapproval'] = $totalfiles;
 		// Reported Downloads
-		$dbresult4 = $smcFunc['db_query']('', "
+		$dbresult4 = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) as totalreport
-		FROM {db_prefix}down_report");
+		FROM {db_prefix}down_report',
+		array());
 		$row2 = $smcFunc['db_fetch_assoc']($dbresult4);
 		$totalreport = $row2['totalreport'];
 		$smcFunc['db_free_result']($dbresult4);
 		$context['downloads_totalreport'] = $totalreport;
 
 		// Total Comments Rating for Approval
-		$dbresult5 = $smcFunc['db_query']('', "
+		$dbresult5 = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) as totalcom
 		FROM {db_prefix}down_comment
-		WHERE approved = 0");
+		WHERE approved = 0',
+		array());
 		$row2 = $smcFunc['db_fetch_assoc']($dbresult5);
 		$totalcomments = $row2['totalcom'];
 		$smcFunc['db_free_result']($dbresult5);
 		$context['downloads_totalcom'] = $totalcomments;
 
 		// Total reported Comments
-		$dbresult6 = $smcFunc['db_query']('', "
+		$dbresult6 = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) as totalcreport
-		FROM {db_prefix}down_creport");
+		FROM {db_prefix}down_creport',
+		array());
 		$row2 = $smcFunc['db_fetch_assoc']($dbresult6);
 		$totalcomments = $row2['totalcreport'];
 		$smcFunc['db_free_result']($dbresult6);
@@ -547,20 +567,22 @@ function Downloads_AddCategory()
 
 	// Show the boards where the user can select to post in.
 	$context['downloads_boards'] = array('');
-	$request = $smcFunc['db_query']('', "
+	$request = $smcFunc['db_query']('', '
 	SELECT
 		b.ID_BOARD, b.name AS bName, c.name AS cName
 	FROM {db_prefix}boards AS b, {db_prefix}categories AS c
-	WHERE b.ID_CAT = c.ID_CAT ORDER BY c.cat_order, b.board_order");
+	WHERE b.ID_CAT = c.ID_CAT ORDER BY c.cat_order, b.board_order',
+	array());
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$context['downloads_boards'][$row['ID_BOARD']] = $row['cName'] . ' - ' . $row['bName'];
 	$smcFunc['db_free_result']($request);
 
-	 $dbresult = $smcFunc['db_query']('', "
+	 $dbresult = $smcFunc['db_query']('', '
 	 SELECT
 	 	c.ID_CAT, c.title,c.roworder
 	 FROM {db_prefix}down_cat AS c
-	 ORDER BY c.roworder ASC");
+	 ORDER BY c.roworder ASC',
+	 array());
 	$context['downloads_cat'] = array();
 	 while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -594,11 +616,12 @@ function Downloads_AddCategory2()
 	global $txt, $sourcedir, $modSettings, $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	// Get the category information and clean the input for bad stuff
-	$title = $smcFunc['htmlspecialchars']($_REQUEST['title'],ENT_QUOTES);
-	$description = $smcFunc['htmlspecialchars']($_REQUEST['description'],ENT_QUOTES);
-	$image =  htmlspecialchars($_REQUEST['image'],ENT_QUOTES);
+	$title = $_REQUEST['title'];
+	$description = $_REQUEST['description'];
+	$image = $_REQUEST['image'];
 	$boardselect = (int) $_REQUEST['boardselect'];
 	$parent = (int) $_REQUEST['parent'];
 
@@ -684,12 +707,15 @@ function Downloads_AddCategory2()
 		}
 
 	// Do the order
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		MAX(roworder) as cat_order
 	FROM {db_prefix}down_cat
-	WHERE ID_PARENT = $parent
-	ORDER BY roworder DESC");
+	WHERE ID_PARENT = {int:parent}
+	ORDER BY roworder DESC',
+	array(
+		'parent' => $parent,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	if ($smcFunc['db_affected_rows']() == 0)
@@ -699,18 +725,29 @@ function Downloads_AddCategory2()
 	$order++;
 
 	// Insert the category
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_cat
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}down_cat
 			(title, description,roworder,image,ID_BOARD,ID_PARENT,disablerating,locktopic,sortby,orderby)
-		VALUES ('$title', '$description',$order,'$image',$boardselect,$parent,$disablerating,$locktopic,'$sortby','$orderby')");
+		VALUES ({string:title}, {string:description},{int:cat_order},{string:image},{int:boardselect},{int:parent},{int:disablerating},{int:locktopic},{string:sortby},{string:orderby})',
+		array(
+			'title' => $title,
+			'description' => $description,
+			'cat_order' => $order,
+			'image' => $image,
+			'boardselect' => $boardselect,
+			'parent' => $parent,
+			'disablerating' => $disablerating,
+			'locktopic' => $locktopic,
+			'sortby' => $sortby,
+			'orderby' => $orderby,
+		));
 	$smcFunc['db_free_result']($dbresult);
 
 	// Get the Category ID
 	$cat_id = $smcFunc['db_insert_id']('{db_prefix}down_cat', 'id_cat');
 
 
-	$testGD = get_extension_funcs('gd');
-	$gd2 = in_array('imagecreatetruecolor', $testGD) && function_exists('imagecreatetruecolor');
-	unset($testGD);
+	$gd2 = function_exists('imagecreatetruecolor');
 
 	// Upload Category image File
 	if (isset($_FILES['picture']['name']) && $_FILES['picture']['name'] != '')
@@ -757,8 +794,13 @@ function Downloads_AddCategory2()
 		@chmod($modSettings['down_path'] . 'catimgs/' . $filename, 0644);
 
 		// Update the filename for the category
-		$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET filename = '$filename' WHERE ID_CAT = $cat_id LIMIT 1");
+		$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_cat
+		SET filename = {string:filename} WHERE ID_CAT = {int:cat_id} LIMIT 1',
+		array(
+			'filename' => $filename,
+			'cat_id' => $cat_id,
+		));
 
 
 	}
@@ -783,20 +825,22 @@ function Downloads_EditCategory()
 		fatal_error($txt['downloads_error_no_cat']);
 
 	$context['downloads_boards'] = array('');
-	$request = $smcFunc['db_query']('', "
+	$request = $smcFunc['db_query']('', '
 	SELECT
 		b.ID_BOARD, b.name AS bName, c.name AS cName
 	FROM {db_prefix}boards AS b, {db_prefix}categories AS c
-	WHERE b.ID_CAT = c.ID_CAT ORDER BY c.cat_order, b.board_order");
+	WHERE b.ID_CAT = c.ID_CAT ORDER BY c.cat_order, b.board_order',
+	array());
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$context['downloads_boards'][$row['ID_BOARD']] = $row['cName'] . ' - ' . $row['bName'];
 	$smcFunc['db_free_result']($request);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, title,roworder
 	FROM {db_prefix}down_cat
-	ORDER BY roworder ASC");
+	ORDER BY roworder ASC',
+	array());
 	$context['downloads_cat'] = array();
 	 while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -808,12 +852,15 @@ function Downloads_EditCategory()
 		}
 	$smcFunc['db_free_result']($dbresult);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, title, image, filename, description,ID_BOARD,
 		ID_PARENT,disablerating, redirect, showpostlink, locktopic, sortby, orderby
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $cat LIMIT 1");
+	WHERE ID_CAT = {int:cat} LIMIT 1',
+	array(
+		'cat' => $cat,
+	));
 
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 			$context['down_catinfo'] = array(
@@ -837,12 +884,15 @@ function Downloads_EditCategory()
 			fatal_error($txt['downloads_error_no_cat'],false);
 
 	// Get all the custom fields
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		title, defaultvalue, is_required, ID_CUSTOM
 	FROM  {db_prefix}down_custom_field
-	WHERE ID_CAT = " . $context['down_catinfo']['ID_CAT'] . "
-	ORDER BY roworder desc");
+	WHERE ID_CAT = {int:cat}
+	ORDER BY roworder desc',
+	array(
+		'cat' => $context['down_catinfo']['ID_CAT'],
+	));
 	$context['down_custom'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
@@ -874,12 +924,13 @@ function Downloads_EditCategory2()
 	global $txt, $modSettings, $sourcedir, $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	// Clean the input
-	$title = $smcFunc['htmlspecialchars']($_REQUEST['title'], ENT_QUOTES);
-	$description = $smcFunc['htmlspecialchars']($_REQUEST['description'], ENT_QUOTES);
+	$title = $_REQUEST['title'];
+	$description = $_REQUEST['description'];
 	$catid = (int) $_REQUEST['catid'];
-	$image = htmlspecialchars($_REQUEST['image'], ENT_QUOTES);
+	$image = $_REQUEST['image'];
 	$parent = (int) $_REQUEST['parent'];
 
 	$boardselect = (int) $_REQUEST['boardselect'];
@@ -963,16 +1014,27 @@ function Downloads_EditCategory2()
 		}
 
 	// Update the category
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET title = '$title', image = '$image', description = '$description', ID_BOARD = $boardselect,
-		ID_PARENT = $parent, disablerating = $disablerating, locktopic = $locktopic,
-		orderby = '$orderby', sortby = '$sortby'
-		WHERE ID_CAT = $catid LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_cat
+		SET title = {string:title}, image = {string:image}, description = {string:description}, ID_BOARD = {int:boardselect},
+		ID_PARENT = {int:parent}, disablerating = {int:disablerating}, locktopic = {int:locktopic},
+		orderby = {string:orderby}, sortby = {string:sortby}
+		WHERE ID_CAT = {int:catid} LIMIT 1',
+		array(
+			'title' => $title,
+			'image' => $image,
+			'description' => $description,
+			'boardselect' => $boardselect,
+			'parent' => $parent,
+			'disablerating' => $disablerating,
+			'locktopic' => $locktopic,
+			'orderby' => $orderby,
+			'sortby' => $sortby,
+			'catid' => $catid,
+		));
 
 
-	$testGD = get_extension_funcs('gd');
-	$gd2 = in_array('imagecreatetruecolor', $testGD) && function_exists('imagecreatetruecolor');
-	unset($testGD);
+	$gd2 = function_exists('imagecreatetruecolor');
 
 	// Upload Category image File
 	if (isset($_FILES['picture']['name']) && $_FILES['picture']['name'] != '')
@@ -1018,8 +1080,13 @@ function Downloads_EditCategory2()
 
 
 		// Update the filename for the category
-		$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET filename = '$filename' WHERE ID_CAT = $catid LIMIT 1");
+		$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_cat
+		SET filename = {string:filename} WHERE ID_CAT = {int:catid} LIMIT 1',
+		array(
+			'filename' => $filename,
+			'catid' => $catid,
+		));
 
 
 	}
@@ -1044,21 +1111,27 @@ function Downloads_DeleteCategory()
 	$context['catid'] = $catid;
 
 	// Lookup the category to get its name
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, title
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $catid");
+	WHERE ID_CAT = {int:catid}',
+	array(
+		'catid' => $catid,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['cat_title'] = $row['title'];
 	$smcFunc['db_free_result']($dbresult);
 
 	// Get total files in the category
-	$dbresult2 = $smcFunc['db_query']('', "
+	$dbresult2 = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*) as totalfiles
 	FROM {db_prefix}down_file
-	WHERE ID_CAT = $catid AND approved = 1");
+	WHERE ID_CAT = {int:catid} AND approved = 1',
+	array(
+		'catid' => $catid,
+	));
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult2);
 	$context['totalfiles'] = $row2['totalfiles'];
 	$smcFunc['db_free_result']($dbresult2);
@@ -1073,35 +1146,45 @@ function Downloads_DeleteCategory2()
 	global $modSettings, $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	$catid = (int) $_REQUEST['catid'];
 	// Increase the max time just in case it takes a long to delete the category and files.
 	@ini_set('max_execution_time', '300');
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE, filename
 	FROM {db_prefix}down_file
-	WHERE ID_CAT = $catid");
+	WHERE ID_CAT = {int:catid}',
+	array(
+		'catid' => $catid,
+	));
 
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		// Delete Files
 		// Delete the download
 		@unlink($modSettings['down_path'] . $row['filename']);
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_comment WHERE ID_FILE  = " . $row['ID_FILE']);
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_rating WHERE ID_FILE  = " . $row['ID_FILE']);
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_report WHERE ID_FILE  = " . $row['ID_FILE']);
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_creport WHERE ID_FILE  = " . $row['ID_FILE']);
+		$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_comment WHERE ID_FILE = {int:file_id}', array('file_id' => $row['ID_FILE'],));
+		$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_rating WHERE ID_FILE = {int:file_id}', array('file_id' => $row['ID_FILE'],));
+		$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_report WHERE ID_FILE = {int:file_id}', array('file_id' => $row['ID_FILE'],));
+		$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_creport WHERE ID_FILE = {int:file_id}', array('file_id' => $row['ID_FILE'],));
 	}
 	$smcFunc['db_free_result']($dbresult);
 	// Update Category parent
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat SET ID_PARENT = 0 WHERE ID_PARENT = $catid");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_cat SET ID_PARENT = 0 WHERE ID_PARENT = {int:catid}',
+		array('catid' => $catid,));
 
 	// Delete All Files
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_file WHERE ID_CAT = $catid");
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}down_file WHERE ID_CAT = {int:catid}',
+		array('catid' => $catid,));
 
 	// Finally delete the category
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_cat WHERE ID_CAT = $catid LIMIT 1");
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}down_cat WHERE ID_CAT = {int:catid} LIMIT 1',
+		array('catid' => $catid,));
 
 	// Last Recount the totals
 	Downloads_RecountFileQuotaTotals(false);
@@ -1128,7 +1211,7 @@ function Downloads_ViewDownload()
 
 
 	// Get the download information
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.totalratings, p.rating, p.allowcomments, p.ID_CAT, p.keywords,
 		p.commenttotal, p.filesize, p.filename, p.orginalfilename, p.fileurl,
@@ -1136,7 +1219,10 @@ function Downloads_ViewDownload()
 	   	c.title CAT_TITLE, c.ID_PARENT, c.disablerating, p.credits, p.totaldownloads,  p.lastdownload
 	FROM ({db_prefix}down_file as p,  {db_prefix}down_cat AS c)
 		LEFT JOIN {db_prefix}members AS m ON  (p.id_member = m.id_member)
-	WHERE p.ID_FILE = $id AND p.ID_CAT = c.ID_CAT LIMIT 1");
+	WHERE p.ID_FILE = {int:id} AND p.ID_CAT = c.ID_CAT LIMIT 1',
+	array(
+		'id' => $id,
+	));
 
 
    	// Check if download exists
@@ -1200,12 +1286,15 @@ function Downloads_ViewDownload()
 
 
 	// Show Custom Fields
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		f.title, d.value
 	FROM  ({db_prefix}down_custom_field as f,{db_prefix}down_custom_field_data as d)
-	WHERE d.ID_CUSTOM = f.ID_CUSTOM AND d.ID_FILE = " . $context['downloads_file']['ID_FILE'] .  "
-	ORDER BY f.roworder desc");
+	WHERE d.ID_CUSTOM = f.ID_CUSTOM AND d.ID_FILE = {int:file_id}
+	ORDER BY f.roworder desc',
+	array(
+		'file_id' => $context['downloads_file']['ID_FILE'],
+	));
 	$context['downloads_custom'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($result))
 	{
@@ -1221,15 +1310,18 @@ function Downloads_ViewDownload()
 	else
 		$commentorder = 'ASC';
 		// Display all user comments
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			c.ID_FILE,  c.ID_COMMENT, c.date, c.comment, c.id_member,
 			c.lastmodified,c.modified_id_member, m.posts, m.real_name, c.approved, md.real_name modmember
 		 FROM {db_prefix}down_comment as c
 		 	LEFT JOIN {db_prefix}members AS m ON (c.id_member = m.id_member)
 		 	LEFT JOIN {db_prefix}members AS md ON (c.modified_id_member = md.id_member)
-		 WHERE c.ID_FILE = " . $context['downloads_file']['ID_FILE'] . " AND c.approved = 1
-		 ORDER BY c.ID_COMMENT $commentorder");
+		 WHERE c.ID_FILE = {int:file_id} AND c.approved = 1
+		 ORDER BY c.ID_COMMENT ' . $commentorder,
+		 array(
+		 	'file_id' => $context['downloads_file']['ID_FILE'],
+		 ));
 
 		$context['comment_count'] =   $smcFunc['db_affected_rows']();
 	$context['downloads_comments'] = array();
@@ -1255,8 +1347,10 @@ function Downloads_ViewDownload()
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
 
 	// Update the number of views.
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-		SET views = views + 1 WHERE ID_FILE = $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_file
+		SET views = views + 1 WHERE ID_FILE = {int:id} LIMIT 1',
+		array('id' => $id,));
 
 
 	$context['sub_template']  = 'view_download';
@@ -1276,14 +1370,18 @@ function Downloads_ViewDownload()
 				$whoID = (string) $id;
 
 				// Search for members who have this download id set in their GET data.
-				$request = $smcFunc['db_query']('', "
+				$request = $smcFunc['db_query']('', '
 					SELECT
 						lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online,
 						mg.online_color, mg.ID_GROUP, mg.group_name
 					FROM {db_prefix}log_online AS lo
 						LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = lo.id_member)
 						LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))
-					WHERE INSTR(lo.url, 's:9:\"downloads\";s:2:\"sa\";s:4:\"view\";s:2:\"id\";s:" . strlen($whoID ) .":\"$id\";') OR lo.session = '" . ($user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id()) . "'");
+					WHERE INSTR(lo.url, {string:url_match}) OR lo.session = {string:session}',
+				array(
+					'url_match' => 's:9:"downloads";s:2:"sa";s:4:"view";s:2:"id";s:' . strlen($whoID) . ':"' . $id . '";',
+					'session' => $user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id(),
+				));
 				while ($row = $smcFunc['db_fetch_assoc']($request))
 				{
 					if (empty($row['id_member']))
@@ -1348,12 +1446,15 @@ function Downloads_AddDownload()
 	else
 		$groupid =  $user_info['groups'][0];
 
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			c.ID_CAT, c.title, p.view, p.addfile
 		FROM {db_prefix}down_cat AS c
-			LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = $groupid AND c.ID_CAT = p.ID_CAT)
-		WHERE c.redirect = 0 ORDER BY c.roworder ASC");
+			LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = {int:groupid} AND c.ID_CAT = p.ID_CAT)
+		WHERE c.redirect = 0 ORDER BY c.roworder ASC',
+		array(
+			'groupid' => $groupid,
+		));
 		if ($smcFunc['db_num_rows']($dbresult) == 0)
 		 	fatal_error($txt['downloads_error_no_catexists'] , false);
 
@@ -1371,11 +1472,14 @@ function Downloads_AddDownload()
 			}
 		$smcFunc['db_free_result']($dbresult);
 
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		title, defaultvalue, is_required, ID_CUSTOM
 	FROM  {db_prefix}down_custom_field
-	WHERE ID_CAT = " . $cat);
+	WHERE ID_CAT = {int:cat}',
+	array(
+		'cat' => $cat,
+	));
 	$context['downloads_custom'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($result))
 	{
@@ -1423,6 +1527,7 @@ function Downloads_AddDownload2()
 	global $txt, $scripturl, $modSettings, $sourcedir, $gd2, $user_info, $smcFunc;
 
 	isAllowedTo('downloads_add');
+	checkSession('post');
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['descript_mode']) && isset($_REQUEST['descript']))
@@ -1442,11 +1547,11 @@ function Downloads_AddDownload2()
 		fatal_error($txt['downloads_write_error'] . $modSettings['down_path']);
 
 
-	$title = $smcFunc['htmlspecialchars']($_REQUEST['title'],ENT_QUOTES);
-	$description = $smcFunc['htmlspecialchars']($_REQUEST['descript'],ENT_QUOTES);
-	$keywords = $smcFunc['htmlspecialchars']($_REQUEST['keywords'],ENT_QUOTES);
+	$title = $_REQUEST['title'];
+	$description = $_REQUEST['descript'];
+	$keywords = $_REQUEST['keywords'];
 	$cat = (int) $_REQUEST['cat'];
-	$fileurl = htmlspecialchars($_REQUEST['fileurl'],ENT_QUOTES);
+	$fileurl = $_REQUEST['fileurl'];
 	$allowcomments = isset($_REQUEST['allowcomments']) ? 1 : 0;
 	$sendemail = isset($_REQUEST['sendemail']) ? 1 : 0;
 	$filesize = 0;
@@ -1464,18 +1569,19 @@ function Downloads_AddDownload2()
 
 	if ($title == '')
 		fatal_error($txt['downloads_error_no_title'],false);
-	if ($cat == '')
+	if (empty($cat))
 		fatal_error($txt['downloads_error_no_cat'],false);
 
 	if ($modSettings['down_set_enable_multifolder'])
 		Downloads_CreateDownloadFolder();
 
 
-		$result = $smcFunc['db_query']('', "
+		$result = $smcFunc['db_query']('', '
 		SELECT
 			f.title, f.is_required, f.ID_CUSTOM
 		FROM  {db_prefix}down_custom_field as f
-		WHERE f.is_required = 1 AND f.ID_CAT = " . $cat);
+		WHERE f.is_required = 1 AND f.ID_CAT = {int:cat}',
+		array('cat' => $cat,));
 		while ($row2 = $smcFunc['db_fetch_assoc']($result))
 		{
 	 		if (!isset($_REQUEST['cus_' . $row2['ID_CUSTOM']]))
@@ -1492,11 +1598,12 @@ function Downloads_AddDownload2()
 
 
 	// Get category infomation
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_BOARD,locktopic
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $cat");
+	WHERE ID_CAT = {int:cat}',
+	array('cat' => $cat,));
 	$rowcat = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -1537,6 +1644,11 @@ function Downloads_AddDownload2()
 		if ($modSettings['down_set_enable_multifolder'])
 			$extrafolder = $modSettings['down_folder_id'] . '/';
 
+		// Validate file extension
+		$blocked_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'pl', 'py', 'cgi', 'asp', 'aspx', 'jsp', 'sh', 'bat', 'exe', 'com', 'htaccess');
+		$file_ext = strtolower(pathinfo($_FILES['download']['name'], PATHINFO_EXTENSION));
+		if (in_array($file_ext, $blocked_extensions))
+			fatal_error('File type not allowed.');
 
 		move_uploaded_file($_FILES['download']['tmp_name'], $modSettings['down_path'] . $extrafolder .  $filename);
 		@chmod($modSettings['down_path'] . $extrafolder .  $filename, 0644);
@@ -1546,9 +1658,16 @@ function Downloads_AddDownload2()
 		$t = time();
 		$file_id = 0;
 
-		$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_file
-							(ID_CAT, filesize,filename, orginalfilename, keywords, title, description,id_member,date,approved,allowcomments,sendemail)
-						VALUES ($cat, $filesize, '" . $extrafolder . $filename . "', '$orginalfilename',   '$keywords','$title', '$description'," . $user_info['id']  . ",$t,$approved, $allowcomments,$sendemail)");
+		$smcFunc['db_query']('', '
+			INSERT INTO {db_prefix}down_file
+				(ID_CAT, filesize,filename, orginalfilename, keywords, title, description,id_member,date,approved,allowcomments,sendemail)
+			VALUES ({int:cat}, {int:filesize}, {string:filename}, {string:orginalfilename}, {string:keywords},{string:title}, {string:description},{int:id_member},{int:t},{int:approved}, {int:allowcomments},{int:sendemail})',
+			array(
+				'cat' => $cat, 'filesize' => $filesize, 'filename' => $extrafolder . $filename,
+				'orginalfilename' => $orginalfilename, 'keywords' => $keywords, 'title' => $title,
+				'description' => $description, 'id_member' => $user_info['id'], 't' => $t,
+				'approved' => $approved, 'allowcomments' => $allowcomments, 'sendemail' => $sendemail,
+			));
 
 		$file_id = $smcFunc['db_insert_id']('{db_prefix}down_file', 'id_file');
 
@@ -1577,9 +1696,15 @@ function Downloads_AddDownload2()
 			$t = time();
 			$file_id = 0;
 
-			$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_file
-								(id_cat, fileurl, filesize, keywords, title, description,id_member,date,approved,allowcomments,sendemail)
-							VALUES ($cat, '$fileurl', '$filesize', '$keywords', '$title', '$description'," . $user_info['id'] . ",$t,$approved, $allowcomments,$sendemail)");
+			$smcFunc['db_query']('', '
+				INSERT INTO {db_prefix}down_file
+					(id_cat, fileurl, filesize, keywords, title, description,id_member,date,approved,allowcomments,sendemail)
+				VALUES ({int:cat}, {string:fileurl}, {int:filesize}, {string:keywords}, {string:title}, {string:description},{int:id_member},{int:t},{int:approved}, {int:allowcomments},{int:sendemail})',
+				array(
+					'cat' => $cat, 'fileurl' => $fileurl, 'filesize' => $filesize, 'keywords' => $keywords,
+					'title' => $title, 'description' => $description, 'id_member' => $user_info['id'],
+					't' => $t, 'approved' => $approved, 'allowcomments' => $allowcomments, 'sendemail' => $sendemail,
+				));
 
 			$file_id = $smcFunc['db_insert_id']('{db_prefix}down_file', 'id_file');
 
@@ -1588,21 +1713,24 @@ function Downloads_AddDownload2()
 	}
 
 					// Check for any custom fields
-					$result = $smcFunc['db_query']('', "
+					$result = $smcFunc['db_query']('', '
 					SELECT
 						f.title, f.is_required, f.ID_CUSTOM
 					FROM  {db_prefix}down_custom_field as f
-					WHERE f.ID_CAT = " . $cat);
+					WHERE f.ID_CAT = {int:cat}',
+					array('cat' => $cat,));
 					while ($row2 = $smcFunc['db_fetch_assoc']($result))
 					{
 						if (isset($_REQUEST['cus_' . $row2['ID_CUSTOM']]))
 						{
 
-							$custom_data = $smcFunc['htmlspecialchars']($_REQUEST['cus_' . $row2['ID_CUSTOM']],ENT_QUOTES);
+							$custom_data = $_REQUEST['cus_' . $row2['ID_CUSTOM']];
 
-							$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_custom_field_data
+							$smcFunc['db_query']('', '
+							INSERT INTO {db_prefix}down_custom_field_data
 							(ID_FILE, ID_CUSTOM, value)
-							VALUES('$file_id', " . $row2['ID_CUSTOM'] . ", '$custom_data')");
+							VALUES({int:file_id}, {int:id_custom}, {string:custom_data})',
+							array('file_id' => $file_id, 'id_custom' => $row2['ID_CUSTOM'], 'custom_data' => $custom_data,));
 						}
 					}
 					$smcFunc['db_free_result']($result);
@@ -1647,7 +1775,12 @@ function Downloads_AddDownload2()
 					$ID_TOPIC = $topicOptions['id'];
 
 					// Update the download with the topic id
-					$smcFunc['db_query']('', "UPDATE {db_prefix}down_file SET ID_TOPIC = $ID_TOPIC WHERE ID_FILE = $file_id LIMIT 1");
+					$smcFunc['db_query']('', '
+					UPDATE {db_prefix}down_file SET ID_TOPIC = {int:topic_id} WHERE ID_FILE = {int:file_id} LIMIT 1',
+					array(
+						'topic_id' => $ID_TOPIC,
+						'file_id' => $file_id,
+					));
 
 
 				}
@@ -1657,10 +1790,14 @@ function Downloads_AddDownload2()
 
 			// Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money + " . $modSettings['down_shop_fileadd'] . "
-				 	WHERE id_member = " . $user_info['id'] . "
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money + ' . $modSettings['down_shop_fileadd'] . '
+				 	WHERE id_member = {int:member_id}
+				 	LIMIT 1',
+				 	array(
+				 		'member_id' => $user_info['id'],
+				 	));
 
 
 		// Redirect to the users files page.
@@ -1687,14 +1824,17 @@ function Downloads_EditDownload()
 			$groupid =  $user_info['groups'][0];
 
 	// Check if the user owns the file or is admin
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.ID_FILE, p.allowcomments, p.ID_CAT, p.keywords, p.commenttotal, p.filesize,
     	p.filename, p.approved, p.views, p.title, p.id_member,
       	m.real_name, p.date, p.description, p.sendemail, p.fileurl,p.orginalfilename
     FROM {db_prefix}down_file as p
        LEFT JOIN {db_prefix}members AS m ON (m.id_member = p.id_member)
-     WHERE p.ID_FILE = $id  LIMIT 1");
+     WHERE p.ID_FILE = {int:id}  LIMIT 1',
+     array(
+     	'id' => $id,
+     ));
 	if ($smcFunc['db_affected_rows']()== 0)
     	fatal_error($txt['downloads_error_no_downloadexist'],false);
     $row = $smcFunc['db_fetch_assoc']($dbresult);
@@ -1742,12 +1882,16 @@ function Downloads_EditDownload()
 	$context['post_box_name'] = $editorOptions['id'];
 
 	// Custom Fields
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		f.title, f.is_required, f.ID_CUSTOM, d.value
 	FROM  {db_prefix}down_custom_field as f
 		LEFT JOIN {db_prefix}down_custom_field_data as d ON (d.ID_CUSTOM = f.ID_CUSTOM)
-	WHERE ID_FILE = " . $context['downloads_file']['ID_FILE'] . " AND ID_CAT = " . $context['downloads_file']['ID_CAT']);
+	WHERE ID_FILE = {int:file_id} AND ID_CAT = {int:cat_id}',
+	array(
+		'file_id' => $context['downloads_file']['ID_FILE'],
+		'cat_id' => $context['downloads_file']['ID_CAT'],
+	));
 	$context['downloads_custom'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($result))
 	{
@@ -1766,12 +1910,15 @@ function Downloads_EditDownload()
 	{
 		// Get the category information
 
-		 	$dbresult = $smcFunc['db_query']('', "
+		 	$dbresult = $smcFunc['db_query']('', '
 		 	SELECT
 		 		c.ID_CAT, c.title, p.view, p.addfile
 		 	FROM {db_prefix}down_cat AS c
-		 		LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = $groupid AND c.ID_CAT = p.ID_CAT)
-		 	WHERE c.redirect = 0 ORDER BY c.roworder ASC");
+		 		LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = {int:groupid} AND c.ID_CAT = p.ID_CAT)
+		 	WHERE c.redirect = 0 ORDER BY c.roworder ASC',
+		 	array(
+		 		'groupid' => $groupid,
+		 	));
 			$context['downloads_cat'] = array();
 		 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 			{
@@ -1805,6 +1952,7 @@ function Downloads_EditDownload2()
 	global $txt, $modSettings, $sourcedir, $smcFunc, $user_info;
 
 	is_not_guest();
+	checkSession('post');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
@@ -1823,11 +1971,12 @@ function Downloads_EditDownload2()
 	}
 
 	// Check the user permissions
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	id_member,ID_CAT, filename,filesize
     FROM {db_prefix}down_file
-    WHERE ID_FILE = $id LIMIT 1");
+    WHERE ID_FILE = {int:id} LIMIT 1',
+    array('id' => $id,));
     $row = $smcFunc['db_fetch_assoc']($dbresult);
 	$memID = $row['id_member'];
 	$oldfilesize = $row['filesize'];
@@ -1843,13 +1992,13 @@ function Downloads_EditDownload2()
 		if (!is_writable($modSettings['down_path']))
 			fatal_error($txt['downloads_write_error'] . $modSettings['down_path']);
 
-		$title = $smcFunc['htmlspecialchars']($_REQUEST['title'],ENT_QUOTES);
-		$description = $smcFunc['htmlspecialchars']($_REQUEST['descript'],ENT_QUOTES);
-		$keywords = $smcFunc['htmlspecialchars']($_REQUEST['keywords'],ENT_QUOTES);
+		$title = $_REQUEST['title'];
+		$description = $_REQUEST['descript'];
+		$keywords = $_REQUEST['keywords'];
 		$cat = (int) $_REQUEST['cat'];
 		$allowcomments = isset($_REQUEST['allowcomments']) ? 1 : 0;
 		$sendemail = isset($_REQUEST['sendemail']) ? 1 : 0;
-		$fileurl = htmlspecialchars($_REQUEST['fileurl'],ENT_QUOTES);
+		$fileurl = $_REQUEST['fileurl'];
 		$filesize = 0;
 
 		// Check if downloads are auto approved
@@ -1861,17 +2010,20 @@ function Downloads_EditDownload2()
 
 		if ($title == '')
 			fatal_error($txt['downloads_error_no_title'],false);
-		if ($cat == '')
+		if (empty($cat))
 			fatal_error($txt['downloads_error_no_cat'],false);
 
 
 
 		// Check for any required custom fields
-		$result = $smcFunc['db_query']('', "
+		$result = $smcFunc['db_query']('', '
 		SELECT
 			f.title, f.is_required, f.ID_CUSTOM
 		FROM  {db_prefix}down_custom_field as f
-		WHERE f.is_required = 1 AND f.ID_CAT = " . $cat);
+		WHERE f.is_required = 1 AND f.ID_CAT = {int:cat}',
+		array(
+			'cat' => $cat,
+		));
 		while ($row2 = $smcFunc['db_fetch_assoc']($result))
 		{
 	 		if (!isset($_REQUEST['cus_' . $row2['ID_CUSTOM']]))
@@ -1920,6 +2072,12 @@ function Downloads_EditDownload2()
 				$extrafolder = $modSettings['down_folder_id'] . '/';
 
 
+			// Validate file extension
+			$blocked_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'pl', 'py', 'cgi', 'asp', 'aspx', 'jsp', 'sh', 'bat', 'exe', 'com', 'htaccess');
+			$file_ext = strtolower(pathinfo($_FILES['download']['name'], PATHINFO_EXTENSION));
+			if (in_array($file_ext, $blocked_extensions))
+				fatal_error('File type not allowed.');
+
 			// Filename Member Id + Day + Month + Year + 24 hour, Minute Seconds
 			$filename = $user_info['id'] . '_' . date('d_m_y_g_i_s');
 			move_uploaded_file($_FILES['download']['tmp_name'], $modSettings['down_path'] . $extrafolder . $filename);
@@ -1929,11 +2087,26 @@ function Downloads_EditDownload2()
 			// Update the Database entry
 			$t = time();
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-					SET ID_CAT = $cat, filesize = $filesize, filename = '" . $extrafolder . $filename . "', approved = $approved,
-					 date =  $t, title = '$title', description = '$description', keywords = '$keywords',
-					  allowcomments = $allowcomments, sendemail = $sendemail, orginalfilename = '$orginalfilename'
-					  WHERE ID_FILE = $id LIMIT 1");
+			$smcFunc['db_query']('', '
+					UPDATE {db_prefix}down_file
+					SET ID_CAT = {int:cat}, filesize = {int:filesize}, filename = {string:filename}, approved = {int:approved},
+					 date = {int:date}, title = {string:title}, description = {string:description}, keywords = {string:keywords},
+					  allowcomments = {int:allowcomments}, sendemail = {int:sendemail}, orginalfilename = {string:orginalfilename}
+					  WHERE ID_FILE = {int:id} LIMIT 1',
+					  array(
+					  	'cat' => $cat,
+					  	'filesize' => $filesize,
+					  	'filename' => $extrafolder . $filename,
+					  	'approved' => $approved,
+					  	'date' => $t,
+					  	'title' => $title,
+					  	'description' => $description,
+					  	'keywords' => $keywords,
+					  	'allowcomments' => $allowcomments,
+					  	'sendemail' => $sendemail,
+					  	'orginalfilename' => $orginalfilename,
+					  	'id' => $id,
+					  ));
 
 			Downloads_UpdateUserFileSizeTable($memID,$oldfilesize * -1);
 			Downloads_UpdateUserFileSizeTable($memID,$filesize);
@@ -1953,15 +2126,16 @@ function Downloads_EditDownload2()
 						$pic_postername = str_replace('"','', $_REQUEST['pic_postername']);
 						$pic_postername = str_replace("'",'', $pic_postername);
 						$pic_postername = str_replace('\\','', $pic_postername);
-						$pic_postername = $smcFunc['htmlspecialchars']($pic_postername, ENT_QUOTES);
-
 						$memid = 0;
 
-						$dbresult = $smcFunc['db_query']('', "
+						$dbresult = $smcFunc['db_query']('', '
 						SELECT
 							real_name, id_member
 						FROM {db_prefix}members
-						WHERE real_name = '$pic_postername' OR member_name = '$pic_postername'  LIMIT 1");
+						WHERE real_name = {string:postername} OR member_name = {string:postername}  LIMIT 1',
+						array(
+							'postername' => $pic_postername,
+						));
 						$row = $smcFunc['db_fetch_assoc']($dbresult);
 						$smcFunc['db_free_result']($dbresult);
 
@@ -1970,8 +2144,13 @@ function Downloads_EditDownload2()
 							// Member found update the file owner
 
 							$memid = $row['id_member'];
-							$smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-							SET id_member = $memid WHERE ID_FILE = $id LIMIT 1");
+							$smcFunc['db_query']('', '
+							UPDATE {db_prefix}down_file
+							SET id_member = {int:memid} WHERE ID_FILE = {int:id} LIMIT 1',
+							array(
+								'memid' => $memid,
+								'id' => $id,
+							));
 
 						}
 
@@ -1994,20 +2173,34 @@ function Downloads_EditDownload2()
 
 				$filesize = Downloads_getRemoteFilesize($fileurl);
 
-				$smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-				SET
-				filesize = '$filesize'
-
-				WHERE ID_FILE = $id LIMIT 1");
+				$smcFunc['db_query']('', '
+				UPDATE {db_prefix}down_file
+				SET filesize = {int:filesize}
+				WHERE ID_FILE = {int:id} LIMIT 1',
+				array(
+					'filesize' => $filesize,
+					'id' => $id,
+				));
 			}
 
 
-				$smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-				SET ID_CAT = $cat, title = '$title', description = '$description', keywords = '$keywords',
-				allowcomments = $allowcomments, sendemail = $sendemail, approved = $approved,
-				fileurl = '$fileurl'
-
-				WHERE ID_FILE = $id LIMIT 1");
+				$smcFunc['db_query']('', '
+				UPDATE {db_prefix}down_file
+				SET ID_CAT = {int:cat}, title = {string:title}, description = {string:description}, keywords = {string:keywords},
+				allowcomments = {int:allowcomments}, sendemail = {int:sendemail}, approved = {int:approved},
+				fileurl = {string:fileurl}
+				WHERE ID_FILE = {int:id} LIMIT 1',
+				array(
+					'cat' => $cat,
+					'title' => $title,
+					'description' => $description,
+					'keywords' => $keywords,
+					'allowcomments' => $allowcomments,
+					'sendemail' => $sendemail,
+					'approved' => $approved,
+					'fileurl' => $fileurl,
+					'id' => $id,
+				));
 
 
 					// Update the file totals
@@ -2024,15 +2217,16 @@ function Downloads_EditDownload2()
 						$pic_postername = str_replace('"','', $_REQUEST['pic_postername']);
 						$pic_postername = str_replace("'",'', $pic_postername);
 						$pic_postername = str_replace('\\','', $pic_postername);
-						$pic_postername = $smcFunc['htmlspecialchars']($pic_postername, ENT_QUOTES);
-
 						$memid = 0;
 
-						$dbresult = $smcFunc['db_query']('', "
+						$dbresult = $smcFunc['db_query']('', '
 						SELECT
 							real_name, id_member
 						FROM {db_prefix}members
-						WHERE real_name = '$pic_postername' OR member_name = '$pic_postername'  LIMIT 1");
+						WHERE real_name = {string:postername} OR member_name = {string:postername}  LIMIT 1',
+						array(
+							'postername' => $pic_postername,
+						));
 						$row = $smcFunc['db_fetch_assoc']($dbresult);
 						$smcFunc['db_free_result']($dbresult);
 
@@ -2040,8 +2234,13 @@ function Downloads_EditDownload2()
 						{
 							// Member found update the file owner
 							$memid = $row['id_member'];
-							$smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-							SET id_member = $memid WHERE ID_FILE = $id LIMIT 1");
+							$smcFunc['db_query']('', '
+							UPDATE {db_prefix}down_file
+							SET id_member = {int:memid} WHERE ID_FILE = {int:id} LIMIT 1',
+							array(
+								'memid' => $memid,
+								'id' => $id,
+							));
 
 
 						}
@@ -2052,24 +2251,37 @@ function Downloads_EditDownload2()
 
 					// Check for any custom fields
 
-					$smcFunc['db_query']('', "DELETE FROM  {db_prefix}down_custom_field_data
-							WHERE ID_FILE = " . $id);
+					$smcFunc['db_query']('', '
+					DELETE FROM  {db_prefix}down_custom_field_data
+					WHERE ID_FILE = {int:id}',
+					array(
+						'id' => $id,
+					));
 
-					$result = $smcFunc['db_query']('', "
+					$result = $smcFunc['db_query']('', '
 					SELECT
 						f.title, f.is_required, f.ID_CUSTOM
 					FROM  {db_prefix}down_custom_field as f
-					WHERE f.ID_CAT = " . $cat);
+					WHERE f.ID_CAT = {int:cat}',
+					array(
+						'cat' => $cat,
+					));
 					while ($row2 = $smcFunc['db_fetch_assoc']($result))
 					{
 						if (isset($_REQUEST['cus_' . $row2['ID_CUSTOM']]))
 						{
 
-							$custom_data = $smcFunc['htmlspecialchars']($_REQUEST['cus_' . $row2['ID_CUSTOM']],ENT_QUOTES);
+							$custom_data = $_REQUEST['cus_' . $row2['ID_CUSTOM']];
 
-							$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_custom_field_data
+							$smcFunc['db_query']('', '
+							INSERT INTO {db_prefix}down_custom_field_data
 							(ID_FILE, ID_CUSTOM, value)
-							VALUES('$id', " . $row2['ID_CUSTOM'] . ", '$custom_data')");
+							VALUES({int:id}, {int:custom_id}, {string:custom_data})',
+							array(
+								'id' => $id,
+								'custom_id' => $row2['ID_CUSTOM'],
+								'custom_data' => $custom_data,
+							));
 						}
 					}
 					$smcFunc['db_free_result']($result);
@@ -2098,13 +2310,16 @@ function Downloads_DeleteDownload()
 		fatal_error($txt['downloads_error_no_file_selected']);
 
 	// Check if the user owns the download or is admin
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.ID_FILE, p.fileurl, p.allowcomments, p.ID_CAT, p.keywords, p.commenttotal, p.totaldownloads,
      	p.filesize, p.filename, p.approved, p.views, p.title, p.id_member, p.date, m.real_name, p.description
     FROM {db_prefix}down_file as p
     LEFT JOIN {db_prefix}members AS m ON (p.id_member = m.id_member)
-    WHERE ID_FILE = $id  LIMIT 1");
+    WHERE ID_FILE = {int:id}  LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	if ($smcFunc['db_affected_rows']()== 0)
     	fatal_error($txt['downloads_error_no_downloadexist'],false);
     $row = $smcFunc['db_fetch_assoc']($dbresult);
@@ -2146,17 +2361,22 @@ function Downloads_DeleteDownload2()
 {
 	global $txt, $smcFunc, $user_info;
 
+	checkSession('post');
+
 	$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_file_selected']);
 
 	// Check if the user owns the download or is admin
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.ID_FILE, p.ID_CAT, p.id_member
     FROM {db_prefix}down_file as p
-    WHERE ID_FILE = $id LIMIT 1");
+    WHERE ID_FILE = {int:id} LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	if (empty($row['ID_FILE']))
@@ -2191,11 +2411,14 @@ function Downloads_DeleteFileByID($id)
 
 	require_once($sourcedir . '/RemoveTopic.php');
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.ID_FILE,  p.ID_CAT, p.filesize, p.filename,  p.id_member, p.ID_TOPIC
     FROM {db_prefix}down_file as p
-    WHERE ID_FILE = $id LIMIT 1");
+    WHERE ID_FILE = {int:id} LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$oldfilesize = $row['filesize'];
 	$memID = $row['id_member'];
@@ -2217,21 +2440,25 @@ function Downloads_DeleteFileByID($id)
 
 	// Delete all the download related db entries
 
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_comment WHERE ID_FILE  = $id");
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_rating WHERE ID_FILE  = $id");
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_report WHERE ID_FILE  = $id");
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_creport WHERE ID_FILE  = $id");
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_custom_field_data WHERE ID_FILE  = $id");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_comment WHERE ID_FILE = {int:id}', array('id' => $id,));
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_rating WHERE ID_FILE = {int:id}', array('id' => $id,));
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_report WHERE ID_FILE = {int:id}', array('id' => $id,));
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_creport WHERE ID_FILE = {int:id}', array('id' => $id,));
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_custom_field_data WHERE ID_FILE = {int:id}', array('id' => $id,));
 
 	// Delete the download
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_file WHERE ID_FILE = $id LIMIT 1");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_file WHERE ID_FILE = {int:id} LIMIT 1', array('id' => $id,));
 
 		// Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money - " . $modSettings['down_shop_fileadd'] . "
-				 	WHERE id_member = $memID
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money - ' . $modSettings['down_shop_fileadd'] . '
+				 	WHERE id_member = {int:memid}
+				 	LIMIT 1',
+				 	array(
+				 		'memid' => $memID,
+				 	));
 
  	// Remove the Topic
  	if ($row['ID_TOPIC'] != 0)
@@ -2265,8 +2492,9 @@ function Downloads_ReportDownload2()
 	global $txt, $smcFunc, $user_info;
 
 	isAllowedTo('downloads_report');
+	checkSession('post');
 
-	$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
+	$comment = $_REQUEST['comment'];
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_file_selected']);
@@ -2276,9 +2504,16 @@ function Downloads_ReportDownload2()
 
 	$commentdate = time();
 
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_report
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}down_report
 			(id_member, comment, date, ID_FILE)
-		VALUES (" . $user_info['id'] . ",'$comment', $commentdate,$id)");
+		VALUES ({int:member_id}, {string:comment}, {int:commentdate}, {int:id})',
+		array(
+			'member_id' => $user_info['id'],
+			'comment' => $comment,
+			'commentdate' => $commentdate,
+			'id' => $id,
+		));
 
 	redirectexit('action=downloads;sa=view;down=' . $id);
 
@@ -2299,11 +2534,14 @@ function Downloads_AddComment()
 	$context['downloads_file_id'] = $id;
 
 	// Comments allowed check
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT p.allowcomments, p.id_cat, p.title, c.id_cat, c.title AS catname
 	FROM {db_prefix}down_file as p
 	LEFT JOIN {db_prefix}down_cat AS c ON (c.id_cat = p.id_cat)
-	WHERE ID_FILE = $id LIMIT 1");
+	WHERE ID_FILE = {int:id} LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['downloads_cat_name'] = $row['catname'];
 	$context['downloads_cat_id'] = $row['id_cat'];
@@ -2374,6 +2612,7 @@ function Downloads_AddComment2()
 	global $scripturl, $txt, $sourcedir, $modSettings, $smcFunc, $user_info;
 
 	isAllowedTo('downloads_comment');
+	checkSession('post');
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['comment_mode']) && isset($_REQUEST['comment']))
@@ -2388,18 +2627,21 @@ function Downloads_AddComment2()
 	}
 
 
-	$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
+	$comment = $_REQUEST['comment'];
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_file_selected']);
 
 	// Check if that download allows comments.
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.allowcomments, p.ID_CAT, p.sendemail,m.email_address,p.id_member,p.title
     FROM {db_prefix}down_file as p
     LEFT JOIN {db_prefix}members as m ON (p.id_member  = m.id_member)
-    WHERE p.ID_FILE = $id LIMIT 1");
+    WHERE p.ID_FILE = {int:id} LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$mem_email = $row['email_address'];
 	$title = $row['title'];
@@ -2423,14 +2665,26 @@ function Downloads_AddComment2()
 	// Check if you have automatic approval
 	$approved = (allowedTo('downloads_autocomment') ? 1 : 0);
 
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_comment
-			(id_member, comment, date, ID_FILE,approved)
-		VALUES (" . $user_info['id'] . ",'$comment', $commentdate,$id,$approved)");
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}down_comment
+			(id_member, comment, date, ID_FILE, approved)
+		VALUES ({int:member_id}, {string:comment}, {int:commentdate}, {int:id}, {int:approved})',
+		array(
+			'member_id' => $user_info['id'],
+			'comment' => $comment,
+			'commentdate' => $commentdate,
+			'id' => $id,
+			'approved' => $approved,
+		));
 	$comment_id = $smcFunc['db_insert_id']('{db_prefix}down_comment', 'id_comment');
 
 	// Update Comment total
-	 $smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-		SET commenttotal = commenttotal + 1 WHERE ID_FILE = $id LIMIT 1");
+	 $smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_file
+		SET commenttotal = commenttotal + 1 WHERE ID_FILE = {int:id} LIMIT 1',
+		array(
+			'id' => $id,
+		));
 
 	// Check to send email on new comment
 	 if ($doemail == 1 && $pic_memid != $user_info['id'] && $pic_memid != 0)
@@ -2441,10 +2695,14 @@ function Downloads_AddComment2()
 
 			// Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money + " . $modSettings['down_shop_commentadd'] . "
-				 	WHERE id_member = " . $user_info['id'] . "
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money + ' . $modSettings['down_shop_commentadd'] . '
+				 	WHERE id_member = {int:member_id}
+				 	LIMIT 1',
+				 	array(
+				 		'member_id' => $user_info['id'],
+				 	));
 
 	redirectexit('action=downloads;sa=view;down=' . $id);
 
@@ -2467,11 +2725,14 @@ function Downloads_EditComment()
 
 
 	// Check if allowed to edit the comment
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	ID_COMMENT,ID_FILE,id_member,approved,comment,date,lastmodified
     FROM {db_prefix}down_comment
-    WHERE ID_COMMENT = $id LIMIT 1");
+    WHERE ID_COMMENT = {int:id} LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
    // Comment information
@@ -2525,6 +2786,7 @@ function Downloads_EditComment2()
 	global $context, $txt, $smcFunc, $sourcedir, $user_info;
 
 	is_not_guest();
+	checkSession('post');
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['comment_mode']) && isset($_REQUEST['comment']))
@@ -2547,11 +2809,14 @@ function Downloads_EditComment2()
 
 
 	// Check if allowed to edit the comment
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	id_member,ID_FILE
     FROM {db_prefix}down_comment
-    WHERE ID_COMMENT = $id LIMIT 1");
+    WHERE ID_COMMENT = {int:id} LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
    // Comment information
@@ -2566,7 +2831,7 @@ function Downloads_EditComment2()
 	if ($g_manage || $g_edit_comment && $context['downloads_comment']['id_member'] == $user_info['id'])
 	{
 
-		$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
+		$comment = $_REQUEST['comment'];
 		if ($comment == '')
 			fatal_error($txt['downloads_error_no_comment'],false);
 
@@ -2574,8 +2839,17 @@ function Downloads_EditComment2()
 		// Check if you have automatic approval
 		$approved = (allowedTo('downloads_autocomment') ? 1 : 0);
 		// Update the comment
-	  $dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_comment
-		SET comment = '$comment', lastmodified = '$edittime',modified_id_member = " . $user_info['id'] . ", approved =  $approved WHERE ID_COMMENT = $id LIMIT 1");
+	  $dbresult = $smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_comment
+		SET comment = {string:comment}, lastmodified = {int:edittime}, modified_id_member = {int:mod_member}, approved = {int:approved}
+		WHERE ID_COMMENT = {int:id} LIMIT 1',
+		array(
+			'comment' => $comment,
+			'edittime' => $edittime,
+			'mod_member' => $user_info['id'],
+			'approved' => $approved,
+			'id' => $id,
+		));
 		// Redirect to the file
 		redirectexit('action=downloads;sa=view;down=' .  $context['downloads_comment']['ID_FILE']);
 	}
@@ -2589,6 +2863,7 @@ function Downloads_DeleteComment()
 
 	is_not_guest();
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (isset($_REQUEST['ret']))
@@ -2599,32 +2874,43 @@ function Downloads_DeleteComment()
 
 
 	// Get the file ID for redirect
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE,ID_COMMENT, id_member
 	FROM {db_prefix}down_comment
-	WHERE ID_COMMENT = $id LIMIT 1");
+	WHERE ID_COMMENT = {int:id} LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$fileid = $row['ID_FILE'];
 	$memID = $row['id_member'];
 	$smcFunc['db_free_result']($dbresult);
 
 	// Delete all the comment reports that comment
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_creport WHERE ID_COMMENT = $id");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_creport WHERE ID_COMMENT = {int:id}', array('id' => $id,));
 	// Now delete the comment.
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_comment WHERE ID_COMMENT = $id LIMIT 1");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_comment WHERE ID_COMMENT = {int:id} LIMIT 1', array('id' => $id,));
 
 
 	// Update Comment total
-	  $dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_file
-		SET commenttotal = commenttotal - 1 WHERE ID_FILE = $fileid LIMIT 1");
+	  $dbresult = $smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_file
+		SET commenttotal = commenttotal - 1 WHERE ID_FILE = {int:fileid} LIMIT 1',
+		array(
+			'fileid' => $fileid,
+		));
 
 	  // Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money - " . $modSettings['down_shop_commentadd'] . "
-				 	WHERE id_member = $memID
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money - ' . $modSettings['down_shop_commentadd'] . '
+				 	WHERE id_member = {int:memid}
+				 	LIMIT 1',
+				 	array(
+				 		'memid' => $memID,
+				 	));
 
 	// Redirect to the download
 	if (empty($ret))
@@ -2663,8 +2949,9 @@ function Downloads_ReportComment2()
 	global $txt, $smcFunc, $user_info;
 
 	isAllowedTo('downloads_report');
+	checkSession('post');
 
-	$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
+	$comment = $_REQUEST['comment'];
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_com_selected']);
@@ -2672,11 +2959,14 @@ function Downloads_ReportComment2()
 	if (empty($comment))
 		fatal_error($txt['downloads_error_no_comment'],false);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE
 	FROM {db_prefix}down_comment
-	WHERE ID_COMMENT = $id LIMIT 1");
+	WHERE ID_COMMENT = {int:id} LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$fileid = $row['ID_FILE'];
 	$smcFunc['db_free_result']($dbresult);
@@ -2684,9 +2974,17 @@ function Downloads_ReportComment2()
 
 	$commentdate = time();
 
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_creport
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}down_creport
 			(id_member, comment, date, ID_COMMENT, ID_FILE)
-		VALUES (" . $user_info['id'] . ",'$comment', $commentdate,$id,$fileid)");
+		VALUES ({int:member_id}, {string:comment}, {int:commentdate}, {int:id}, {int:fileid})',
+		array(
+			'member_id' => $user_info['id'],
+			'comment' => $comment,
+			'commentdate' => $commentdate,
+			'id' => $id,
+			'fileid' => $fileid,
+		));
 
 	redirectexit('action=downloads;sa=view;down=' . $fileid);
 
@@ -2696,6 +2994,7 @@ function Downloads_ApproveComment()
 {
 	global $txt, $smcFunc;
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 
 	$id = (int) $_REQUEST['id'];
@@ -2703,8 +3002,12 @@ function Downloads_ApproveComment()
 		fatal_error($txt['downloads_error_no_com_selected']);
 
 	// Approve the comment
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_comment
-		SET approved = 1 WHERE ID_COMMENT = $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_comment
+		SET approved = 1 WHERE ID_COMMENT = {int:id} LIMIT 1',
+		array(
+			'id' => $id,
+		));
 
 	// Reditrect the comment list
 	redirectexit('action=admin;area=downloads;sa=commentlist');
@@ -2720,25 +3023,29 @@ function Downloads_CommentList()
 	$context['sub_template']  = 'comment_list';
 
 
-	$context['start'] = (int) $_REQUEST['start'];
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 		// Get Total Pages
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) AS total
 		FROM {db_prefix}down_comment
-		WHERE approved = 0 ORDER BY ID_COMMENT DESC");
+		WHERE approved = 0 ORDER BY ID_COMMENT DESC',
+		array());
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
 		$total = $row['total'];
 		$smcFunc['db_free_result']($dbresult);
 		$context['downloads_total'] = $total;
 
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			c.ID_COMMENT, c.ID_FILE, c.comment, c.date, c.id_member, m.real_name
 		FROM {db_prefix}down_comment as c
 			LEFT JOIN {db_prefix}members AS m ON (c.id_member = m.id_member)
-		WHERE c.approved = 0 ORDER BY c.ID_COMMENT DESC LIMIT $context[start],10");
+		WHERE c.approved = 0 ORDER BY c.ID_COMMENT DESC LIMIT {int:start}, 10',
+		array(
+			'start' => $context['start'],
+		));
 		$context['downloads_comments'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -2759,14 +3066,15 @@ function Downloads_CommentList()
 
 
 	// Reported Comments
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID, c.ID_FILE, c.ID_COMMENT,  c.id_member, m.real_name, c.date,c.comment,
 		d.comment OringalComment
 	FROM ({db_prefix}down_creport as c, {db_prefix}down_comment AS d)
 	LEFT JOIN {db_prefix}members AS m on  (c.id_member = m.id_member)
 	WHERE  c.ID_COMMENT = d.ID_COMMENT
-	ORDER BY c.ID_FILE DESC");
+	ORDER BY c.ID_FILE DESC',
+	array());
 	$context['downloads_reports'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -2808,13 +3116,16 @@ function Downloads_AdminSettings2()
 
 
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	// Get the settings
 	$down_max_filesize =  (int) $_REQUEST['down_max_filesize'];
 	$down_set_files_per_page = (int) $_REQUEST['down_set_files_per_page'];
 	$down_commentchoice =  isset($_REQUEST['down_commentchoice']) ? 1 : 0;
-	$down_path = $_REQUEST['down_path'];
-	$down_url = $_REQUEST['down_url'];
+	$down_path = rtrim($_REQUEST['down_path'], '/\\') . '/';
+	$down_url = rtrim($_REQUEST['down_url'], '/') . '/';
+	if (!empty($down_url) && !preg_match('~^https?://~i', $down_url))
+		fatal_error('Invalid download URL. Must start with http:// or https://');
 	$down_who_viewing = isset($_REQUEST['down_who_viewing']) ? 1 : 0;
 
 	$down_set_commentsnewest = isset($_REQUEST['down_set_commentsnewest']) ? 1 : 0;
@@ -2927,6 +3238,7 @@ function Downloads_CatUp()
 	global $txt, $smcFunc;
 	// Check if they are allowed to manage cats
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	// Get the category id
 	$cat = (int) $_REQUEST['cat'];
@@ -2935,11 +3247,14 @@ function Downloads_CatUp()
 
 	// Check if there is a category above it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		roworder,ID_PARENT
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $cat");
+	WHERE ID_CAT = {int:cat}',
+	array(
+		'cat' => $cat,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	$ID_PARENT = $row['ID_PARENT'];
 	$oldrow = $row['roworder'];
@@ -2947,22 +3262,28 @@ function Downloads_CatUp()
 	$o--;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, roworder
 	FROM {db_prefix}down_cat
-	WHERE ID_PARENT = $ID_PARENT AND roworder = $o");
+	WHERE ID_PARENT = {int:parent} AND roworder = {int:roworder}',
+	array(
+		'parent' => $ID_PARENT,
+		'roworder' => $o,
+	));
 	if ($smcFunc['db_affected_rows']() == 0)
 		fatal_error($txt['downloads_error_nocat_above'],false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
 
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET roworder = $oldrow WHERE ID_CAT = " .$row2['ID_CAT']);
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat
+		SET roworder = {int:oldrow} WHERE ID_CAT = {int:cat_id}',
+		array('oldrow' => $oldrow, 'cat_id' => $row2['ID_CAT'],));
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET roworder = $o WHERE ID_CAT = $cat");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat
+		SET roworder = {int:newrow} WHERE ID_CAT = {int:cat}',
+		array('newrow' => $o, 'cat' => $cat,));
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -2977,6 +3298,7 @@ function Downloads_CatDown()
 
 	// Check if they are allowed to manage cats
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	// Get the cat id
 	$cat = (int) $_REQUEST['cat'];
@@ -2985,11 +3307,14 @@ function Downloads_CatDown()
 
 	// Check if there is a category below it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		ID_PARENT, roworder
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $cat LIMIT 1");
+	WHERE ID_CAT = {int:cat} LIMIT 1',
+	array(
+		'cat' => $cat,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	$ID_PARENT = $row['ID_PARENT'];
 	$oldrow = $row['roworder'];
@@ -2997,22 +3322,28 @@ function Downloads_CatDown()
 	$o++;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, roworder
 	FROM {db_prefix}down_cat
-	WHERE ID_PARENT = $ID_PARENT AND roworder = $o");
+	WHERE ID_PARENT = {int:parent} AND roworder = {int:roworder}',
+	array(
+		'parent' => $ID_PARENT,
+		'roworder' => $o,
+	));
 	if ($smcFunc['db_affected_rows']()== 0)
 		fatal_error($txt['downloads_error_nocat_below'],false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
 
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET roworder = $oldrow WHERE ID_CAT = " .$row2['ID_CAT']);
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat
+		SET roworder = {int:oldrow} WHERE ID_CAT = {int:cat_id}',
+		array('oldrow' => $oldrow, 'cat_id' => $row2['ID_CAT'],));
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET roworder = $o WHERE ID_CAT = $cat");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat
+		SET roworder = {int:newrow} WHERE ID_CAT = {int:cat}',
+		array('newrow' => $o, 'cat' => $cat,));
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -3037,11 +3368,14 @@ function Downloads_MyFiles()
 	// Get the downloads userid
 	$context['downloads_userid'] = $u;
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	real_name
     FROM {db_prefix}members
-    WHERE id_member = $u LIMIT 1");
+    WHERE id_member = {int:u} LIMIT 1',
+    array(
+    	'u' => $u,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['downloads_userdownloads_name'] = $row['real_name'];
 	$smcFunc['db_free_result']($dbresult);
@@ -3054,7 +3388,7 @@ function Downloads_MyFiles()
 	// Get userid
 	$userid = $context['downloads_userid'];
 
-	$context['start'] = (int) $_REQUEST['start'];
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Get Total Pages
 	$extra_page = '';
@@ -3063,11 +3397,14 @@ function Downloads_MyFiles()
 	else
 		$extra_page = ' AND p.approved = 1';
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*) AS total
 	FROM {db_prefix}down_file as p
-	WHERE p.id_member = $userid " . $extra_page);
+	WHERE p.id_member = {int:userid} ' . $extra_page,
+	array(
+		'userid' => $userid,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$total = $row['total'];
 	$smcFunc['db_free_result']($dbresult);
@@ -3076,21 +3413,29 @@ function Downloads_MyFiles()
 
 	// Check if it is the user ids downloads mainly to show unapproved downloads or not
 	if ($user_info['id'] == $userid)
-    	$dbresult = $smcFunc['db_query']('', "
+    	$dbresult = $smcFunc['db_query']('', '
     	SELECT
     		p.ID_FILE, p.commenttotal, p.filesize, p.approved, p.views, p.id_member,
     		 m.real_name, p.date, p.totaldownloads, p.rating, p.totalratings, p.title
     	FROM {db_prefix}down_file as p, {db_prefix}members AS m
-    	WHERE p.id_member = $userid AND p.id_member = m.id_member
-    	ORDER BY p.ID_FILE DESC LIMIT $context[start]," . $modSettings['down_set_files_per_page']);
+    	WHERE p.id_member = {int:userid} AND p.id_member = m.id_member
+    	ORDER BY p.ID_FILE DESC LIMIT {int:start},' . $modSettings['down_set_files_per_page'],
+    	array(
+    		'userid' => $userid,
+    		'start' => $context['start'],
+    	));
 	else
-    	$dbresult = $smcFunc['db_query']('', "
+    	$dbresult = $smcFunc['db_query']('', '
     	SELECT
     		p.ID_FILE, p.commenttotal, p.filesize, p.approved, p.views,
     		p.id_member, m.real_name, p.date, p.totaldownloads, p.rating, p.totalratings, p.title
     	FROM {db_prefix}down_file as p, {db_prefix}members AS m
-    	WHERE p.id_member = $userid AND p.id_member = m.id_member AND p.approved = 1
-    	ORDER BY p.ID_FILE DESC LIMIT $context[start]," . $modSettings['down_set_files_per_page']);
+    	WHERE p.id_member = {int:userid} AND p.id_member = m.id_member AND p.approved = 1
+    	ORDER BY p.ID_FILE DESC LIMIT {int:start},' . $modSettings['down_set_files_per_page'],
+    	array(
+    		'userid' => $userid,
+    		'start' => $context['start'],
+    	));
 
     	$context['downloads_files'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
@@ -3132,28 +3477,32 @@ function Downloads_ApproveList()
 
 	DoDownloadsAdminTabs();
 
-	$context['start'] = (int) $_REQUEST['start'];
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Get Total Pages
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) AS total
 		FROM {db_prefix}down_file as p
-		WHERE p.approved = 0 ORDER BY ID_FILE DESC");
+		WHERE p.approved = 0 ORDER BY ID_FILE DESC',
+		array());
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
 		$total = $row['total'];
 		$smcFunc['db_free_result']($dbresult);
 	$context['downloads_total'] = $total;
 
 	// List all the unapproved downloads
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.ID_CAT, p.title, p.id_member, m.real_name, p.date, p.description, c.title catname
 	FROM {db_prefix}down_file AS p
 		LEFT JOIN {db_prefix}members AS m ON (m.id_member = p.id_member)
 		LEFT JOIN {db_prefix}down_cat AS c ON (c.ID_CAT = p.ID_CAT)
 	WHERE p.approved = 0
-	ORDER BY p.ID_FILE DESC LIMIT $context[start],10");
+	ORDER BY p.ID_FILE DESC LIMIT {int:start}, 10',
+	array(
+		'start' => $context['start'],
+	));
 	$context['downloads_file'] = array();
 	 while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -3179,6 +3528,7 @@ function Downloads_ApproveDownload()
 {
 	global $txt;
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
@@ -3197,13 +3547,16 @@ function Downloads_ApproveFileByID($id)
 	global $scripturl, $sourcedir, $user_info, $smcFunc;
 
 	// Look up the download and get the category
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.id_member, p.filename, p.title, p.description, c.ID_BOARD,
 		p.ID_CAT, c.locktopic
 	FROM {db_prefix}down_file AS p
 	LEFT JOIN {db_prefix}down_cat AS c ON (c.ID_CAT = p.ID_CAT)
-	WHERE p.ID_FILE = $id LIMIT 1");
+	WHERE p.ID_FILE = {int:id} LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$rowcat = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -3244,7 +3597,7 @@ function Downloads_ApproveFileByID($id)
 
 
 	// Update the approval
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_file SET approved = 1 WHERE ID_FILE = $id LIMIT 1");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_file SET approved = 1 WHERE ID_FILE = {int:id} LIMIT 1', array('id' => $id,));
 
 
 	Downloads_UpdateCategoryTotals($rowcat['ID_CAT']);
@@ -3255,6 +3608,7 @@ function Downloads_UnApproveDownload()
 {
 	global $txt;
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
@@ -3271,7 +3625,7 @@ function Downloads_UnApproveFileByID($id)
 	global $smcFunc;
 
 	// Update the approval
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_file SET approved = 0 WHERE ID_FILE = $id LIMIT 1");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_file SET approved = 0 WHERE ID_FILE = {int:id} LIMIT 1', array('id' => $id,));
 
 	Downloads_UpdateCategoryTotalByFileID($id);
 }
@@ -3287,12 +3641,13 @@ function Downloads_ReportList()
 
 	$context['sub_template']  = 'reportlist';
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		r.ID, r.ID_FILE, r.id_member, m.real_name, r.date, r.comment
 	FROM {db_prefix}down_report as r
 		  LEFT JOIN {db_prefix}members AS m ON  (m.id_member = r.id_member)
-	ORDER BY r.ID_FILE DESC");
+	ORDER BY r.ID_FILE DESC',
+	array());
 
 	$context['downloads_reports'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
@@ -3319,12 +3674,13 @@ function Downloads_DeleteReport()
 	global $txt, $smcFunc;
 	// Check the permission
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_report_selected']);
 
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_report WHERE ID = $id LIMIT 1");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_report WHERE ID = {int:id} LIMIT 1', array('id' => $id,));
 
 	// Redirect to redirect list
 	redirectexit('action=admin;area=downloads;sa=reportlist');
@@ -3335,12 +3691,13 @@ function Downloads_DeleteCommentReport()
 	global $txt, $smcFunc;
 	// Check the permission
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_report_selected']);
 
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_creport WHERE ID = $id LIMIT 1");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_creport WHERE ID = {int:id} LIMIT 1', array('id' => $id,));
 
 	// Redirect to redirect list
 	redirectexit('action=admin;area=downloads;sa=commentlist');
@@ -3360,12 +3717,15 @@ function Downloads_Search()
 	else
 		$groupid =  $user_info['groups'][0];
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.title, p.view
 	FROM {db_prefix}down_cat as c
-	LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = $groupid AND c.ID_CAT = p.ID_CAT)
-	ORDER BY c.roworder ASC");
+	LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = {int:groupid} AND c.ID_CAT = p.ID_CAT)
+	ORDER BY c.roworder ASC',
+	array(
+		'groupid' => $groupid,
+	));
 	$context['downloads_cat'] = array();
 	 while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -3426,7 +3786,7 @@ function Downloads_Search2()
 		@$cat = (int) $_REQUEST['cat'];
 
 		// Check if keyword search was selected
-		@$keyword =  $smcFunc['htmlspecialchars']($_REQUEST['key'],ENT_QUOTES);
+		@$keyword =  $_REQUEST['key'];
 		$searchArray = array();
 		$searchArray['keyword'] = $keyword;
 		$context['downloads_search_query_encoded'] = base64_encode(json_encode($searchArray));
@@ -3437,7 +3797,8 @@ function Downloads_Search2()
 			if (empty($_REQUEST['searchfor']))
 				fatal_error($txt['downloads_error_no_search'],false);
 
-			$searchfor =  $smcFunc['htmlspecialchars']($_REQUEST['searchfor'],ENT_QUOTES);
+			$searchfor =  $_REQUEST['searchfor'];
+			$searchfor = str_replace(array('%', '_'), array('\\%', '\\_'), $searchfor);
 
 
 			if ($smcFunc['strlen']($searchfor) <= 3)
@@ -3456,15 +3817,17 @@ function Downloads_Search2()
 				$pic_postername = str_replace('"','', $_REQUEST['pic_postername']);
 				$pic_postername = str_replace("'",'', $pic_postername);
 				$pic_postername = str_replace('\\','', $pic_postername);
-				$pic_postername = $smcFunc['htmlspecialchars']($pic_postername, ENT_QUOTES);
 				$searchArray['pic_postername'] = $pic_postername;
 
 
-				$dbresult = $smcFunc['db_query']('', "
+				$dbresult = $smcFunc['db_query']('', '
 						SELECT
 							real_name, id_member
 						FROM {db_prefix}members
-						WHERE real_name = '$pic_postername' OR member_name = '$pic_postername'  LIMIT 1");
+						WHERE real_name = {string:postername} OR member_name = {string:postername}  LIMIT 1',
+						array(
+							'postername' => $pic_postername,
+						));
 						$row = $smcFunc['db_fetch_assoc']($dbresult);
 						$smcFunc['db_free_result']($dbresult);
 
@@ -3506,7 +3869,7 @@ function Downloads_Search2()
 			$s1 = 1;
 			$searchquery = '';
 			if ($searchtitle)
-				$searchquery = "p.title LIKE '%$searchfor%' ";
+				$searchquery = "p.title LIKE {string:searchfor_wild} ";
 			else
 				$s1 = 0;
 
@@ -3514,9 +3877,9 @@ function Downloads_Search2()
 			if ($searchdescription)
 			{
 				if ($s1 == 1)
-					$searchquery = "p.title LIKE '%$searchfor%' OR p.description LIKE '%$searchfor%'";
+					$searchquery = "p.title LIKE {string:searchfor_wild} OR p.description LIKE {string:searchfor_wild}";
 				else
-					$searchquery = "p.description LIKE '%$searchfor%'";
+					$searchquery = "p.description LIKE {string:searchfor_wild}";
 			}
 			else
 				$s2 = 0;
@@ -3524,14 +3887,14 @@ function Downloads_Search2()
 			if ($searchkeywords)
 			{
 				if ($s1 == 1 || $s2 == 1)
-					$searchquery .= " OR p.keywords LIKE '$searchfor'";
+					$searchquery .= " OR p.keywords LIKE {string:searchfor_exact}";
 				else
-					$searchquery = "p.keywords LIKE '$searchfor'";
+					$searchquery = "p.keywords LIKE {string:searchfor_exact}";
 			}
 
 
 			if ($searchquery == '')
-				$searchquery = "p.title LIKE '%$searchfor%' ";
+				$searchquery = "p.title LIKE {string:searchfor_wild} ";
 
 			$context['downloads_search_query'] = $searchquery;
 
@@ -3550,7 +3913,7 @@ function Downloads_Search2()
 
 			$context['downloads_search'] = $keyword;
 
-			$context['downloads_search_query'] = "p.keywords LIKE '$keyword'";
+			$context['downloads_search_query'] = "p.keywords LIKE {string:searchfor_exact}";
 		}
 
 	$downloads_where = '';
@@ -3559,15 +3922,23 @@ function Downloads_Search2()
 
 	$context['downloads_where'] = $downloads_where;
 
+	// Build the search term for parameterized LIKE queries
+	$searchterm = isset($searchfor) ? $searchfor : (isset($keyword) ? $keyword : '');
+	$search_params = array(
+		'searchfor_wild' => '%' . $searchterm . '%',
+		'searchfor_exact' => $searchterm,
+		'start' => isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0,
+	);
 
-	$context['start'] = (int) $_REQUEST['start'];
+	$context['start'] = $search_params['start'];
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.ID_FILE
     FROM {db_prefix}down_file as p
-    	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
-    WHERE  " . $downloads_where . " p.approved = 1 AND (c.view IS NULL OR c.view =1)  AND (" . $context['downloads_search_query'] . ") GROUP by p.ID_FILE");
+    	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
+    WHERE  ' . $downloads_where . ' p.approved = 1 AND (c.view IS NULL OR c.view =1)  AND (' . $context['downloads_search_query'] . ') GROUP by p.ID_FILE',
+    $search_params);
     $numrows = $smcFunc['db_num_rows']($dbresult);
     $smcFunc['db_free_result']($dbresult);
 
@@ -3575,16 +3946,17 @@ function Downloads_Search2()
 	$context['downloads_total'] = $total;
 
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.ID_FILE, p.ID_CAT, p.commenttotal, p.rating, p.filesize, p.title,
     	p.views, p.id_member, m.real_name, p.date, p.totaldownloads, p.totalratings
     FROM {db_prefix}down_file as p
    	 	LEFT JOIN {db_prefix}members AS m ON (m.id_member = p.id_member)
-   	 	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
-    WHERE  " . $downloads_where . " p.approved = 1 AND (c.view IS NULL OR c.view =1)  AND (" . $context['downloads_search_query'] . ") GROUP by p.ID_FILE, p.ID_CAT, p.commenttotal, p.rating, p.filesize, p.title,
+   	 	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
+    WHERE  ' . $downloads_where . ' p.approved = 1 AND (c.view IS NULL OR c.view =1)  AND (' . $context['downloads_search_query'] . ') GROUP by p.ID_FILE, p.ID_CAT, p.commenttotal, p.rating, p.filesize, p.title,
     	p.views, p.id_member, m.real_name, p.date, p.totaldownloads, p.totalratings
-    LIMIT $context[start],10");
+    LIMIT {int:start}, 10',
+    $search_params);
     $context['downloads_files'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -3620,6 +3992,7 @@ function Downloads_RateDownload()
 
 	// Check if they are allowed to rate download
 	isAllowedTo('downloads_ratefile');
+	checkSession('post');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
@@ -3629,21 +4002,28 @@ function Downloads_RateDownload()
 		fatal_error($txt['downloads_error_no_rating_selected']);
 
 	// Check if they rated this download?
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	id_member, ID_FILE
     FROM {db_prefix}down_rating
-    WHERE id_member = " . $user_info['id'] . " AND ID_FILE = $id");
+    WHERE id_member = {int:member_id} AND ID_FILE = {int:id}',
+    array(
+    	'member_id' => $user_info['id'],
+    	'id' => $id,
+    ));
 
     $found = $smcFunc['db_affected_rows']();
  	$smcFunc['db_free_result']($dbresult);
 
 	// Get the download owner
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	id_member
     FROM {db_prefix}down_file
-    WHERE ID_FILE = $id LIMIT 1");
+    WHERE ID_FILE = {int:id} LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
     $row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 	// Check if they are rating their own download.
@@ -3658,13 +4038,23 @@ function Downloads_RateDownload()
 		$rating = 3;
 
 	// Add the Rating
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_rating (id_member, ID_FILE, value) VALUES (" . $user_info['id'] . ", $id,$rating)");
+	$smcFunc['db_query']('', '
+	INSERT INTO {db_prefix}down_rating (id_member, ID_FILE, value) VALUES ({int:member_id}, {int:id}, {int:rating})',
+	array(
+		'member_id' => $user_info['id'],
+		'id' => $id,
+		'rating' => $rating,
+	));
 
 	// Add rating information to the download
-	$smcFunc['db_query']('', "
+	$smcFunc['db_query']('', '
 	UPDATE {db_prefix}down_file
-		SET totalratings = totalratings + 1, rating = rating + $rating
-	WHERE ID_FILE = $id LIMIT 1");
+		SET totalratings = totalratings + 1, rating = rating + {int:rating}
+	WHERE ID_FILE = {int:id} LIMIT 1',
+	array(
+		'rating' => $rating,
+		'id' => $id,
+	));
 
 	// Redirect to the download
 	redirectexit('action=downloads;sa=view;down=' . $id);
@@ -3682,11 +4072,14 @@ function Downloads_ViewRating()
 
 	$context['downloads_id'] = $id;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		r.ID, r.value, r.ID_FILE, r.id_member, m.real_name
 	FROM {db_prefix}down_rating as r, {db_prefix}members AS m
-	WHERE r.ID_FILE = $id AND r.id_member = m.id_member");
+	WHERE r.ID_FILE = {int:id} AND r.id_member = m.id_member',
+	array(
+		'id' => $id,
+	));
 	$context['downloads_rating'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -3714,26 +4107,35 @@ function Downloads_DeleteRating()
 {
 	global $scripturl, $txt, $smcFunc;
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_rating_selected']);
 
 	// First lookup the ID to get the download id and value of rating
-	 $dbresult = $smcFunc['db_query']('', "
+	 $dbresult = $smcFunc['db_query']('', '
 	 SELECT
 	 	ID, ID_FILE, value
 	 FROM {db_prefix}down_rating
-	 WHERE ID = $id LIMIT 1");
+	 WHERE ID = {int:id} LIMIT 1',
+	 array(
+	 	'id' => $id,
+	 ));
 	 $row = $smcFunc['db_fetch_assoc']($dbresult);
 	 $value = $row['value'];
 	 $fileid = $row['ID_FILE'];
 	 $smcFunc['db_free_result']($dbresult);
 	// Delete the Rating
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_rating
-	WHERE ID = " . $id . ' LIMIT 1');
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_rating WHERE ID = {int:id} LIMIT 1', array('id' => $id,));
 	// Update the download rating information
-	$dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_file SET totalratings = totalratings - 1, rating = rating - $value WHERE ID_FILE = $fileid LIMIT 1");
+	$dbresult = $smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_file SET totalratings = totalratings - 1, rating = rating - {int:value}
+		WHERE ID_FILE = {int:fileid} LIMIT 1',
+		array(
+			'value' => $value,
+			'fileid' => $fileid,
+		));
 	// Redirect to the ratings
 	redirectexit('action=downloads;sa=viewrating&id=' .  $fileid);
 }
@@ -3752,18 +4154,20 @@ function Downloads_Stats()
 		$groupsdata = -1;
 
 	// Get views total and comments total and total filesize
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		SUM(views) AS views, SUM(filesize) AS filesize, SUM(commenttotal) AS commenttotal,
 	 	COUNT(*) AS filetotal
-	FROM {db_prefix}down_file");
+	FROM {db_prefix}down_file',
+	array());
 	$row = $smcFunc['db_fetch_assoc']($result);
 	$smcFunc['db_free_result']($result);
 
-	$result2 = $smcFunc['db_query']('', "
+	$result2 = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*) AS filetotal
-	FROM {db_prefix}down_file");
+	FROM {db_prefix}down_file',
+	array());
 	$row2 = $smcFunc['db_fetch_assoc']($result2);
 	$smcFunc['db_free_result']($result2);
 
@@ -3774,13 +4178,14 @@ function Downloads_Stats()
 
 
 	// Top Viewed Downloads
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.title, p.views
 	FROM {db_prefix}down_file as p
-	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
-	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1)) AND p.views > 0 GROUP by p.ID_FILE, p.title, p.views 
-	ORDER BY p.views DESC LIMIT 10");
+	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
+	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1)) AND p.views > 0 GROUP by p.ID_FILE, p.title, p.views
+	ORDER BY p.views DESC LIMIT 10',
+	array());
 	$context['top_viewed'] = array();
 	$max_views = 1;
 	while ($row = $smcFunc['db_fetch_assoc']($result))
@@ -3801,13 +4206,14 @@ function Downloads_Stats()
 		$context['top_viewed'][$i]['percent'] = round(($file['views'] * 100) / $max_views);
 
 	// Top Rated
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.title, p.totalratings, p.rating, (p.rating / p.totalratings ) AS ratingaverage
 	FROM {db_prefix}down_file as p
-	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
-	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1)) AND p.totalratings > 0 GROUP by p.ID_FILE, p.title, p.totalratings, p.rating 
-	ORDER BY ratingaverage DESC LIMIT 10");
+	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
+	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1)) AND p.totalratings > 0 GROUP by p.ID_FILE, p.title, p.totalratings, p.rating
+	ORDER BY ratingaverage DESC LIMIT 10',
+	array());
 	$context['top_rating'] = array();
 	$max_rating = 1;
 	while ($row = $smcFunc['db_fetch_assoc']($result))
@@ -3828,13 +4234,14 @@ function Downloads_Stats()
 		$context['top_rating'][$i]['percent'] = round(($file['rating'] * 100) / $max_rating);
 
 	// Most Commented
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.title, p.commenttotal
 	FROM {db_prefix}down_file as p
-	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
+	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
 	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1)) AND p.commenttotal > 0  GROUP by p.ID_FILE, p.title, p.commenttotal
-	ORDER BY p.commenttotal DESC LIMIT 10");
+	ORDER BY p.commenttotal DESC LIMIT 10',
+	array());
 	$context['most_comments'] = array();
 	$max_commenttotal = 1;
 	while ($row = $smcFunc['db_fetch_assoc']($result))
@@ -3855,13 +4262,14 @@ function Downloads_Stats()
 		$context['most_comments'][$i]['percent'] = round(($file['commenttotal'] * 100) / $max_commenttotal);
 
 	// Last 10 downloads uploaded
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE, p.title
 	FROM {db_prefix}down_file as p
-	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
-	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1))  GROUP by p.ID_FILE, p.title 
-	ORDER BY p.ID_FILE DESC LIMIT 10");
+	LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
+	WHERE (p.approved =1  AND (c.view IS NULL OR c.view =1))  GROUP by p.ID_FILE, p.title
+	ORDER BY p.ID_FILE DESC LIMIT 10',
+	array());
 	$context['last_upload'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($result))
 	{
@@ -3886,26 +4294,32 @@ function Downloads_UpdateUserFileSizeTable($memberid, $filesize)
 	global $smcFunc;
 
 	// Check if a record exits
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_member,totalfilesize
 	FROM {db_prefix}down_userquota
-	WHERE id_member = $memberid LIMIT 1");
+	WHERE id_member = {int:memberid} LIMIT 1',
+	array(
+		'memberid' => $memberid,
+	));
 	$count = $smcFunc['db_affected_rows']();
 	$smcFunc['db_free_result']($dbresult);
 
 	if ($count == 0)
 	{
 		// Create the record
-		$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_userquota (id_member, totalfilesize) VALUES ($memberid, $filesize)");
+		$smcFunc['db_query']('', 'INSERT INTO {db_prefix}down_userquota (id_member, totalfilesize) VALUES ({int:memberid}, {int:filesize})',
+			array('memberid' => $memberid, 'filesize' => $filesize,));
 	}
 	else
 	{
 		// Update the record
 		if ($filesize >= 0)
-			$smcFunc['db_query']('', "UPDATE {db_prefix}down_userquota SET totalfilesize = totalfilesize + $filesize WHERE id_member = $memberid LIMIT 1");
+			$smcFunc['db_query']('', 'UPDATE {db_prefix}down_userquota SET totalfilesize = totalfilesize + {int:filesize} WHERE id_member = {int:memberid} LIMIT 1',
+				array('filesize' => $filesize, 'memberid' => $memberid,));
 		else
-			$smcFunc['db_query']('', "UPDATE {db_prefix}down_userquota SET totalfilesize = totalfilesize + $filesize WHERE id_member = $memberid LIMIT 1");
+			$smcFunc['db_query']('', 'UPDATE {db_prefix}down_userquota SET totalfilesize = totalfilesize + {int:filesize} WHERE id_member = {int:memberid} LIMIT 1',
+				array('filesize' => $filesize, 'memberid' => $memberid,));
 	}
 }
 
@@ -3923,11 +4337,12 @@ function Downloads_FileSpaceAdmin()
 	$context['sub_template']  = 'filespace';
 
 	// Load the membergroups
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_GROUP, group_name
 	FROM {db_prefix}membergroups
-	WHERE min_posts = -1 ORDER BY group_name");
+	WHERE min_posts = -1 ORDER BY group_name',
+	array());
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		$context['groups'][$row['ID_GROUP']] = array(
@@ -3938,11 +4353,12 @@ function Downloads_FileSpaceAdmin()
 	$smcFunc['db_free_result']($dbresult);
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		q.totalfilesize,  q.ID_GROUP, m.group_name
 	FROM {db_prefix}down_groupquota as q, {db_prefix}membergroups AS m
-	WHERE  q.ID_GROUP = m.ID_GROUP ORDER BY q.totalfilesize");
+	WHERE  q.ID_GROUP = m.ID_GROUP ORDER BY q.totalfilesize',
+	array());
 	$context['downloads_membergroups'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -3957,11 +4373,12 @@ function Downloads_FileSpaceAdmin()
 		}
 	$smcFunc['db_free_result']($dbresult);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		q.totalfilesize, q.ID_GROUP
 	FROM {db_prefix}down_groupquota as q
-	WHERE  q.ID_GROUP = 0 LIMIT 1");
+	WHERE  q.ID_GROUP = 0 LIMIT 1',
+	array());
 	$context['downloads_reggroup'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -3974,24 +4391,28 @@ function Downloads_FileSpaceAdmin()
 	$smcFunc['db_free_result']($dbresult);
 
 
-	$context['start'] = (int) $_REQUEST['start'];
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Get Total Pages
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*) AS total
-	FROM {db_prefix}down_userquota as q");
+	FROM {db_prefix}down_userquota as q',
+	array());
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$total = $row['total'];
 	$smcFunc['db_free_result']($dbresult);
 	$context['downloads_total'] = $total;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		q.totalfilesize,  q.id_member, m.real_name
 	FROM {db_prefix}down_userquota as q, {db_prefix}members AS m
 	WHERE  q.id_member = m.id_member
-	ORDER BY q.totalfilesize DESC  LIMIT $context[start],20");
+	ORDER BY q.totalfilesize DESC  LIMIT {int:start},20',
+	array(
+		'start' => $context['start'],
+	));
 	$context['downloads_members'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4024,11 +4445,14 @@ function Downloads_FileSpaceList()
 	if (empty($id))
 		fatal_error($txt['downloads_error_no_user_selected']);
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	m.real_name
     FROM {db_prefix}members AS m
-    WHERE m.id_member = $id  LIMIT 1");
+    WHERE m.id_member = {int:id}  LIMIT 1',
+    array(
+    	'id' => $id,
+    ));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['downloads_filelist_real_name'] = $row['real_name'];
 	$context['downloads_filelist_userid'] = $id;
@@ -4039,14 +4463,17 @@ function Downloads_FileSpaceList()
 	// Load the subtemplate for the file manager
 	$context['sub_template']  = 'filelist';
 
-	$context['start'] = (int) $_REQUEST['start'];
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Get Total Pages
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*) AS total
 	FROM {db_prefix}down_file
-	WHERE id_member = " . $context['downloads_filelist_userid']);
+	WHERE id_member = {int:userid}',
+	array(
+		'userid' => $context['downloads_filelist_userid'],
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$total = $row['total'];
 	$smcFunc['db_free_result']($dbresult);
@@ -4054,12 +4481,16 @@ function Downloads_FileSpaceList()
 
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		p.ID_FILE,p.title, p.filesize,p.id_member
 	FROM {db_prefix}down_file as p
-	WHERE p.id_member = " . $context['downloads_filelist_userid'] . "
-	ORDER BY p.filesize DESC  LIMIT $context[start],20");
+	WHERE p.id_member = {int:userid}
+	ORDER BY p.filesize DESC  LIMIT {int:start},20',
+	array(
+		'userid' => $context['downloads_filelist_userid'],
+		'start' => $context['start'],
+	));
 	$context['downloads_files'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4079,21 +4510,28 @@ function Downloads_RecountFileQuotaTotals($redirect = true)
 	global $smcFunc;
 
 	if ($redirect == true)
+	{
 		isAllowedTo('downloads_manage');
+		checkSession('post');
+	}
 
 	// Show all the user's with quota information
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_member
-	FROM {db_prefix}down_userquota");
+	FROM {db_prefix}down_userquota',
+	array());
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		// Loop though the all the files for the member and get the total
-		$dbresult2 = $smcFunc['db_query']('', "
+		$dbresult2 = $smcFunc['db_query']('', '
 		SELECT
 			SUM(filesize) as total
 		FROM {db_prefix}down_file
-		WHERE id_member = " . $row['id_member']);
+		WHERE id_member = {int:memberid}',
+		array(
+			'memberid' => $row['id_member'],
+		));
 
 		$row2 = $smcFunc['db_fetch_assoc']($dbresult2);
 		$total = $row2['total'];
@@ -4103,7 +4541,8 @@ function Downloads_RecountFileQuotaTotals($redirect = true)
 
 		$smcFunc['db_free_result']($dbresult2);
 		// Update the quota
-		$smcFunc['db_query']('', "UPDATE {db_prefix}down_userquota SET totalfilesize = $total WHERE id_member = " . $row['id_member'] . " LIMIT 1");
+		$smcFunc['db_query']('', 'UPDATE {db_prefix}down_userquota SET totalfilesize = {int:total} WHERE id_member = {int:memberid} LIMIT 1',
+			array('total' => $total, 'memberid' => $row['id_member'],));
 
 	}
 	$smcFunc['db_free_result']($dbresult);
@@ -4116,11 +4555,14 @@ function Downloads_GetQuotaGroupLimit($memberid)
 {
 	global $smcFunc;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		m.id_member, q.ID_GROUP, q.totalfilesize
 	FROM {db_prefix}down_groupquota as q, {db_prefix}members as m
-	WHERE m.id_member = $memberid AND q.ID_GROUP = m.ID_GROUP LIMIT 1");
+	WHERE m.id_member = {int:memberid} AND q.ID_GROUP = m.ID_GROUP LIMIT 1',
+	array(
+		'memberid' => $memberid,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if ($smcFunc['db_affected_rows']() == 0)
 	{
@@ -4140,11 +4582,14 @@ function Downloads_GetUserSpaceUsed($memberid)
 {
 	global $smcFunc;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_member,totalfilesize
 	FROM {db_prefix}down_userquota
-	WHERE id_member = $memberid LIMIT 1");
+	WHERE id_member = {int:memberid} LIMIT 1',
+	array(
+		'memberid' => $memberid,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if ($smcFunc['db_affected_rows']()== 0)
 	{
@@ -4165,6 +4610,7 @@ function Downloads_AddQuota()
 	global $txt, $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	$groupid = (int) $_REQUEST['groupname'];
 
@@ -4174,18 +4620,22 @@ function Downloads_AddQuota()
 		fatal_error($txt['downloads_error_noquota'],false);
 	}
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_GROUP
 	FROM {db_prefix}down_groupquota
-	WHERE ID_GROUP = $groupid LIMIT 1");
+	WHERE ID_GROUP = {int:groupid} LIMIT 1',
+	array(
+		'groupid' => $groupid,
+	));
 	$count = $smcFunc['db_affected_rows']();
 	$smcFunc['db_free_result']($dbresult);
 
 	if ($count == 0)
 	{
 		// Create the record
-		$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_groupquota (ID_GROUP, totalfilesize) VALUES ($groupid, $filelimit)");
+		$smcFunc['db_query']('', 'INSERT INTO {db_prefix}down_groupquota (ID_GROUP, totalfilesize) VALUES ({int:groupid}, {float:filelimit})',
+			array('groupid' => $groupid, 'filelimit' => $filelimit,));
 	}
 	else
 	{
@@ -4200,9 +4650,10 @@ function Downloads_DeleteQuota()
 	global $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 	$id = (int) $_REQUEST['id'];
 
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_groupquota WHERE ID_GROUP = " . $id . ' LIMIT 1');
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_groupquota WHERE ID_GROUP = {int:id} LIMIT 1', array('id' => $id,));
 
 	redirectexit('action=admin;area=downloads;sa=filespace');
 }
@@ -4212,10 +4663,12 @@ function Downloads_ApproveAllComments()
 {
 	global $smcFunc;
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	// Approve all the comments
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_comment
-		SET approved = 1 WHERE approved = 0");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_comment
+		SET approved = 1 WHERE approved = 0',
+		array());
 
 	// Reditrect the comment list
 	redirectexit('action=admin;area=downloads;sa=commentlist');
@@ -4230,11 +4683,14 @@ function Downloads_CatPerm()
 	if (empty($cat))
 		fatal_error($txt['downloads_error_no_cat']);
 
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, title
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $cat LIMIT 1");
+	WHERE ID_CAT = {int:cat} LIMIT 1',
+	array(
+		'cat' => $cat,
+	));
 	$row1 = $smcFunc['db_fetch_assoc']($dbresult1);
 	$context['downloads_cat_name'] = $row1['title'];
 	$smcFunc['db_free_result']($dbresult1);
@@ -4249,11 +4705,12 @@ function Downloads_CatPerm()
 	$context['page_title'] = $mbname . ' - ' . $txt['downloads_text_title'] . ' - ' . $txt['downloads_text_catperm'] . ' -' . $context['downloads_cat_name'];
 
 	// Load the membergroups
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_GROUP, group_name
 	FROM {db_prefix}membergroups
-	WHERE min_posts = -1 ORDER BY group_name");
+	WHERE min_posts = -1 ORDER BY group_name',
+	array());
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		$context['groups'][$row['ID_GROUP']] = array(
@@ -4265,11 +4722,14 @@ function Downloads_CatPerm()
 
 
 	// Membergroups
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.ID, c.view, c.addfile, c.editfile, c.delfile, c.addcomment,  c.ID_GROUP, m.group_name,a.title catname
 	FROM ({db_prefix}down_catperm as c, {db_prefix}membergroups AS m,{db_prefix}down_cat as a)
-	WHERE  c.ID_CAT = " . $context['downloads_cat'] . " AND c.ID_GROUP = m.ID_GROUP AND a.ID_CAT = c.ID_CAT");
+	WHERE  c.ID_CAT = {int:cat} AND c.ID_GROUP = m.ID_GROUP AND a.ID_CAT = c.ID_CAT',
+	array(
+		'cat' => $context['downloads_cat'],
+	));
 	$context['downloads_membergroups'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4290,11 +4750,14 @@ function Downloads_CatPerm()
 	$smcFunc['db_free_result']($dbresult);
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.ID, c.view, c.addfile, c.editfile, c.delfile, c.addcomment,  c.ID_GROUP,a.title catname
 	FROM {db_prefix}down_catperm as c,{db_prefix}down_cat as a
-	WHERE c.ID_CAT = " . $context['downloads_cat'] . " AND c.ID_GROUP = 0 AND a.ID_CAT = c.ID_CAT LIMIT 1");
+	WHERE c.ID_CAT = {int:cat} AND c.ID_GROUP = 0 AND a.ID_CAT = c.ID_CAT LIMIT 1',
+	array(
+		'cat' => $context['downloads_cat'],
+	));
 	$context['downloads_reggroup'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4314,11 +4777,14 @@ function Downloads_CatPerm()
 	$smcFunc['db_free_result']($dbresult);
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.ID, c.view, c.addfile, c.editfile, c.delfile, c.addcomment,  c.ID_GROUP,a.title catname
 	FROM {db_prefix}down_catperm as c,{db_prefix}down_cat as a
-	WHERE c.ID_CAT = " . $context['downloads_cat'] . " AND c.ID_GROUP = -1 AND a.ID_CAT = c.ID_CAT LIMIT 1");
+	WHERE c.ID_CAT = {int:cat} AND c.ID_GROUP = -1 AND a.ID_CAT = c.ID_CAT LIMIT 1',
+	array(
+		'cat' => $context['downloads_cat'],
+	));
 	$context['downloads_guestgroup'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4343,16 +4809,21 @@ function Downloads_CatPerm2()
 {
 	global $txt, $smcFunc;
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	$groupname = (int) $_REQUEST['groupname'];
 	$cat = (int) $_REQUEST['cat'];
 
 	// Check if permission exits
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_GROUP,ID_CAT
 	FROM {db_prefix}down_catperm
-	WHERE ID_GROUP = $groupname AND ID_CAT = $cat");
+	WHERE ID_GROUP = {int:groupname} AND ID_CAT = {int:cat}',
+	array(
+		'groupname' => $groupname,
+		'cat' => $cat,
+	));
 	if ($smcFunc['db_affected_rows']()!= 0)
 	{
 		$smcFunc['db_free_result']($dbresult);
@@ -4368,9 +4839,18 @@ function Downloads_CatPerm2()
 	$addcomment = isset($_REQUEST['addcomment']) ? 1 : 0;
 
 	// Insert into database
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_catperm
+	$smcFunc['db_query']('', 'INSERT INTO {db_prefix}down_catperm
 			(ID_GROUP,ID_CAT,view,addfile,editfile,delfile,addcomment)
-		VALUES ($groupname,$cat,$view,$add,$edit,$delete,$addcomment)");
+		VALUES ({int:groupname},{int:cat},{int:view},{int:add},{int:edit},{int:delete},{int:addcomment})',
+		array(
+			'groupname' => $groupname,
+			'cat' => $cat,
+			'view' => $view,
+			'add' => $add,
+			'edit' => $edit,
+			'delete' => $delete,
+			'addcomment' => $addcomment,
+		));
 
 	redirectexit('action=downloads;sa=catperm;cat=' . $cat);
 }
@@ -4387,12 +4867,13 @@ function Downloads_CatPermList()
 	// Set the page title
 	$context['page_title'] = $mbname . ' - ' . $txt['downloads_text_title'] . ' - ' . $txt['downloads_text_catpermlist'];
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.ID, c.view, c.addfile, c.editfile, c.delfile, c.addcomment,
 		c.ID_GROUP, m.group_name,a.title catname
 	FROM ({db_prefix}down_catperm as c, {db_prefix}membergroups AS m,{db_prefix}down_cat as a)
-	WHERE  c.ID_GROUP = m.ID_GROUP AND a.ID_CAT = c.ID_CAT");
+	WHERE  c.ID_GROUP = m.ID_GROUP AND a.ID_CAT = c.ID_CAT',
+	array());
 	$context['downloads_membergroups'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4412,11 +4893,12 @@ function Downloads_CatPermList()
 		}
 	$smcFunc['db_free_result']($dbresult);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.ID, c.view, c.addfile, c.editfile, c.delfile, c.addcomment,  c.ID_GROUP,a.title catname
 	FROM {db_prefix}down_catperm as c,{db_prefix}down_cat as a
-	WHERE  c.ID_GROUP = 0 AND a.ID_CAT = c.ID_CAT LIMIT 1");
+	WHERE  c.ID_GROUP = 0 AND a.ID_CAT = c.ID_CAT LIMIT 1',
+	array());
 	$context['downloads_regmem'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4436,11 +4918,12 @@ function Downloads_CatPermList()
 	$smcFunc['db_free_result']($dbresult);
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		c.ID_CAT, c.ID, c.view, c.addfile, c.editfile, c.delfile, c.addcomment,  c.ID_GROUP,a.title catname
 	FROM {db_prefix}down_catperm as c,{db_prefix}down_cat as a
-	WHERE  c.ID_GROUP = -1 AND a.ID_CAT = c.ID_CAT LIMIT 1");
+	WHERE  c.ID_GROUP = -1 AND a.ID_CAT = c.ID_CAT LIMIT 1',
+	array());
 	$context['downloads_guestmem'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -4467,11 +4950,12 @@ function Downloads_CatPermDelete()
 	global $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 
 	// Delete the Permission
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_catperm WHERE ID = " . $id . ' LIMIT 1');
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_catperm WHERE ID = {int:id} LIMIT 1', array('id' => $id,));
 	// Redirect to the ratings
 	redirectexit('action=admin;area=downloads;sa=catpermlist');
 
@@ -4483,20 +4967,27 @@ function Downloads_GetCatPermission($cat,$perm)
 	$cat = (int) $cat;
 	if (!$user_info['is_guest'])
 	{
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			m.id_member, c.view, c.addfile, c.editfile, c.delfile,c.ratefile, c.addcomment,
 			c.editcomment, c.report
 		FROM {db_prefix}down_catperm as c, {db_prefix}members as m
-		WHERE m.id_member = " . $user_info['id'] . " AND c.ID_GROUP = m.ID_GROUP AND c.ID_CAT = $cat LIMIT 1");
+		WHERE m.id_member = {int:member_id} AND c.ID_GROUP = m.ID_GROUP AND c.ID_CAT = {int:cat} LIMIT 1',
+		array(
+			'member_id' => $user_info['id'],
+			'cat' => $cat,
+		));
 	}
 	else
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			c.view, c.addfile, c.editfile, c.delfile,c.ratefile, c.addcomment, c.editcomment,
 			c.report
 		FROM {db_prefix}down_catperm as c
-		WHERE c.ID_GROUP = -1 AND c.ID_CAT = $cat LIMIT 1");
+		WHERE c.ID_GROUP = -1 AND c.ID_CAT = {int:cat} LIMIT 1',
+		array(
+			'cat' => $cat,
+		));
 
 	if ($smcFunc['db_affected_rows']()== 0)
 	{
@@ -4538,11 +5029,14 @@ function Downloads_PreviousDownload()
 		fatal_error($txt['downloads_error_no_file_selected']);
 
 	// Get the category
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE, ID_CAT
 	FROM {db_prefix}down_file
-	WHERE ID_FILE = $id  LIMIT 1");
+	WHERE ID_FILE = {int:id}  LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if (empty($row['ID_FILE']))
 		fatal_error($txt['downloads_error_no_file_selected'],false);
@@ -4554,11 +5048,15 @@ function Downloads_PreviousDownload()
 
 
 	// Get previous download
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE
 	FROM {db_prefix}down_file
-	WHERE ID_CAT = $ID_CAT AND approved = 1 AND ID_FILE < $id ORDER BY ID_FILE DESC LIMIT 1");
+	WHERE ID_CAT = {int:cat} AND approved = 1 AND ID_FILE < {int:id} ORDER BY ID_FILE DESC LIMIT 1',
+	array(
+		'cat' => $ID_CAT,
+		'id' => $id,
+	));
 	if ($smcFunc['db_affected_rows']() != 0)
 	{
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
@@ -4581,11 +5079,14 @@ function Downloads_NextDownload()
 		fatal_error($txt['downloads_error_no_file_selected']);
 
 	// Get the category
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE, ID_CAT
 	FROM {db_prefix}down_file
-	WHERE ID_FILE = $id  LIMIT 1");
+	WHERE ID_FILE = {int:id}  LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if (empty($row['ID_FILE']))
 		fatal_error($txt['downloads_error_no_file_selected'],false);
@@ -4597,12 +5098,16 @@ function Downloads_NextDownload()
 
 
 	// Get next download
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_FILE
 	FROM {db_prefix}down_file
-	WHERE ID_CAT = $ID_CAT AND approved = 1 AND ID_FILE > $id
-	ORDER BY ID_FILE ASC LIMIT 1");
+	WHERE ID_CAT = {int:cat} AND approved = 1 AND ID_FILE > {int:id}
+	ORDER BY ID_FILE ASC LIMIT 1',
+	array(
+		'cat' => $ID_CAT,
+		'id' => $id,
+	));
 	if ($smcFunc['db_affected_rows']() != 0)
 	{
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
@@ -4620,13 +5125,19 @@ function Downloads_CatImageDelete()
 	global $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		exit;
 
-		$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-		SET filename = '' WHERE ID_CAT = $id LIMIT 1");
+		$smcFunc['db_query']('', '
+		UPDATE {db_prefix}down_cat
+		SET filename = {string:empty} WHERE ID_CAT = {int:id} LIMIT 1',
+		array(
+			'empty' => '',
+			'id' => $id,
+		));
 
 	redirectexit('action=downloads;sa=editcat;cat=' . $id);
 }
@@ -4635,28 +5146,35 @@ function Downloads_ReOrderCats($cat)
 {
 	global $smcFunc;
 
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		roworder,ID_PARENT
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $cat");
+	WHERE ID_CAT = {int:cat}',
+	array(
+		'cat' => $cat,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	$ID_PARENT = $row['ID_PARENT'];
 	$smcFunc['db_free_result']($dbresult1);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, roworder
 	FROM {db_prefix}down_cat
-	WHERE ID_PARENT = $ID_PARENT
-	ORDER BY roworder ASC");
+	WHERE ID_PARENT = {int:parent}
+	ORDER BY roworder ASC',
+	array(
+		'parent' => $ID_PARENT,
+	));
 	if ($smcFunc['db_affected_rows']() != 0)
 	{
 		$count = 1;
 		while($row2 = $smcFunc['db_fetch_assoc']($dbresult))
 		{
-			$smcFunc['db_query']('', "UPDATE {db_prefix}down_cat
-			SET roworder = $count WHERE ID_CAT = " . $row2['ID_CAT']);
+			$smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat
+			SET roworder = {int:count} WHERE ID_CAT = {int:cat_id}',
+			array('count' => $count, 'cat_id' => $row2['ID_CAT'],));
 			$count++;
 		}
 	}
@@ -4666,6 +5184,7 @@ function Downloads_ReOrderCats($cat)
 function Downloads_BulkActions()
 {
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	if (isset($_REQUEST['files']))
 	{
@@ -4693,17 +5212,21 @@ function Downloads_UpdateCategoryTotals($ID_CAT)
 	if (empty($ID_CAT))
 		return;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*) AS total
 	FROM {db_prefix}down_file
-	WHERE ID_CAT = $ID_CAT AND approved = 1");
+	WHERE ID_CAT = {int:cat} AND approved = 1',
+	array(
+		'cat' => $ID_CAT,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$total = $row['total'];
 	$smcFunc['db_free_result']($dbresult);
 
 	// Update the count
-	$dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_cat SET total = $total WHERE ID_CAT = $ID_CAT LIMIT 1");
+	$dbresult = $smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat SET total = {int:total} WHERE ID_CAT = {int:cat} LIMIT 1',
+		array('total' => $total, 'cat' => $ID_CAT,));
 
 }
 
@@ -4711,10 +5234,13 @@ function Downloads_UpdateCategoryTotalByFileID($id)
 {
 	global $smcFunc;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT FROM {db_prefix}down_file
-	WHERE ID_FILE = $id");
+	WHERE ID_FILE = {int:id}',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -4728,6 +5254,7 @@ function Downloads_CustomUp()
 
 	// Check Permission
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 	// Get the id
 	$id = (int) $_REQUEST['id'];
 
@@ -4735,11 +5262,14 @@ function Downloads_CustomUp()
 
 	// Check if there is a category above it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, ID_CUSTOM, roworder
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CUSTOM = $id");
+	WHERE ID_CUSTOM = {int:id}',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 
 	$ID_CAT = $row['ID_CAT'];
@@ -4748,11 +5278,15 @@ function Downloads_CustomUp()
 	$o--;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CUSTOM, roworder
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CAT = $ID_CAT AND roworder = $o");
+	WHERE ID_CAT = {int:cat} AND roworder = {int:roworder}',
+	array(
+		'cat' => $ID_CAT,
+		'roworder' => $o,
+	));
 
 	if ($smcFunc['db_affected_rows']()== 0)
 		fatal_error($txt['downloads_error_nocustom_above'], false);
@@ -4760,11 +5294,13 @@ function Downloads_CustomUp()
 
 
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_custom_field
-		SET roworder = $oldrow WHERE ID_CUSTOM = " .$row2['ID_CUSTOM']);
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_custom_field
+		SET roworder = {int:oldrow} WHERE ID_CUSTOM = {int:custom_id}',
+		array('oldrow' => $oldrow, 'custom_id' => $row2['ID_CUSTOM'],));
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_custom_field
-		SET roworder = $o WHERE ID_CUSTOM = $id");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_custom_field
+		SET roworder = {int:newrow} WHERE ID_CUSTOM = {int:id}',
+		array('newrow' => $o, 'id' => $id,));
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -4779,6 +5315,7 @@ function Downloads_CustomDown()
 	global $txt, $smcFunc;
 
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	// Get the id
 	$id = (int) $_REQUEST['id'];
@@ -4787,11 +5324,14 @@ function Downloads_CustomDown()
 
 	// Check if there is a category below it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		ID_CUSTOM,ID_CAT, roworder
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CUSTOM = $id LIMIT 1");
+	WHERE ID_CUSTOM = {int:id} LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	$ID_CAT = $row['ID_CAT'];
 
@@ -4800,21 +5340,27 @@ function Downloads_CustomDown()
 	$o++;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CUSTOM, ID_CAT, roworder
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CAT = $ID_CAT AND roworder = $o");
+	WHERE ID_CAT = {int:cat} AND roworder = {int:roworder}',
+	array(
+		'cat' => $ID_CAT,
+		'roworder' => $o,
+	));
 	if ($smcFunc['db_affected_rows']()== 0)
 		fatal_error($txt['downloads_error_nocustom_below'], false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_custom_field
-		SET roworder = $oldrow WHERE ID_CUSTOM = " .$row2['ID_CUSTOM']);
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_custom_field
+		SET roworder = {int:oldrow} WHERE ID_CUSTOM = {int:custom_id}',
+		array('oldrow' => $oldrow, 'custom_id' => $row2['ID_CUSTOM'],));
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}down_custom_field
-		SET roworder = $o WHERE ID_CUSTOM = $id");
+	$smcFunc['db_query']('', 'UPDATE {db_prefix}down_custom_field
+		SET roworder = {int:newrow} WHERE ID_CUSTOM = {int:id}',
+		array('newrow' => $o, 'id' => $id,));
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -4831,11 +5377,12 @@ function Downloads_CustomAdd()
 
 	// Check Permission
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	$id = (int) $_REQUEST['id'];
 
-	$title = $smcFunc['htmlspecialchars']($_REQUEST['title'],ENT_QUOTES);
-	$defaultvalue = $smcFunc['htmlspecialchars']($_REQUEST['defaultvalue'],ENT_QUOTES);
+	$title = $_REQUEST['title'];
+	$defaultvalue = $_REQUEST['defaultvalue'];
 	$required = isset($_REQUEST['required']) ? 1 : 0;
 
 
@@ -4843,9 +5390,16 @@ function Downloads_CustomAdd()
 		fatal_error($txt['downloads_custom_err_title'], false);
 
 
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}down_custom_field
-			(ID_CAT,title, defaultvalue, is_required)
-		VALUES ($id,'$title','$defaultvalue', '$required')");
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}down_custom_field
+			(ID_CAT, title, defaultvalue, is_required)
+		VALUES ({int:id}, {string:title}, {string:defaultvalue}, {int:required})',
+		array(
+			'id' => $id,
+			'title' => $title,
+			'defaultvalue' => $defaultvalue,
+			'required' => $required,
+		));
 
 
 	// Redirect back to the edit category page
@@ -4859,27 +5413,33 @@ function Downloads_CustomDelete()
 
 	// Check Permission
 	isAllowedTo('downloads_manage');
+	checkSession('get');
 
 	// Custom ID
 	$id = (int) $_REQUEST['id'];
 
 	// Get the CAT ID to redirect to the page
-	$result = $smcFunc['db_query']('', "
+	$result = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CUSTOM =  $id LIMIT 1");
+	WHERE ID_CUSTOM = {int:id} LIMIT 1',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($result);
 	$smcFunc['db_free_result']($result);
 
 
 	// Delete all custom data for downloads that use it
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_custom_field_data
-	WHERE ID_CUSTOM = $id ");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_custom_field_data
+	WHERE ID_CUSTOM = {int:id}',
+	array('id' => $id,));
 
 	// Finaly delete the field
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}down_custom_field
-	WHERE ID_CUSTOM = $id LIMIT 1");
+	$smcFunc['db_query']('', 'DELETE FROM {db_prefix}down_custom_field
+	WHERE ID_CUSTOM = {int:id} LIMIT 1',
+	array('id' => $id,));
 
 	// Redirect to the edit category page
 	redirectexit('action=downloads;sa=editcat;cat=' . $row['ID_CAT']);
@@ -4891,27 +5451,34 @@ function Downloads_ReOrderCustom($id)
 	global $smcFunc;
 
 	// Get the Category ID by id
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CAT, roworder
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CUSTOM = $id");
+	WHERE ID_CUSTOM = {int:id}',
+	array(
+		'id' => $id,
+	));
 	$row1 = $smcFunc['db_fetch_assoc']($dbresult);
 	$ID_CAT = $row1['ID_CAT'];
 	$smcFunc['db_free_result']($dbresult);
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		ID_CUSTOM, roworder
 	FROM {db_prefix}down_custom_field
-	WHERE ID_CAT = $ID_CAT ORDER BY roworder ASC");
+	WHERE ID_CAT = {int:cat} ORDER BY roworder ASC',
+	array(
+		'cat' => $ID_CAT,
+	));
 	if ($smcFunc['db_affected_rows']() != 0)
 	{
 		$count = 1;
 		while($row2 = $smcFunc['db_fetch_assoc']($dbresult))
 		{
-			$smcFunc['db_query']('', "UPDATE {db_prefix}down_custom_field
-			SET roworder = $count WHERE ID_CUSTOM = " . $row2['ID_CUSTOM']);
+			$smcFunc['db_query']('', 'UPDATE {db_prefix}down_custom_field
+			SET roworder = {int:count} WHERE ID_CUSTOM = {int:custom_id}',
+			array('count' => $count, 'custom_id' => $row2['ID_CUSTOM'],));
 			$count++;
 		}
 	}
@@ -4961,27 +5528,34 @@ function Downloads_GetFileTotals($ID_CAT)
 	// Get the child categories to this category
 	if ($modSettings['down_set_count_child'])
 	{
-		$dbresult3 = $smcFunc['db_query']('', "
+		$dbresult3 = $smcFunc['db_query']('', '
 		SELECT
 			ID_CAT, total, title
-		FROM {db_prefix}down_cat WHERE ID_PARENT = $ID_CAT");
+		FROM {db_prefix}down_cat WHERE ID_PARENT = {int:cat}',
+		array(
+			'cat' => $ID_CAT,
+		));
 		while($row3 = $smcFunc['db_fetch_assoc']($dbresult3))
 		{
 			$subcats_linktree .= '<a href="' . $scripturl . '?action=downloads;cat=' . $row3['ID_CAT'] . '">' . $row3['title'] . '</a>&nbsp;&nbsp;';
 
 			if ($row3['total'] == -1)
 			{
-				$dbresult = $smcFunc['db_query']('', "
+				$dbresult = $smcFunc['db_query']('', '
 				SELECT
 					COUNT(*) AS total
 				FROM {db_prefix}down_file
-				WHERE ID_CAT = " . $row3['ID_CAT'] . " AND approved = 1");
+				WHERE ID_CAT = {int:child_cat} AND approved = 1',
+				array(
+					'child_cat' => $row3['ID_CAT'],
+				));
 				$row = $smcFunc['db_fetch_assoc']($dbresult);
 				$total2 = $row['total'];
 				$smcFunc['db_free_result']($dbresult);
 
 
-				$dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_cat SET total = $total2 WHERE ID_CAT =  " . $row3['ID_CAT'] . " LIMIT 1");
+				$dbresult = $smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat SET total = {int:total} WHERE ID_CAT = {int:child_cat} LIMIT 1',
+					array('total' => $total2, 'child_cat' => $row3['ID_CAT'],));
 			}
 		}
 		$smcFunc['db_free_result']($dbresult3);
@@ -4998,11 +5572,12 @@ function Downloads_GetFileTotals($ID_CAT)
 		if ($row3['finaltotal'] != '')
 			$total += $row3['finaltotal'];
 */
-		$dbresult3 = $smcFunc['db_query']('', "
+		$dbresult3 = $smcFunc['db_query']('', '
 		SELECT
 			total, ID_CAT, ID_PARENT
 		FROM {db_prefix}down_cat
-		WHERE ID_PARENT <> 0");
+		WHERE ID_PARENT <> 0',
+		array());
 
 		$childArray = array();
 		while($row3 = $smcFunc['db_fetch_assoc']($dbresult3))
@@ -5040,11 +5615,14 @@ function Downloads_GetTotalByCATID($ID_CAT)
 {
 	global $smcFunc;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		total
 	FROM {db_prefix}down_cat
-	WHERE ID_CAT = $ID_CAT");
+	WHERE ID_CAT = {int:cat}',
+	array(
+		'cat' => $ID_CAT,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -5052,17 +5630,21 @@ function Downloads_GetTotalByCATID($ID_CAT)
 		return $row['total'];
 	else
 	{
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			COUNT(*) AS total
 		FROM {db_prefix}down_file
-		WHERE ID_CAT = $ID_CAT AND approved = 1");
+		WHERE ID_CAT = {int:cat} AND approved = 1',
+		array(
+			'cat' => $ID_CAT,
+		));
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
 		$total = $row['total'];
 		$smcFunc['db_free_result']($dbresult);
 
 		// Update the count
-		$dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}down_cat SET total = $total WHERE ID_CAT = $ID_CAT LIMIT 1");
+		$dbresult = $smcFunc['db_query']('', 'UPDATE {db_prefix}down_cat SET total = {int:total} WHERE ID_CAT = {int:cat} LIMIT 1',
+			array('total' => $total, 'cat' => $ID_CAT,));
 
 		// Return the total files
 		return $total;
@@ -5085,11 +5667,14 @@ function Downloads_DownloadFile()
 		$id = (int) $_REQUEST['id'];
 
 	// Get the download information
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		f.filename, f.fileurl, f.orginalfilename, f.approved, f.credits, f.ID_CAT, f.id_member, f.id_file
 	FROM {db_prefix}down_file as f
-	WHERE f.ID_FILE = $id");
+	WHERE f.ID_FILE = {int:id}',
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -5116,10 +5701,14 @@ function Downloads_DownloadFile()
 	{
 		$lastdownload = time();
 		// Update download count
-		$smcFunc['db_query']('', "
+		$smcFunc['db_query']('', '
 		UPDATE {db_prefix}down_file
-			SET totaldownloads = totaldownloads + 1, lastdownload  = '$lastdownload'
-		WHERE ID_FILE = $id LIMIT 1");
+			SET totaldownloads = totaldownloads + 1, lastdownload = {int:lastdownload}
+		WHERE ID_FILE = {int:id} LIMIT 1',
+		array(
+			'lastdownload' => $lastdownload,
+			'id' => $id,
+		));
 
 		// Redirect to the download
 		header("Location: " . $row['fileurl']);
@@ -5130,13 +5719,17 @@ function Downloads_DownloadFile()
 	{
 		$lastdownload = time();
 		// Update download count
-		$smcFunc['db_query']('', "
+		$smcFunc['db_query']('', '
 		UPDATE {db_prefix}down_file
-			SET totaldownloads = totaldownloads + 1, lastdownload  = '$lastdownload'
-		WHERE ID_FILE = $id LIMIT 1");
+			SET totaldownloads = totaldownloads + 1, lastdownload = {int:lastdownload}
+		WHERE ID_FILE = {int:id} LIMIT 1',
+		array(
+			'lastdownload' => $lastdownload,
+			'id' => $id,
+		));
 
 
-		$real_filename = $row['orginalfilename'];
+		$real_filename = preg_replace('/[\r\n\t]/', '', $row['orginalfilename']);
 		$filename = $modSettings['down_path'] . $row['filename'];
 
 		ob_end_clean();
@@ -5171,7 +5764,7 @@ function Downloads_DownloadFile()
 		// Send the attachment headers.
 		header('Pragma: ');
 
-		if (!$context['browser']['is_gecko'])
+		if (!(function_exists('isBrowser') ? isBrowser('is_gecko') : (!empty($context['browser']['is_gecko']))))
 			header('Content-Transfer-Encoding: binary');
 
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
@@ -5286,12 +5879,16 @@ function Downloads_ShowSubCats($cat,$g_manage)
 
 
 		// List all the catagories
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			c.ID_CAT, c.title, p.view, c.roworder, c.description, c.image, c.filename
 		FROM {db_prefix}down_cat AS c
-			LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = $groupid AND c.ID_CAT = p.ID_CAT)
-		WHERE c.ID_PARENT = $cat ORDER BY c.roworder ASC");
+			LEFT JOIN {db_prefix}down_catperm AS p ON (p.ID_GROUP = {int:groupid} AND c.ID_CAT = p.ID_CAT)
+		WHERE c.ID_PARENT = {int:cat} ORDER BY c.roworder ASC',
+		array(
+			'groupid' => $groupid,
+			'cat' => $cat,
+		));
 		if ($smcFunc['db_affected_rows']() != 0)
 		{
 
@@ -5451,15 +6048,15 @@ function MainPageBlock($title, $type = 'recent')
 				break;
 			}
 
-				$query = "SELECT p.ID_FILE, p.commenttotal, p.totalratings, p.rating, p.filesize, p.views, p.title, p.id_member, m.real_name, p.date, p.description,
+				$query = 'SELECT p.ID_FILE, p.commenttotal, p.totalratings, p.rating, p.filesize, p.views, p.title, p.id_member, m.real_name, p.date, p.description,
 				p.totaldownloads
 					FROM {db_prefix}down_file as p
 					LEFT JOIN {db_prefix}members AS m  ON (m.id_member = p.id_member)
-					LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
-					WHERE p.approved = 1 AND (c.view IS NULL OR c.view =1) GROUP by p.ID_FILE,p.views,p.commenttotal,p.totaldownloads,p.rating,p.totalratings,p.description,p.filesize,p.filesize,p.title, p.id_member, m.real_name, p.date ORDER BY $query_type DESC LIMIT 4";
+					LEFT JOIN {db_prefix}down_catperm AS c ON (c.ID_GROUP IN (' . $groupsdata . ') AND c.ID_CAT = p.ID_CAT)
+					WHERE p.approved = 1 AND (c.view IS NULL OR c.view =1) GROUP by p.ID_FILE,p.views,p.commenttotal,p.totaldownloads,p.rating,p.totalratings,p.description,p.filesize,p.filesize,p.title, p.id_member, m.real_name, p.date ORDER BY ' . $query_type . ' DESC LIMIT 4';
 
 			// Execute the SQL query
-			$dbresult = $smcFunc['db_query']('', $query);
+			$dbresult = $smcFunc['db_query']('', $query, array());
 			$rowlevel = 0;
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -5515,11 +6112,12 @@ function DoDownloadsAdminTabs($overrideSelected = '')
 	global $context, $txt, $scripturl, $smcFunc;
 
 
-	$dbresult3 = $smcFunc['db_query']('', "
+	$dbresult3 = $smcFunc['db_query']('', '
 			SELECT
 				COUNT(*) AS total
 			FROM {db_prefix}down_file
-			WHERE approved = 0");
+			WHERE approved = 0',
+			array());
 	$totalrow = $smcFunc['db_fetch_assoc']($dbresult3);
 	$totalappoval = $totalrow['total'];
 	$smcFunc['db_free_result']($dbresult3);
@@ -5616,11 +6214,14 @@ function Downloads_GetParentLink($ID_CAT)
 	if ($ID_CAT == 0)
 		return;
 
-			$dbresult1 = $smcFunc['db_query']('', "
+			$dbresult1 = $smcFunc['db_query']('', '
 		SELECT
 			ID_PARENT,title
 		FROM {db_prefix}down_cat
-		WHERE ID_CAT = $ID_CAT LIMIT 1");
+		WHERE ID_CAT = {int:cat} LIMIT 1',
+		array(
+			'cat' => $ID_CAT,
+		));
 		$row1 = $smcFunc['db_fetch_assoc']($dbresult1);
 
 		$smcFunc['db_free_result']($dbresult1);
@@ -5676,14 +6277,13 @@ function Downloads_ImportTinyPortalDownloads()
 {
 	global $txt, $smcFunc, $boarddir, $context, $modSettings, $sourcedir, $downloadSettings;
 	isAllowedTo('downloads_manage');
+	checkSession('post');
 
 	// No limit on how long it takes
 	ini_set('max_execution_time', 0);
 	ini_set('display_errors', 1);
 
-	$testGD = get_extension_funcs('gd');
-	$gd2 = in_array('imagecreatetruecolor', $testGD) && function_exists('imagecreatetruecolor');
-	unset($testGD);
+	$gd2 = function_exists('imagecreatetruecolor');
 
 
 	require_once($sourcedir . '/Subs-Graphics.php');
@@ -5695,11 +6295,14 @@ function Downloads_ImportTinyPortalDownloads()
 	$catArray = array();
 
 	// Process Categories
-	$catResult = $smcFunc['db_query']('',"
+	$catResult = $smcFunc['db_query']('','
 	SELECT
 		id, name, description, parent
 	FROM {db_prefix}tp_dlmanager
-	WHERE type = 'dlcat' ORDER by parent ASC");
+	WHERE type = {string:type} ORDER by parent ASC',
+	array(
+		'type' => 'dlcat',
+	));
 	while ($catRow = $smcFunc['db_fetch_assoc']($catResult))
 	{
 
@@ -5712,13 +6315,18 @@ function Downloads_ImportTinyPortalDownloads()
 		if (empty($ID_PARENT))
 			$ID_PARENT = 0;
 
-		$title = $smcFunc['db_escape_string']($catRow['name']);
-		$description = $smcFunc['db_escape_string']($catRow['description']);
+		$title = $catRow['name'];
+		$description = $catRow['description'];
 
 		// Insert the category
-		$smcFunc['db_query']('',"INSERT INTO {db_prefix}down_cat
+		$smcFunc['db_query']('','INSERT INTO {db_prefix}down_cat
 				(title, description, ID_PARENT)
-			VALUES ('$title', '$description',$ID_PARENT)");
+			VALUES ({string:title}, {string:description}, {int:parent})',
+			array(
+				'title' => $title,
+				'description' => $description,
+				'parent' => $ID_PARENT,
+			));
 
 
 		// Get the Category ID
@@ -5733,15 +6341,16 @@ function Downloads_ImportTinyPortalDownloads()
 	$smcFunc['db_free_result']($catResult);
 
 
-	$fileQuery = "SELECT
+	$fileQuery = 'SELECT
 		id, name, description, category, downloads, views,
 		created, last_access, filesize, authorid, screenshot, rating, voters,
 		file
 	FROM {db_prefix}tp_dlmanager
-	WHERE type = 'dlitem'";
+	WHERE type = {string:type}';
 
 
-	$dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}tp_dlmanager");
+	$dbresult = $smcFunc['db_query']('', 'SHOW COLUMNS FROM {db_prefix}tp_dlmanager',
+		array());
 
 
 
@@ -5749,37 +6358,50 @@ while ($row = $smcFunc['db_fetch_row']($dbresult))
 {
 	$row[0] = strtolower($row[0]);
 	if($row[0] == 'author_id')
-		$fileQuery = "SELECT
+		$fileQuery = 'SELECT
 		id, name, description, category, downloads, views,
 		created, last_access, filesize, author_id as authorid, screenshot, rating, voters,
 		file
 	FROM {db_prefix}tp_dlmanager
-	WHERE type = 'dlitem'";
+	WHERE type = {string:type}';
 
 }
 
 $smcFunc['db_free_result']($dbresult);
 
 	// Process Files
-	$fileResult = $smcFunc['db_query']('',$fileQuery );
+	$fileResult = $smcFunc['db_query']('',$fileQuery, array('type' => 'dlitem',));
 	while ($fileRow = $smcFunc['db_fetch_assoc']($fileResult))
 	{
 		$category = (int) $catArray[$fileRow['category']];
 		$filesize = $fileRow['filesize'];
-		$orginalfilename = $smcFunc['db_escape_string']($fileRow['file']);
-		$filename =   $smcFunc['db_escape_string']($fileRow['file']);
-		$description = $smcFunc['db_escape_string']($fileRow['description']);
-		$title = $smcFunc['db_escape_string']($fileRow['name']);
+		$orginalfilename = $fileRow['file'];
+		$filename = $fileRow['file'];
+		$description = $fileRow['description'];
+		$title = $fileRow['name'];
 		$authorid = $fileRow['authorid'];
 		$filedate =  $fileRow['created'];
 		$lastdownload = $fileRow['last_access'];
 		$views = $fileRow['views'];
 		$totaldownloads = $fileRow['downloads'];
-//		$screenshot = $smcFunc['db_escape_string']($fileRow['screenshot']);
+//		$screenshot = $fileRow['screenshot'];
 
-		$smcFunc['db_query']('',"INSERT INTO {db_prefix}down_file
+		$smcFunc['db_query']('','INSERT INTO {db_prefix}down_file
 							(ID_CAT, filesize, filename, orginalfilename, title, description,ID_MEMBER,date,approved, views, totaldownloads, lastdownload)
-						VALUES ($category, $filesize, '" . $filename . "', '$orginalfilename','$title', '$description',$authorid,$filedate,1, $views, $totaldownloads, $lastdownload )");
+						VALUES ({int:category}, {int:filesize}, {string:filename}, {string:orginalfilename}, {string:title}, {string:description}, {int:authorid}, {int:filedate}, 1, {int:views}, {int:totaldownloads}, {int:lastdownload})',
+						array(
+							'category' => $category,
+							'filesize' => $filesize,
+							'filename' => $filename,
+							'orginalfilename' => $orginalfilename,
+							'title' => $title,
+							'description' => $description,
+							'authorid' => $authorid,
+							'filedate' => $filedate,
+							'views' => $views,
+							'totaldownloads' => $totaldownloads,
+							'lastdownload' => $lastdownload,
+						));
 
 		$file_id = $smcFunc['db_insert_id']('{db_prefix}down_file', 'id_file');
 
@@ -5859,13 +6481,15 @@ $smcFunc['db_free_result']($dbresult);
 			if ($rating == '')
 				continue;
 
-			$smcFunc['db_query']('',"INSERT INTO {db_prefix}down_rating (ID_MEMBER, ID_FILE, value) VALUES (" . $votersArray[$key] . ", $file_id,$rating)");
+			$smcFunc['db_query']('','INSERT INTO {db_prefix}down_rating (ID_MEMBER, ID_FILE, value) VALUES ({int:voter}, {int:file_id}, {int:rating})',
+				array('voter' => (int) $votersArray[$key], 'file_id' => $file_id, 'rating' => (int) $rating,));
 
 			// Add rating information to the download
-			$smcFunc['db_query']('',"
+			$smcFunc['db_query']('','
 			UPDATE {db_prefix}down_file
-				SET totalratings = totalratings + 1, rating = rating + $rating
-			WHERE ID_FILE = $file_id LIMIT 1");
+				SET totalratings = totalratings + 1, rating = rating + {int:rating}
+			WHERE ID_FILE = {int:file_id} LIMIT 1',
+			array('rating' => (int) $rating, 'file_id' => $file_id,));
 		}
 
 		if ($fileRow['filesize'] != 0)

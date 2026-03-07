@@ -1,7 +1,7 @@
 <?php
 /*
 EzPortal
-Version6.5
+Version 7.0
 by:vbgamer45
 https://www.ezportal.com
 Copyright 2010-2026 http://www.samsonsoftware.com
@@ -87,7 +87,7 @@ function UpdatePortalSettings($changeArray)
 	if (empty($changeArray) || !is_array($changeArray))
 		return;
 
-	$replaceArray = array();
+	$hasChanges = false;
 	foreach ($changeArray as $variable => $value)
 	{
 		if (isset($ezpSettings[$variable]) && $ezpSettings[$variable] == stripslashes($value))
@@ -95,19 +95,22 @@ function UpdatePortalSettings($changeArray)
 		elseif (!isset($ezpSettings[$variable]) && empty($value))
 			continue;
 
-		$replaceArray[] = "(SUBSTRING('$variable', 1, 255), SUBSTRING('$value', 1, 65534))";
+		$smcFunc['db_query']('', "
+			REPLACE INTO {db_prefix}ezp_settings
+				(variable, value)
+			VALUES (SUBSTRING({string:variable}, 1, 255), SUBSTRING({string:value}, 1, 65534))",
+			array(
+				'variable' => $variable,
+				'value' => $value,
+			)
+		);
+
 		$ezpSettings[$variable] = stripslashes($value);
+		$hasChanges = true;
 	}
 
-	if (empty($replaceArray))
+	if (!$hasChanges)
 		return;
-
-	$smcFunc['db_query']('', "
-		REPLACE INTO {db_prefix}ezp_settings
-			(variable, value)
-		VALUES " . implode(',
-			', $replaceArray));
-
 
 	cache_put_data('ezpSettings', null, 90);
 }
@@ -225,7 +228,19 @@ function EzPortalProcessBlockFile($filename, $iszip = true)
 	// Insert the ezBlock into the database
 	$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_blocks
 		    (blocktitle, blocktype, blockversion, blockauthor, blockwebsite, can_cache, data_editable, forumversion, blockdata)
-			VALUES ('$title', '$blocktype','$version','$author','$website',$can_cache,$editable,'$forumversion','$blockdata')");
+			VALUES ({string:title}, {string:blocktype}, {string:version}, {string:author}, {string:website}, {int:can_cache}, {int:editable}, {string:forumversion}, {string:blockdata})",
+		array(
+			'title' => $title,
+			'blocktype' => $blocktype,
+			'version' => $version,
+			'author' => $author,
+			'website' => $website,
+			'can_cache' => $can_cache,
+			'editable' => $editable,
+			'forumversion' => $forumversion,
+			'blockdata' => $blockdata,
+		)
+	);
 
 	$blockID =  $smcFunc['db_insert_id']('{db_prefix}ezp_blocks', 'id_block');
 
@@ -257,7 +272,17 @@ function EzPortalProcessBlockFile($filename, $iszip = true)
 
 				$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters
 			    (id_block, title, parameter_type, defaultvalue, required, parameter_name, id_order)
-				VALUES ($blockID, '$ptitle', '$ptype','$pdefault', '$prequired', '$key', $porder)");
+				VALUES ({int:block_id}, {string:ptitle}, {string:ptype}, {string:pdefault}, {int:prequired}, {string:pkey}, {int:porder})",
+					array(
+						'block_id' => $blockID,
+						'ptitle' => $ptitle,
+						'ptype' => $ptype,
+						'pdefault' => $pdefault,
+						'prequired' => $prequired,
+						'pkey' => $key,
+						'porder' => $porder,
+					)
+				);
 
 				$parameterID = $smcFunc['db_insert_id']('{db_prefix}ezp_block_parameters', 'id_parameter');
 
@@ -265,16 +290,20 @@ function EzPortalProcessBlockFile($filename, $iszip = true)
 				if (isset($parameter['selectvalues']))
 				{
 					$selectValues = explode(",",$parameter['selectvalues']);
-					$modSettings['disableQueryCheck'] = true;
 					foreach($selectValues as $paramSelect)
 					{
-						$paramSelect = addslashes($paramSelect);
 						$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 				    (id_block, id_parameter, selectvalue, selecttext)
-					VALUES ($blockID, $parameterID, '$paramSelect','$paramSelect')");
+					VALUES ({int:block_id}, {int:parameter_id}, {string:select_value}, {string:select_text})",
+							array(
+								'block_id' => $blockID,
+								'parameter_id' => $parameterID,
+								'select_value' => $paramSelect,
+								'select_text' => $paramSelect,
+							)
+						);
 
 					}
-					$modSettings['disableQueryCheck'] = false;
 				}
 
 		}
@@ -554,15 +583,22 @@ function EzBlockRecentPostsBlock($parameters = array(), $numPosts = 10, $exclude
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))
 
 			" . (!$user_info['is_guest'] ? "
-			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = " . $user_info['id'] . ")
-			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = " . $user_info['id'] . ")" : '') . "
+			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.ID_TOPIC = m.ID_TOPIC AND lt.ID_MEMBER = {int:member_id})
+			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = m.ID_BOARD AND lmr.ID_MEMBER = {int:member_id})" : '') . "
 		WHERE
-			m.ID_MSG >= " . ($modSettings['maxMsgID'] - 2000 * min($numPosts, 5)) . " AND
+			m.ID_MSG >= {int:min_msg_id} AND
 		b.ID_BOARD = m.ID_BOARD" . (empty($exclude_boards) ? '' : "
-			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
-			AND $user_info[query_see_board]
+			AND b.ID_BOARD NOT IN (" . implode(', ', array_map('intval', $exclude_boards)) . ")") . "
+			AND {raw:query_see_board}
 		ORDER BY m.ID_MSG DESC
-		LIMIT $numPosts");
+		LIMIT {int:limit}",
+		array(
+			'member_id' => $user_info['id'],
+			'min_msg_id' => $modSettings['maxMsgID'] - 2000 * min($numPosts, 5),
+			'query_see_board' => $user_info['query_see_board'],
+			'limit' => $numPosts,
+		)
+	);
 	
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
@@ -739,17 +775,24 @@ function EzBlockRecentTopicsBlock($parameters = array(), $numTopics = 10, $exclu
 			LEFT JOIN {db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))
 			" . (!$user_info['is_guest'] ? "
-			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.ID_TOPIC = t.ID_TOPIC AND lt.ID_MEMBER = " . $user_info['id'] . ")
-			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = b.ID_BOARD AND lmr.ID_MEMBER = " . $user_info['id'] . ")" : '') . "
+			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.ID_TOPIC = t.ID_TOPIC AND lt.ID_MEMBER = {int:member_id})
+			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.ID_BOARD = b.ID_BOARD AND lmr.ID_MEMBER = {int:member_id})" : '') . "
 		WHERE
-			m.ID_MSG >= " . ($modSettings['maxMsgID'] - 2000 * min($numTopics, 5)) . " AND
+			m.ID_MSG >= {int:min_msg_id} AND
 		t.ID_LAST_MSG = m.ID_MSG
 			AND b.ID_BOARD = t.ID_BOARD" . (empty($exclude_boards) ? '' : "
-			AND b.ID_BOARD NOT IN (" . implode(', ', $exclude_boards) . ")") . "
-			AND $user_info[query_see_board]
+			AND b.ID_BOARD NOT IN (" . implode(', ', array_map('intval', $exclude_boards)) . ")") . "
+			AND {raw:query_see_board}
 			AND ms.ID_MSG = t.ID_FIRST_MSG
 		ORDER BY t.ID_LAST_MSG DESC
-		LIMIT $numTopics");
+		LIMIT {int:limit}",
+		array(
+			'member_id' => $user_info['id'],
+			'min_msg_id' => $modSettings['maxMsgID'] - 2000 * min($numTopics, 5),
+			'query_see_board' => $user_info['query_see_board'],
+			'limit' => $numTopics,
+		)
+	);
 	
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
@@ -900,7 +943,8 @@ function EzBlockThemeSelect($parameters = array(), $startHtml = '', $endHtml = '
 	$context['available_themes'] = array();
 	if (!empty($modSettings['knownThemes']))
 	{
-		$knownThemes = implode("', '", explode(',', $modSettings['knownThemes']));
+		$knownThemesArray = array_map('intval', explode(',', $modSettings['knownThemes']));
+		$knownThemesList = implode(', ', $knownThemesArray);
 
 
 		$ezblockThemeSelectCache = array();
@@ -910,10 +954,15 @@ function EzBlockThemeSelect($parameters = array(), $startHtml = '', $endHtml = '
 			SELECT ID_THEME, variable, value
 			FROM {db_prefix}themes
 			WHERE variable IN ('name', 'theme_url', 'theme_dir', 'images_url')" . (empty($modSettings['theme_default']) && !allowedTo('admin_forum') ? "
-				AND ID_THEME IN ('$knownThemes')
+				AND ID_THEME IN ({raw:known_themes})
 				AND ID_THEME != 1" : '') . "
 				AND ID_THEME != 0
-			LIMIT " . count(explode(',', $modSettings['knownThemes'])) * 8);
+			LIMIT {int:limit}",
+				array(
+					'known_themes' => $knownThemesList,
+					'limit' => count($knownThemesArray) * 8,
+				)
+			);
 			while ($row = $smcFunc['db_fetch_assoc']($request))
 			{
 				$ezblockThemeSelectCache[] = $row;
@@ -1139,7 +1188,7 @@ function EzBlockPollBlock($parameters = array(), $pollTopicID = 0, $startHtml = 
 	global $context;
 
 	$t =  time();
-	$pollOption = " AND (p.expire_time = 0 OR p.expire_time < $t) ORDER BY RAND() ";
+	$pollOption = " AND (p.expire_time = 0 OR p.expire_time < {int:current_time}) ORDER BY RAND() ";
 	$board = 0;
 	// Pass all the parameters
 	foreach($parameters as $myparam)
@@ -1148,7 +1197,7 @@ function EzBlockPollBlock($parameters = array(), $pollTopicID = 0, $startHtml = 
 		{
 			$pollTopicID = (int) $myparam['data'];
 			if (!empty($pollTopicID))
-				$pollOption = " AND t.ID_TOPIC = $pollTopicID";
+				$pollOption = " AND t.ID_TOPIC = {int:poll_topic_id}";
 		}
 
 		if ($myparam['parameter_name'] == 'board')
@@ -1158,7 +1207,8 @@ function EzBlockPollBlock($parameters = array(), $pollTopicID = 0, $startHtml = 
 
 	if (!empty($board))
 	{
-		$pollOption = " AND b.ID_BOARD IN($board) " . $pollOption;
+		$sanitized_board = implode(',', array_map('intval', explode(',', $board)));
+		$pollOption = " AND b.ID_BOARD IN({raw:poll_board_list}) " . $pollOption;
 	}
 
 
@@ -1177,13 +1227,20 @@ function EzBlockPollBlock($parameters = array(), $pollTopicID = 0, $startHtml = 
 
 	$request = $smcFunc['db_query']('', "
 		SELECT
-			p.id_poll, p.question, p.guest_vote, t.ID_TOPIC, p.voting_locked, p.hide_results, p.expire_time, p.max_votes, b.id_board 
+			p.id_poll, p.question, p.guest_vote, t.ID_TOPIC, p.voting_locked, p.hide_results, p.expire_time, p.max_votes, b.id_board
 		FROM ({db_prefix}topics AS t, {db_prefix}polls AS p, {db_prefix}boards AS b)
-		WHERE p.ID_POLL = t.ID_POLL 
+		WHERE p.ID_POLL = t.ID_POLL
 			AND b.ID_BOARD = t.ID_BOARD
-			AND $user_info[query_see_board]" . (!in_array(0, $boardsAllowed) ? "
-			AND b.ID_BOARD IN (" . implode(', ', $boardsAllowed) . ")" : '') . " $pollOption
-		LIMIT 1");
+			AND {raw:query_see_board}" . (!in_array(0, $boardsAllowed) ? "
+			AND b.ID_BOARD IN (" . implode(', ', array_map('intval', $boardsAllowed)) . ")" : '') . " $pollOption
+		LIMIT 1",
+		array(
+			'query_see_board' => $user_info['query_see_board'],
+			'current_time' => $t,
+			'poll_topic_id' => $pollTopicID,
+			'poll_board_list' => !empty($board) ? $sanitized_board : '0',
+		)
+	);
 
 	// Either this topic has no poll, or the user cannot view it.
 	if ($smcFunc['db_num_rows']($request) == 0)
@@ -1236,14 +1293,22 @@ function EzBlockPollBlock($parameters = array(), $pollTopicID = 0, $startHtml = 
 	$request = $smcFunc['db_query']('', "
 		SELECT COUNT(DISTINCT ID_MEMBER)
 		FROM {db_prefix}log_polls
-		WHERE ID_POLL = $row[id_poll]");
+		WHERE ID_POLL = {int:id_poll}",
+		array(
+			'id_poll' => $row['id_poll'],
+		)
+	);
 	list ($total) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
 	$request = $smcFunc['db_query']('', "
 		SELECT ID_CHOICE, label, votes
 		FROM {db_prefix}poll_choices
-		WHERE ID_POLL = $row[id_poll]");
+		WHERE ID_POLL = {int:id_poll}",
+		array(
+			'id_poll' => $row['id_poll'],
+		)
+	);
 	$options = array();
 	$total_votes = 0;
 	while ($rowChoice = $smcFunc['db_fetch_assoc']($request))
@@ -1446,21 +1511,21 @@ function EzBlockSMFArticlesEzBlock($parameters = array(), $rows = 4, $articles =
 					$query = "SELECT a.ID_ARTICLE, a.title, a.date, a.rating, a.totalratings, m.real_name, a.ID_MEMBER, a.description, a.views, a.commenttotal
 					FROM {db_prefix}articles AS a
 					LEFT JOIN {db_prefix}members AS m  ON (a.ID_MEMBER = m.ID_MEMBER)
-					WHERE  a.approved = 1  ORDER BY a.ID_ARTICLE DESC LIMIT $articles";
+					WHERE  a.approved = 1  ORDER BY a.ID_ARTICLE DESC LIMIT {int:limit}";
 				break;
 
 				case 'viewed':
 					$query = "SELECT a.ID_ARTICLE, a.title, a.date, a.rating, a.totalratings, m.real_name, a.ID_MEMBER, a.description, a.views, a.commenttotal
 					FROM {db_prefix}articles AS a
 					LEFT JOIN {db_prefix}members AS m  ON (a.ID_MEMBER = m.ID_MEMBER)
-					WHERE a.approved = 1  ORDER BY a.views DESC LIMIT $articles";
+					WHERE a.approved = 1  ORDER BY a.views DESC LIMIT {int:limit}";
 				break;
 
 				case 'mostcomments':
 					$query = "SELECT a.ID_ARTICLE, a.title, a.date, a.rating, a.totalratings, m.real_name, a.ID_MEMBER, a.description, a.views, a.commenttotal
 					FROM {db_prefix}articles AS a
 					LEFT JOIN {db_prefix}members AS m  ON (a.ID_MEMBER = m.ID_MEMBER)
-					WHERE a.approved = 1  ORDER BY p.commenttotal DESC LIMIT $articles";
+					WHERE a.approved = 1  ORDER BY p.commenttotal DESC LIMIT {int:limit}";
 				break;
 
 				case 'toprated':
@@ -1469,11 +1534,15 @@ function EzBlockSMFArticlesEzBlock($parameters = array(), $rows = 4, $articles =
 					(a.rating / a.totalratings ) AS ratingaverage
 					FROM {db_prefix}articles AS a
 					LEFT JOIN {db_prefix}members AS m  ON (a.ID_MEMBER = m.ID_MEMBER)
-					WHERE a.approved = 1  ORDER BY ratingaverage DESC LIMIT $articles ";
+					WHERE a.approved = 1  ORDER BY ratingaverage DESC LIMIT {int:limit}";
 				break;
 			}
 			// Execute the SQL query
-			$dbresult = $smcFunc['db_query']('', $query);
+			$dbresult = $smcFunc['db_query']('', $query,
+				array(
+					'limit' => $articles,
+				)
+			);
 			$rowlevel = 0;
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1544,7 +1613,7 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 	$category = (int) $category;
 
 	if (!$context['user']['is_guest'])
-		$groupsdata = implode(',',$user_info['groups']);
+		$groupsdata = implode(',', array_map('intval', $user_info['groups']));
 	else
 		$groupsdata = -1;
 
@@ -1599,8 +1668,8 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 			{
 				$selectPro = " f.ID_PICTURE, f.thumbfilename, ";
 				$selectProJoin =  " LEFT JOIN {db_prefix}down_file_pic AS f ON (f.ID_PICTURE = p.ID_PICTURE)
-				LEFT JOIN  {db_prefix}down_cat AS c ON (c.ID_CAT = p.ID_CAT) 
-				 LEFT JOIN {db_prefix}down_catperm AS pa ON (pa.ID_GROUP IN ($groupsdata) AND c.ID_CAT = pa.ID_CAT) ";
+				LEFT JOIN  {db_prefix}down_cat AS c ON (c.ID_CAT = p.ID_CAT)
+				 LEFT JOIN {db_prefix}down_catperm AS pa ON (pa.ID_GROUP IN ({raw:groups_data}) AND c.ID_CAT = pa.ID_CAT) ";
 				$checkWhere = ' AND (pa.view IS NULL OR pa.view =1) ';
 			}
 
@@ -1613,7 +1682,7 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 $checkWhere ORDER BY RAND() DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY RAND() DESC LIMIT {int:limit}";
 				break;
 
 				case 'recent':
@@ -1621,7 +1690,7 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE  p.approved = 1 $checkWhere ORDER BY p.ID_FILE DESC LIMIT $files";
+					WHERE  p.approved = 1 $checkWhere ORDER BY p.ID_FILE DESC LIMIT {int:limit}";
 				break;
 
 				case 'viewed':
@@ -1629,7 +1698,7 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM {db_prefix}down_file as p
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 $checkWhere ORDER BY  p.views DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY  p.views DESC LIMIT {int:limit}";
 				break;
 
 				case 'mostcomments':
@@ -1637,7 +1706,7 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 $checkWhere ORDER BY p.commenttotal DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY p.commenttotal DESC LIMIT {int:limit}";
 				break;
 
 				case 'toprated':
@@ -1645,7 +1714,7 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 $checkWhere ORDER BY ratingaverage DESC LIMIT $files ";
+					WHERE p.approved = 1 $checkWhere ORDER BY ratingaverage DESC LIMIT {int:limit}";
 				break;
 
 				case 'downloads':
@@ -1653,11 +1722,16 @@ function EzBlockDownloadsBlock($parameters = array(), $rows = 4, $type = 'recent
 					FROM ({db_prefix}down_file as p)
 					LEFT JOIN {db_prefix}members AS m  ON (m.ID_MEMBER = p.ID_MEMBER)
 					$selectProJoin
-					WHERE p.approved = 1 $checkWhere ORDER BY p.totaldownloads DESC LIMIT $files";
+					WHERE p.approved = 1 $checkWhere ORDER BY p.totaldownloads DESC LIMIT {int:limit}";
 				break;
 			}
 			// Execute the SQL query
-			$dbresult = $smcFunc['db_query']('', $query);
+			$dbresult = $smcFunc['db_query']('', $query,
+				array(
+					'limit' => $files,
+					'groups_data' => $groupsdata,
+				)
+			);
 			$rowlevel = 0;
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1722,7 +1796,7 @@ function EzBlockGalleryBlock($parameters = array(), $rows = 4, $images = 4, $cat
 
 	$galleryPro = false;
 	if (!$context['user']['is_guest'])
-		$groupsdata = implode(',',$user_info['groups']);
+		$groupsdata = implode(',', array_map('intval', $user_info['groups']));
 	else
 		$groupsdata = -1;
 
@@ -1774,8 +1848,13 @@ function EzBlockGalleryBlock($parameters = array(), $rows = 4, $images = 4, $cat
 			p.ID_MEMBER, m.real_name, p.date
 		FROM {db_prefix}gallery_pic as p
 		LEFT JOIN {db_prefix}members AS m ON (p.ID_MEMBER = m.ID_MEMBER)
-		WHERE p.approved = 1 " . ($category != 0 ? ' AND p.ID_CAT = ' . $category : '' ) . "
-			ORDER BY p.ID_PICTURE DESC LIMIT $images");
+		WHERE p.approved = 1 " . ($category != 0 ? ' AND p.ID_CAT = {int:category}' : '' ) . "
+			ORDER BY p.ID_PICTURE DESC LIMIT {int:limit}",
+			array(
+				'category' => $category,
+				'limit' => $images,
+			)
+		);
 		else
 			$dbresult = $smcFunc['db_query']('', "
 		SELECT
@@ -1784,10 +1863,16 @@ function EzBlockGalleryBlock($parameters = array(), $rows = 4, $images = 4, $cat
 		FROM {db_prefix}gallery_pic as p
 		LEFT JOIN {db_prefix}members AS m ON (p.ID_MEMBER = m.ID_MEMBER)
 		LEFT JOIN {db_prefix}gallery_usersettings AS s ON (s.ID_MEMBER = m.ID_MEMBER)
-		LEFT JOIN {db_prefix}gallery_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
+		LEFT JOIN {db_prefix}gallery_catperm AS c ON (c.ID_GROUP IN ({raw:groups_data}) AND c.ID_CAT = p.ID_CAT)
 		WHERE ((s.private =0 OR s.private IS NULL ) AND (s.password = '' OR s.password IS NULL )  AND p.USER_ID_CAT !=0 AND p.approved =1) OR (p.approved =1 AND p.USER_ID_CAT =0 AND (c.view IS NULL OR c.view =1))
-					 " . ($category != 0 ? ' AND p.ID_CAT = ' . $category : '' ) . " $mediaSQL
-			GROUP by p.ID_PICTURE, p.ID_PICTURE, p.commenttotal, p.filesize, p.views, p.thumbfilename, p.title,p.ID_MEMBER, m.real_name, p.date ORDER BY p.ID_PICTURE DESC LIMIT $images");
+					 " . ($category != 0 ? ' AND p.ID_CAT = {int:category}' : '' ) . " $mediaSQL
+			GROUP by p.ID_PICTURE, p.ID_PICTURE, p.commenttotal, p.filesize, p.views, p.thumbfilename, p.title,p.ID_MEMBER, m.real_name, p.date ORDER BY p.ID_PICTURE DESC LIMIT {int:limit}",
+			array(
+				'groups_data' => $groupsdata,
+				'category' => $category,
+				'limit' => $images,
+			)
+		);
 
 
 		$gallery_recent = array();
@@ -1854,7 +1939,7 @@ function EzBlockGalleryRandomImage($parameters = array(), $category = 0, $numima
 
 	$galleryPro = false;
 	if (!$context['user']['is_guest'])
-		$groupsdata = implode(',',$user_info['groups']);
+		$groupsdata = implode(',', array_map('intval', $user_info['groups']));
 	else
 		$groupsdata = -1;
 
@@ -1911,7 +1996,12 @@ function EzBlockGalleryRandomImage($parameters = array(), $category = 0, $numima
 		SELECT
 			thumbfilename,ID_PICTURE,filename
 		FROM {db_prefix}gallery_pic
-		WHERE " . ($category == 0 ? '' : ' ID_CAT = ' . $category . ' AND ') . " approved = 1 ORDER BY RAND() LIMIT $numimages");
+		WHERE " . ($category == 0 ? '' : ' ID_CAT = {int:category} AND ') . " approved = 1 ORDER BY RAND() LIMIT {int:limit}",
+			array(
+				'category' => $category,
+				'limit' => $numimages,
+			)
+		);
 		else
 		$request = $smcFunc['db_query']('', "
 		SELECT
@@ -1919,10 +2009,16 @@ function EzBlockGalleryRandomImage($parameters = array(), $category = 0, $numima
 		FROM {db_prefix}gallery_pic as p
 		LEFT JOIN {db_prefix}members AS m ON (p.ID_MEMBER = m.ID_MEMBER)
 		LEFT JOIN {db_prefix}gallery_usersettings AS s ON (s.ID_MEMBER = m.ID_MEMBER)
-		LEFT JOIN {db_prefix}gallery_catperm AS c ON (c.ID_GROUP IN ($groupsdata) AND c.ID_CAT = p.ID_CAT)
+		LEFT JOIN {db_prefix}gallery_catperm AS c ON (c.ID_GROUP IN ({raw:groups_data}) AND c.ID_CAT = p.ID_CAT)
 		WHERE ((s.private =0 OR s.private IS NULL ) AND (s.password = '' OR s.password IS NULL )  AND p.USER_ID_CAT !=0 AND p.approved =1) OR (p.approved =1 AND p.USER_ID_CAT =0 AND (c.view IS NULL OR c.view =1))
-					 " . ($category != 0 ? ' AND p.ID_CAT = ' . $category : '' ) . " $mediaSQL 
-			GROUP by p.ID_PICTURE, p.thumbfilename, p.ID_PICTURE, p.filename ORDER BY RAND() LIMIT " . $numimages);
+					 " . ($category != 0 ? ' AND p.ID_CAT = {int:category}' : '' ) . " $mediaSQL
+			GROUP by p.ID_PICTURE, p.thumbfilename, p.ID_PICTURE, p.filename ORDER BY RAND() LIMIT {int:limit}",
+			array(
+				'groups_data' => $groupsdata,
+				'category' => $category,
+				'limit' => $numimages,
+			)
+		);
 
 		echo '<table align="center">
 		';
@@ -1990,7 +2086,11 @@ function EzBlockLinksBlock($parameters = array(), $rows = 1, $links = 10, $categ
 		FROM {db_prefix}links AS l
 		LEFT JOIN {db_prefix}members AS m  ON (l.ID_MEMBER = m.ID_MEMBER)
 		WHERE l.approved = 1 ORDER BY l.ID_LINK DESC
-		LIMIT $links");
+		LIMIT {int:limit}",
+		array(
+			'limit' => $links,
+		)
+	);
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		echo '<a href="' . $scripturl . '?action=links;sa=visit;id=' . $row['ID_LINK'] . '" target="blank">' . $row['title'] . '</a><br />';
@@ -2059,7 +2159,7 @@ function EzBlockStoreBlock($parameters = array(), $rows = 4, $products = 4, $typ
 					i.primaryID_PICTURE, i.productname, p.thumbfilename, i.price,i.currency,
 					i.qtyinstock, i.needsstock, i.date, i.views
 					FROM {db_prefix}store_item as i LEFT JOIN {db_prefix}store_item_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
-					 WHERE  i.hideproduct = 0 ORDER BY i.ID_ITEM DESC LIMIT $products";
+					 WHERE  i.hideproduct = 0 ORDER BY i.ID_ITEM DESC LIMIT {int:limit}";
 				break;
 
 				case 'viewed':
@@ -2067,7 +2167,7 @@ function EzBlockStoreBlock($parameters = array(), $rows = 4, $products = 4, $typ
 					i.primaryID_PICTURE, i.productname, p.thumbfilename, i.price,i.currency,
 					i.qtyinstock, i.needsstock, i.date, i.views
 					FROM {db_prefix}store_item as i LEFT JOIN {db_prefix}store_item_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
-					 WHERE  i.hideproduct = 0  ORDER BY  i.views DESC LIMIT $products";
+					 WHERE  i.hideproduct = 0  ORDER BY  i.views DESC LIMIT {int:limit}";
 				break;
 
 				case 'mostcomments':
@@ -2075,7 +2175,7 @@ function EzBlockStoreBlock($parameters = array(), $rows = 4, $products = 4, $typ
 					i.primaryID_PICTURE, i.productname, p.thumbfilename, i.price,i.currency,
 					i.qtyinstock, i.needsstock, i.date, i.views
 					FROM {db_prefix}store_item as i LEFT JOIN {db_prefix}store_item_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
-					 WHERE  i.hideproduct = 0  ORDER BY i.commenttotal DESC LIMIT $products";
+					 WHERE  i.hideproduct = 0  ORDER BY i.commenttotal DESC LIMIT {int:limit}";
 				break;
 
 				case 'toprated':
@@ -2084,7 +2184,7 @@ function EzBlockStoreBlock($parameters = array(), $rows = 4, $products = 4, $typ
 					i.primaryID_PICTURE, i.productname, p.thumbfilename, i.price,i.currency,
 					i.qtyinstock, i.needsstock, i.date, i.views
 					FROM {db_prefix}store_item as i LEFT JOIN {db_prefix}store_item_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
-					 WHERE  i.hideproduct = 0  ORDER BY ratingaverage DESC LIMIT $products";
+					 WHERE  i.hideproduct = 0  ORDER BY ratingaverage DESC LIMIT {int:limit}";
 				break;
 
 				case 'random':
@@ -2092,7 +2192,7 @@ function EzBlockStoreBlock($parameters = array(), $rows = 4, $products = 4, $typ
 					i.primaryID_PICTURE, i.productname, p.thumbfilename, i.price,i.currency,
 					i.qtyinstock, i.needsstock, i.date, i.views
 					FROM {db_prefix}store_item as i LEFT JOIN {db_prefix}store_item_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
-					 WHERE  i.hideproduct = 0 ORDER BY RAND() DESC LIMIT $products";
+					 WHERE  i.hideproduct = 0 ORDER BY RAND() DESC LIMIT {int:limit}";
 				break;
 
 				case 'mostpurchased':
@@ -2102,7 +2202,11 @@ function EzBlockStoreBlock($parameters = array(), $rows = 4, $products = 4, $typ
 
 			}
 			// Execute the SQL query
-			$dbresult = $smcFunc['db_query']('', $query);
+			$dbresult = $smcFunc['db_query']('', $query,
+				array(
+					'limit' => $products,
+				)
+			);
 			$rowlevel = 0;
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -2220,7 +2324,7 @@ function EzBlockClassifiedsBlock($parameters = array(), $rows = 4, $listings = 4
 
 	$g_manage = allowedTo('smfclassifieds_manage');
 
-	$groupsdata = implode(',',$user_info['groups']);
+	$groupsdata = implode(',', array_map('intval', $user_info['groups']));
 
 	if (empty($modSettings['class_url']))
 		$modSettings['class_url'] = $boardurl . '/classifieds/';
@@ -2243,10 +2347,10 @@ function EzBlockClassifiedsBlock($parameters = array(), $rows = 4, $listings = 4
 					FROM {db_prefix}class_listing as i
 					LEFT JOIN {db_prefix}class_listing_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
 					LEFT JOIN {db_prefix}class_cat as c ON (i.ID_CAT = c.ID_CAT)
-					LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ($groupsdata) AND r.ID_CAT = i.ID_CAT)
+					LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ({raw:groups_data}) AND r.ID_CAT = i.ID_CAT)
 					WHERE i.removed = 0 AND i.approved = 1  AND (r.view IS NULL OR r.view =1) GROUP BY i.ID_LISTING, i.commenttotal,
 					i.primaryID_PICTURE, i.title, p.thumbfilename, p.remotefilename, i.currentbid,i.currency,
-					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY i.ID_LISTING DESC LIMIT $listings";
+					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY i.ID_LISTING DESC LIMIT {int:limit}";
 				break;
 
 				case 'viewed':
@@ -2256,10 +2360,10 @@ function EzBlockClassifiedsBlock($parameters = array(), $rows = 4, $listings = 4
 					FROM {db_prefix}class_listing as i
 					LEFT JOIN {db_prefix}class_listing_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
 					 LEFT JOIN {db_prefix}class_cat as c ON (i.ID_CAT = c.ID_CAT)
-					 LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ($groupsdata) AND r.ID_CAT = i.ID_CAT)
+					 LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ({raw:groups_data}) AND r.ID_CAT = i.ID_CAT)
 					WHERE i.removed = 0 AND i.approved = 1  AND (r.view IS NULL OR r.view =1) GROUP BY i.ID_LISTING, i.commenttotal,
 					i.primaryID_PICTURE, i.title, p.thumbfilename, p.remotefilename, i.currentbid,i.currency,
-					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY  i.views DESC LIMIT $listings";
+					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY  i.views DESC LIMIT {int:limit}";
 				break;
 
   				case 'random':
@@ -2269,10 +2373,10 @@ function EzBlockClassifiedsBlock($parameters = array(), $rows = 4, $listings = 4
 					FROM {db_prefix}class_listing as i
 					LEFT JOIN {db_prefix}class_listing_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
 					 LEFT JOIN {db_prefix}class_cat as c ON (i.ID_CAT = c.ID_CAT)
-					 LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ($groupsdata) AND r.ID_CAT = i.ID_CAT)
+					 LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ({raw:groups_data}) AND r.ID_CAT = i.ID_CAT)
 					WHERE i.removed = 0 AND i.approved = 1  AND (r.view IS NULL OR r.view =1) GROUP BY i.ID_LISTING, i.commenttotal,
 					i.primaryID_PICTURE, i.title, p.thumbfilename, p.remotefilename, i.currentbid,i.currency,
-					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY  RAND() DESC LIMIT $listings";
+					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY  RAND() DESC LIMIT {int:limit}";
 				break;
 
 
@@ -2283,10 +2387,10 @@ function EzBlockClassifiedsBlock($parameters = array(), $rows = 4, $listings = 4
 					FROM {db_prefix}class_listing as i
 					LEFT JOIN {db_prefix}class_listing_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
 					LEFT JOIN {db_prefix}class_cat as c ON (i.ID_CAT = c.ID_CAT)
-					LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ($groupsdata) AND r.ID_CAT = i.ID_CAT)
+					LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ({raw:groups_data}) AND r.ID_CAT = i.ID_CAT)
 					WHERE i.removed = 0 AND i.approved = 1  AND (r.view IS NULL OR r.view =1) GROUP BY i.ID_LISTING, i.commenttotal,
 					i.primaryID_PICTURE, i.title, p.thumbfilename, p.remotefilename, i.currentbid,i.currency,
-					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY i.commenttotal DESC LIMIT $listings";
+					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY i.commenttotal DESC LIMIT {int:limit}";
 				break;
 
 				case 'featured':
@@ -2296,16 +2400,21 @@ function EzBlockClassifiedsBlock($parameters = array(), $rows = 4, $listings = 4
 					FROM {db_prefix}class_listing as i
 					LEFT JOIN {db_prefix}class_listing_pic as p ON (i.primaryID_PICTURE = p.ID_PICTURE)
 					LEFT JOIN {db_prefix}class_cat as c ON (i.ID_CAT = c.ID_CAT)
-					LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ($groupsdata) AND r.ID_CAT = i.ID_CAT)
+					LEFT JOIN {db_prefix}class_catperm AS r ON (r.ID_GROUP IN ({raw:groups_data}) AND r.ID_CAT = i.ID_CAT)
 					WHERE i.removed = 0 AND i.approved = 1 AND i.featuredlisting = 1  AND (r.view IS NULL OR r.view =1) GROUP BY i.ID_LISTING, i.commenttotal,
 					i.primaryID_PICTURE, i.title, p.thumbfilename, p.remotefilename, i.currentbid,i.currency,
-					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY i.ID_LISTING DESC LIMIT $listings";
+					i.datelisted, i.views, i.is_auction, i.totalbids, i.ID_CAT, c.noprice, i.expiredate ORDER BY i.ID_LISTING DESC LIMIT {int:limit}";
 				break;
 
 
 			}
 			// Execute the SQL query
-			$dbresult = $smcFunc['db_query']('', $query);
+			$dbresult = $smcFunc['db_query']('', $query,
+				array(
+					'groups_data' => $groupsdata,
+					'limit' => $listings,
+				)
+			);
 			$rowlevel = 0;
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -2512,7 +2621,11 @@ function EzBlockRecentWebPagesBlock($parameters = array(), $numToShow = 10)
 		id_page, date, title, views
 	FROM {db_prefix}ezp_page
 	ORDER BY id_page DESC
-	LIMIT $numToShow");
+	LIMIT {int:limit}",
+		array(
+			'limit' => $numToShow,
+		)
+	);
 	
 
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
@@ -2595,6 +2708,9 @@ function EzBlockBoardNewsBlock($parameters = array(),$board = null, $length = nu
 	$start = max(0, $start);
 
 
+	// Sanitize the board list - ensure all values are integers
+	$board_list = implode(',', array_map('intval', explode(',', $board)));
+
 	// Load the message icons - the usual suspects.
 	$stable_icons = array('xx', 'thumbup', 'thumbdown', 'exclamation', 'question', 'lamp', 'smiley', 'angry', 'cheesy', 'grin', 'sad', 'wink', 'moved', 'recycled', 'wireless');
 	$icon_sources = array();
@@ -2607,9 +2723,15 @@ function EzBlockBoardNewsBlock($parameters = array(),$board = null, $length = nu
 		$request = $smcFunc['db_query']('', "
 			SELECT ID_FIRST_MSG
 			FROM {db_prefix}topics
-			WHERE ID_BOARD IN($board)
+			WHERE ID_BOARD IN({raw:board_list})
 			ORDER BY ID_FIRST_MSG DESC
-			LIMIT $start, $limit");
+			LIMIT {int:start}, {int:limit}",
+			array(
+				'board_list' => $board_list,
+				'start' => $start,
+				'limit' => $limit,
+			)
+		);
 
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 			$posts[] = $row['ID_FIRST_MSG'];
@@ -2628,10 +2750,15 @@ function EzBlockBoardNewsBlock($parameters = array(),$board = null, $length = nu
 		FROM ({db_prefix}topics AS t, {db_prefix}messages AS m)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.ID_MEMBER = m.ID_MEMBER)
 			LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(mem.ID_GROUP = 0, mem.ID_POST_GROUP, mem.ID_GROUP))
-		WHERE t.ID_FIRST_MSG IN (" . implode(', ', $posts) . ")
+		WHERE t.ID_FIRST_MSG IN ({raw:post_list})
 			AND m.ID_MSG = t.ID_FIRST_MSG
 		ORDER BY t.ID_FIRST_MSG DESC
-		LIMIT " . count($posts));
+		LIMIT {int:limit}",
+		array(
+			'post_list' => implode(', ', array_map('intval', $posts)),
+			'limit' => count($posts),
+		)
+	);
 	$return = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
@@ -3134,7 +3261,7 @@ function EzBlockShoutBoxRenderNoscript($parameters, $numberofShouts, $ezpSetting
 		echo parse_bbc($row['shout']);
 
 		if ($adminShoutBox && empty($ezpSettings['ezp_shoutbox_hidedelete']))
-			echo '<br /><a href="', $scripturl, '?action=ezportal;sa=removeshout;shout=', $row['id_shout'], '" style="color: #FF0000">[X]</a>';
+			echo '<br /><a href="', $scripturl, '?action=ezportal;sa=removeshout;shout=', $row['id_shout'], ';', $context['session_var'], '=', $context['session_id'], '" style="color: #FF0000">[X]</a>';
 
 		echo '<br /><hr>';
 	}
@@ -3181,8 +3308,12 @@ function EzBlockTagCloudBlock($parameters = array())
 		SELECT
 			t.tag AS tag, l.ID_TAG, COUNT(l.ID_TAG) AS quantity
 		 FROM {db_prefix}tags as t, {db_prefix}tags_log as l WHERE t.ID_TAG = l.ID_TAG
-		  GROUP BY l.ID_TAG,t.tag AS tag 
-		  ORDER BY l.ID DESC LIMIT " .  $modSettings['smftags_set_cloud_tags_to_show']);
+		  GROUP BY l.ID_TAG,t.tag AS tag
+		  ORDER BY l.ID DESC LIMIT {int:limit}",
+			array(
+				'limit' => (int) $modSettings['smftags_set_cloud_tags_to_show'],
+			)
+		);
 
 		// here we loop through the results and put them into a simple array:
 		// $tag['thing1'] = 12;
@@ -3420,7 +3551,11 @@ function EzBlockRecentMembersBlock($parameters = array(), $numShow = 10, $showAv
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(m.ID_GROUP = 0, m.ID_POST_GROUP, m.ID_GROUP))
 		WHERE m.is_activated = 1
-		ORDER BY m.ID_MEMBER DESC LIMIT $numShow");
+		ORDER BY m.ID_MEMBER DESC LIMIT {int:limit}",
+		array(
+			'limit' => $numShow,
+		)
+	);
 	echo '<table width="100%">';
 
 
@@ -3521,7 +3656,11 @@ function EzBlockTopPosterBlock($parameters = array(), $numShow = 10, $showAvatar
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(m.ID_GROUP = 0, m.ID_POST_GROUP, m.ID_GROUP))
 
-		ORDER BY m.posts DESC LIMIT $numShow");
+		ORDER BY m.posts DESC LIMIT {int:limit}",
+		array(
+			'limit' => $numShow,
+		)
+	);
 	echo '<table width="100%">';
 
 
@@ -3685,8 +3824,12 @@ function EzBlockMenuBlock($parameters = array(), $format = 'vertical', $startHtm
 			SELECT
 				title, linkurl, permissions, newwindow
 			FROM {db_prefix}ezp_menu
-			WHERE enabled = 1 AND id_layout = $ezblocklayoutid
-			ORDER BY id_order ASC");
+			WHERE enabled = 1 AND id_layout = {int:layout_id}
+			ORDER BY id_order ASC",
+			array(
+				'layout_id' => $ezblocklayoutid,
+			)
+		);
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
 
@@ -3788,12 +3931,19 @@ function EzBlockStatsBox($parameters = array(), $startHtml = '', $endHtml = '')
 	{	
 			$query = $smcFunc['db_query']('', "
 			SELECT
-					COUNT(date_registered > $thisyear OR NULL) as year,
-					COUNT(date_registered > $thismonth OR NULL) as month,
-					COUNT(date_registered > $thisweek OR NULL) as week,
-					COUNT(date_registered > $today OR NULL) as today
+					COUNT(date_registered > {int:thisyear} OR NULL) as year,
+					COUNT(date_registered > {int:thismonth} OR NULL) as month,
+					COUNT(date_registered > {int:thisweek} OR NULL) as week,
+					COUNT(date_registered > {int:today} OR NULL) as today
 			FROM {db_prefix}members
-			WHERE is_activated = 1");
+			WHERE is_activated = 1",
+				array(
+					'thisyear' => $thisyear,
+					'thismonth' => $thismonth,
+					'thisweek' => $thisweek,
+					'today' => $today,
+				)
+			);
 			$row = $smcFunc['db_fetch_assoc']($query);
 			$smcFunc['db_free_result']($query);
 			

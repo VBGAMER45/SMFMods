@@ -4,7 +4,7 @@ SMF Gallery Lite Edition
 Version 8.0
 by:vbgamer45
 http://www.smfhacks.com
-Copyright 2008-2024 SMFHacks.com
+Copyright 2008-2026 SMFHacks.com
 
 ############################################
 License Information:
@@ -214,7 +214,7 @@ function template_image_listing()
 
 
 			if ($g_manage)
-				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if ($g_manage || $g_edit_own && $row['id_member'] == $id_member)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a>';
 			if ($g_manage || $g_delete_own && $row['id_member'] == $id_member)
@@ -402,6 +402,7 @@ echo '</td>
   </tr>
   <tr class="windowbg2">
     <td width="28%" colspan="2" align="center">
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_text_addcategory'] . '" name="submit" /></td>
 
   </tr>
@@ -521,6 +522,7 @@ echo '</td>
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center">
     <input type="hidden" value="' . $context['gallery_cat_edit']['id_cat'] . '" name="catid" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_text_editcategory'] . '" name="submit" /></td>
 
   </tr>
@@ -553,6 +555,7 @@ function template_delete_category()
     <b>', $txt['gallery_warn_category'], '</b>
     <br />
     <input type="hidden" value="' . $context['gallery_catid'] . '" name="catid" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_text_delcategory'] . '" name="submit" /></td>
   </tr>
 </table>
@@ -707,7 +710,13 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />';
+    <td>
+	<div class="gallery-drop-zone">
+		<span class="drop-icon">&#128247;</span>
+		<div class="drop-text">Drag &amp; drop image here or <a>browse</a></div>
+		<input type="file" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />
+		<div class="drop-preview"></div>
+	</div>';
 
   if (!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -731,6 +740,7 @@ echo '
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center">
 
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_form_addpicture'] . '" name="submit" /><br />';
 
   	if (!allowedTo('smfgallery_autoapprove'))
@@ -743,6 +753,8 @@ echo '
 
 		</form>
 ';
+
+	gallery_dropzone_js();
 
 	if ($context['show_spellchecking'])
 			echo '<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
@@ -869,7 +881,13 @@ echo '
   <tr class="windowbg2">
   	<td align="right" valign="top"><b>' . $txt['gallery_form_uploadpic'] . '</b>&nbsp;</td>
 
-    <td><input type="file" size="48" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />';
+    <td>
+	<div class="gallery-drop-zone">
+		<span class="drop-icon">&#128247;</span>
+		<div class="drop-text">Drag &amp; drop image here or <a>browse</a></div>
+		<input type="file" name="picture" accept=".gif, .jpg, .jpeg, .png, .webp, .tiff, .bmp, .avif" />
+		<div class="drop-preview"></div>
+	</div>';
 
   if (!empty($modSettings['gallery_max_width']))
  	echo '<br />' . $txt['gallery_form_maxwidth'] .  $modSettings['gallery_max_width'] . $txt['gallery_form_pixels'];
@@ -893,6 +911,7 @@ echo '
   <tr class="windowbg2">
     <td width="28%" colspan="2" align="center">
 	<input type="hidden" name="id" value="' . $context['gallery_pic']['id_picture'] . '" />
+	<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_form_editpicture'] . '" name="submit" /><br />';
 
   	if (!allowedTo('smfgallery_autoapprove'))
@@ -910,6 +929,8 @@ echo '<div align="center"><br /><b>' . $txt['gallery_text_oldpicture'] . '</b><b
 
 		</form>
 ';
+
+	gallery_dropzone_js();
 
 	if ($context['show_spellchecking'])
 			echo '<form action="', $scripturl, '?action=spellcheck" method="post" accept-charset="', $context['character_set'], '" name="spell_form" id="spell_form" target="spellWindow"><input type="hidden" name="spellstring" value="" /></form>';
@@ -1022,7 +1043,7 @@ function template_view_picture()
 
 				// Show edit picture links if allowed
 				if ($g_manage)
-					echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $context['gallery_pic']['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $context['gallery_pic']['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $context['gallery_pic']['id_member'] == $id_member)
 					echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $context['gallery_pic']['id_picture']. '">' . $txt['gallery_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $context['gallery_pic']['id_member'] == $id_member)
@@ -1109,7 +1130,7 @@ echo '
 
 			// Check if the user is allowed to delete the comment.
 			if ($g_manage)
-				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=delcomment&id=' . $row['id_comment'] . '">' . $txt['gallery_text_delcomment'] .'</a>';
+				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=delcomment&id=' . $row['id_comment'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_delcomment'] .'</a>';
 
 
 			echo '</td>';
@@ -1169,6 +1190,7 @@ function template_delete_picture()
 			' . $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' .  $context['gallery_pic']['id_picture'] . '" target="blank">' .  $context['gallery_pic']['commenttotal'] . '</a>)<br />
 	</div><br />
 	<input type="hidden" name="id" value="' . $context['gallery_pic']['id_picture'] . '" />
+	<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_form_delpicture'] . '" name="submit" /><br />
     </td>
   </tr>
@@ -1266,7 +1288,8 @@ function template_add_comment()
 echo '
   <tr>
     <td width="28%" colspan="2" align="center" class="windowbg2">
-    <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />';
+    <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />';
    	if ($context['show_spellchecking'])
    		echo '
    									<input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'cprofile\', \'message\');" />';
@@ -1306,6 +1329,7 @@ function template_report_picture()
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center">
     <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button" value="' . $txt['gallery_form_reportpicture'] . '" name="submit" /></td>
 
   </tr>
@@ -1453,7 +1477,7 @@ echo '
 
 
 
-				<tr class="windowbg2"><td colspan="2"><input type="submit" class="button" name="savesettings" value="',$txt['gallery_save_settings'],'" /></td></tr>
+				<tr class="windowbg2"><td colspan="2"><input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" /><input type="submit" class="button" name="savesettings" value="',$txt['gallery_save_settings'],'" /></td></tr>
 				</table>
 			</form>
 			<br />
@@ -1532,7 +1556,7 @@ echo '
 				else
 						echo '<td>' . $txt['gallery_guest'] . '</td>';
 
-				echo '<td><a href="' . $scripturl . '?action=gallery;sa=approve&id=' . $row['id_picture'] . '">' . $txt['gallery_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=delete;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=gallery;sa=approve&id=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=delete;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -1602,7 +1626,7 @@ echo '
 					echo '<td>' .  $txt['gallery_guest'] . '</td>';
 
 				echo '<td><a href="' . $scripturl . '?action=gallery;sa=delete;pic=' . $row['id_picture'] . '">' . $txt['gallery_rep_deletepic']  . '</a>';
-				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=deletereport&id=' . $row['ID'] . '">' . $txt['gallery_rep_delete'] . '</a></td>';
+				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=deletereport&id=' . $row['ID'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_rep_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -1728,7 +1752,7 @@ function template_search_results()
 			else
 				echo $txt['gallery_text_by'] . $txt['gallery_guest'] . '<br />';
 			if ($g_manage)
-				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if ($g_manage || $g_edit_own && $row['id_member'] == $id_member)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a>';
 			if ($g_manage || $g_delete_own && $row['id_member'] == $id_member)
@@ -1841,7 +1865,7 @@ function template_myimages()
 			echo $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' . $row['id_picture'] . '">' . $row['commenttotal'] . '</a>)<br />';
 			echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
 			if ($g_manage)
-				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if ($g_manage || $g_edit_own && $row['id_member'] == $id_member)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a>';
 			if ($g_manage || $g_delete_own && $row['id_member'] == $id_member)
@@ -1951,6 +1975,7 @@ function template_regenerate()
 
 			<br />
 			<input type="hidden" value="' . $context['catid'] . '" name="id" />
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 			<input type="submit" class="button" value="' . $txt['gallery_text_regeneratethumbnails2'] . '" name="submit" />
 			<br />
 			</td>
@@ -1990,6 +2015,7 @@ function template_regenerate2()
 				', $context['continue_post_data'], '
 
 		    <input type="hidden" value="' . $context['catid'] . '" name="id" />
+		    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 
 			</form>
 
@@ -2041,7 +2067,8 @@ function template_gallerycopyright()
         <td colspan="2">' . $txt['gallery_txt_copyremovalnote'] . '</td>
     </tr>
 	<tr class="windowbg2">
-		<td valign="top" colspan="2" align="center"><input type="submit" class="button" value="' . $txt['gallery_save_settings'] . '" />
+		<td valign="top" colspan="2" align="center"><input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
+		<input type="submit" class="button" value="' . $txt['gallery_save_settings'] . '" />
 		</td>
 		</tr>
 	</table>
@@ -2224,6 +2251,77 @@ function ShowTopGalleryBar2($title = '&nbsp;')
     echo '<br /><br />';
 
 
+}
+
+function gallery_dropzone_js()
+{
+	echo '
+<script type="text/javascript">
+(function() {
+	function initDropZone(zone) {
+		var input = zone.querySelector("input[type=file]");
+		if (!input) return;
+		var previewEl = zone.querySelector(".drop-preview");
+		var textEl = zone.querySelector(".drop-text");
+		var acceptStr = input.getAttribute("accept") || "";
+		zone.addEventListener("click", function(e) {
+			if (e.target.tagName !== "A") input.click();
+		});
+		zone.addEventListener("dragover", function(e) {
+			e.preventDefault();
+			zone.classList.add("dragover");
+		});
+		zone.addEventListener("dragleave", function() {
+			zone.classList.remove("dragover");
+		});
+		zone.addEventListener("drop", function(e) {
+			e.preventDefault();
+			zone.classList.remove("dragover");
+			if (e.dataTransfer.files.length) {
+				var file = e.dataTransfer.files[0];
+				if (acceptStr && !fileMatchesAccept(file, acceptStr)) {
+					previewEl.innerHTML = \'<span style="color:#c00;">Invalid file type.</span>\';
+					return;
+				}
+				input.files = e.dataTransfer.files;
+				showPreview(file, previewEl, textEl);
+			}
+		});
+		input.addEventListener("change", function() {
+			if (input.files.length)
+				showPreview(input.files[0], previewEl, textEl);
+		});
+	}
+	function fileMatchesAccept(file, acceptStr) {
+		var types = acceptStr.split(",").map(function(s) { return s.trim().toLowerCase(); });
+		var ext = "." + file.name.split(".").pop().toLowerCase();
+		for (var i = 0; i < types.length; i++) {
+			if (types[i] === ext) return true;
+			if (types[i].indexOf("/") !== -1 && file.type && file.type.match(new RegExp("^" + types[i].replace("*", ".*") + "$"))) return true;
+		}
+		return false;
+	}
+	function showPreview(file, previewEl, textEl) {
+		var info = file.name + " (" + formatSize(file.size) + ")";
+		if (file.type && file.type.indexOf("image/") === 0) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				previewEl.innerHTML = info + \'<br /><img src="\' + e.target.result + \'" alt="" />\';
+			};
+			reader.readAsDataURL(file);
+		} else {
+			previewEl.innerHTML = info;
+		}
+	}
+	function formatSize(bytes) {
+		if (bytes < 1024) return bytes + " B";
+		if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+		return (bytes / 1048576).toFixed(1) + " MB";
+	}
+	var zones = document.querySelectorAll(".gallery-drop-zone");
+	for (var i = 0; i < zones.length; i++) initDropZone(zones[i]);
+})();
+</script>';
 }
 
 ?>

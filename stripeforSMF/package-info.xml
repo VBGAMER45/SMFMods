@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>stripesmf:stripe-payment-gateway</id>
+	<name>Stripe Payment Gateway</name>
+	<version>1.0.0</version>
+	<type>modification</type>
+
+	<install for="2.1.0 - 2.1.99">
+		<redirect url="?action=admin;area=paidsubscribe;sa=settings">Redirecting to Paid Subscription Settings</redirect>
+		<readme>readme.txt</readme>
+
+		<require-file name="Sources/Subscriptions-Stripe.php" destination="$sourcedir" />
+
+		<modification>subscriptions_edit.xml</modification>
+		<modification>language_edit.xml</modification>
+	</install>
+
+	<uninstall for="2.1.0 - 2.1.99">
+		<remove-file name="$sourcedir/Subscriptions-Stripe.php" />
+
+		<modification reverse="true">subscriptions_edit.xml</modification>
+		<modification reverse="true">language_edit.xml</modification>
+	</uninstall>
+</package-info>

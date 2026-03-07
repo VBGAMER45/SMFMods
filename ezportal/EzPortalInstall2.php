@@ -1,10 +1,10 @@
 <?php
 /*
 EzPortal
-Version 5.6
+Version 7.0
 by:vbgamer45
 https://www.ezportal.com
-Copyright 2010-2025 https://www.samsonsoftware.com
+Copyright 2010-2026 https://www.samsonsoftware.com
 */
 
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
@@ -439,7 +439,11 @@ if ($id_parameter)
 	{
 		$smcFunc['db_query']('', "
 		UPDATE {db_prefix}ezp_paramaters_select
-	    SET id_parameter = " . $row['id_parameter'] . ' WHERE id_block = ' . $row['id_block'] );
+	    SET id_parameter = {int:id_parameter} WHERE id_block = {int:id_block}",
+		array(
+			'id_parameter' => $row['id_parameter'],
+			'id_block' => $row['id_block'],
+		));
 	}
 	$smcFunc['db_free_result']($result);
 
@@ -540,43 +544,79 @@ if ($firstInstall == true)
 $result = $smcFunc['db_query']('', "SELECT id_block FROM {db_prefix}ezp_blocks WHERE blocktitle = 'UserBox'");
 $blockIDRow = $smcFunc['db_fetch_assoc']($result);
 
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (1, 1, " . $blockIDRow['id_block'] . ", 1, 'User', '-1,0,1,2', 1, 1, '', '', '', '', 'EzBlockLoginBoxBlock', 0, '', 0)");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (1, 1, {int:id_block}, 1, 'User', '-1,0,1,2', 1, 1, '', '', '', '', 'EzBlockLoginBoxBlock', 0, '', 0)",
+array(
+	'id_block' => $blockIDRow['id_block'],
+));
 
 $result = $smcFunc['db_query']('', "SELECT id_block FROM {db_prefix}ezp_blocks WHERE blocktitle = 'Stats ezBlock'");
 $blockIDRow = $smcFunc['db_fetch_assoc']($result);
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (2, 1, " . $blockIDRow['id_block'] . ", 2, 'Stats ezBlock', '-1,0,1,2', 1, 1, '', '', '', '', 'EzBlockStatsBox', 0, '', 0)");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (2, 1, {int:id_block}, 2, 'Stats ezBlock', '-1,0,1,2', 1, 1, '', '', '', '', 'EzBlockStatsBox', 0, '', 0)",
+array(
+	'id_block' => $blockIDRow['id_block'],
+));
 $result = $smcFunc['db_query']('', "SELECT id_block FROM {db_prefix}ezp_blocks WHERE blocktitle = 'Recent Topics ezBlock'");
 $blockIDRow = $smcFunc['db_fetch_assoc']($result);
 $recentBlockID = $blockIDRow['id_block'];
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (3, 3, " . $blockIDRow['id_block'] . ", 1, 'Recent Topics', '-1,0,1,2', 1, 1, '', '', '', '', 'EzBlockRecentTopicsBlock', 0, '', 0)");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (3, 3, {int:id_block}, 1, 'Recent Topics', '-1,0,1,2', 1, 1, '', '', '', '', 'EzBlockRecentTopicsBlock', 0, '', 0)",
+array(
+	'id_block' => $blockIDRow['id_block'],
+));
 $result = $smcFunc['db_query']('', "SELECT id_block FROM {db_prefix}ezp_blocks WHERE blocktitle = 'ParseBBC ezBlock'");
 $blockIDRow = $smcFunc['db_fetch_assoc']($result);
 $parsebbcBlockID = $blockIDRow['id_block'];
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (4, 2, " . $blockIDRow['id_block'] . ", 1, 'ParseBBC ezBlock', '-1,0,1,2', 1, 1, '', '', 'portal', '', 'EzBlockParseBBCBlock', 0, '', 0)");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout (id_layout, id_column, id_block, id_order, customtitle, permissions, can_collapse, active, visibileactions, visibileboards, visibileareascustom, blockmanagers, blockdata, id_icon, visibilepages, hidetitlebar) VALUES (4, 2, {int:id_block}, 1, 'ParseBBC ezBlock', '-1,0,1,2', 1, 1, '', '', 'portal', '', 'EzBlockParseBBCBlock', 0, '', 0)",
+array(
+	'id_block' => $blockIDRow['id_block'],
+));
 
 
 
 // Parameters
-$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = $recentBlockID AND parameter_name = 'numTopics'");
+$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = {int:id_block} AND parameter_name = 'numTopics'",
+array(
+	'id_block' => $recentBlockID,
+));
 $paramIDRow = $smcFunc['db_fetch_assoc']($result);
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (1,  " . $paramIDRow['id_parameter'] . ", 3, '10')");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (1, {int:id_parameter}, 3, '10')",
+array(
+	'id_parameter' => $paramIDRow['id_parameter'],
+));
 
 
-$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = $recentBlockID AND parameter_name = 'format'");
+$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = {int:id_block} AND parameter_name = 'format'",
+array(
+	'id_block' => $recentBlockID,
+));
 $paramIDRow = $smcFunc['db_fetch_assoc']($result);
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (2,  " . $paramIDRow['id_parameter'] . ", 3, 'vertical')");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (2, {int:id_parameter}, 3, 'vertical')",
+array(
+	'id_parameter' => $paramIDRow['id_parameter'],
+));
 
 
-$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = $recentBlockID AND parameter_name = 'showcolor'");
+$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = {int:id_block} AND parameter_name = 'showcolor'",
+array(
+	'id_block' => $recentBlockID,
+));
 $paramIDRow = $smcFunc['db_fetch_assoc']($result);
 
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (3,  " . $paramIDRow['id_parameter'] . ", 3, 'true')");
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (3, {int:id_parameter}, 3, 'true')",
+array(
+	'id_parameter' => $paramIDRow['id_parameter'],
+));
 
 
-$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = $parsebbcBlockID  AND parameter_name = 'bbctext'");
+$result = $smcFunc['db_query']('', "SELECT id_parameter FROM {db_prefix}ezp_block_parameters WHERE id_block = {int:id_block} AND parameter_name = 'bbctext'",
+array(
+	'id_block' => $parsebbcBlockID,
+));
 $paramIDRow = $smcFunc['db_fetch_assoc']($result);
 
-$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (4,  " . $paramIDRow['id_parameter'] . ", 4, 'Welcome to your new install of ezPortal!
+$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values (id_value, id_parameter, id_layout, `data`) VALUES (4, {int:id_parameter}, 4, {string:data})",
+array(
+	'id_parameter' => $paramIDRow['id_parameter'],
+	'data' => 'Welcome to your new install of ezPortal!
 
 You can control which blocks are shown in the ezBlockManager.
 
@@ -584,7 +624,8 @@ Forum refers to your main board index.
 Portal is the main homepage of your site. This block for instance is only shown on the portal page.
 
 
-If you have any questions or need help post in our support forums at [url]https://www.ezportal.com[/url]')");
+If you have any questions or need help post in our support forums at [url]https://www.ezportal.com[/url]',
+));
 global $ezpSettings;
 $ezpSettings['ezp_portal_enable'] =1;
 
@@ -881,7 +922,16 @@ function InsertUserEzBlocks()
 
 		$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_blocks
 					(blocktitle, blockdata, blocktype,blockversion,blockauthor,blockwebsite,can_cache,data_editable,no_delete)
-				VALUES ('" . $installBlock['title']. "','" . $installBlock['blockdata']. "', 'builtin','" . $installBlock['version']. "','" . $installBlock['blockauthor']. "','" . $installBlock['blockwebsite']. "',0," . $data_editable  . "," . $installBlock['no_delete']. ")");
+				VALUES ({string:title},{string:blockdata}, 'builtin',{string:version},{string:blockauthor},{string:blockwebsite},0,{int:data_editable},{int:no_delete})",
+		array(
+			'title' => $installBlock['title'],
+			'blockdata' => $installBlock['blockdata'],
+			'version' => $installBlock['version'],
+			'blockauthor' => $installBlock['blockauthor'],
+			'blockwebsite' => $installBlock['blockwebsite'],
+			'data_editable' => $data_editable,
+			'no_delete' => $installBlock['no_delete'],
+		));
 
 		// EzBlock ID
 		$blockID =  $smcFunc['db_insert_id']('{db_prefix}ezp_blocks', 'id_block');
@@ -890,10 +940,18 @@ function InsertUserEzBlocks()
 		{
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters
 					(id_block, title, parameter_name, parameter_type,defaultvalue,required)
-				VALUES ($blockID,'" . $myparam['title']. "','" . $myparam['name']. "',
-				'" . $myparam['parameter_type']. "','" . $myparam['defaultvalue']. "',
-				'" . $myparam['required']. "'
-				)");
+				VALUES ({int:id_block},{string:title},{string:name},
+				{string:parameter_type},{string:defaultvalue},
+				{string:required}
+				)",
+			array(
+				'id_block' => $blockID,
+				'title' => $myparam['title'],
+				'name' => $myparam['name'],
+				'parameter_type' => $myparam['parameter_type'],
+				'defaultvalue' => $myparam['defaultvalue'],
+				'required' => $myparam['required'],
+			));
 
 			$paramID =  $smcFunc['db_insert_id']('{db_prefix}ezp_block_parameters', 'id_parameter');
 
@@ -905,7 +963,13 @@ function InsertUserEzBlocks()
 					// Insert select value
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 					(id_parameter, id_block, selecttext, selectvalue)
-				VALUES ($paramID,$blockID,'" . $sv. "','" . $sv. "')");
+				VALUES ({int:id_parameter},{int:id_block},{string:selecttext},{string:selectvalue})",
+			array(
+				'id_parameter' => $paramID,
+				'id_block' => $blockID,
+				'selecttext' => $sv,
+				'selectvalue' => $sv,
+			));
 
 				}
 
@@ -940,8 +1004,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'newwindow','title' => 'Open in new window','defaultvalue' => 0,'parameter_type' => 'checkbox', 'required' => 0);
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -952,8 +1020,12 @@ function UpdateEzBlocks()
 			$paramArray[] = array('name' => 'size','title' => 'Size' ,'defaultvalue' => 'small','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'small,large');
 
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -965,15 +1037,19 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'reverseorder','title' => 'Reverse Feed Order','defaultvalue' => 1,'parameter_type' => 'checkbox', 'required' => 0);
 			AddParameter($row['id_block'],$paramArray);
-			
+
 			$paramArray = array();
 
 			$paramArray[] = array('name' => 'encoding','title' => 'Format','defaultvalue' => 'ISO-8859-1','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'ISO-8859-1,UTF-8');
 			AddParameter($row['id_block'],$paramArray);
-			
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.2'
-			WHERE id_block = " . $row['id_block']);
-			$row['blockversion'] = '1.2';	
+
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.2',
+				'id_block' => $row['id_block'],
+			));
+			$row['blockversion'] = '1.2';
 		}
 
 		// Update Member's Online ezBlock
@@ -983,8 +1059,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'format','title' => 'Format','defaultvalue' => 'vertical','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'vertical,horizontal');
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -992,13 +1072,20 @@ function UpdateEzBlocks()
 		if ($row['blocktitle'] == 'Poll ezBlock' && $row['blockversion'] == '1.0')
 		{
 			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_block_parameters SET required = 0
-			WHERE title = 'Poll Topic ID' AND  id_block = " . $row['id_block']);
+			WHERE title = 'Poll Topic ID' AND  id_block = {int:id_block}",
+			array(
+				'id_block' => $row['id_block'],
+			));
 			$paramArray = array();
 			$paramArray[] = array('name' => 'board','title' => 'Boards for Random Poll','defaultvalue' => 0,'parameter_type' => 'multiboardselect', 'required' => 0);
 			AddParameter($row['id_block'],$paramArray);
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 
 		}
@@ -1007,10 +1094,17 @@ function UpdateEzBlocks()
 		if ($row['blocktitle'] == 'Board News ezBlock' && $row['blockversion'] == '1.0')
 		{
 			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_block_parameters SET parameter_type = 'multiboardselect'
-			WHERE parameter_type = 'boardselect' AND title = 'Select Board for News' AND  id_block = " . $row['id_block']);
+			WHERE parameter_type = 'boardselect' AND title = 'Select Board for News' AND  id_block = {int:id_block}",
+			array(
+				'id_block' => $row['id_block'],
+			));
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 
 		}
@@ -1022,8 +1116,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'showpreview','title' => 'Show Preview Image','defaultvalue' => 'Yes','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'Yes,No');
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 
 		}
@@ -1035,8 +1133,12 @@ function UpdateEzBlocks()
 			$paramArray[] = array('name' => 'length','title' => 'Number of characters to show per entry','defaultvalue' => 500,'parameter_type' => 'int', 'required' => 0);
 			AddParameter($row['id_block'],$paramArray);
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.2'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.2',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.2';
 		}
 
@@ -1048,8 +1150,12 @@ function UpdateEzBlocks()
 
 			AddParameter($row['id_block'],$paramArray);
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.3'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.3',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.3';
 		}
 
@@ -1057,8 +1163,12 @@ function UpdateEzBlocks()
 		{
 
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.4'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.4',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.4';
 		}
 
@@ -1069,8 +1179,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'showcolor','title' =>  'Show Member Link Color','defaultvalue' => 'false','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'true,false');
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1080,8 +1194,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'showcolor', 'title' =>  'Show Member Link Color','defaultvalue' => 'false','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'true,false');
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 		
@@ -1091,8 +1209,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'count','title' => 'Number of scores to show','defaultvalue' => 10,'parameter_type' => 'int', 'required' => 1);
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 		
@@ -1104,8 +1226,12 @@ function UpdateEzBlocks()
 			$paramArray[] = array('name' => 'excludeboards','title' => 'Exclude Boards','defaultvalue' => 0,'parameter_type' => 'multiboardselect', 'required' => 0);
 
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.2'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.2',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.2';
 		}
 
@@ -1121,8 +1247,12 @@ function UpdateEzBlocks()
 	        $paramArray = array();
 	        $paramArray[] = array('name' => 'category','title' => 'Gallery Category ID to display','defaultvalue' => 0,'parameter_type' => 'int', 'required' => 0);
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1131,8 +1261,12 @@ function UpdateEzBlocks()
 			$paramArray = array();
 			$paramArray[] = array('name' => 'mediatype','title' => 'Media Type','defaultvalue' => 'both','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'both,onlyphotos,onlyaudiovideos');
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.2'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.2',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.2';
 		}
 
@@ -1142,8 +1276,12 @@ function UpdateEzBlocks()
 			$paramArray[] = array('name' => 'mediatype','title' => 'Media Type','defaultvalue' => 'both','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'both,onlyphotos,onlyaudiovideos');
 
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1156,8 +1294,12 @@ function UpdateEzBlocks()
 			$paramArray[] = array('name' => 'excludeboards','title' => 'Exclude Boards','defaultvalue' => 0,'parameter_type' => 'multiboardselect', 'required' => 0);
 
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.2'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.2',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.2';
 		}
 
@@ -1169,8 +1311,12 @@ function UpdateEzBlocks()
 
 			$paramArray[] = array('name' => 'format','title' => 'Format','defaultvalue' => 'vertical','parameter_type' => 'select', 'required' => 1, 'selectvalues' => 'vertical,horizontal');
 			AddParameter($row['id_block'],$paramArray);
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1181,19 +1327,30 @@ function UpdateEzBlocks()
 			SELECT
 				id_parameter
 				FROM {db_prefix}ezp_block_parameters
-			WHERE id_block = " . $row['id_block'] . " AND  parameter_name = 'type' LIMIT 1
-				");
+			WHERE id_block = {int:id_block} AND  parameter_name = 'type' LIMIT 1
+				",
+			array(
+				'id_block' => $row['id_block'],
+			));
 			$paramRow = $smcFunc['db_fetch_assoc']($dbresult2);
 			$smcFunc['db_free_result']($dbresult2);
 
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 					(id_parameter, id_block, selecttext, selectvalue)
-				VALUES (" . $paramRow['id_parameter'] . ", " . $row['id_block'] . ",'downloads','downloads')");
+				VALUES ({int:id_parameter}, {int:id_block},'downloads','downloads')",
+			array(
+				'id_parameter' => $paramRow['id_parameter'],
+				'id_block' => $row['id_block'],
+			));
 
 
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1204,19 +1361,30 @@ function UpdateEzBlocks()
 			SELECT
 				id_parameter
 				FROM {db_prefix}ezp_block_parameters
-			WHERE id_block = " . $row['id_block'] . " AND  parameter_name = 'type' LIMIT 1
-				");
+			WHERE id_block = {int:id_block} AND  parameter_name = 'type' LIMIT 1
+				",
+			array(
+				'id_block' => $row['id_block'],
+			));
 			$paramRow = $smcFunc['db_fetch_assoc']($dbresult2);
 			$smcFunc['db_free_result']($dbresult2);
 
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 					(id_parameter, id_block, selecttext, selectvalue)
-				VALUES (" . $paramRow['id_parameter'] . ", " . $row['id_block'] . ",'random','random')");
+				VALUES ({int:id_parameter}, {int:id_block},'random','random')",
+			array(
+				'id_parameter' => $paramRow['id_parameter'],
+				'id_block' => $row['id_block'],
+			));
 
 
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.2'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.2',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.2';
 		}
 
@@ -1227,19 +1395,30 @@ function UpdateEzBlocks()
 			SELECT
 				id_parameter
 				FROM {db_prefix}ezp_block_parameters
-			WHERE id_block = " . $row['id_block'] . " AND  parameter_name = 'type' LIMIT 1
-				");
+			WHERE id_block = {int:id_block} AND  parameter_name = 'type' LIMIT 1
+				",
+			array(
+				'id_block' => $row['id_block'],
+			));
 			$paramRow = $smcFunc['db_fetch_assoc']($dbresult2);
 			$smcFunc['db_free_result']($dbresult2);
 
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 					(id_parameter, id_block, selecttext, selectvalue)
-				VALUES (" . $paramRow['id_parameter'] . ", " . $row['id_block'] . ",'random','random')");
+				VALUES ({int:id_parameter}, {int:id_block},'random','random')",
+			array(
+				'id_parameter' => $paramRow['id_parameter'],
+				'id_block' => $row['id_block'],
+			));
 
 
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1252,18 +1431,29 @@ function UpdateEzBlocks()
 			SELECT
 				id_parameter
 				FROM {db_prefix}ezp_block_parameters
-			WHERE id_block = " . $row['id_block'] . " AND  parameter_name = 'type' LIMIT 1
-				");
+			WHERE id_block = {int:id_block} AND  parameter_name = 'type' LIMIT 1
+				",
+			array(
+				'id_block' => $row['id_block'],
+			));
 			$paramRow = $smcFunc['db_fetch_assoc']($dbresult2);
 			$smcFunc['db_free_result']($dbresult2);
 
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 					(id_parameter, id_block, selecttext, selectvalue)
-				VALUES (" . $paramRow['id_parameter'] . ", " . $row['id_block'] . ",'random','random')");
+				VALUES ({int:id_parameter}, {int:id_block},'random','random')",
+			array(
+				'id_parameter' => $paramRow['id_parameter'],
+				'id_block' => $row['id_block'],
+			));
 
 
-			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = '1.1'
-			WHERE id_block = " . $row['id_block']);
+			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_blocks SET blockversion = {string:version}
+			WHERE id_block = {int:id_block}",
+			array(
+				'version' => '1.1',
+				'id_block' => $row['id_block'],
+			));
 			$row['blockversion'] = '1.1';
 		}
 
@@ -1285,10 +1475,18 @@ function AddParameter($blockID,$installBlock)
 		{
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters
 					(id_block, title, parameter_name, parameter_type,defaultvalue,required)
-				VALUES ($blockID,'" . $myparam['title']. "','" . $myparam['name']. "',
-				'" . $myparam['parameter_type']. "','" . $myparam['defaultvalue']. "',
-				'" . $myparam['required']. "'
-				)");
+				VALUES ({int:id_block},{string:title},{string:name},
+				{string:parameter_type},{string:defaultvalue},
+				{string:required}
+				)",
+			array(
+				'id_block' => $blockID,
+				'title' => $myparam['title'],
+				'name' => $myparam['name'],
+				'parameter_type' => $myparam['parameter_type'],
+				'defaultvalue' => $myparam['defaultvalue'],
+				'required' => $myparam['required'],
+			));
 
 			$paramID =  $smcFunc['db_insert_id']('{db_prefix}ezp_block_parameters', 'id_parameter');
 
@@ -1301,7 +1499,13 @@ function AddParameter($blockID,$installBlock)
 					// Insert select value
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_paramaters_select
 					(id_parameter, id_block, selecttext, selectvalue)
-				VALUES ($paramID, $blockID,'" . $sv. "','" . $sv. "')");
+				VALUES ({int:id_parameter}, {int:id_block},{string:selecttext},{string:selectvalue})",
+			array(
+				'id_parameter' => $paramID,
+				'id_block' => $blockID,
+				'selecttext' => $sv,
+				'selectvalue' => $sv,
+			));
 
 				}
 

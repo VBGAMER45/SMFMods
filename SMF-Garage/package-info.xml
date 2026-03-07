@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>RRasco:SMFGarage</id>
+	<name>SMF Garage</name>
+	<type>modification</type>
+	<version>3.0.0</version>
+
+    <!-- Installation for SMF 2.0.x -->
+    <install for="2.0.9-2.0.99">
+        <readme parsebbc="true">readme.txt</readme>
+        <code type="file">install_db.php</code>
+        <modification type="file">modification.xml</modification>
+        <require-dir name="Sources" destination="$boarddir"/>
+        <require-dir name="Themes" destination="$boarddir"/>
+        <require-dir name="Garage" destination="$boarddir"/>
+        <require-file name="SSI_Garage.php" destination="$boarddir" />
+        <require-file name="ssi_garage_examples.php" destination="$boarddir" />
+        <redirect url="?action=admin;area=garagesettings" timeout="1000" />
+    </install>
+
+    <!-- Installation for SMF 2.1.x -->
+    <install for="2.1.0-2.1.99">
+        <readme parsebbc="true">readme.txt</readme>
+        <code type="file">install_db.php</code>
+        <code type="file">Sources/dohooks.php</code>
+        <modification type="file">modification_2.1.xml</modification>
+        <require-dir name="Sources" destination="$boarddir"/>
+        <require-dir name="Themes" destination="$boarddir"/>
+        <require-dir name="Garage" destination="$boarddir"/>
+        <require-file name="SSI_Garage.php" destination="$boarddir" />
+        <require-file name="ssi_garage_examples.php" destination="$boarddir" />
+        <redirect url="?action=admin;area=garagesettings" timeout="1000" />
+    </install>
+
+    <!-- Uninstall for SMF 2.0.x -->
+	<uninstall for="2.0.9-2.0.99">
+		<modification type="file" reverse="true">modification.xml</modification>
+        <remove-file name="$sourcedir/Garage.php"/>
+        <remove-file name="$sourcedir/GarageFunctions.php"/>
+        <remove-file name="$sourcedir/GarageSettings.php"/>
+        <remove-file name="$sourcedir/GarageManagement.php"/>
+        <remove-file name="$themedir/Garage.template.php"/>
+        <remove-file name="$themedir/GarageSettings.template.php"/>
+        <remove-file name="$themedir/GarageManagement.template.php"/>
+        <remove-file name="$boarddir/SSI_Garage.php"/>
+        <remove-file name="$boarddir/ssi_garage_examples.php"/>
+	</uninstall>
+
+    <!-- Uninstall for SMF 2.1.x -->
+    <uninstall for="2.1.0-2.1.99">
+        <code type="file">Sources/dohooks.php</code>
+        <modification type="file" reverse="true">modification_2.1.xml</modification>
+        <remove-file name="$sourcedir/Garage.php"/>
+        <remove-file name="$sourcedir/GarageFunctions.php"/>
+        <remove-file name="$sourcedir/GarageSettings.php"/>
+        <remove-file name="$sourcedir/GarageManagement.php"/>
+        <remove-file name="$sourcedir/GarageHooks.php"/>
+        <remove-file name="$sourcedir/dohooks.php"/>
+        <remove-file name="$themedir/Garage.template.php"/>
+        <remove-file name="$themedir/GarageSettings.template.php"/>
+        <remove-file name="$themedir/GarageManagement.template.php"/>
+        <remove-file name="$boarddir/SSI_Garage.php"/>
+        <remove-file name="$boarddir/ssi_garage_examples.php"/>
+    </uninstall>
+
+</package-info>

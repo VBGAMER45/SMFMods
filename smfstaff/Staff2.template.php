@@ -110,7 +110,7 @@ function template_main()
 				if ($manage_staff)
 					echo '<tr>
 					<td align="center" colspan="',$totalcols,'" class="windowbg">
-					<a href="' . $scripturl . '?action=staff;sa=catdown&id=' . $data['id'] . '">' . $txt['smfstaff_down'] . '</a> | <a href="' . $scripturl . '?action=staff;sa=catup&id=' . $data['id'] . '">' . $txt['smfstaff_up'] . '</a> | <a href="' . $scripturl . '?action=staff;sa=delete&id=' . $data['id'] . ';ret">' . $txt['smfstaff_delgroup'] . '</a></td></tr>';
+					<a href="' . $scripturl . '?action=staff;sa=catdown&id=' . $data['id'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smfstaff_down'] . '</a> | <a href="' . $scripturl . '?action=staff;sa=catup&id=' . $data['id'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smfstaff_up'] . '</a> | <a href="' . $scripturl . '?action=staff;sa=delete&id=' . $data['id'] . ';ret;' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smfstaff_delgroup'] . '</a></td></tr>';
 
 				
 				echo '</table>';
@@ -240,6 +240,7 @@ function template_adminset()
 			<td>
 			<b>', $txt['smfstaff_staffsetting'], '</b><br />
 			<form method="post" action="', $scripturl, '?action=staff;sa=admin2">
+				<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 				<input type="checkbox" name="smfstaff_showavatar" ', ($modSettings['smfstaff_showavatar'] ? ' checked="checked" ' : '') . ' />', $txt['smfstaff_showavatar'], '<br />
 				<input type="checkbox" name="smfstaff_showlastactive" ', ($modSettings['smfstaff_showlastactive'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showlastactive'], '<br />
 				<input type="checkbox" name="smfstaff_showdateregistered" ', ($modSettings['smfstaff_showdateregistered'] ? ' checked="checked" ' : ''), ' />' . $txt['smfstaff_showdateregistered'], '<br />
@@ -252,13 +253,13 @@ function template_adminset()
 			<b>',$txt['smfstaff_groupstoadd'], '</b><br />';
 
 		foreach ($context['smfstaff_groups'] as $id => $data)
-			echo $data['name'], '&nbsp;<a href="', $scripturl, '?action=staff;sa=add&id=', $data['id'], '">' . $txt['smfstaff_addgroup'] . '</a><br />';
+			echo $data['name'], '&nbsp;<a href="', $scripturl, '?action=staff;sa=add&id=', $data['id'], ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['smfstaff_addgroup'] . '</a><br />';
 
 		
 		echo '<br /><br /><b>',$txt['smfstaff_groupstoshow'], '</b><br />';
 		
 		foreach ($context['smfstaff_showgroups'] as $id => $data)
-			echo $data['name'], '&nbsp;<a href="', $scripturl, '?action=staff;sa=delete&id=', $data['id'], '">' . $txt['smfstaff_delgroup'] . '</a><br />';
+			echo $data['name'], '&nbsp;<a href="', $scripturl, '?action=staff;sa=delete&id=', $data['id'], ';', $context['session_var'], '=', $context['session_id'], '">' . $txt['smfstaff_delgroup'] . '</a><br />';
 	
 echo '
 			

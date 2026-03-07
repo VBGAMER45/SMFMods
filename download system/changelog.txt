@@ -1,5 +1,25 @@
+4.0
++Added drag and drop file upload zones to add/edit category and add/edit download forms (SMF 2.1)
++Added CSRF session token protection to all forms and destructive links (SMF 2.0 and 2.1 templates)
++Added checkSession() calls to all state-changing functions in Downloads2.php
++Converted SQL queries to use SMF parameterized placeholders to prevent SQL injection
++Added output escaping (htmlspecialchars) to all user-generated content in SMF 2.1 template
++Added file upload validation to block dangerous file extensions (php, exe, etc.)
++Added Content-Disposition header sanitization to prevent header injection
++Updated SMF 2.1 template CSS classes (windowbg2 to windowbg, removed first_th/last_th)
++Replaced deprecated <font> tags with <span class="error"> in SMF 2.1 template
++Removed language="JavaScript" attributes from script tags
++Fixed target="blank" to target="_blank"
++Fixed mismatched HTML tags in SMF 2.1 template
++Added PHP 8.x compatibility (isset guards, null coalescing, loose comparison fixes)
++Replaced get_extension_funcs('gd') with function_exists('imagecreatetruecolor')
++Updated browser detection to use isBrowser() API for SMF 2.1
++Removed ONLY_FULL_GROUP_BY SQL mode workaround from DownloadsMain()
+!Fixed URL separator issues (& to ;) in SMF 2.1 template links
+
+
 3.0.15
-!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit" 
+!Minor fix styling for SMF 2.0.x submit buttons now use class="button_submit"
 
 3.0.14
 !Fixed searching results for more than one page was displaying incorrect data if options on advanced search were uncheck

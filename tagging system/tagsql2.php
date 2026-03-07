@@ -1,7 +1,7 @@
 <?php
 /*
 Tagging System
-Version 4.1
+Version 4.2
 by:vbgamer45
 https://www.smfhacks.com
 */
@@ -12,14 +12,14 @@ if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 elseif (!defined('SMF'))
   die('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
 
-  
+
 $smcFunc['db_query']('', "CREATE TABLE IF NOT EXISTS {db_prefix}tags
 (id_tag mediumint(8) NOT NULL auto_increment,
 tag tinytext NOT NULL,
 approved tinyint(4) NOT NULL default '0',
 PRIMARY KEY  (id_tag))");
-  
-// Upgrade the paratemeter select table
+
+// Upgrade the parameter select table
 $dbresult = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}tags");
 $approved =  1;
 while ($row = $smcFunc['db_fetch_row']($dbresult))
@@ -80,14 +80,8 @@ if (!isset($modSettings['smftags_set_msgindex']))
 
 		'smftags_set_use_css_tags' => 1,
 		'smftags_set_css_tag_background_color' => '#71a0b7',
-		'smftags_set_css_tag_font_color' => 'white',
+		'smftags_set_css_tag_font_color' => '#ffffff',
 	));
 }
-
-
-
-// Add Package Servers
-$smcFunc['db_query']('', "DELETE FROM {db_prefix}package_servers WHERE url = 'http://www.smfhacks.com'");
-$smcFunc['db_query']('', "REPLACE INTO {db_prefix}package_servers (name,url) VALUES ('SMFHacks.com Modification Site', 'http://www.smfhacks.com')");
 
 ?>

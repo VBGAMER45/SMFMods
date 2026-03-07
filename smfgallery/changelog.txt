@@ -1,4 +1,11 @@
 SMF Gallery Lite
+10.0
++Dropzone added for drag/drop uploads for adding picture and editing pictures in SMF 2.1
+!Database queries converted from string interpolation to parameterized {int:var}/{string:var} binding.
+!CSRF Protection: checkSession() added to all 15 state-changing functions.
+!LIMIT 1 Bug: Removed LIMIT 1 from DELETE queries on gallery_comment and gallery_report by id_picture in DeletePicture2().
+
+
 9.0.1
 !Minor fix styling for SMF 2.1.x submit buttons now use class="button"
 

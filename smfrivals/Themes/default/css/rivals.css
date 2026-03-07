@@ -1,0 +1,1139 @@
+/**
+ * SMF Rivals - Stylesheet
+ * @package SMFRivals
+ * @version 1.0.0
+ */
+
+/* ===== Platform Grid ===== */
+.rivals_platforms_grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 16px;
+	padding: 16px 0;
+}
+
+.rivals_platform_card {
+	background: var(--windowbg_color, #fff);
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 6px;
+	text-align: center;
+	padding: 20px 16px;
+	transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.rivals_platform_card:hover {
+	box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	transform: translateY(-2px);
+}
+
+.rivals_platform_card a {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+
+.rivals_platform_card img {
+	max-width: 120px;
+	max-height: 80px;
+	margin-bottom: 10px;
+}
+
+.rivals_platform_card h4 {
+	margin: 8px 0 4px;
+	font-size: 1.1em;
+}
+
+.rivals_count {
+	font-size: 0.85em;
+	color: #888;
+}
+
+/* ===== Ladder List ===== */
+.rivals_ladders_list {
+	padding: 8px 0;
+}
+
+.rivals_ladder_item {
+	background: var(--windowbg_color, #fff);
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 4px;
+	margin-bottom: 8px;
+	padding: 12px 16px;
+}
+
+.rivals_ladder_item.rivals_locked {
+	opacity: 0.7;
+}
+
+.rivals_ladder_header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.rivals_ladder_header a {
+	font-size: 1.05em;
+}
+
+.rivals_short_name {
+	color: #888;
+	font-size: 0.9em;
+}
+
+.rivals_ladder_desc {
+	margin: 6px 0 0;
+	color: #666;
+	font-size: 0.9em;
+}
+
+.rivals_sub_ladders {
+	margin-top: 10px;
+	padding-left: 16px;
+	border-left: 3px solid var(--border_color, #ddd);
+}
+
+.rivals_sub_ladders h5 {
+	margin: 0 0 6px;
+	font-size: 0.85em;
+	color: #888;
+	text-transform: uppercase;
+}
+
+.rivals_sub_ladders ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.rivals_sub_ladders li {
+	padding: 4px 0;
+}
+
+/* ===== Badges ===== */
+.rivals_badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 0.75em;
+	font-weight: bold;
+	text-transform: uppercase;
+	background: #e74c3c;
+	color: #fff;
+}
+
+.rivals_badge_1v1 {
+	background: #3498db;
+}
+
+.rivals_badge_small {
+	font-size: 0.7em;
+	padding: 1px 5px;
+	background: #e74c3c;
+	color: #fff;
+	border-radius: 2px;
+	vertical-align: middle;
+}
+
+/* ===== Tables ===== */
+.rivals_table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.rivals_table th {
+	text-align: left;
+	padding: 8px 12px;
+}
+
+.rivals_table td {
+	padding: 6px 12px;
+}
+
+.rivals_table tr:hover td {
+	background-color: rgba(0,0,0,0.02);
+}
+
+/* ===== Status Icons ===== */
+.rivals_status_icon {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	margin-right: 4px;
+	vertical-align: middle;
+}
+
+.rivals_status_hot { background: #27ae60; }
+.rivals_status_warm { background: #f39c12; }
+.rivals_status_cool { background: #e67e22; }
+.rivals_status_cold { background: #e74c3c; }
+.rivals_status_inactive { background: #95a5a6; }
+.rivals_status_frozen { background: #3498db; }
+
+/* ===== Standings ===== */
+.rivals_standings_actions {
+	display: flex;
+	gap: 8px;
+	padding: 12px 0;
+	flex-wrap: wrap;
+}
+
+.rivals_standings_table .rivals_col_rank {
+	width: 60px;
+	white-space: nowrap;
+}
+
+.rivals_standings_table .rivals_col_status {
+	width: 24px;
+	text-align: center;
+}
+
+.rivals_standings_table .rivals_col_name {
+	min-width: 150px;
+}
+
+.rivals_standings_table .rivals_col_icons {
+	white-space: nowrap;
+	font-size: 1.1em;
+}
+
+.rivals_standings_logo {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+	vertical-align: middle;
+	margin-right: 6px;
+	border-radius: 2px;
+}
+
+.rivals_gamer_tag {
+	color: #888;
+	font-size: 0.85em;
+}
+
+.rivals_rank_pos {
+	font-weight: bold;
+}
+
+.rivals_standings_row_frozen {
+	background-color: rgba(52, 152, 219, 0.1) !important;
+}
+
+.rivals_rank_up {
+	color: #27ae60;
+	font-size: 0.7em;
+}
+
+.rivals_rank_down {
+	color: #e74c3c;
+	font-size: 0.7em;
+}
+
+.rivals_rank_same {
+	color: #95a5a6;
+	font-size: 0.7em;
+}
+
+.rivals_streak_hot {
+	color: #27ae60;
+	font-weight: bold;
+}
+
+.rivals_streak_cold {
+	color: #e74c3c;
+	font-weight: bold;
+}
+
+.rivals_icon_hot,
+.rivals_icon_cold,
+.rivals_icon_crown,
+.rivals_icon_tomb,
+.rivals_icon_golden_shoe,
+.rivals_icon_soap,
+.rivals_icon_chicken {
+	margin-right: 2px;
+	cursor: help;
+}
+
+.rivals_rth_winner_banner {
+	background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+	color: #fff;
+	text-align: center;
+	padding: 14px 20px;
+	font-size: 1.1em;
+	border-radius: 4px;
+	margin-bottom: 12px;
+}
+
+/* ===== Rules ===== */
+.rivals_rules_section {
+	padding: 16px;
+	line-height: 1.6;
+}
+
+/* ===== Match Detail ===== */
+.rivals_match_detail {
+	text-align: center;
+	padding: 16px;
+}
+
+.rivals_match_teams {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 24px;
+	margin-bottom: 16px;
+}
+
+.rivals_match_team {
+	flex: 1;
+	max-width: 250px;
+}
+
+.rivals_match_team_left {
+	text-align: right;
+}
+
+.rivals_match_team_right {
+	text-align: left;
+}
+
+.rivals_match_vs {
+	font-size: 1.4em;
+	font-weight: bold;
+	color: #888;
+	flex-shrink: 0;
+	padding: 0 8px;
+}
+
+.rivals_match_label {
+	display: block;
+	font-size: 0.8em;
+	color: #999;
+	text-transform: uppercase;
+}
+
+.rivals_match_scores {
+	margin: 16px 0;
+	padding: 16px;
+	background: rgba(0,0,0,0.02);
+	border-radius: 4px;
+}
+
+.rivals_score_display {
+	font-size: 2em;
+	font-weight: bold;
+	margin: 8px 0;
+}
+
+.rivals_score_sep {
+	color: #999;
+}
+
+.rivals_round_score {
+	font-size: 0.9em;
+	color: #666;
+	margin: 4px 0;
+}
+
+.rivals_match_result {
+	margin: 12px 0;
+	font-size: 1.1em;
+}
+
+.rivals_match_status {
+	margin-top: 12px;
+}
+
+.rivals_match_winner {
+	color: #27ae60;
+	font-weight: bold;
+}
+
+.rivals_rounds_info {
+	margin: 12px 0;
+	padding: 8px;
+	background: rgba(0,0,0,0.02);
+	border-radius: 4px;
+}
+
+.rivals_round_info {
+	padding: 4px 0;
+	font-size: 0.9em;
+}
+
+/* ===== Challenge List ===== */
+.rivals_challenge_details {
+	padding-left: 24px !important;
+	color: #666;
+	font-size: 0.9em;
+	border-top: none !important;
+}
+
+/* ===== Confirm Buttons ===== */
+.rivals_confirm_buttons {
+	display: flex;
+	gap: 12px;
+	justify-content: center;
+	margin-top: 16px;
+}
+
+.rivals_confirm_buttons .button:last-child {
+	background: #e74c3c;
+	border-color: #c0392b;
+}
+
+/* ===== Match Finder Queue ===== */
+.rivals_queue_expired {
+	opacity: 0.5;
+}
+
+/* ===== Clan Profile ===== */
+.rivals_clan_header {
+	display: flex;
+	gap: 20px;
+	padding: 16px;
+	align-items: flex-start;
+}
+
+.rivals_clan_logo {
+	flex-shrink: 0;
+}
+
+.rivals_clan_logo img {
+	max-width: 150px;
+	max-height: 150px;
+	border-radius: 4px;
+}
+
+.rivals_clan_info {
+	flex: 1;
+}
+
+.rivals_clan_name {
+	font-size: 1.4em;
+	font-weight: bold;
+	margin: 0 0 8px;
+}
+
+.rivals_clan_meta {
+	color: #888;
+	font-size: 0.9em;
+}
+
+/* ===== Tabs ===== */
+.rivals_tabs {
+	display: flex;
+	border-bottom: 2px solid var(--border_color, #ddd);
+	margin-bottom: 16px;
+	gap: 0;
+}
+
+.rivals_tab {
+	padding: 10px 20px;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+	margin-bottom: -2px;
+	font-weight: 500;
+	color: #666;
+	transition: color 0.2s, border-color 0.2s;
+}
+
+.rivals_tab:hover {
+	color: #333;
+}
+
+.rivals_tab.active {
+	color: var(--link_color, #346);
+	border-bottom-color: var(--link_color, #346);
+}
+
+.rivals_tab_content {
+	display: none;
+}
+
+.rivals_tab_content.active {
+	display: block;
+}
+
+/* ===== Random Map ===== */
+.rivals_random_map {
+	text-align: center;
+	padding: 24px;
+}
+
+.rivals_random_map img {
+	max-width: 400px;
+	border-radius: 6px;
+	margin: 12px 0;
+}
+
+.rivals_random_map h4 {
+	font-size: 1.3em;
+	margin: 0 0 8px;
+}
+
+/* ===== Match Chat ===== */
+.rivals_chat_container {
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.rivals_chat_messages {
+	height: 300px;
+	overflow-y: auto;
+	padding: 12px;
+	background: var(--windowbg_color, #fff);
+}
+
+.rivals_chat_message {
+	margin-bottom: 8px;
+	padding: 4px 0;
+}
+
+.rivals_chat_message .author {
+	font-weight: bold;
+	margin-right: 6px;
+}
+
+.rivals_chat_message .time {
+	font-size: 0.8em;
+	color: #999;
+}
+
+.rivals_chat_input {
+	display: flex;
+	border-top: 1px solid var(--border_color, #ddd);
+}
+
+.rivals_chat_input input[type="text"] {
+	flex: 1;
+	border: none;
+	padding: 10px 12px;
+	outline: none;
+}
+
+.rivals_chat_input button {
+	padding: 10px 16px;
+	border: none;
+	background: var(--link_color, #346);
+	color: #fff;
+	cursor: pointer;
+}
+
+/* ===== Tournament Brackets ===== */
+.rivals_bracket_container {
+	overflow-x: auto;
+	padding: 16px;
+}
+
+.rivals_bracket {
+	display: flex;
+	gap: 40px;
+	align-items: flex-start;
+}
+
+.rivals_bracket_round {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	min-width: 200px;
+}
+
+.rivals_bracket_round_title {
+	text-align: center;
+	font-weight: bold;
+	font-size: 0.9em;
+	color: #888;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+.rivals_bracket_match {
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.rivals_bracket_team {
+	display: flex;
+	justify-content: space-between;
+	padding: 8px 12px;
+	border-bottom: 1px solid var(--border_color, #eee);
+	font-size: 0.9em;
+}
+
+.rivals_bracket_team:last-child {
+	border-bottom: none;
+}
+
+.rivals_bracket_team.winner {
+	font-weight: bold;
+	background: rgba(39, 174, 96, 0.08);
+}
+
+.rivals_bracket_team.bye {
+	color: #ccc;
+	font-style: italic;
+}
+
+.rivals_bracket_score {
+	font-weight: bold;
+	min-width: 20px;
+	text-align: right;
+}
+
+/* ===== Clan List ===== */
+.rivals_filter_bar {
+	display: flex;
+	gap: 8px;
+	padding: 12px 0;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.rivals_alpha_filter {
+	display: flex;
+	gap: 2px;
+	flex-wrap: wrap;
+}
+
+.rivals_alpha_filter a,
+.rivals_alpha_filter span {
+	display: inline-block;
+	padding: 4px 8px;
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 3px;
+	font-size: 0.85em;
+	text-decoration: none;
+	color: #666;
+}
+
+.rivals_alpha_filter a:hover {
+	background: var(--link_color, #346);
+	color: #fff;
+	border-color: var(--link_color, #346);
+}
+
+.rivals_alpha_filter span.active {
+	background: var(--link_color, #346);
+	color: #fff;
+	border-color: var(--link_color, #346);
+}
+
+.rivals_clan_list_logo {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+	vertical-align: middle;
+	margin-right: 8px;
+	border-radius: 3px;
+}
+
+/* ===== Clan Dashboard ===== */
+.rivals_dashboard_grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 12px;
+	padding: 16px 0;
+}
+
+.rivals_dashboard_card {
+	background: var(--windowbg_color, #fff);
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 6px;
+	text-align: center;
+	padding: 20px 16px;
+	transition: box-shadow 0.2s;
+}
+
+.rivals_dashboard_card:hover {
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.rivals_dashboard_card a {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+
+.rivals_dashboard_card .rivals_dashboard_count {
+	font-size: 1.8em;
+	font-weight: bold;
+	color: var(--link_color, #346);
+	display: block;
+	margin-bottom: 4px;
+}
+
+.rivals_dashboard_card h4 {
+	margin: 0;
+	font-size: 0.95em;
+	color: #666;
+}
+
+/* ===== Search Dropdown ===== */
+.rivals_search_wrapper {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	max-width: 300px;
+}
+
+.rivals_search_results {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: var(--windowbg_color, #fff);
+	border: 1px solid var(--border_color, #ddd);
+	border-top: none;
+	border-radius: 0 0 4px 4px;
+	max-height: 200px;
+	overflow-y: auto;
+	z-index: 1000;
+	display: none;
+}
+
+.rivals_search_result {
+	padding: 8px 12px;
+	cursor: pointer;
+	border-bottom: 1px solid var(--border_color, #eee);
+}
+
+.rivals_search_result:last-child {
+	border-bottom: none;
+}
+
+.rivals_search_result:hover {
+	background: rgba(0,0,0,0.04);
+}
+
+/* ===== Clan Chat Messages ===== */
+.rivals_clan_chat_messages {
+	max-height: 400px;
+	overflow-y: auto;
+	padding: 12px 0;
+}
+
+.rivals_clan_chat_msg {
+	padding: 6px 0;
+	border-bottom: 1px solid var(--border_color, #eee);
+}
+
+.rivals_clan_chat_msg:last-child {
+	border-bottom: none;
+}
+
+.rivals_clan_chat_time {
+	font-size: 0.8em;
+	color: #999;
+	float: right;
+}
+
+/* ===== Clan Profile Extras ===== */
+.rivals_clan_actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 12px;
+	flex-wrap: wrap;
+}
+
+.rivals_clan_achievements span {
+	display: inline-block;
+	margin-right: 8px;
+	padding: 4px 10px;
+	background: #f0f0f0;
+	border-radius: 3px;
+	font-size: 0.85em;
+}
+
+/* ===== Logo Upload ===== */
+.rivals_logo_preview {
+	max-width: 150px;
+	max-height: 150px;
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 4px;
+	margin-top: 8px;
+}
+
+.rivals_current_logo {
+	display: inline-block;
+	margin-bottom: 8px;
+}
+
+.rivals_current_logo img {
+	max-width: 100px;
+	max-height: 100px;
+	border-radius: 4px;
+}
+
+/* ===== Roster Management ===== */
+.rivals_roster_list {
+	padding: 8px 0;
+}
+
+.rivals_roster_item {
+	background: var(--windowbg_color, #fff);
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 4px;
+	margin-bottom: 8px;
+	padding: 12px 16px;
+}
+
+.rivals_roster_members {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 6px;
+}
+
+.rivals_roster_member {
+	background: #f0f0f0;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 0.85em;
+}
+
+/* ===== Member Management Table ===== */
+.rivals_member_role {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 0.75em;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.rivals_role_leader {
+	background: #f39c12;
+	color: #fff;
+}
+
+.rivals_role_coleader {
+	background: #3498db;
+	color: #fff;
+}
+
+.rivals_role_member_tag {
+	background: #ecf0f1;
+	color: #666;
+}
+
+/* ===== Admin ===== */
+#admincenter .rivals_admin_dashboard {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 12px;
+	padding: 16px 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+	.rivals_platforms_grid {
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+		gap: 10px;
+	}
+
+	.rivals_clan_header {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.rivals_bracket {
+		gap: 20px;
+	}
+
+	.rivals_bracket_round {
+		min-width: 160px;
+	}
+
+	.rivals_tabs {
+		flex-wrap: wrap;
+	}
+
+	.rivals_tab {
+		padding: 8px 14px;
+		font-size: 0.9em;
+	}
+
+	.rivals_standings_actions {
+		flex-direction: column;
+	}
+
+	.rivals_standings_table {
+		font-size: 0.85em;
+	}
+
+	.rivals_standings_table .rivals_col_icons {
+		font-size: 0.95em;
+	}
+
+	.rivals_dashboard_grid {
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	}
+
+	.rivals_filter_bar {
+		flex-direction: column;
+	}
+
+	.rivals_search_wrapper {
+		max-width: 100%;
+	}
+}
+
+/* ===== Tournament Grid ===== */
+.rivals_tournament_grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 16px;
+	padding: 16px 0;
+}
+
+.rivals_tournament_card {
+	background: var(--windowbg_color, #fff);
+	border: 1px solid var(--border_color, #ddd);
+	border-radius: 6px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.rivals_tournament_card_header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--border_color, #ddd);
+	background: var(--catbg_color, #f5f5f5);
+}
+
+.rivals_tournament_logo {
+	max-width: 48px;
+	max-height: 48px;
+	border-radius: 4px;
+}
+
+.rivals_tournament_card_title h4 {
+	margin: 0;
+	font-size: 1.05em;
+}
+
+.rivals_tournament_card_body {
+	padding: 12px 16px;
+	flex: 1;
+}
+
+.rivals_tournament_meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 10px;
+}
+
+.rivals_tournament_stats {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 4px 12px;
+	font-size: 0.9em;
+	margin: 0;
+}
+
+.rivals_tournament_stats dt {
+	font-weight: 600;
+	color: var(--title_bar_color, #666);
+}
+
+.rivals_tournament_card_actions {
+	display: flex;
+	gap: 8px;
+	padding: 10px 16px;
+	border-top: 1px solid var(--border_color, #ddd);
+	background: var(--catbg_color, #f5f5f5);
+}
+
+.rivals_tournament_info {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
+
+.rivals_tournament_description {
+	width: 100%;
+	font-size: 0.9em;
+	color: var(--title_bar_color, #666);
+	margin-top: 4px;
+}
+
+/* Tournament status badges */
+.rivals_status_0 { background: #95a5a6; color: #fff; }
+.rivals_status_1 { background: #2ecc71; color: #fff; }
+.rivals_status_2 { background: #3498db; color: #fff; }
+.rivals_status_3 { background: #7f8c8d; color: #fff; }
+
+/* ===== Bracket Visualization ===== */
+.rivals_bracket_label {
+	font-size: 1.1em;
+	font-weight: 600;
+	padding: 12px 0 6px;
+	border-bottom: 2px solid var(--border_color, #ddd);
+	margin-bottom: 12px;
+}
+
+.rivals_bracket_container {
+	overflow-x: auto;
+	padding: 16px 0;
+}
+
+.rivals_bracket {
+	display: flex;
+	gap: 0;
+	min-width: max-content;
+}
+
+.rivals_bracket_round {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	min-width: 220px;
+	padding: 0 8px;
+}
+
+.rivals_bracket_round_label {
+	text-align: center;
+	font-weight: 600;
+	font-size: 0.85em;
+	color: var(--title_bar_color, #666);
+	padding: 4px 0 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.rivals_bracket_match {
+	border: 1px solid var(--border_color, #ccc);
+	border-radius: 4px;
+	margin: 8px 0;
+	background: var(--windowbg_color, #fff);
+	overflow: hidden;
+}
+
+.rivals_bracket_match.rivals_bracket_bye {
+	opacity: 0.5;
+}
+
+.rivals_bracket_team {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 6px 10px;
+	font-size: 0.9em;
+	border-bottom: 1px solid var(--border_color, #eee);
+}
+
+.rivals_bracket_team:last-child {
+	border-bottom: none;
+}
+
+.rivals_bracket_team_name {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 160px;
+}
+
+.rivals_bracket_team_score {
+	font-weight: 700;
+	min-width: 24px;
+	text-align: center;
+	padding-left: 8px;
+}
+
+.rivals_bracket_winner {
+	background: #d4edda;
+	font-weight: 600;
+}
+
+.rivals_bracket_loser {
+	opacity: 0.5;
+}
+
+/* ===== League Table ===== */
+.rivals_league_table .rivals_col_points {
+	font-size: 1.05em;
+	background: var(--catbg_color, #f5f5f5);
+}
+
+.rivals_league_champion {
+	border-left: 3px solid #f1c40f;
+}
+
+.rivals_season_active_row {
+	background: var(--catbg_color, #f5f5f5) !important;
+}
+
+/* ===== Responsive - Tournament ===== */
+@media (max-width: 768px) {
+	.rivals_tournament_grid {
+		grid-template-columns: 1fr;
+	}
+
+	.rivals_bracket_round {
+		min-width: 180px;
+	}
+
+	.rivals_bracket_team_name {
+		max-width: 120px;
+	}
+}
+
+/* ===== Admin Panel ===== */
+#admincenter .rivals_badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 0.8em;
+	font-weight: 600;
+	color: #fff;
+	background: #7f8c8d;
+}
+
+#admincenter .table_grid {
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+#admincenter .table_grid td {
+	vertical-align: middle;
+}
+
+#admincenter .table_grid td a.button {
+	padding: 2px 8px;
+	font-size: 0.85em;
+}
+
+#admincenter dl.settings dt {
+	min-width: 200px;
+}
+
+#admincenter dl.settings dd input[type="text"],
+#admincenter dl.settings dd input[type="number"],
+#admincenter dl.settings dd select,
+#admincenter dl.settings dd textarea {
+	max-width: 400px;
+}
+
+/* Clan chat */
+.rivals_chat_message strong {
+	margin-right: 8px;
+}
+.rivals_chat_time {
+	color: #888;
+	font-size: 0.85em;
+}
+.rivals_chat_message p {
+	margin: 4px 0 0;
+}

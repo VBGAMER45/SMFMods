@@ -5,7 +5,7 @@
 	<id>vbgamer45:downloadsystem</id>
 	<name>Downloads System</name>
 	<type>modification</type>
-	<version>3.0.15</version>
+	<version>4.0</version>
 
 	<install for="1.1 - 1.1.99, 1.1 RC3, 1.1 RC2">
 		<redirect url="?action=downloads;sa=adminset">redirect.txt</redirect>

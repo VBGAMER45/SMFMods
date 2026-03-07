@@ -5,6 +5,7 @@ Version 2.5.3
 by:vbgamer45
 http://www.smfhacks.com
 */
+global $scripturl;
 
 //Links.template.php text strings
 $txt['smflinks_indextitle'] = 'Links';
@@ -12,8 +13,8 @@ $txt['smflinks_ctitle'] = 'Title';
 $txt['smflinks_description'] = 'Description';
 $txt['smflinks_url'] = 'Url';
 $txt['smflinks_category'] = 'Category';
-$txt['smflinks_parentcategory'] =	'Parent Category';
-$txt['smflinks_text_catnone'] =	'(None)';
+$txt['smflinks_parentcategory'] =	'Parent Category'; 
+$txt['smflinks_text_catnone'] =	'(None)'; 
 $txt['smflinks_totallinks'] = 'Total Links';
 $txt['smflinks_image'] = 'Image';
 $txt['smflinks_submittedby'] = 'Submitted By:';
@@ -35,7 +36,9 @@ $txt['smflinks_linkssettings'] = 'Links Settings';
 $txt['smflinks_linksconfig'] = 'Links Configuration';
 $txt['smflinks_linkssettings_des'] = 'Sets the settings for the links system';
 $txt['smflinks_managecats'] =  'Manage Categories';
-$txt['smflinks_anagecats_des'] = 'Allows you create groups for links';
+$txt['smflinks_anagecats_des'] = 'Allows you to create groups for links';
+$txt['smflinks_approvelinks_desc'] = 'Review and approve links submitted by members.';
+$txt['smflinks_catpermlist_desc'] = 'Set view and submit permissions for each category by member group.';
 $txt['smflinks_linkspanel'] = 'Links Directory Panel';
 $txt['smflinks_approvepanel'] = 'Approve Links Panel';
 $txt['smflinks_catpermlist'] = 'Category Permission List';
@@ -53,9 +56,6 @@ $txt['smflinks_crating'] = 'Rating';
 $txt['smflinks_chits'] = 'Hits';
 $txt['smflinks_cusername'] =  'Member Name';
 $txt['smflinks_cdate'] = 'Date';
-$txt['smflinks_alexa'] = 'Alexa';
-$txt['smflinks_pagerank'] = 'Pagerank';
-
 $txt['smflinks_topfivevisited'] = 'Top Five Visited Links';
 $txt['smflinks_topfiverated'] = 'Top Five Rated Links';
 
@@ -89,9 +89,6 @@ $txt['smflinks_setshowmostvisited'] = 'Show Most Visited Index';
 $txt['smflinks_setshowstats'] = 'Show Stats Index';
 $txt['smflinks_set_count_child'] = 'Counts child categories link totals. <br />(Uses more queries)';
 $txt['smflinks_setallowbbc'] = 'Allow BBC for links description';
-$txt['smflinks_setgetpr'] = 'Get Pagerank information';
-$txt['smflinks_setgetalexa'] = 'Get Alexa information';
-
 //Link Display Settings
 $txt['smflinks_linkdisplay'] = 'Link Display Settings';
 $txt['smflinks_disp_description'] = 'Show Description';
@@ -99,8 +96,6 @@ $txt['smflinks_disp_hits'] = 'Show Hits';
 $txt['smflinks_disp_rating'] = 'Show Rating';
 $txt['smflinks_disp_membername'] = 'Show Member Name';
 $txt['smflinks_disp_date'] = 'Show Date';
-$txt['smflinks_disp_alexa'] = 'Show Alexa';
-$txt['smflinks_disp_pagerank'] = 'Show Pagerank';
 
 $txt['smflinks_settings_save'] = 'Save Settings';
 
@@ -155,3 +150,99 @@ $txt['smflinks_perm_denied'] = 'Denied';
 $txt['smflinks_sub_cats'] = 'Sub Categories: ';
 
 $txt['smflinks_err_linkmuststart'] = 'Link must start with either http:// or https://';
+
+
+// Begin SMF Links Text Strings
+$txt['smflinks_menu'] = 'Links';
+$txt['smflinks_admin'] = 'Links Configuration';
+$txt['smflinks_linkssettings'] = 'Links Settings';
+$txt['smflinks_managecats'] =  'Manage Categories';
+$txt['smflinks_catpermlist'] = 'Category Permission List';
+$txt['smflinks_approvelinks'] = 'Approve Links';
+
+
+$txt['permissiongroup_simple_smflinks'] = 'SMF Links';
+$txt['permissiongroup_smflinks'] = 'SMF Links';
+$txt['permissionname_view_smflinks'] = 'View Links Page';
+$txt['permissionhelp_view_smflinks'] = 'Sets if the user can view the links page.';
+$txt['cannot_view_smflinks'] = 'You can not view the links page.';
+$txt['permissionname_add_links'] = 'Add Links';
+$txt['permissionhelp_add_links'] = 'If the user is allowed to submit links';
+$txt['cannot_add_links'] = 'You can not add links.';
+$txt['permissionname_edit_links'] = 'Edit Links';
+$txt['permissionhelp_edit_links'] = 'If the user is allowed to edit links';
+$txt['cannot_edit_links'] = 'You can not edit links.';
+$txt['permissionname_delete_links'] = 'Delete Links';
+$txt['permissionhelp_delete_links'] = 'If the user is allowed to delete links';
+$txt['cannot_delete_links'] = 'You can not delete links.';
+$txt['permissionname_approve_links'] = 'Approve Links';
+$txt['permissionhelp_approve_links'] = 'If the user is allowed to approve links';
+$txt['cannot_approve_links'] = 'You can not approve links.';
+$txt['permissionname_links_auto_approve'] = 'Links Auto Approved';
+$txt['permissionhelp_links_auto_approve'] = 'If the users links are auto approved when submitted.';
+$txt['permissionname_rate_links'] = 'Rate Links';
+$txt['permissionhelp_rate_links'] = 'If the user is allowed to rate links';
+$txt['cannot_rate_links'] = 'You are not allowed to rate links.';
+$txt['permissionname_links_manage_cat'] = 'Manage Categories';
+$txt['permissionhelp_links_manage_cat'] = 'User can add/remove/edit/reorder categories';
+$txt['cannot_links_manage_cat'] = 'You are not allowed to manage categories.';
+
+$txt['permissionname_delete_links_own'] = 'Own Link';
+$txt['permissionname_delete_links_any'] = 'Any Link';
+$txt['permissionname_edit_links_own'] = 'Own Link';
+$txt['permissionname_edit_links_any'] = 'Any Link';
+//END SMF Links Strings
+
+
+// Feature: Disallowed Domains
+$txt['smflinks_disallowed_domains'] = 'Disallowed Domains';
+$txt['smflinks_disallowed_domains_desc'] = 'Domains listed here will be blocked from being submitted as links.';
+$txt['smflinks_add_domain'] = 'Add Domain';
+$txt['smflinks_domain'] = 'Domain';
+$txt['smflinks_no_disallowed_domains'] = 'No disallowed domains have been added.';
+$txt['smflinks_err_domain_disallowed'] = 'The domain of this link is not allowed.';
+$txt['smflinks_err_no_domain'] = 'Please enter a domain.';
+$txt['smflinks_domain_hint'] = 'Enter domain without http:// (e.g., example.com). Subdomains will also be blocked.';
+
+// Feature: Drag-drop category reordering
+$txt['smflinks_drag_reorder'] = 'Drag to reorder categories';
+$txt['smflinks_order_saved'] = 'Category order saved.';
+$txt['smflinks_order_error'] = 'Error saving category order.';
+
+// Feature: Link checker
+$txt['smflinks_checklinks'] = 'Check Links';
+$txt['smflinks_checklinks_desc'] = 'Check all links for broken URLs';
+$txt['smflinks_start_check'] = 'Start Checking Links';
+$txt['smflinks_checking'] = 'Checking links...';
+$txt['smflinks_check_progress'] = 'Checked %1$d of %2$d links';
+$txt['smflinks_check_complete'] = 'Link check complete.';
+$txt['smflinks_status_ok'] = 'OK';
+$txt['smflinks_status_redirect'] = 'Redirect';
+$txt['smflinks_status_not_found'] = 'Not Found';
+$txt['smflinks_status_error'] = 'Error';
+$txt['smflinks_status_timeout'] = 'Timeout/Unreachable';
+$txt['smflinks_status_cloudflare'] = 'Cloudflare Block';
+$txt['smflinks_delete_selected'] = 'Delete Selected Bad Links';
+$txt['smflinks_no_bad_links'] = 'No bad links found!';
+$txt['smflinks_last_checked'] = 'Last Checked';
+$txt['smflinks_status'] = 'Status';
+$txt['smflinks_bad_links_deleted'] = 'Selected bad links have been deleted.';
+
+// Feature: Thumbnails
+$txt['smflinks_disp_thumbnail'] = 'Show Link Thumbnails (via thum.io)';
+$txt['smflinks_thumbnail'] = 'Preview';
+
+// Feature: Link checker enhancements
+$txt['smflinks_check_batch_size'] = 'Links to check per batch';
+$txt['smflinks_check_batch_size_hint'] = 'Number of links checked at a time (5-200). Lower values are safer for shared hosting.';
+$txt['smflinks_check_notify_pm'] = 'Enable PM notifications for broken links';
+$txt['smflinks_check_fails'] = 'Fails';
+$txt['smflinks_notify_selected'] = 'Notify Selected Users';
+$txt['smflinks_pm_subject'] = 'Your link(s) may be broken';
+$txt['smflinks_pm_body_intro'] = 'The following link(s) you submitted appear to be broken or unreachable:';
+$txt['smflinks_pm_body_outro'] = 'Please update or remove these links. Thank you!';
+$txt['smflinks_notify_sent'] = 'Notifications have been sent.';
+$txt['smflinks_notify'] = 'Notify';
+$txt['smflinks_linkchecksettings'] = 'Link Checker Settings';
+
+$txt['whoall_links'] = 'Viewing the <a href="' . $scripturl . '?action=links">' . $txt['smflinks_menu'] . '</a>';

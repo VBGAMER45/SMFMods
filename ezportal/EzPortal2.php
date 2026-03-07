@@ -1,7 +1,7 @@
 <?php
 /*
 EzPortal
-Version 6.5
+Version 7.0
 by:vbgamer45
 https://www.ezportal.com
 Copyright 2010-2026 https://www.samsonsoftware.com
@@ -11,10 +11,27 @@ function EzPortalMain()
 	global $sourcedir, $ezPortalVersion, $context, $ezpSettings, $boardurl, $boarddir, $modSettings;
 
 	// Hold Current Version
-	$ezPortalVersion = '6.5';
+	$ezPortalVersion = '7.0';
 
 	// Subs for EzPortal
 	require_once($sourcedir . '/Subs-EzPortalMain2.php');
+
+	// AJAX endpoints - dispatch early before template/layer loading to prevent
+	// SMF 2.1 from wrapping JSON responses in HTML template output
+	$sa = isset($_REQUEST['sa']) ? $_REQUEST['sa'] : '';
+	$ajaxEndpoints = array(
+		'ajaxshouts' => 'EzPortalAjaxGetShouts',
+		'ajaxaddshout' => 'EzPortalAjaxAddShout',
+		'ajaxremoveshout' => 'EzPortalAjaxRemoveShout',
+	);
+	if (isset($ajaxEndpoints[$sa]))
+	{
+		LoadEzPortalSettings();
+		if (loadlanguage('EzPortal') == false)
+			loadLanguage('EzPortal','english');
+		$ajaxEndpoints[$sa]();
+		return;
+	}
 
 	// Setup a template layer for the ezPortal Admin Area's
 	$context['template_layers'][] = 'ezportal';
@@ -309,8 +326,11 @@ function EzPortalBlocksMain()
 		SELECT
 			l.customtitle, l.id_layout, l.active, l.id_order
 		FROM {db_prefix}ezp_block_layout AS l
-		WHERE l.id_column = " . $row['id_column'] . "
-		ORDER BY l.id_order ASC");
+		WHERE l.id_column = {int:id_column}
+		ORDER BY l.id_order ASC",
+		array(
+			'id_column' => $row['id_column'],
+		));
 		while($row2 = $smcFunc['db_fetch_assoc']($dbresult2))
 			$blocks[] = $row2;
 		$smcFunc['db_free_result']($dbresult2);
@@ -430,7 +450,10 @@ function EzPortalAddBlock2()
 	SELECT
 		blockdata, data_editable, blocktype, blocktitle
 	FROM {db_prefix}ezp_blocks
-	WHERE id_block = " . $context['ezportal_blocktype']);
+	WHERE id_block = {int:blocktype}",
+	array(
+		'blocktype' => $context['ezportal_blocktype'],
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
     if (isset($txt[$row['blocktitle']]['title']))
@@ -451,8 +474,10 @@ function EzPortalAddBlock2()
 	SELECT
 		title, defaultvalue, required, parameter_type, id_parameter
 	FROM {db_prefix}ezp_block_parameters
-	WHERE id_block = " . $context['ezportal_blocktype'] . " ORDER BY id_order ASC"
-	);
+	WHERE id_block = {int:blocktype} ORDER BY id_order ASC",
+	array(
+		'blocktype' => $context['ezportal_blocktype'],
+	));
 	$context['ezp_block_parameters'] = array();
 
 	$editorCreated = false;
@@ -498,7 +523,10 @@ function EzPortalAddBlock2()
 				SELECT
 					selectvalue,selecttext
 				FROM {db_prefix}ezp_paramaters_select
-				WHERE id_parameter = " . $row['id_parameter']. " ORDER BY id_select ASC");
+				WHERE id_parameter = {int:id_parameter} ORDER BY id_select ASC",
+			array(
+				'id_parameter' => $row['id_parameter'],
+			));
 				while ($row2 = $smcFunc['db_fetch_assoc']($request))
 					$context['ezp_select_' . $row['id_parameter']][$row2['selectvalue']] = $row2['selecttext'];
 				$smcFunc['db_free_result']($request);
@@ -572,8 +600,10 @@ function EzPortalAddBlock3()
 	SELECT
 		b.blockdata bdata, b.data_editable
 	FROM {db_prefix}ezp_blocks AS b
-	WHERE id_block = $blocktype  LIMIT 1
-	");
+	WHERE id_block = {int:blocktype} LIMIT 1",
+	array(
+		'blocktype' => $blocktype,
+	));
 	$blockrow = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -604,8 +634,10 @@ function EzPortalAddBlock3()
 	SELECT
 		defaultvalue, required, parameter_type, id_parameter, title
 	FROM {db_prefix}ezp_block_parameters
-	WHERE id_block = " . $blocktype
-	);
+	WHERE id_block = {int:blocktype}",
+	array(
+		'blocktype' => $blocktype,
+	));
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		// Checked passed data type
@@ -681,7 +713,22 @@ function EzPortalAddBlock3()
 	// Insert the ezBlock
 	$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_layout
 			(id_column, id_block, id_order, customtitle, permissions, blockmanagers, can_collapse, active, blockdata, id_icon, hidetitlebar, hidemobile,showonlymobile,block_header_class,block_body_class)
-			VALUES ($column, $blocktype,1000,'$blocktitle','$finalPermissions','$finalManagers',$can_collapse, 1,'$blockdata','$icon', $hidetitlebar, $hidemobile,$showonlymobile,'$block_header_class','$block_body_class')");
+			VALUES ({int:column}, {int:blocktype},1000,{string:blocktitle},{string:permissions},{string:managers},{int:can_collapse}, 1,{string:blockdata},{int:icon}, {int:hidetitlebar}, {int:hidemobile},{int:showonlymobile},{string:block_header_class},{string:block_body_class})",
+		array(
+			'column' => $column,
+			'blocktype' => $blocktype,
+			'blocktitle' => $blocktitle,
+			'permissions' => $finalPermissions,
+			'managers' => $finalManagers,
+			'can_collapse' => $can_collapse,
+			'blockdata' => $blockdata,
+			'icon' => $icon,
+			'hidetitlebar' => $hidetitlebar,
+			'hidemobile' => $hidemobile,
+			'showonlymobile' => $showonlymobile,
+			'block_header_class' => $block_header_class,
+			'block_body_class' => $block_body_class,
+		));
 
 	$layoutID = $smcFunc['db_insert_id']('{db_prefix}ezp_block_layout', 'id_layout');
 
@@ -695,12 +742,15 @@ function EzPortalAddBlock3()
     {
 		foreach ($parameters  as $key => $param)
 		{
-			// Make it db safe
-			$paramData = $smcFunc['db_escape_string']($param);
 			// Insert the parameter
 			$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values
 				(id_layout, id_parameter, data)
-				VALUES ($layoutID,$key,'$paramData')");
+				VALUES ({int:layout_id},{int:param_key},{string:param_data})",
+			array(
+				'layout_id' => $layoutID,
+				'param_key' => (int) $key,
+				'param_data' => $param,
+			));
 
 		}
 
@@ -738,8 +788,10 @@ function EzPortalEditBlock()
 		l.hidetitlebar, l.hidemobile, l.showonlymobile, l.block_header_class, l.block_body_class 
 	FROM {db_prefix}ezp_block_layout AS l
 		INNER JOIN {db_prefix}ezp_blocks AS b ON (l.id_block = b.id_block)
-	WHERE l.id_layout = $block LIMIT 1
-	");
+	WHERE l.id_layout = {int:block} LIMIT 1",
+	array(
+		'block' => $block,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	if (empty($row['id_block']))
@@ -784,9 +836,11 @@ function EzPortalEditBlock()
 			m.id_menu, m.id_order, m.linkurl, m.title, m.enabled
 		FROM {db_prefix}ezp_menu as m
 			INNER JOIN {db_prefix}ezp_block_layout AS l ON (l.id_layout = m.id_layout)
-		WHERE l.id_layout = $block
-		ORDER BY id_order ASC
-		");
+		WHERE l.id_layout = {int:block}
+		ORDER BY id_order ASC",
+		array(
+			'block' => $block,
+		));
 		$context['ezp_menu_block_items'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -835,9 +889,12 @@ function EzPortalEditBlock()
 	SELECT
 		p.title, p.defaultvalue, p.required, p.parameter_type, p.id_parameter, v.data
 	FROM {db_prefix}ezp_block_parameters AS p
-		LEFT JOIN {db_prefix}ezp_block_parameters_values AS v ON (p.id_parameter = v.id_parameter AND v.id_layout = $block)
-	WHERE p.id_block = " . $context['ezp_block_info']['id_block']  . " ORDER BY p.id_order ASC"
-	);
+		LEFT JOIN {db_prefix}ezp_block_parameters_values AS v ON (p.id_parameter = v.id_parameter AND v.id_layout = {int:block})
+	WHERE p.id_block = {int:id_block} ORDER BY p.id_order ASC",
+	array(
+		'block' => $block,
+		'id_block' => $context['ezp_block_info']['id_block'],
+	));
 	$context['ezp_block_parameters'] = array();
 	$editorCreated = false;
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
@@ -884,7 +941,10 @@ function EzPortalEditBlock()
 				SELECT
 					selectvalue,selecttext
 				FROM {db_prefix}ezp_paramaters_select
-				WHERE id_parameter = " . $row['id_parameter'] . " ORDER BY id_select ASC");
+				WHERE id_parameter = {int:id_parameter} ORDER BY id_select ASC",
+			array(
+				'id_parameter' => $row['id_parameter'],
+			));
 				while ($row2 = $smcFunc['db_fetch_assoc']($request))
 					$context['ezp_select_' . $row['id_parameter']][$row2['selectvalue']] = $row2['selecttext'];
 				$smcFunc['db_free_result']($request);
@@ -956,8 +1016,10 @@ function EzPortalEditBlock2()
 		l.id_block, l.blockmanagers, l.id_column, l.id_order,b.blockdata bdata, b.data_editable
 	FROM {db_prefix}ezp_block_layout AS l
 		INNER JOIN {db_prefix}ezp_blocks AS b ON (l.id_block = b.id_block)
-	WHERE l.id_layout = $block LIMIT 1
-	");
+	WHERE l.id_layout = {int:block} LIMIT 1",
+	array(
+		'block' => $block,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if (empty($row['id_block']))
 		fatal_error($txt['ezp_err_no_block_selected'],false);
@@ -1008,8 +1070,10 @@ function EzPortalEditBlock2()
 	SELECT
 		defaultvalue, required, parameter_type, id_parameter,title
 	FROM {db_prefix}ezp_block_parameters
-	WHERE id_block = " . $context['ezp_block_info']['id_block']
-	);
+	WHERE id_block = {int:id_block}",
+	array(
+		'id_block' => $context['ezp_block_info']['id_block'],
+	));
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
 		// Checked passed data type
@@ -1089,32 +1153,51 @@ function EzPortalEditBlock2()
 
 	// Update the ezBlock
 	$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_block_layout
-	      SET id_column = $column, customtitle = '$blocktitle', permissions = '$finalPermissions', blockmanagers = '$finalManagers',
-	      can_collapse = $can_collapse, blockdata = '$blockdata', id_icon = '$icon', hidetitlebar = '$hidetitlebar', hidemobile = '$hidemobile', showonlymobile = '$showonlymobile',
-	      block_header_class = '$block_header_class', block_body_class = '$block_body_class', active = '$active'  
-	      WHERE id_layout = '$block'
-	      ");
+	      SET id_column = {int:column}, customtitle = {string:blocktitle}, permissions = {string:permissions}, blockmanagers = {string:managers},
+	      can_collapse = {int:can_collapse}, blockdata = {string:blockdata}, id_icon = {int:icon}, hidetitlebar = {int:hidetitlebar}, hidemobile = {int:hidemobile}, showonlymobile = {int:showonlymobile},
+	      block_header_class = {string:block_header_class}, block_body_class = {string:block_body_class}, active = {int:active}
+	      WHERE id_layout = {int:block}",
+		array(
+			'column' => $column,
+			'blocktitle' => $blocktitle,
+			'permissions' => $finalPermissions,
+			'managers' => $finalManagers,
+			'can_collapse' => $can_collapse,
+			'blockdata' => $blockdata,
+			'icon' => $icon,
+			'hidetitlebar' => $hidetitlebar,
+			'hidemobile' => $hidemobile,
+			'showonlymobile' => $showonlymobile,
+			'block_header_class' => $block_header_class,
+			'block_body_class' => $block_body_class,
+			'active' => $active,
+			'block' => $block,
+		));
 
 
 	// Update EzBlock Parameters.
 	if (isset($parameters))
 		foreach ($parameters  as $key => $param)
 		{
-			// Make it db safe
-			$paramData = $smcFunc['db_escape_string']($param);
-
-
-
 			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_block_parameters_values
-				SET data = '$paramData' WHERE id_layout = $block AND id_parameter = $key
-				");
+				SET data = {string:param_data} WHERE id_layout = {int:block} AND id_parameter = {int:param_key}",
+			array(
+				'param_data' => $param,
+				'block' => $block,
+				'param_key' => (int) $key,
+			));
 
 			$affectedRows =$smcFunc['db_affected_rows']();
 			if ($affectedRows == 0)
 			{
 				$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_block_parameters_values
 				(id_layout, id_parameter, data)
-				VALUES ($block,$key,'$paramData')");
+				VALUES ({int:block},{int:param_key},{string:param_data})",
+				array(
+					'block' => $block,
+					'param_key' => (int) $key,
+					'param_data' => $param,
+				));
 			}
 
 
@@ -1129,8 +1212,10 @@ function EzPortalEditBlock2()
 
 		$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_block_layout
 	      SET id_order = 1000
-	      WHERE id_layout = '$block'
-	      ");
+	      WHERE id_layout = {int:block}",
+		array(
+			'block' => $block,
+		));
 
 		ReOrderBlocksbyColumn($context['ezp_block_info']['id_column']);
 	}
@@ -1172,7 +1257,10 @@ function EzPortalDeleteBlock()
 	SELECT
 		customtitle
 	FROM {db_prefix}ezp_block_layout
-	WHERE id_layout = " . $context['ezp_block_layout_id'] . " LIMIT 1");
+	WHERE id_layout = {int:layout_id} LIMIT 1",
+	array(
+		'layout_id' => $context['ezp_block_layout_id'],
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	$context['ezp_block_layout_title'] = $row['customtitle'];
@@ -1195,7 +1283,10 @@ function EzPortalDeleteBlock2()
 	SELECT
 		id_column
 	FROM {db_prefix}ezp_block_layout
-	WHERE id_layout = " . $blockid . " LIMIT 1");
+	WHERE id_layout = {int:blockid} LIMIT 1",
+	array(
+		'blockid' => $blockid,
+	));
 	$row = $smcFunc['db_fetch_assoc']($result);
 	$column = $row['id_column'];
 	$smcFunc['db_free_result']($result);
@@ -1204,12 +1295,18 @@ function EzPortalDeleteBlock2()
 	// Delete the ezBlock
 	$smcFunc['db_query']('', "
 	DELETE FROM {db_prefix}ezp_block_layout
-	WHERE id_layout = " . $blockid . " LIMIT 1");
+	WHERE id_layout = {int:blockid} LIMIT 1",
+	array(
+		'blockid' => $blockid,
+	));
 
 	// Delete ezBlock Parameters
 	$smcFunc['db_query']('', "
 	DELETE FROM {db_prefix}ezp_block_parameters_values
-	WHERE id_layout = " . $blockid);
+	WHERE id_layout = {int:blockid}",
+	array(
+		'blockid' => $blockid,
+	));
 
 	cache_put_data('ezportal_columns', null, 60);
 
@@ -1245,7 +1342,11 @@ function EzPortalPageManager()
 		id_page,date, title,views
 	FROM {db_prefix}ezp_page
 	ORDER BY id_page DESC
-	LIMIT $context[start], 10");
+	LIMIT {int:start}, {int:limit}",
+	array(
+		'start' => (int) $context['start'],
+		'limit' => 10,
+	));
 	$context['ezp_pages'] = array();
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 		$context['ezp_pages'][] = $row;
@@ -1404,7 +1505,18 @@ function EzPortalAddPage2()
 	$addDate = time();
 	$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_page
 			(date, title, content, permissions, is_html,metatags,menutitle,showinmenu,icon,bbc)
-			VALUES ($addDate, '$pagetitle', '$pagecontent', '$finalPermissions', 1,'$metatags','$menutitle','$showinmenu','$icon','$bbc')");
+			VALUES ({int:date}, {string:title}, {string:content}, {string:permissions}, 1,{string:metatags},{string:menutitle},{int:showinmenu},{string:icon},{int:bbc})",
+			array(
+				'date' => $addDate,
+				'title' => $pagetitle,
+				'content' => $pagecontent,
+				'permissions' => $finalPermissions,
+				'metatags' => $metatags,
+				'menutitle' => $menutitle,
+				'showinmenu' => $showinmenu,
+				'icon' => $icon,
+				'bbc' => $bbc,
+			));
 
 
 	EzPortalUpdatePageCount();
@@ -1461,7 +1573,10 @@ function EzPortalEditPage()
 	SELECT
 		id_page, title, content, permissions, metatags, menutitle, showinmenu, icon, bbc
 	FROM {db_prefix}ezp_page
-	WHERE id_page = $pageID LIMIT 1");
+	WHERE id_page = {int:page_id} LIMIT 1",
+	array(
+		'page_id' => $pageID,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	if (empty($row['id_page']))
@@ -1522,7 +1637,10 @@ function EzPortalEditPage2()
 	SELECT
 		id_page, title, content, permissions, metatags, menutitle, showinmenu, icon, bbc
 	FROM {db_prefix}ezp_page
-	WHERE id_page = $pageID LIMIT 1");
+	WHERE id_page = {int:page_id} LIMIT 1",
+	array(
+		'page_id' => $pageID,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	if (empty($row['id_page']))
@@ -1583,9 +1701,19 @@ function EzPortalEditPage2()
 
 	$smcFunc['db_query']('', "
 	UPDATE {db_prefix}ezp_page
-	SET title = '$pagetitle', content = '$pagecontent', permissions = '$finalPermissions', metatags = '$metatags',
-	showinmenu = '$showinmenu', menutitle = '$menutitle', icon = '$icon'
-	WHERE id_page = $pageID LIMIT 1");
+	SET title = {string:title}, content = {string:content}, permissions = {string:permissions}, metatags = {string:metatags},
+	showinmenu = {int:showinmenu}, menutitle = {string:menutitle}, icon = {string:icon}
+	WHERE id_page = {int:page_id} LIMIT 1",
+	array(
+		'title' => $pagetitle,
+		'content' => $pagecontent,
+		'permissions' => $finalPermissions,
+		'metatags' => $metatags,
+		'showinmenu' => $showinmenu,
+		'menutitle' => $menutitle,
+		'icon' => $icon,
+		'page_id' => $pageID,
+	));
 
     cache_put_data('ezportal_page_' . $pageID, null, 120);
 
@@ -1622,7 +1750,10 @@ function EzPortalDeletePage()
 	SELECT
 		id_page, title
 	FROM {db_prefix}ezp_page
-	WHERE id_page = $pageID LIMIT 1");
+	WHERE id_page = {int:page_id} LIMIT 1",
+	array(
+		'page_id' => $pageID,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if (empty($row['id_page']))
 		fatal_error($txt['ezp_err_page_does_not_exist'],false);
@@ -1651,7 +1782,10 @@ function EzPortalDeletePage2()
 	// Delete the entry
 	$smcFunc['db_query']('', "
 	DELETE FROM {db_prefix}ezp_page
-	WHERE id_page = $pageID LIMIT 1");
+	WHERE id_page = {int:page_id} LIMIT 1",
+	array(
+		'page_id' => $pageID,
+	));
 
 	EzPortalUpdatePageCount();
 
@@ -2025,9 +2159,12 @@ function EzPortalViewPage()
     	// Check If Page exists
     	$dbresult = $smcFunc['db_query']('', "
     	SELECT
-    		id_page, title, content, permissions, metatags, bbc 
+    		id_page, title, content, permissions, metatags, bbc
     	FROM {db_prefix}ezp_page
-    	WHERE id_page = $pageID LIMIT 1");
+    	WHERE id_page = {int:page_id} LIMIT 1",
+    	array(
+    		'page_id' => $pageID,
+    	));
 
 
     	$row = $smcFunc['db_fetch_assoc']($dbresult);
@@ -2098,7 +2235,10 @@ function EzPortalViewPage()
 	$smcFunc['db_query']('', "
 	UPDATE {db_prefix}ezp_page
 	SET views = views + 1
-	WHERE id_page = $pageID LIMIT 1");
+	WHERE id_page = {int:page_id} LIMIT 1",
+	array(
+		'page_id' => $pageID,
+	));
 }
 
 
@@ -2123,9 +2263,12 @@ function EzPortalEditColumn()
 	// Get Column Information
 	$dbresult = $smcFunc['db_query']('', "
 	SELECT
-		id_column, column_title, can_collapse, column_width, column_percent, active, sticky 
+		id_column, column_title, can_collapse, column_width, column_percent, active, sticky
 	FROM {db_prefix}ezp_columns
-	WHERE id_column = $columnID LIMIT 1");
+	WHERE id_column = {int:column_id} LIMIT 1",
+	array(
+		'column_id' => $columnID,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	if (empty($row['id_column']))
 		fatal_error($txt['ezp_err_no_column_selected'] ,false);
@@ -2158,9 +2301,17 @@ function EzPortalEditColumn2()
 	// Update category
 	$smcFunc['db_query']('', "
 	UPDATE {db_prefix}ezp_columns
-	SET column_width = '$columnwidth', column_percent = '$columnpercent', active = $active,
-	can_collapse = $can_collapse, sticky = '$sticky'
-	WHERE id_column = " . $column . " LIMIT 1");
+	SET column_width = {int:columnwidth}, column_percent = {int:columnpercent}, active = {int:active},
+	can_collapse = {int:can_collapse}, sticky = {int:sticky}
+	WHERE id_column = {int:column_id} LIMIT 1",
+	array(
+		'columnwidth' => $columnwidth,
+		'columnpercent' => $columnpercent,
+		'active' => $active,
+		'can_collapse' => $can_collapse,
+		'sticky' => $sticky,
+		'column_id' => $column,
+	));
 
 	cache_put_data('ezportal_columns', null, 60);
 
@@ -2196,20 +2347,25 @@ function EzPortalImportBlock()
 	// Process the file
 	if (isset($_FILES['blockfile']['name']) && $_FILES['blockfile']['name'] != '')
 	{
-		$extension = substr($_FILES['blockfile']['name'], strrpos(substr($_FILES['blockfile']['name'], 0, -3), '.'));
+		// Sanitize filename to prevent path traversal
+		$filename = basename($_FILES['blockfile']['name']);
+
+		$extension = substr($filename, strrpos(substr($filename, 0, -3), '.'));
 
 		$compressedFile = true;
 		if ($extension == '.xml')
 			$compressedFile = false;
 
-		move_uploaded_file($_FILES['blockfile']['tmp_name'],$ezpSettings['ezp_path'] . 'blocks/' . $_FILES['blockfile']['name']);
+		$destPath = $ezpSettings['ezp_path'] . 'blocks/' . $filename;
 
-         if (!@is_writable($ezpSettings['ezp_path'] . 'blocks/' . $_FILES['blockfile']['name']))
-            @chmod($ezpSettings['ezp_path'] . 'blocks/' . $_FILES['blockfile']['name'], 0755);
-         if (!@is_writable($ezpSettings['ezp_path'] . 'blocks/' . $_FILES['blockfile']['name']))
-            @chmod($ezpSettings['ezp_path'] . 'blocks/' . $_FILES['blockfile']['name'], 0777);
+		move_uploaded_file($_FILES['blockfile']['tmp_name'], $destPath);
 
-		EzPortalProcessBlockFile($_FILES['blockfile']['name'], $compressedFile);
+		if (!@is_writable($destPath))
+			@chmod($destPath, 0755);
+		if (!@is_writable($destPath))
+			@chmod($destPath, 0777);
+
+		EzPortalProcessBlockFile($filename, $compressedFile);
 
 	}
 	else
@@ -2232,7 +2388,7 @@ function SetupEzPortal()
 	else
 	{
 		// If wireless skip the ezPortal stuff.
-		if (defined(WIRELESS))
+		if (defined('WIRELESS'))
 		{
 			$wirelessCheck = WIRELESS;
 			if (!empty($wirelessCheck))
@@ -2256,6 +2412,9 @@ function SetupEzPortal()
 		if ($_REQUEST['action'] == 'profile' && isset($_REQUEST['area']) &&  in_array($_REQUEST['area'],array('popup', 'alerts_popup', 'download', 'dlattach')))
 			return false;
 
+		// Skip full portal setup for AJAX shoutbox endpoints (handled directly by EzPortalMain)
+		if ($_REQUEST['action'] == 'ezportal' && isset($_REQUEST['sa']) && in_array($_REQUEST['sa'], array('ajaxshouts', 'ajaxaddshout', 'ajaxremoveshout')))
+			return false;
 
 	}
 	// Check for XML if found ignore it
@@ -2277,32 +2436,28 @@ function SetupEzPortal()
 
 
     // Check if we are disabling ezportal for mobile devices
-    if (!empty($ezpSettings['ezp_disablemobiledevices']))
+    if (!empty($ezpSettings['ezp_disablemobiledevices']) && isset($_SERVER['HTTP_USER_AGENT']))
     {
+		$ua_lower = strtolower($_SERVER['HTTP_USER_AGENT']);
 
-            $user_agents = array(
-			array('iPhone', 'iphone'),
-			array('iPod', 'ipod'),
-			array('PocketIE', 'iemobile'),
-			array('Opera Mini', isset($_SERVER['HTTP_X_OPERAMINI_PHONE_UA']) ? $_SERVER['HTTP_X_OPERAMINI_PHONE_UA'] : "Opera Mini"),
-			array('Opera Mobile', 'Opera Mobi'),
-			array('Android', 'android'),
-			array('Symbian', 'symbian'),
-			array('BlackBerry', 'blackberry'),
-			array('BlackBerry Storm', 'blackberry05'),
-			array('Palm', 'palm'),
-			array('Web OS', 'webos'),
+		// Modern mobile detection keywords - covers all major mobile browsers
+		$mobile_keywords = array(
+			'mobile',     // Chrome Mobile, Safari Mobile, Firefox Mobile, Edge Mobile, Samsung Browser
+			'android',    // Android devices (tablets without "mobile" are excluded)
+			'iphone',     // iPhone
+			'ipod',       // iPod Touch (legacy)
+			'ipad',       // iPad
+			'opera mini', // Opera Mini
+			'iemobile',   // Windows Phone / IE Mobile (legacy)
+			'blackberry', // BlackBerry (legacy)
+			'webos',      // LG webOS (legacy)
 		);
 
-		foreach ($user_agents as $ua)
+		foreach ($mobile_keywords as $keyword)
 		{
-			$string = (string) $ua[1];
-
-			if (!empty($string))
-			if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), $string)))
+			if (strpos($ua_lower, $keyword) !== false)
 				return false;
-
-        }
+		}
     }
 
 
@@ -2427,7 +2582,10 @@ if (!empty($context['linktree']))
 		SELECT
 			value
 		FROM {db_prefix}themes
-		WHERE ID_MEMBER = " . $user_info['id'] . " AND ID_THEME = 0 AND variable = 'ezportal_ezblockcollapse'");
+		WHERE ID_MEMBER = {int:member_id} AND ID_THEME = 0 AND variable = 'ezportal_ezblockcollapse'",
+		array(
+			'member_id' => $user_info['id'],
+		));
 		$row = $smcFunc['db_fetch_assoc']($request);
 
 		if (!empty($row['value']))
@@ -2448,7 +2606,10 @@ if (!empty($context['linktree']))
     		SELECT
     			value
     		FROM {db_prefix}themes
-    		WHERE ID_MEMBER = " . $user_info['id'] . " AND ID_THEME = 0 AND variable = 'ezportal_ezcolumncollapse'");
+    		WHERE ID_MEMBER = {int:member_id} AND ID_THEME = 0 AND variable = 'ezportal_ezcolumncollapse'",
+    		array(
+    			'member_id' => $user_info['id'],
+    		));
     		$row = $smcFunc['db_fetch_assoc']($request);
 
     		if (!empty($row['value']))
@@ -2490,8 +2651,11 @@ if (!empty($context['linktree']))
 				FROM {db_prefix}ezp_block_layout AS l
 					INNER JOIN {db_prefix}ezp_blocks AS b ON (b.id_block = l.id_block)
 				LEFT JOIN {db_prefix}ezp_icons AS i ON (l.id_icon = i.id_icon)
-				WHERE l.active = 1 AND l.id_column = " . $row['id_column'] . "
-				");
+				WHERE l.active = 1 AND l.id_column = {int:id_column}
+				",
+				array(
+					'id_column' => $row['id_column'],
+				));
 				$row5 = $smcFunc['db_fetch_assoc']($dbresult5);
 
 
@@ -2656,8 +2820,11 @@ if (!empty($context['linktree']))
 			FROM {db_prefix}ezp_block_layout AS l
 				INNER JOIN {db_prefix}ezp_blocks AS b ON (b.id_block = l.id_block)
 			LEFT JOIN {db_prefix}ezp_icons AS i ON (l.id_icon = i.id_icon)
-			WHERE l.active = 1 AND l.id_column = " . $row['id_column'] . "
-			ORDER BY l.id_order ASC");
+			WHERE l.active = 1 AND l.id_column = {int:id_column}
+			ORDER BY l.id_order ASC",
+			array(
+				'id_column' => $row['id_column'],
+			));
 
 			while($row2 = $smcFunc['db_fetch_assoc']($dbresult2))
 			{
@@ -2851,8 +3018,11 @@ if (!empty($context['linktree']))
     					p.id_parameter, p.parameter_name, v.data
     				FROM {db_prefix}ezp_block_parameters AS p
     					INNER JOIN {db_prefix}ezp_block_parameters_values AS v ON (p.id_parameter = v.id_parameter)
-    				WHERE v.id_layout = " . $row2['id_layout']
-    				);
+    				WHERE v.id_layout = {int:id_layout}
+    				",
+    				array(
+    					'id_layout' => $row2['id_layout'],
+    				));
     				while($parameterRow = $smcFunc['db_fetch_assoc']($dbresult3))
     					$parameters[] = $parameterRow;
     				$smcFunc['db_free_result']($dbresult3);
@@ -3033,8 +3203,14 @@ function EzPortalBlocksSave()
 			// Update the ezBlock
 			$smcFunc['db_query']('', "
 			UPDATE {db_prefix}ezp_block_layout
-			SET active = $active, id_order = $order, customtitle = '$title'
-			WHERE id_layout = $key");
+			SET active = {int:active}, id_order = {int:id_order}, customtitle = {string:title}
+			WHERE id_layout = {int:id_layout}",
+			array(
+				'active' => $active,
+				'id_order' => $order,
+				'title' => $title,
+				'id_layout' => (int) $key,
+			));
 		}
 
 	// Finally Reorder the ezBlocks
@@ -3054,14 +3230,21 @@ function ReOrderBlocksbyColumn($columnID)
 	SELECT
 		id_order, id_layout
 	FROM {db_prefix}ezp_block_layout
-	WHERE id_column = $columnID ORDER BY id_order ASC");
+	WHERE id_column = {int:column_id} ORDER BY id_order ASC",
+	array(
+		'column_id' => $columnID,
+	));
 	if ($smcFunc['db_affected_rows']() != 0)
 	{
 		$count = 1;
 		while($row2 = $smcFunc['db_fetch_assoc']($dbresult))
 		{
 			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_block_layout
-			SET id_order = $count WHERE id_layout  = " . $row2['id_layout']);
+			SET id_order = {int:id_order} WHERE id_layout = {int:id_layout}",
+			array(
+				'id_order' => $count,
+				'id_layout' => $row2['id_layout'],
+			));
 			$count++;
 		}
 	}
@@ -3148,7 +3331,10 @@ function EzPortalUninstallBlock()
 	SELECT
 		id_order, id_layout, customtitle
 	FROM {db_prefix}ezp_block_layout
-	WHERE id_block = $block");
+	WHERE id_block = {int:block}",
+	array(
+		'block' => $block,
+	));
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		$blocksInUse .= $row['customtitle'] . '<br />';
 
@@ -3161,12 +3347,18 @@ function EzPortalUninstallBlock()
 		// Uninstall the ezBlock
 		$smcFunc['db_query']('', "
 		DELETE FROM {db_prefix}ezp_blocks
-		WHERE id_block = $block");
+		WHERE id_block = {int:block}",
+		array(
+			'block' => $block,
+		));
 
 		// Delete ezBlock Parameters
 		$smcFunc['db_query']('', "
 		DELETE FROM {db_prefix}ezp_block_parameters
-		WHERE id_block = $block");
+		WHERE id_block = {int:block}",
+		array(
+			'block' => $block,
+		));
 
 		// Redirect to the installed ezBlock list
 		redirectexit('action=admin;area=ezpblocks;sa=installedblocks');
@@ -3226,7 +3418,10 @@ function EzPortalBlockState()
 	SELECT
 		value
 	FROM {db_prefix}themes
-	WHERE ID_MEMBER = " . $user_info['id'] . " AND ID_THEME = 0 AND variable =  'ezportal_ezblockcollapse'");
+	WHERE ID_MEMBER = {int:member_id} AND ID_THEME = 0 AND variable = 'ezportal_ezblockcollapse'",
+	array(
+		'member_id' => $user_info['id'],
+	));
 	$row = $smcFunc['db_fetch_assoc']($request);
 	if (!empty($row['value']))
 		$collapsedEzBlocks = explode(",",$row['value']);
@@ -3255,7 +3450,11 @@ function EzPortalBlockState()
 
 	$smcFunc['db_query']('', "REPLACE INTO {db_prefix}themes
 					(ID_MEMBER, ID_THEME, variable, value)
-				VALUES (" . $user_info['id'] .",0,'ezportal_ezblockcollapse','$finalCollapseList')");
+				VALUES ({int:member_id},0,'ezportal_ezblockcollapse',{string:collapse_list})",
+				array(
+					'member_id' => $user_info['id'],
+					'collapse_list' => $finalCollapseList,
+				));
 
 
     cache_put_data('ezportal_block_collaspe_' . $user_info['id'], null, 90);
@@ -3327,7 +3526,10 @@ function EzPortalVisibleSettings()
 		SELECT
 			visibileactions, visibileboards, visibileareascustom, visibilepages
 		FROM {db_prefix}ezp_block_layout
-		WHERE id_layout = $layout");
+		WHERE id_layout = {int:layout}",
+		array(
+			'layout' => $layout,
+		));
 	}
 
 	if ($column != 0)
@@ -3336,7 +3538,10 @@ function EzPortalVisibleSettings()
 		SELECT
 			visibileactions, visibileboards, visibileareascustom, visibilepages
 		FROM {db_prefix}ezp_columns
-		WHERE id_column = $column");
+		WHERE id_column = {int:column}",
+		array(
+			'column' => $column,
+		));
 	}
 
 	$row = $smcFunc['db_fetch_assoc']($request);
@@ -3480,15 +3685,25 @@ function EzPortalVisibleSettings2()
 	{
 		$smcFunc['db_query']('', "
 		UPDATE {db_prefix}ezp_block_layout
-		SET visibileactions = '$finalActions', visibileboards = '$finalBoards',
-		visibileareascustom = '$finalCustom', visibilepages = '$finalPages'
-		WHERE id_layout = $layout");
+		SET visibileactions = {string:actions}, visibileboards = {string:boards},
+		visibileareascustom = {string:custom}, visibilepages = {string:pages}
+		WHERE id_layout = {int:layout}",
+		array(
+			'actions' => $finalActions,
+			'boards' => $finalBoards,
+			'custom' => $finalCustom,
+			'pages' => $finalPages,
+			'layout' => $layout,
+		));
 
 		$result = $smcFunc['db_query']('', "
 		SELECT
 			id_column
 		FROM {db_prefix}ezp_block_layout
-		WHERE id_layout = " .  $layout . " LIMIT 1");
+		WHERE id_layout = {int:layout} LIMIT 1",
+		array(
+			'layout' => $layout,
+		));
 		$row = $smcFunc['db_fetch_assoc']($result);
 
 		cache_put_data('ezportal_column_' . $row['id_column'], null, 60);
@@ -3500,9 +3715,16 @@ function EzPortalVisibleSettings2()
 	{
 		$smcFunc['db_query']('', "
 		UPDATE {db_prefix}ezp_columns
-		SET visibileactions = '$finalActions', visibileboards = '$finalBoards',
-		visibileareascustom = '$finalCustom', visibilepages = '$finalPages'
-		WHERE id_column = $column");
+		SET visibileactions = {string:actions}, visibileboards = {string:boards},
+		visibileareascustom = {string:custom}, visibilepages = {string:pages}
+		WHERE id_column = {int:column}",
+		array(
+			'actions' => $finalActions,
+			'boards' => $finalBoards,
+			'custom' => $finalCustom,
+			'pages' => $finalPages,
+			'column' => $column,
+		));
 
 		cache_put_data('ezportal_columns', null, 60);
 	}
@@ -3557,7 +3779,11 @@ function EzPortalAddVisibleAction2()
 	// Insert Action
 	$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_visible_actions
 			(action, title, is_mod)
-			VALUES ('$newaction', '$actiontitle',1)");
+			VALUES ({string:action}, {string:title},1)",
+			array(
+				'action' => $newaction,
+				'title' => $actiontitle,
+			));
 
 	// Redirect to the ezBlock Manager
 	redirectexit('action=admin;area=ezpblocks;sa=blocks');
@@ -3573,7 +3799,10 @@ function EzPortalDeleteVisibleAction()
 	$newaction= htmlspecialchars($_REQUEST['newaction'],ENT_QUOTES);
 
 	$smcFunc['db_query']('', "DELETE FROM {db_prefix}ezp_visible_actions
-			WHERE action = '$newaction' LIMIT 1");
+			WHERE action = {string:action} LIMIT 1",
+			array(
+				'action' => $newaction,
+			));
 
 	redirectexit('action=admin;area=ezpblocks;sa=blocks');
 }
@@ -3615,27 +3844,26 @@ function EzPortalAddShout()
 	if ($shout != '')
 		$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_shoutbox
 			(id_member, date, shout)
-			VALUES (" . $user_info['id'] . ", '$t',{string:shout})",
-					array(
-			'shout' => $shout,
-
+			VALUES ({int:member_id}, {int:time},{string:shout})",
+			array(
+				'member_id' => $user_info['id'],
+				'time' => $t,
+				'shout' => $shout,
 			)
-		)
-		;
+		);
 
 	cache_put_data('ezBlockshout', null, 60);
 
 	ob_clean();
 
-	if (isset($_SESSION['shoutbox_url']))
-    {
+	// Validate redirect URL is a local relative path (prevent open redirect)
+	if (isset($_SESSION['shoutbox_url']) && isset($_SESSION['shoutbox_url'][0]) && $_SESSION['shoutbox_url'][0] === '/' && substr($_SESSION['shoutbox_url'], 0, 2) !== '//')
+	{
 		header("Location: " . $_SESSION['shoutbox_url']);
-	   obExit(false);
-    }
-    else
+		obExit(false);
+	}
+	else
 		redirectexit('');
-
-
 }
 
 function EzPortalRemoveShout()
@@ -3643,23 +3871,30 @@ function EzPortalRemoveShout()
 	global $smcFunc, $context;
 	isAllowedTo('admin_forum');
 
-    $context['template_layers'] = array();
+	// Verify session token to prevent CSRF
+	checkSession('get');
+
+	$context['template_layers'] = array();
 
 	$shout = (int) $_REQUEST['shout'];
 
 	$smcFunc['db_query']('', "DELETE FROM {db_prefix}ezp_shoutbox
-			WHERE id_shout = '$shout' LIMIT 1");
+			WHERE id_shout = {int:shout} LIMIT 1",
+			array(
+				'shout' => $shout,
+			));
 
 	cache_put_data('ezBlockshout', null, 60);
 
-
 	ob_clean();
-	if (isset($_SESSION['shoutbox_url']))
-    {
+
+	// Validate redirect URL is a local relative path (prevent open redirect)
+	if (isset($_SESSION['shoutbox_url']) && isset($_SESSION['shoutbox_url'][0]) && $_SESSION['shoutbox_url'][0] === '/' && substr($_SESSION['shoutbox_url'], 0, 2) !== '//')
+	{
 		header("Location: " . $_SESSION['shoutbox_url']);
-	   obExit(false);
-    }
-    else
+		obExit(false);
+	}
+	else
 		redirectexit('');
 }
 
@@ -3668,11 +3903,13 @@ function EzPortalRemoveShout()
  */
 function EzPortalAjaxGetShouts()
 {
-	global $ezpSettings, $smcFunc, $context, $txt;
+	global $ezpSettings, $smcFunc, $txt;
 
-	// Set JSON headers
+	// Clean any output buffers from SMF to prevent template wrapping
+	while (ob_get_level() > 0)
+		@ob_end_clean();
+
 	header('Content-Type: application/json; charset=UTF-8');
-	$context['template_layers'] = array();
 
 	// Load language for error messages
 	loadLanguage('Errors');
@@ -3681,8 +3918,7 @@ function EzPortalAjaxGetShouts()
 	if (empty($ezpSettings['ezp_shoutbox_enable']))
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['ezp_shoutbox_error_disabled']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Get number of shouts to display
@@ -3724,7 +3960,7 @@ function EzPortalAjaxGetShouts()
 	$smcFunc['db_free_result']($dbresult);
 
 	echo json_encode(array('success' => true, 'shouts' => $shouts));
-	obExit(false);
+	die();
 }
 
 /**
@@ -3732,11 +3968,13 @@ function EzPortalAjaxGetShouts()
  */
 function EzPortalAjaxAddShout()
 {
-	global $ezpSettings, $smcFunc, $user_info, $context, $txt;
+	global $ezpSettings, $smcFunc, $user_info, $txt;
 
-	// Set JSON headers
+	// Clean any output buffers from SMF to prevent template wrapping
+	while (ob_get_level() > 0)
+		@ob_end_clean();
+
 	header('Content-Type: application/json; charset=UTF-8');
-	$context['template_layers'] = array();
 
 	// Load language for error messages
 	loadLanguage('Errors');
@@ -3745,51 +3983,43 @@ function EzPortalAjaxAddShout()
 	if ($user_info['is_guest'])
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['ezp_no_guest_shout']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Check for ban
 	if (isset($_SESSION['ban']['cannot_post']))
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['ezp_shoutbox_error_banned_post']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Check if shoutbox is enabled
 	if (empty($ezpSettings['ezp_shoutbox_enable']))
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['ezp_shoutbox_error_disabled']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Check session
 	if (checkSession('post', '', false) != '')
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['session_timeout']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Check for shout content
 	if (!isset($_REQUEST['shout']) || trim($_REQUEST['shout']) === '')
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['ezp_no_shout_entered']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Spam Protection
 	$result = ezp_spamProtection('ezportal', true);
 	if ($result == true)
 	{
-	
-			echo json_encode(array('success' => false, 'error' => $txt['ezportalWaitTime_broken']));
-			obExit(false);
-			return;
-	
+		echo json_encode(array('success' => false, 'error' => $txt['ezportalWaitTime_broken']));
+		die();
 	}
 
 	$t = time();
@@ -3812,7 +4042,7 @@ function EzPortalAjaxAddShout()
 	cache_put_data('ezBlockshout', null, 60);
 
 	echo json_encode(array('success' => true));
-	obExit(false);
+	die();
 }
 
 /**
@@ -3820,11 +4050,13 @@ function EzPortalAjaxAddShout()
  */
 function EzPortalAjaxRemoveShout()
 {
-	global $smcFunc, $context, $txt;
+	global $smcFunc, $txt;
 
-	// Set JSON headers
+	// Clean any output buffers from SMF to prevent template wrapping
+	while (ob_get_level() > 0)
+		@ob_end_clean();
+
 	header('Content-Type: application/json; charset=UTF-8');
-	$context['template_layers'] = array();
 
 	// Load language for error messages
 	loadLanguage('Errors');
@@ -3833,24 +4065,21 @@ function EzPortalAjaxRemoveShout()
 	if (!allowedTo('admin_forum'))
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['cannot_access_page']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Check session
 	if (checkSession('post', '', false) != '')
 	{
 		echo json_encode(array('success' => false, 'error' => $txt['session_timeout']));
-		obExit(false);
-		return;
+		die();
 	}
 
 	// Get shout ID
 	if (!isset($_REQUEST['shout']) || (int) $_REQUEST['shout'] < 1)
 	{
 		echo json_encode(array('success' => false, 'error' => 'Invalid shout ID'));
-		obExit(false);
-		return;
+		die();
 	}
 
 	$shoutId = (int) $_REQUEST['shout'];
@@ -3869,7 +4098,7 @@ function EzPortalAjaxRemoveShout()
 	cache_put_data('ezBlockshout', null, 60);
 
 	echo json_encode(array('success' => true));
-	obExit(false);
+	die();
 }
 
 function EzPortalViewShoutHistory()
@@ -3902,7 +4131,11 @@ function EzPortalViewShoutHistory()
 		FROM {db_prefix}ezp_shoutbox AS s
 		LEFT JOIN {db_prefix}members AS m ON (s.ID_MEMBER = m.ID_MEMBER)
 		LEFT JOIN {db_prefix}membergroups AS mg ON (mg.ID_GROUP = IF(m.ID_GROUP = 0, m.ID_POST_GROUP, m.ID_GROUP))
-		ORDER BY s.id_shout DESC LIMIT $context[start], " . $ezpSettings['ezp_shoutbox_history_number']);
+		ORDER BY s.id_shout DESC LIMIT {int:start}, {int:limit}",
+		array(
+			'start' => (int) $context['start'],
+			'limit' => (int) $ezpSettings['ezp_shoutbox_history_number'],
+		));
 	$context['ezshouts_history'] = array();
 	while($shoutRow = $smcFunc['db_fetch_assoc']($dbresult))
 		$context['ezshouts_history'][] = $shoutRow;
@@ -3978,7 +4211,14 @@ function EzPortalMenuAdd2()
 	// Insert the menu item
 	$smcFunc['db_query']('', "INSERT INTO {db_prefix}ezp_menu
 			(id_layout, id_order, title, linkurl, permissions, newwindow)
-			VALUES ($layoutid, 1000,'$menutitle','$menulink','$finalPermissions',$newwindow)");
+			VALUES ({int:layoutid}, 1000,{string:menutitle},{string:menulink},{string:permissions},{int:newwindow})",
+			array(
+				'layoutid' => $layoutid,
+				'menutitle' => $menutitle,
+				'menulink' => $menulink,
+				'permissions' => $finalPermissions,
+				'newwindow' => $newwindow,
+			));
 
 	ReOrderMenuItems($layoutid);
 
@@ -4018,7 +4258,10 @@ function EzPortalMenuEdit()
 	SELECT
 		id_menu, id_layout, id_order, title, linkurl, permissions, newwindow, enabled
 	FROM {db_prefix}ezp_menu
-	WHERE id_menu = $id");
+	WHERE id_menu = {int:id}",
+	array(
+		'id' => $id,
+	));
 	$menuRow = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -4063,10 +4306,18 @@ function EzPortalMenuEdit2()
 
 	// Update the menu item
 	$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_menu
-	SET title = '$menutitle', linkurl = '$menulink', permissions = '$finalPermissions',
-	newwindow = $newwindow, enabled = $menuenabled
-	WHERE ID_MENU = $menuid
-	");
+	SET title = {string:menutitle}, linkurl = {string:menulink}, permissions = {string:permissions},
+	newwindow = {int:newwindow}, enabled = {int:menuenabled}
+	WHERE ID_MENU = {int:menuid}
+	",
+	array(
+		'menutitle' => $menutitle,
+		'menulink' => $menulink,
+		'permissions' => $finalPermissions,
+		'newwindow' => $newwindow,
+		'menuenabled' => $menuenabled,
+		'menuid' => $menuid,
+	));
 
 
 	ReOrderMenuItems($layoutid);
@@ -4091,7 +4342,10 @@ function EzPortalMenuDelete()
 	SELECT
 		id_menu, id_layout, id_order, title, linkurl, permissions, newwindow, enabled
 	FROM {db_prefix}ezp_menu
-	WHERE id_menu = $id");
+	WHERE id_menu = {int:id}",
+	array(
+		'id' => $id,
+	));
 	$menuRow = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 
@@ -4112,7 +4366,10 @@ function EzPortalMenuDelete2()
 	$menuid = (int) $_REQUEST['menuid'];
 	$smcFunc['db_query']('', "
 	DELETE FROM {db_prefix}ezp_menu
-	WHERE id_menu = $menuid LIMIT 1");
+	WHERE id_menu = {int:menuid} LIMIT 1",
+	array(
+		'menuid' => $menuid,
+	));
 
 	cache_put_data('ezBlockMenu_' . $layoutid, null, 90);
 
@@ -4128,14 +4385,21 @@ function ReOrderMenuItems($layoutid)
 	SELECT
 		id_menu
 	FROM {db_prefix}ezp_menu
-	WHERE id_layout = $layoutid ORDER BY id_order ASC");
+	WHERE id_layout = {int:layoutid} ORDER BY id_order ASC",
+	array(
+		'layoutid' => $layoutid,
+	));
 	if($smcFunc['db_affected_rows']() != 0)
 	{
 		$count = 1;
 		while($row2 = $smcFunc['db_fetch_assoc']($dbresult))
 		{
 			$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_menu
-			SET id_order = $count WHERE id_menu = " . $row2['id_menu']);
+			SET id_order = {int:id_order} WHERE id_menu = {int:id_menu}",
+			array(
+				'id_order' => $count,
+				'id_menu' => $row2['id_menu'],
+			));
 			$count++;
 		}
 	}
@@ -4162,7 +4426,10 @@ function EzPortalMenuUp()
 	SELECT
 		id_layout, id_order, id_menu
 	FROM {db_prefix}ezp_menu
-	WHERE id_menu = $id");
+	WHERE id_menu = {int:id}",
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	if (empty($row['id_menu']))
 		fatal_error($txt['ezp_err_no_block_selected'] ,false);
@@ -4177,7 +4444,11 @@ function EzPortalMenuUp()
 	SELECT
 		id_menu, id_order, id_layout
 	FROM {db_prefix}ezp_menu
-	WHERE id_layout = $id_layout AND id_order = $o");
+	WHERE id_layout = {int:id_layout} AND id_order = {int:id_order}",
+	array(
+		'id_layout' => $id_layout,
+		'id_order' => $o,
+	));
 
 	if ($smcFunc['db_affected_rows']()== 0)
 		fatal_error($txt['ezp_err_menu_up'], false);
@@ -4186,10 +4457,18 @@ function EzPortalMenuUp()
 
 	// Swap the order Id's
 	$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_menu
-		SET id_order = $oldrow WHERE id_menu = " .$row2['id_menu']);
+		SET id_order = {int:oldrow} WHERE id_menu = {int:id_menu}",
+		array(
+			'oldrow' => $oldrow,
+			'id_menu' => $row2['id_menu'],
+		));
 
 	$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_menu
-		SET id_order = $o WHERE id_menu = $id");
+		SET id_order = {int:id_order} WHERE id_menu = {int:id}",
+		array(
+			'id_order' => $o,
+			'id' => $id,
+		));
 
 	$smcFunc['db_free_result']($dbresult);
 
@@ -4219,7 +4498,10 @@ function EzPortalMenuDown()
 	SELECT
 		id_layout, id_menu, id_order
 	FROM {db_prefix}ezp_menu
-	WHERE id_menu = $id LIMIT 1");
+	WHERE id_menu = {int:id} LIMIT 1",
+	array(
+		'id' => $id,
+	));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	if (empty($row['id_menu']))
 		fatal_error($txt['ezp_err_no_block_selected'] ,false);
@@ -4235,17 +4517,29 @@ function EzPortalMenuDown()
 	SELECT
 		id_menu, id_layout, id_order
 	FROM {db_prefix}ezp_menu
-	WHERE id_layout = $id_layout AND id_order = $o");
+	WHERE id_layout = {int:id_layout} AND id_order = {int:id_order}",
+	array(
+		'id_layout' => $id_layout,
+		'id_order' => $o,
+	));
 	if ($smcFunc['db_affected_rows']()== 0)
 		fatal_error($txt['ezp_err_menu_down'], false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
 	// Swap the order Id's
 	$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_menu
-		SET id_order = $oldrow WHERE id_menu = " .$row2['id_menu']);
+		SET id_order = {int:oldrow} WHERE id_menu = {int:id_menu}",
+		array(
+			'oldrow' => $oldrow,
+			'id_menu' => $row2['id_menu'],
+		));
 
 	$smcFunc['db_query']('', "UPDATE {db_prefix}ezp_menu
-		SET id_order = $o WHERE id_menu = $id");
+		SET id_order = {int:id_order} WHERE id_menu = {int:id}",
+		array(
+			'id_order' => $o,
+			'id' => $id,
+		));
 
 	cache_put_data('ezBlockMenu_' . $layoutid, null, 90);
 
@@ -4257,14 +4551,22 @@ function CleanUpDuplicateValues($layoutID)
 	global $smcFunc;
 
 	$result = $smcFunc['db_query']('', "SELECT COUNT(*) AS total, id_parameter FROM {db_prefix}ezp_block_parameters_values
-			WHERE id_layout = $layoutID GROUP BY id_parameter ");
+			WHERE id_layout = {int:layout_id} GROUP BY id_parameter ",
+			array(
+				'layout_id' => $layoutID,
+			));
 	while ($row = $smcFunc['db_fetch_assoc']($result))
 	{
 		if ($row['total'] > 1)
 		{
 			$limitValue  = ($row['total'] -1);
 			$smcFunc['db_query']('', "DELETE FROM {db_prefix}ezp_block_parameters_values
-		 WHERE id_parameter  = " . $row['id_parameter'] . " AND id_layout = $layoutID LIMIT $limitValue");
+		 WHERE id_parameter = {int:id_parameter} AND id_layout = {int:layout_id} LIMIT {int:limit_value}",
+		 array(
+		 	'id_parameter' => $row['id_parameter'],
+		 	'layout_id' => $layoutID,
+		 	'limit_value' => $limitValue,
+		 ));
 
 		}
 	}
@@ -4320,7 +4622,10 @@ function EzPortalColumnState()
 	SELECT
 		value
 	FROM {db_prefix}themes
-	WHERE ID_MEMBER = " . $user_info['id'] . " AND ID_THEME = 0 AND variable = 'ezportal_ezcolumncollapse'");
+	WHERE ID_MEMBER = {int:member_id} AND ID_THEME = 0 AND variable = 'ezportal_ezcolumncollapse'",
+	array(
+		'member_id' => $user_info['id'],
+	));
 	$row = $smcFunc['db_fetch_assoc']($request);
 	if (!empty($row['value']))
 		$collapsedezColumns = explode(",",$row['value']);
@@ -4349,7 +4654,11 @@ function EzPortalColumnState()
 
 	$smcFunc['db_query']('', "REPLACE INTO {db_prefix}themes
 					(ID_MEMBER, ID_THEME, variable, value)
-				VALUES (" . $user_info['id'] .",0,'ezportal_ezcolumncollapse','$finalCollapseList')");
+				VALUES ({int:member_id},0,'ezportal_ezcolumncollapse',{string:collapse_list})",
+				array(
+					'member_id' => $user_info['id'],
+					'collapse_list' => $finalCollapseList,
+				));
 
     cache_put_data('ezportal_col_collaspe_' . $user_info['id'], $collapsedezColumns, 90);
 	// Nothing else to do end it!
@@ -4360,7 +4669,7 @@ function EzPortalShoutFrame()
 {
 	global $context, $ezpSettings;
 
-	$num = (int) $_REQUEST['num'];
+	$num = isset($_REQUEST['num']) ? (int) $_REQUEST['num'] : 10;
 
 	if ($num > 100)
 		$num = 100;
@@ -4368,12 +4677,9 @@ function EzPortalShoutFrame()
 	$context['template_layers'] = array();
 	$context['sub_template'] = 'ezpotal_shoutbox';
 
-	 EzBlockShoutBoxBlock(array(),$num,true);
-
-	 if ($ezpSettings['ezp_shoutbox_refreshseconds'] < 5)
-		 $ezpSettings['ezp_shoutbox_refreshseconds']  = 5;
-
-	 $context['html_headers'] .= '<meta http-equiv="refresh" content="' . $ezpSettings['ezp_shoutbox_refreshseconds'] . '" />';
+	// The AJAX shoutbox handles auto-refresh via JavaScript setInterval,
+	// so no meta-refresh is needed
+	EzBlockShoutBoxBlock(array(), $num, true);
 }
 
 function EzPortalCheckInfo()

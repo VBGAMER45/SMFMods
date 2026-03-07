@@ -48,6 +48,8 @@ $txt['smfstaff_down'] = '[Down]';
 
 $txt['smfstaff_savesettings'] = 'Save Settings';
 
+$txt['smfstaff_delgroup_confirm'] = 'Are you sure you want to remove this group from the staff page?';
+
 
 $txt['whoall_staff'] = 'Viewing the <a href="' . $scripturl . '?action=staff">Staff</a> Page';
 ?>

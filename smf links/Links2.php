@@ -1,7 +1,7 @@
 <?php
 /*
 SMF Links
-Version 4.0
+Version 5.0
 by:vbgamer45
 https://www.smfhacks.com
 */
@@ -52,6 +52,14 @@ function LinksMain()
 		'catperm' => 'CatPerm',
 		'catperm2' => 'CatPerm2',
 		'catpermdelete' => 'CatPermDelete',
+		'reordercat' => 'LinksReorderCats',
+		'checklinks' => 'LinksCheckLinks',
+		'checklinks2' => 'LinksCheckLinks2',
+		'deletebadlinks' => 'LinksDeleteBadLinks',
+		'disalloweddomains' => 'LinksDisallowedDomains',
+		'disalloweddomains2' => 'LinksDisallowedDomains2',
+		'disalloweddomainsdelete' => 'LinksDisallowedDomainsDelete',
+		'notifybadlinks' => 'LinksNotifyBadLinks',
 	);
 
 	// Follow the sa or just go to main links index.
@@ -179,11 +187,11 @@ function ViewLinksMain()
 		
 		// Show the links in that category
 		$dbresult = $smcFunc['db_query']('', '
-			SELECT l.ID_LINK,l.title,l.date, l.pagerank,
-				l.alexa, l.rating, m.real_name,
-				l.ID_MEMBER, l.description,l.hits
-			FROM {db_prefix}links AS l 
-			LEFT JOIN {db_prefix}members AS m ON (l.ID_MEMBER = m.ID_MEMBER) 
+			SELECT l.ID_LINK, l.title, l.date,
+				l.rating, m.real_name,
+				l.ID_MEMBER, l.description, l.hits, l.url
+			FROM {db_prefix}links AS l
+			LEFT JOIN {db_prefix}members AS m ON (l.ID_MEMBER = m.ID_MEMBER)
 			WHERE l.ID_CAT = {int:this_cat}
 				AND l.approved = {int:this_approved}
 			ORDER BY {raw:this_sort} {raw:this_sorto} LIMIT {int:this_start},{int:this_items_per_page}',
@@ -402,9 +410,24 @@ function AddCat2()
 	$order++;
     
     
-    $smcFunc['db_query']('', "INSERT INTO {db_prefix}links_cat 
-			(title, description,roworder,image,ID_PARENT)
-		VALUES ('$title', '$description','$order','$image','$parent')");
+    $smcFunc['db_insert']('insert',
+		'{db_prefix}links_cat',
+		array(
+			'title' => 'string',
+			'description' => 'string',
+			'roworder' => 'int',
+			'image' => 'string',
+			'ID_PARENT' => 'int',
+		),
+		array(
+			$title,
+			$description,
+			$order,
+			$image,
+			$parent,
+		),
+		array('ID_CAT')
+	);
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -423,10 +446,12 @@ function EditCat()
 		fatal_error($txt['smflinks_nocatselected'],false);
 
 	$dbresult = $smcFunc['db_query']('', '
-		SELECT ID_CAT, title, description, image, ID_PARENT 
-		FROM {db_prefix}links_cat 
-		WHERE ID_CAT = ' . $cat
-		
+		SELECT ID_CAT, title, description, image, ID_PARENT
+		FROM {db_prefix}links_cat
+		WHERE ID_CAT = {int:this_cat}',
+		array(
+			'this_cat' => $cat,
+		)
 	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
  
@@ -454,12 +479,15 @@ function EditCat()
 	$smcFunc['db_free_result']($dbresult);
 
 	$dbresult = $smcFunc['db_query']('', '
-		SELECT ID_CAT, title, description, image, ID_PARENT 
-		FROM {db_prefix}links_cat 
-		WHERE ID_CAT = ' . $cat
+		SELECT ID_CAT, title, description, image, ID_PARENT
+		FROM {db_prefix}links_cat
+		WHERE ID_CAT = {int:this_cat}',
+		array(
+			'this_cat' => $cat,
+		)
 	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
-	
+
 	// Needed for the WYSIWYG editor.
 	require_once($sourcedir . '/Subs-Editor.php');
 
@@ -538,8 +566,23 @@ function EditCat2()
 		fatal_error($txt['smflinks_nocattitle'], false);
 
 	// Update the category
-    $smcFunc['db_query']('', "UPDATE {db_prefix}links_cat
-		SET title = '$title', ID_PARENT = '$parent', description = '$description', image = '$image' WHERE ID_CAT = $catid LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}links_cat
+		SET
+			title = {string:title},
+			ID_PARENT = {int:parent},
+			description = {string:description},
+			image = {string:image}
+		WHERE ID_CAT = {int:this_cat}
+		LIMIT 1',
+		array(
+			'title' => $title,
+			'parent' => $parent,
+			'description' => $description,
+			'image' => $image,
+			'this_cat' => $catid,
+		)
+	);
     
 
 	redirectexit('action=links');
@@ -710,29 +753,31 @@ function AddLink2()
         $description = '';    
         
 	if (!empty($_POST['url']))
-		$url = addslashes(trim($_POST['url']));
-    else
-        $url = '';
+		$url = $smcFunc['htmlspecialchars'](trim($_POST['url']), ENT_QUOTES);
+	else
+		$url = '';
 
+	if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)
+		fatal_error($txt['smflinks_err_linkmuststart'], false);
 
-	if (substr_count($url,"http://") == 0 && substr_count($url,"https://") == 0)
-		fatal_error($txt['smflinks_err_linkmuststart'],false);
-        
+	if (CheckDisallowedDomain($url))
+		fatal_error($txt['smflinks_err_domain_disallowed'], false);
+
 	if (!empty($_REQUEST['catid']))
 		$catid = (int) $_REQUEST['catid'];
-   else
-    	$catid = 0;
+	else
+		$catid = 0;
 
- 	$dbresult = $smcFunc['db_query']('', '
-		SELECT ID_CAT, title, description, image, ID_PARENT 
-		FROM {db_prefix}links_cat 
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT ID_CAT, title, description, image, ID_PARENT
+		FROM {db_prefix}links_cat
 		WHERE ID_CAT = {int:this_cat}',
 		array(
 			'this_cat' => $catid
 		)
 	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
- 
+
     if (empty($row['ID_CAT']))
            fatal_error($txt['smflinks_nocatselected'], false);
 
@@ -765,8 +810,6 @@ function AddLink2()
 	}
 	$smcFunc['db_free_result']($dbresult);
 
-	$alexa = 0;
-	$pagerank = 0;
 	//Insert the links
 	$t = time();
 
@@ -782,8 +825,6 @@ function AddLink2()
 			'ID_MEMBER' => 'int',
 			'date' => 'int',
 			'approved' => 'int',
-			'alexa' => 'int',
-			'pagerank' => 'int'
 		),
 		array(
 			$catid,
@@ -793,8 +834,6 @@ function AddLink2()
 			$user_info['id'],
 			$t,
 			$approved,
-			$alexa,
-			$pagerank
 		),
 		array()
 	);
@@ -928,32 +967,34 @@ function EditLink2()
         $description = '';
         
 	if (!empty($_POST['url']))
-		$url = addslashes(trim($_POST['url']));
-    else
-        $url = '';
+		$url = $smcFunc['htmlspecialchars'](trim($_POST['url']), ENT_QUOTES);
+	else
+		$url = '';
 
-	if (substr_count($url,"http://") == 0 && substr_count($url,"https://") == 0)
-		fatal_error($txt['smflinks_err_linkmuststart'],false);
+	if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)
+		fatal_error($txt['smflinks_err_linkmuststart'], false);
 
-        
+	if (CheckDisallowedDomain($url))
+		fatal_error($txt['smflinks_err_domain_disallowed'], false);
+
 	if (!empty($_REQUEST['catid']))
 		$catid = (int) $_REQUEST['catid'];
-    else
-        $catid = 0;
+	else
+		$catid = 0;
 
 	if (empty($catid))
-		fatal_error($txt['smflinks_nocatselected'],false);
+		fatal_error($txt['smflinks_nocatselected'], false);
 
- 	$dbresult = $smcFunc['db_query']('', '
-		SELECT ID_CAT, title, description, image, ID_PARENT 
-		FROM {db_prefix}links_cat 
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT ID_CAT, title, description, image, ID_PARENT
+		FROM {db_prefix}links_cat
 		WHERE ID_CAT = {int:this_cat}',
 		array(
 			'this_cat' => $catid
 		)
 	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
-    
+
     if (empty($row['ID_CAT']))
 		fatal_error($txt['smflinks_nocatselected'],false);
 
@@ -964,9 +1005,6 @@ function EditLink2()
 	elseif (empty($url))
 		fatal_error($txt['smflinks_nolinkurl'], false);
 
-	$alexa = 0;
-	$pagerank = 0;
-
 	// Update the link
 	$smcFunc['db_query']('', '
 		UPDATE {db_prefix}links
@@ -974,8 +1012,6 @@ function EditLink2()
 			title = {string:title},
 			url = {string:url},
 			description = {string:description},
-			alexa = {int:alexa},
-			pagerank = {int:pagerank},
 			ID_CAT = {int:this_cat}
 		WHERE ID_LINK = {int:this_id}
 		LIMIT 1',
@@ -983,10 +1019,8 @@ function EditLink2()
 			'title' => $title,
 			'url' => $url,
 			'description' => $description,
-			'alexa' => $alexa,
-			'pagerank' => $pagerank,
 			'this_cat' => $catid,
-			'this_id' => $id
+			'this_id' => $id,
 		)
 	);
 	// Redirect back to category
@@ -1241,11 +1275,14 @@ function CatDown()
 	if (empty($cat))
 		fatal_error($txt['smflinks_nocatselected'],false);
     
-	$dbresult = $smcFunc['db_query']('', "
-	SELECT 
-		ID_CAT, title, description, image, ID_PARENT 
-	FROM {db_prefix}links_cat 
-	WHERE ID_CAT = $cat");
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT ID_CAT, title, description, image, ID_PARENT
+		FROM {db_prefix}links_cat
+		WHERE ID_CAT = {int:this_cat}',
+		array(
+			'this_cat' => $cat,
+		)
+	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
     
     if (empty($row['ID_CAT']))
@@ -1341,9 +1378,9 @@ function ApproveList()
 		$context['start'] = 0;
 	
 	$dbresult = $smcFunc['db_query']('', '
-		SELECT l.ID_LINK, l.approved, l.description, l.pagerank,
-			l.alexa, l.url, l.title, l.date, m.real_name,
-			l.ID_MEMBER, l.description,l.hits, l.ID_CAT, c.title catname 
+		SELECT l.ID_LINK, l.approved, l.description,
+			l.url, l.title, l.date, m.real_name,
+			l.ID_MEMBER, l.hits, l.ID_CAT, c.title catname 
  		FROM ({db_prefix}links AS l, {db_prefix}links_cat AS c) 
 		LEFT JOIN {db_prefix}members AS m ON (l.ID_MEMBER = m.ID_MEMBER) 
 		WHERE l.ID_CAT = c.ID_CAT
@@ -1584,8 +1621,6 @@ function LinksAdmin2()
 	$smflinks_setshowmostvisited = isset($_REQUEST['smflinks_setshowmostvisited'])? 1 : 0;
 	$smflinks_setshowstats = isset($_REQUEST['smflinks_setshowstats'])? 1 : 0;
 	$smflinks_setallowbbc = isset($_REQUEST['smflinks_setallowbbc'])? 1 : 0;
-	$smflinks_setgetpr = isset($_REQUEST['smflinks_setgetpr'])? 1 : 0;
-	$smflinks_setgetalexa = isset($_REQUEST['smflinks_setgetalexa'])? 1 : 0;
 	$smflinks_set_count_child = isset($_REQUEST['smflinks_set_count_child']) ? 1 : 0;
 
 	// Link Display Settings
@@ -1594,10 +1629,13 @@ function LinksAdmin2()
 	$smflinks_disp_rating = isset($_REQUEST['smflinks_disp_rating'])? 1 : 0;
 	$smflinks_disp_membername = isset($_REQUEST['smflinks_disp_membername'])? 1 : 0;
 	$smflinks_disp_date = isset($_REQUEST['smflinks_disp_date'])? 1 : 0;
-	$smflinks_disp_alexa = isset($_REQUEST['smflinks_disp_alexa'])? 1 : 0;
-	$smflinks_disp_pagerank = isset($_REQUEST['smflinks_disp_pagerank'])? 1 : 0;
+	$smflinks_disp_thumbnail = isset($_REQUEST['smflinks_disp_thumbnail'])? 1 : 0;
 
-    // Save the setting information
+	// Link Checker Settings
+	$smflinks_check_batch_size = !empty($_REQUEST['smflinks_check_batch_size']) ? max(5, min(200, (int) $_REQUEST['smflinks_check_batch_size'])) : 25;
+	$smflinks_check_notify_pm = isset($_REQUEST['smflinks_check_notify_pm']) ? 1 : 0;
+
+	// Save the setting information
 	updateSettings(
 		array(
 			'smflinks_setlinksperpage' => $smflinks_setlinksperpage,
@@ -1606,15 +1644,14 @@ function LinksAdmin2()
 			'smflinks_setshowstats' => $smflinks_setshowstats,
 			'smflinks_set_count_child' => $smflinks_set_count_child,
 			'smflinks_setallowbbc' => $smflinks_setallowbbc,
-			'smflinks_setgetpr' => $smflinks_setgetpr,
-			'smflinks_setgetalexa' => $smflinks_setgetalexa,
 			'smflinks_disp_description' => $smflinks_disp_description,
 			'smflinks_disp_hits' => $smflinks_disp_hits,
 			'smflinks_disp_rating' => $smflinks_disp_rating,
 			'smflinks_disp_membername' => $smflinks_disp_membername,
 			'smflinks_disp_date' => $smflinks_disp_date,
-			'smflinks_disp_alexa' => $smflinks_disp_alexa,
-			'smflinks_disp_pagerank' => $smflinks_disp_pagerank
+			'smflinks_disp_thumbnail' => $smflinks_disp_thumbnail,
+			'smflinks_check_batch_size' => $smflinks_check_batch_size,
+			'smflinks_check_notify_pm' => $smflinks_check_notify_pm,
 		)
 	);
 	redirectexit('action=admin;area=links;sa=admin');
@@ -1751,12 +1788,13 @@ function CatPermDelete()
 {
 	global $smcFunc, $txt;
 	isAllowedTo('links_manage_cat');
+	checkSession('get');
 
 	if (!empty($_REQUEST['id']))
 		$id = (int) $_REQUEST['id'];
 
 	if (empty($id))
-		fatal_error($txt['smflinks_nocatselected'],false);
+		fatal_error($txt['smflinks_nocatselected'], false);
 
 	// Delete the Permission
 	$smcFunc['db_query']('', '
@@ -2031,16 +2069,22 @@ function DoLinksAdminTabs($overrideSelected = '')
 		'description' => '',
 		'tabs' => array(
 			'admin' => array(
-				'description' => ''
+				'description' => $txt['smflinks_linkssettings_des']
 			),
 			'admincat' => array(
-				'description' => ''
+				'description' => $txt['smflinks_anagecats_des']
 			),
 			'alist' => array(
-				'description' => ''
+				'description' => $txt['smflinks_approvelinks_desc']
 			),
 			'adminperm' => array(
-				'description' => ''
+				'description' => $txt['smflinks_catpermlist_desc']
+			),
+			'checklinks' => array(
+				'description' => $txt['smflinks_checklinks_desc']
+			),
+			'disalloweddomains' => array(
+				'description' => $txt['smflinks_disallowed_domains_desc']
 			)
 		)
 	);
@@ -2138,65 +2182,523 @@ function Links_GetFileTotalsByParent($ID_PARENT, $data)
 	return $total;
 }
 
-function ShowSubCats($cat, $g_manage)
+function ShowSubCats($cat)
 {
-	global $txt, $smcFunc, $scripturl, $subcats_linktree, $context;
-	
-	// List all the categories
+	global $smcFunc, $context, $subcats_linktree;
+
+	// List all the subcategories
 	$dbresult = $smcFunc['db_query']('', '
-		SELECT ID_CAT, title, roworder, description, image 
-		FROM {db_prefix}links_cat 
+		SELECT ID_CAT, title, roworder, description, image
+		FROM {db_prefix}links_cat
 		WHERE ID_PARENT = {int:id_cat}
 		ORDER BY roworder ASC',
 		array(
-			'id_cat' => $cat
+			'id_cat' => $cat,
 		)
 	);
-		
-	if ($smcFunc['db_affected_rows']() != 0)
+
+	$context['links_subcats'] = array();
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
-
-		if (function_exists("set_tld_regex"))
-		echo '<table cellspacing="0" cellpadding="10" border="0" align="center" width="100%" class="table_grid">
-		<thead>
-		<tr class="catbg">
-				<th scope="col" class="smalltext first_th" colspan="2">' . $txt['smflinks_ctitle'] . '</th>
-				<th scope="col" class="smalltext">' . $txt['smflinks_description'] .'</th>
-				<th scope="col" class="smalltext">' . $txt['smflinks_totallinks'] . '</th>',
-				$g_manage ? '<th scope="col" class="smalltext">' . $txt['smflinks_options'] . '</th>' : '', '
-			</tr>
-		</thead>';
-		else
-		echo '<table cellspacing="0" cellpadding="10" border="0" align="center" width="90%" class="tborder">
-			<tr>
-				<td class="titlebg" colspan="2">', $txt['smflinks_ctitle'], '</td>
-				<td class="titlebg">', $txt['smflinks_description'], '</td>
-				<td class="titlebg">', $txt['smflinks_totallinks'], '</td>
-				', $g_manage ? '<td class="titlebg">' . $txt['smflinks_options'] . '</td>' : '', '
-			</tr>';
-
-			while($row = $smcFunc['db_fetch_assoc']($dbresult))
-			{
-				$totallinks = GetLinkTotals($row['ID_CAT']);
-				echo '<tr>';
-				if (empty($row['image']))
-					echo '<td colspan="2" class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '">' . parse_bbc($row['title']) . '</a></td><td class="windowbg2">' . parse_bbc($row['description']) . '</td>';
-				else
-				{
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '"><img src="' . $row['image'] . '" border="0" alt="" /></a></td>';
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;cat=' . $row['ID_CAT'] . '">' . parse_bbc($row['title']) . '</a></td><td class="windowbg2">' . parse_bbc($row['description']) . '</td>';
-				}
-				echo '<td class="windowbg2" align="center">' . $totallinks . '</td>';
-				// Show Edit Delete and Order category
-				if ($g_manage)
-					echo '<td class="windowbg2"><a href="' . $scripturl . '?action=links;sa=catup;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtup'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=catdown;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdown'] . '</a></span>&nbsp;<a href="' . $scripturl . '?action=links;sa=catperm;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txt_perm'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=editcat;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtedit'] . '</a>&nbsp;<a href="' . $scripturl . '?action=links;sa=deletecat;cat=' . $row['ID_CAT'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['smflinks_txtdel'] . '</a></td>';
-				echo '</tr>';
-				if (!empty($subcats_linktree))
-				echo '<tr class="titlebg">
-						<td  align="center" colspan="',($g_manage ? '5' : '4'),'">&nbsp;<span class="smalltext">',($subcats_linktree != '' ? $txt['smflinks_sub_cats'] . $subcats_linktree : ''),'</span></td>
-					</tr>';
-			}
-		echo '</table><br /><br />';
-		$smcFunc['db_free_result']($dbresult);
+		$row['totallinks'] = GetLinkTotals($row['ID_CAT']);
+		$row['subcats_linktree'] = $subcats_linktree;
+		$context['links_subcats'][] = $row;
 	}
+	$smcFunc['db_free_result']($dbresult);
+}
+
+function LinksReorderCats()
+{
+	global $smcFunc;
+
+	isAllowedTo('links_manage_cat');
+	checkSession('get');
+
+	$input = file_get_contents('php://input');
+	$data = json_decode($input, true);
+
+	if (empty($data) || !is_array($data))
+	{
+		header('Content-Type: application/json');
+		echo json_encode(array('success' => false, 'error' => 'Invalid data'));
+		obExit(false);
+		die();
+	}
+
+	foreach ($data as $item)
+	{
+		$id = (int) $item['id'];
+		$order = (int) $item['order'];
+		$parent = (int) $item['parent'];
+
+		if ($id > 0)
+		{
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}links_cat
+				SET roworder = {int:row_order}, ID_PARENT = {int:parent}
+				WHERE ID_CAT = {int:id_cat}',
+				array(
+					'row_order' => $order,
+					'parent' => $parent,
+					'id_cat' => $id,
+				)
+			);
+		}
+	}
+
+	header('Content-Type: application/json');
+	echo json_encode(array('success' => true));
+	obExit(false);
+	die();
+}
+
+function LinksCheckLinks()
+{
+	global $context, $mbname, $txt, $smcFunc, $modSettings;
+
+	isAllowedTo('links_manage_cat');
+	DoLinksAdminTabs();
+
+	$context['page_title'] = $mbname . $txt['smflinks_title'] . ' - ' . $txt['smflinks_checklinks'];
+	$context['sub_template'] = 'checklinks';
+
+	// Get total link count
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT COUNT(*) AS total
+		FROM {db_prefix}links
+		WHERE approved = 1'
+	);
+	$row = $smcFunc['db_fetch_assoc']($dbresult);
+	$context['links_total'] = $row['total'];
+	$smcFunc['db_free_result']($dbresult);
+
+	$context['check_batch_size'] = !empty($modSettings['smflinks_check_batch_size']) ? (int) $modSettings['smflinks_check_batch_size'] : 25;
+	$context['check_notify_pm'] = !empty($modSettings['smflinks_check_notify_pm']);
+}
+
+function LinksCheckLinks2()
+{
+	global $smcFunc, $modSettings;
+
+	isAllowedTo('links_manage_cat');
+
+	$offset = !empty($_REQUEST['offset']) ? (int) $_REQUEST['offset'] : 0;
+	$batch_size = !empty($modSettings['smflinks_check_batch_size']) ? (int) $modSettings['smflinks_check_batch_size'] : 25;
+
+	// Get a batch of links
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT l.ID_LINK, l.url, l.title, l.ID_CAT, l.ID_MEMBER, l.check_fails, c.title AS catname
+		FROM {db_prefix}links AS l
+		LEFT JOIN {db_prefix}links_cat AS c ON (l.ID_CAT = c.ID_CAT)
+		WHERE l.approved = 1
+		ORDER BY l.ID_LINK ASC
+		LIMIT {int:offset}, {int:batch}',
+		array(
+			'offset' => $offset,
+			'batch' => $batch_size,
+		)
+	);
+
+	$links = array();
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+		$links[$row['ID_LINK']] = $row;
+	$smcFunc['db_free_result']($dbresult);
+
+	// Nothing to check
+	if (empty($links))
+	{
+		header('Content-Type: application/json');
+		echo json_encode(array('results' => array()));
+		obExit(false);
+		die();
+	}
+
+	// Header storage for Cloudflare detection
+	$response_headers = array();
+
+	// Pass 1: HEAD requests in parallel using curl_multi
+	$status_codes = array();
+	$mh = curl_multi_init();
+	$ch_handles = array();
+
+	foreach ($links as $id => $row)
+	{
+		$response_headers[$id] = '';
+		$ch_handles[$id] = curl_init($row['url']);
+		curl_setopt($ch_handles[$id], CURLOPT_NOBODY, true);
+		curl_setopt($ch_handles[$id], CURLOPT_TIMEOUT, 5);
+		curl_setopt($ch_handles[$id], CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch_handles[$id], CURLOPT_MAXREDIRS, 5);
+		curl_setopt($ch_handles[$id], CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch_handles[$id], CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch_handles[$id], CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+		// Capture response headers for Cloudflare detection
+		$link_id = $id;
+		curl_setopt($ch_handles[$id], CURLOPT_HEADERFUNCTION, function($ch, $header) use (&$response_headers, $link_id) {
+			$response_headers[$link_id] .= $header;
+			return strlen($header);
+		});
+		curl_multi_add_handle($mh, $ch_handles[$id]);
+	}
+
+	do
+	{
+		curl_multi_exec($mh, $running);
+		if ($running > 0)
+			curl_multi_select($mh);
+	} while ($running > 0);
+
+	// Collect HEAD results and clean up
+	$retry_ids = array();
+	foreach ($ch_handles as $id => $ch)
+	{
+		$status_codes[$id] = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_multi_remove_handle($mh, $ch);
+		curl_close($ch);
+
+		// Mark for GET retry if HEAD returned 405/403/0
+		if ($status_codes[$id] == 405 || $status_codes[$id] == 403 || $status_codes[$id] == 0)
+			$retry_ids[] = $id;
+	}
+	curl_multi_close($mh);
+
+	// Pass 2: GET retries in parallel for links that need it
+	if (!empty($retry_ids))
+	{
+		$mh = curl_multi_init();
+		$ch_handles = array();
+
+		foreach ($retry_ids as $id)
+		{
+			$response_headers[$id] = '';
+			$ch_handles[$id] = curl_init($links[$id]['url']);
+			curl_setopt($ch_handles[$id], CURLOPT_TIMEOUT, 8);
+			curl_setopt($ch_handles[$id], CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch_handles[$id], CURLOPT_MAXREDIRS, 5);
+			curl_setopt($ch_handles[$id], CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch_handles[$id], CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch_handles[$id], CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+			$link_id = $id;
+			curl_setopt($ch_handles[$id], CURLOPT_HEADERFUNCTION, function($ch, $header) use (&$response_headers, $link_id) {
+				$response_headers[$link_id] .= $header;
+				return strlen($header);
+			});
+			curl_multi_add_handle($mh, $ch_handles[$id]);
+		}
+
+		do
+		{
+			curl_multi_exec($mh, $running);
+			if ($running > 0)
+				curl_multi_select($mh);
+		} while ($running > 0);
+
+		foreach ($ch_handles as $id => $ch)
+		{
+			$status_codes[$id] = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_multi_remove_handle($mh, $ch);
+			curl_close($ch);
+		}
+		curl_multi_close($mh);
+	}
+
+	// Build results and update DB
+	$results = array();
+	$checked_time = time();
+
+	foreach ($links as $id => $row)
+	{
+		$status_code = $status_codes[$id];
+
+		// Detect Cloudflare blocks — check for server: cloudflare or cf-ray header
+		$is_cloudflare = false;
+		if (($status_code == 403 || $status_code == 503) && !empty($response_headers[$id]))
+		{
+			$hdrs = strtolower($response_headers[$id]);
+			if (strpos($hdrs, 'server: cloudflare') !== false || strpos($hdrs, 'cf-ray:') !== false)
+				$is_cloudflare = true;
+		}
+
+		// Determine status text
+		if ($is_cloudflare)
+			$status_text = 'Cloudflare Block';
+		elseif ($status_code == 200)
+			$status_text = 'OK';
+		elseif ($status_code == 301 || $status_code == 302)
+			$status_text = 'Redirect';
+		elseif ($status_code == 404)
+			$status_text = 'Not Found';
+		elseif ($status_code >= 400 && $status_code < 500)
+			$status_text = 'Client Error';
+		elseif ($status_code >= 500)
+			$status_text = 'Server Error';
+		else
+			$status_text = 'Timeout/Unreachable';
+
+		// Cloudflare blocks are not truly bad — don't increment fail counter
+		$is_bad = !$is_cloudflare && ($status_code == 0 || $status_code >= 400);
+
+		if ($is_bad)
+		{
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}links
+				SET check_fails = check_fails + 1, last_checked = {int:checked}, last_status = {int:status}
+				WHERE ID_LINK = {int:id_link}',
+				array(
+					'checked' => $checked_time,
+					'status' => $status_code,
+					'id_link' => $id,
+				)
+			);
+		}
+		else
+		{
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}links
+				SET check_fails = 0, last_checked = {int:checked}, last_status = {int:status}
+				WHERE ID_LINK = {int:id_link}',
+				array(
+					'checked' => $checked_time,
+					'status' => $status_code,
+					'id_link' => $id,
+				)
+			);
+		}
+
+		$results[] = array(
+			'id' => $id,
+			'url' => $row['url'],
+			'title' => $row['title'],
+			'catname' => $row['catname'],
+			'status_code' => $status_code,
+			'status_text' => $status_text,
+			'check_fails' => $is_bad ? $row['check_fails'] + 1 : 0,
+			'member_id' => $row['ID_MEMBER'],
+			'cloudflare' => $is_cloudflare,
+		);
+	}
+
+	header('Content-Type: application/json');
+	echo json_encode(array('results' => $results));
+	obExit(false);
+	die();
+}
+
+function LinksNotifyBadLinks()
+{
+	global $smcFunc, $sourcedir, $txt;
+
+	isAllowedTo('links_manage_cat');
+	checkSession('post');
+
+	if (empty($_POST['notify_ids']) || !is_array($_POST['notify_ids']))
+		redirectexit('action=admin;area=links;sa=checklinks');
+
+	$ids = array();
+	foreach ($_POST['notify_ids'] as $id)
+		$ids[] = (int) $id;
+
+	if (empty($ids))
+		redirectexit('action=admin;area=links;sa=checklinks');
+
+	// Get link details for selected IDs
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT l.ID_LINK, l.title, l.url, l.ID_MEMBER, l.last_status
+		FROM {db_prefix}links AS l
+		WHERE l.ID_LINK IN ({array_int:ids})',
+		array(
+			'ids' => $ids,
+		)
+	);
+
+	// Group by member
+	$by_member = array();
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+	{
+		if (!empty($row['ID_MEMBER']))
+			$by_member[$row['ID_MEMBER']][] = $row;
+	}
+	$smcFunc['db_free_result']($dbresult);
+
+	if (!empty($by_member))
+	{
+		require_once($sourcedir . '/Subs-Post.php');
+
+		foreach ($by_member as $member_id => $links)
+		{
+			$body = $txt['smflinks_pm_body_intro'] . "\n\n";
+			foreach ($links as $link)
+			{
+				$status_code = (int) $link['last_status'];
+				if ($status_code == 404)
+					$status_label = '404 Not Found';
+				elseif ($status_code >= 400 && $status_code < 500)
+					$status_label = $status_code . ' Client Error';
+				elseif ($status_code >= 500)
+					$status_label = $status_code . ' Server Error';
+				else
+					$status_label = 'Timeout/Unreachable';
+
+				$body .= '- ' . $link['title'] . ' - ' . $link['url'] . ' (Status: ' . $status_label . ")\n";
+			}
+			$body .= "\n" . $txt['smflinks_pm_body_outro'];
+
+			sendpm(
+				array('to' => array($member_id)),
+				$txt['smflinks_pm_subject'],
+				$body,
+				false,
+				null,
+				0
+			);
+		}
+	}
+
+	redirectexit('action=admin;area=links;sa=checklinks');
+}
+
+function LinksDeleteBadLinks()
+{
+	global $smcFunc, $txt;
+
+	isAllowedTo('links_manage_cat');
+	checkSession('post');
+
+	if (empty($_POST['delete_ids']) || !is_array($_POST['delete_ids']))
+		redirectexit('action=admin;area=links;sa=checklinks');
+
+	$ids = array();
+	foreach ($_POST['delete_ids'] as $id)
+		$ids[] = (int) $id;
+
+	if (!empty($ids))
+	{
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}links
+			WHERE ID_LINK IN ({array_int:ids})',
+			array(
+				'ids' => $ids,
+			)
+		);
+	}
+
+	redirectexit('action=admin;area=links;sa=checklinks');
+}
+
+function CheckDisallowedDomain($url)
+{
+	global $smcFunc;
+
+	$host = parse_url($url, PHP_URL_HOST);
+	if (empty($host))
+		return false;
+
+	// Strip www. prefix
+	$host = strtolower($host);
+	if (strpos($host, 'www.') === 0)
+		$host = substr($host, 4);
+
+	// Get all disallowed domains
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT domain
+		FROM {db_prefix}links_disallowed_domains'
+	);
+
+	$blocked = false;
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+	{
+		$disallowed = $row['domain'];
+		// Exact match or subdomain match (host ends with .disallowed)
+		if ($host === $disallowed || substr($host, -(strlen($disallowed) + 1)) === '.' . $disallowed)
+		{
+			$blocked = true;
+			break;
+		}
+	}
+	$smcFunc['db_free_result']($dbresult);
+
+	return $blocked;
+}
+
+function LinksDisallowedDomains()
+{
+	global $context, $mbname, $txt, $smcFunc;
+
+	isAllowedTo('links_manage_cat');
+	DoLinksAdminTabs();
+
+	$context['page_title'] = $mbname . $txt['smflinks_title'] . ' - ' . $txt['smflinks_disallowed_domains'];
+	$context['sub_template'] = 'disallowed_domains';
+
+	// Get all disallowed domains
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT domain
+		FROM {db_prefix}links_disallowed_domains
+		ORDER BY domain ASC'
+	);
+
+	$context['disallowed_domains'] = array();
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+		$context['disallowed_domains'][] = $row['domain'];
+	$smcFunc['db_free_result']($dbresult);
+}
+
+function LinksDisallowedDomains2()
+{
+	global $smcFunc, $txt;
+
+	isAllowedTo('links_manage_cat');
+	checkSession('post');
+
+	if (!empty($_POST['domain']))
+		$domain = trim(strtolower($_POST['domain']));
+	else
+		$domain = '';
+
+	if (empty($domain))
+		fatal_error($txt['smflinks_err_no_domain'], false);
+
+	// Strip protocol and www prefix if user included them
+	$domain = preg_replace('#^https?://#', '', $domain);
+	$domain = preg_replace('#^www\.#', '', $domain);
+	// Strip trailing slash
+	$domain = rtrim($domain, '/');
+
+	// INSERT IGNORE to handle duplicates
+	$smcFunc['db_query']('', '
+		INSERT IGNORE INTO {db_prefix}links_disallowed_domains (domain)
+		VALUES ({string:domain})',
+		array(
+			'domain' => $domain,
+		)
+	);
+
+	redirectexit('action=admin;area=links;sa=disalloweddomains');
+}
+
+function LinksDisallowedDomainsDelete()
+{
+	global $smcFunc, $txt;
+
+	isAllowedTo('links_manage_cat');
+	checkSession('get');
+
+	if (!empty($_REQUEST['domain']))
+		$domain = $_REQUEST['domain'];
+	else
+		$domain = '';
+
+	if (empty($domain))
+		fatal_error($txt['smflinks_err_no_domain'], false);
+
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}links_disallowed_domains
+		WHERE domain = {string:domain}
+		LIMIT 1',
+		array(
+			'domain' => $domain,
+		)
+	);
+
+	redirectexit('action=admin;area=links;sa=disalloweddomains');
 }

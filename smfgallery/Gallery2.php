@@ -3,15 +3,15 @@
 SMF Gallery Lite Edition
 Version 9.0
 by:vbgamer45
-http://www.smfhacks.com
-Copyright 2008-2025 SMFHacks.com
+https://www.smfhacks.com
+Copyright 2008-2026 SMFHacks.com
 
 ############################################
 License Information:
 SMF Gallery is NOT free software.
 This software may not be redistributed.
 
-Links to http://www.smfhacks.com must remain unless
+Links to https://www.smfhacks.com must remain unless
 branding free option is purchased.
 #############################################
 */
@@ -27,7 +27,7 @@ function GalleryMain()
 
 	$id_member = $user_info['id'];
 
-	$currentVersion = '8.0';
+	$currentVersion = '10.0';
 
 	// Load the main template file
     if (function_exists("set_tld_regex"))
@@ -43,6 +43,16 @@ function GalleryMain()
     {
         $context['gallery21beta'] = true;
         $context['show_bbc'] = 1;
+        $context['html_headers'] .= '<style>
+.gallery-drop-zone { border: 2px dashed #ccc; border-radius: 6px; padding: 24px 16px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; background: #f8f9fa; margin-bottom: 4px; }
+.gallery-drop-zone:hover, .gallery-drop-zone.dragover { border-color: #5ba4cf; background: #edf4fa; }
+.gallery-drop-zone input[type="file"] { display: none; }
+.gallery-drop-zone .drop-icon { font-size: 2em; color: #aaa; display: block; margin-bottom: 6px; }
+.gallery-drop-zone .drop-text { color: #888; font-size: 0.9em; }
+.gallery-drop-zone .drop-text a { color: #5ba4cf; text-decoration: underline; cursor: pointer; }
+.gallery-drop-zone .drop-preview { margin-top: 10px; font-size: 0.85em; color: #555; }
+.gallery-drop-zone .drop-preview img { max-width: 120px; max-height: 120px; border-radius: 4px; margin-top: 6px; display: block; margin-left: auto; margin-right: auto; }
+</style>';
     }
 
 	// Load the language files
@@ -150,11 +160,12 @@ function mainview()
 	   $context['gallery_catid'] = $cat;
 
 		// Get category name
-		$dbresult1 = $smcFunc['db_query']('', "
+		$dbresult1 = $smcFunc['db_query']('', '
 		SELECT
 			id_cat, title, roworder, description, image
 		FROM {db_prefix}gallery_cat
-		WHERE id_cat = $cat LIMIT 1");
+		WHERE id_cat = {int:cat} LIMIT 1',
+		array('cat' => $cat));
 
 		$row1 = $smcFunc['db_fetch_assoc']($dbresult1);
 		$context['gallery_cat_name'] = $row1['title'];
@@ -182,14 +193,19 @@ function mainview()
 				$whoID = (string) $cat;
 
 				// Search for members who have this picture id set in their GET data.
-				$request = $smcFunc['db_query']('', "
+				$who_url = 's:7:"gallery";s:3:"cat";s:' . strlen($whoID) . ':"' . $cat . '";';
+				$request = $smcFunc['db_query']('', '
 					SELECT
 						lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online,
 						mg.online_color, mg.id_group, mg.group_name
 					FROM {db_prefix}log_online AS lo
 						LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = lo.id_member)
 						LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = IF(mem.id_group = 0, mem.id_post_group, mem.id_group))
-					WHERE INSTR(lo.url, 's:7:\"gallery\";s:3:\"cat\";s:" . strlen($whoID ) .":\"$cat\";') OR lo.session = '" . ($user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id()) . "'");
+					WHERE INSTR(lo.url, {string:who_url}) OR lo.session = {string:session}',
+				array(
+					'who_url' => $who_url,
+					'session' => $user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id(),
+				));
 				while ($row = $smcFunc['db_fetch_assoc']($request))
 				{
 					if (empty($row['id_member']))
@@ -236,22 +252,20 @@ function mainview()
 
 		$context['start'] = (int) $_REQUEST['start'];
 
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT p.id_picture, p.commenttotal, p.filesize, p.views, p.thumbfilename, p.filename, p.height, p.width,
 		 p.title, p.id_member, m.member_name, m.real_name, p.date, p.description
 		 FROM {db_prefix}gallery_pic as p
 		LEFT JOIN {db_prefix}members AS m on ( p.id_member = m.id_member)
-		WHERE p.id_cat = $cat AND p.approved = 1 ORDER BY id_picture DESC LIMIT $context[start]," . $modSettings['gallery_set_images_per_page']);
+		WHERE p.id_cat = {int:cat} AND p.approved = 1 ORDER BY id_picture DESC LIMIT {int:start}, {int:limit}',
+		array('cat' => $cat, 'start' => $context['start'], 'limit' => $modSettings['gallery_set_images_per_page']));
 		$context['gallery_image_list'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
 			$context['gallery_image_list'][] = $row;
 		}
+		$context['gallery_image_count'] = $smcFunc['db_num_rows']($dbresult);
 		$smcFunc['db_free_result']($dbresult);
-
-
-
-		$context['gallery_image_count'] = $smcFunc['db_affected_rows']();
 
 
 	}
@@ -260,10 +274,10 @@ function mainview()
 		$context['page_title'] = $txt['gallery_text_title'];
 
 		// Category list
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			id_cat, title, roworder, description, image
-		FROM {db_prefix}gallery_cat ORDER BY roworder ASC");
+		FROM {db_prefix}gallery_cat ORDER BY roworder ASC');
 		$context['gallery_cat_list'] = array();
 		while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -272,21 +286,21 @@ function mainview()
 		$smcFunc['db_free_result']($dbresult);
 
 		// Get unapproved pictures
-		$dbresult3 = $smcFunc['db_query']('', "
+		$dbresult3 = $smcFunc['db_query']('', '
 			SELECT
 				COUNT(*) AS total
 			FROM {db_prefix}gallery_pic
-			WHERE approved = 0");
+			WHERE approved = 0');
 			$totalrow = $smcFunc['db_fetch_assoc']($dbresult3);
 			$totalpics = $totalrow['total'];
 			$smcFunc['db_free_result']($dbresult3);
 		$context['gallery_unapproved_pics']	= $totalpics;
 
 		// Get reported pictures
-		$dbresult4 = $smcFunc['db_query']('', "
+		$dbresult4 = $smcFunc['db_query']('', '
 			SELECT
 				COUNT(*) AS total
-			FROM {db_prefix}gallery_report");
+			FROM {db_prefix}gallery_report');
 			$totalrow = $smcFunc['db_fetch_assoc']($dbresult4);
 			$totalreport = $totalrow['total'];
 			$smcFunc['db_free_result']($dbresult4);
@@ -338,6 +352,7 @@ function AddCategory2()
 	global $txt, $smcFunc, $sourcedir;
 
 	isAllowedTo('smfgallery_manage');
+	checkSession();
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['descript_mode']) && isset($_REQUEST['descript']))
@@ -360,19 +375,21 @@ function AddCategory2()
 		fatal_error($txt['gallery_error_cat_title'],false);
 
 	// Do the order
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		roworder
-	FROM {db_prefix}gallery_cat ORDER BY roworder DESC");
+	FROM {db_prefix}gallery_cat ORDER BY roworder DESC');
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	$order = $row['roworder'];
 	$order++;
 
 	// Insert the category
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}gallery_cat
-			(title, description,roworder,image)
-		VALUES ('$title', '$description',$order,'$image')");
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}gallery_cat
+			(title, description, roworder, image)
+		VALUES ({string:title}, {string:description}, {int:order}, {string:image})',
+		array('title' => $title, 'description' => $description, 'order' => $order, 'image' => $image));
 	$smcFunc['db_free_result']($dbresult);
 
 
@@ -411,11 +428,12 @@ function EditCategory()
 	$context['show_spellchecking'] = !empty($modSettings['enableSpellChecking']) && function_exists('pspell_new');
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_cat, title, image, description
 	FROM {db_prefix}gallery_cat
-	WHERE ID_CAT = $cat LIMIT 1");
+	WHERE ID_CAT = {int:cat} LIMIT 1',
+	array('cat' => $cat));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['gallery_cat_edit'] = $row;
 	$smcFunc['db_free_result']($dbresult);
@@ -445,6 +463,7 @@ function EditCategory2()
 	global $txt, $smcFunc, $sourcedir;
 
 	isAllowedTo('smfgallery_manage');
+	checkSession();
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['descript_mode']) && isset($_REQUEST['descript']))
@@ -470,8 +489,11 @@ function EditCategory2()
 		fatal_error($txt['gallery_error_cat_title'],false);
 
 	// Update the category
-	$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_cat
-		SET title = '$title', image = '$image', description = '$description' WHERE id_cat = $catid LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_cat
+		SET title = {string:title}, image = {string:image}, description = {string:description}
+		WHERE id_cat = {int:catid} LIMIT 1',
+		array('title' => $title, 'image' => $image, 'description' => $description, 'catid' => $catid));
 
 
 	redirectexit('action=admin;area=gallery;sa=admincat');
@@ -510,14 +532,16 @@ function DeleteCategory2()
 	global $modSettings, $smcFunc;
 
 	isAllowedTo('smfgallery_manage');
+	checkSession();
 
 	$catid = (int) $_REQUEST['catid'];
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_picture, thumbfilename, filename
 	FROM {db_prefix}gallery_pic
-	WHERE id_cat = $catid");
+	WHERE id_cat = {int:catid}',
+	array('catid' => $catid));
 
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 	{
@@ -528,16 +552,24 @@ function DeleteCategory2()
 		// Delete Thumbnail
 		@unlink($modSettings['gallery_path'] . $row['thumbfilename']);
 
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_comment WHERE id_picture = " . $row['id_picture']);
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}gallery_comment WHERE id_picture = {int:pic_id}',
+			array('pic_id' => $row['id_picture']));
 
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_report WHERE id_picture = " . $row['id_picture']);
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}gallery_report WHERE id_picture = {int:pic_id}',
+			array('pic_id' => $row['id_picture']));
 
 	}
 	// Delete All Pictures
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_pic WHERE id_cat = $catid");
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}gallery_pic WHERE id_cat = {int:catid}',
+		array('catid' => $catid));
 
 	// Finally delete the category
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_cat WHERE id_cat = $catid LIMIT 1");
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}gallery_cat WHERE id_cat = {int:catid} LIMIT 1',
+		array('catid' => $catid));
 
 
 	redirectexit('action=admin;area=gallery;sa=admincat');
@@ -561,14 +593,15 @@ function ViewPicture()
 
 
 	// Get the picture information
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.id_picture, p.width, p.height, p.allowcomments, p.id_cat, p.keywords, p.commenttotal, p.filesize, p.filename, p.approved,
     	p.views, p.title, p.id_member, m.member_name, m.real_name, p.date, p.description, c.title CATNAME
     FROM {db_prefix}gallery_pic as p
     LEFT JOIN {db_prefix}gallery_cat AS c ON (c.id_cat= p.id_cat)
     LEFT JOIN {db_prefix}members AS m ON (p.id_member = m.id_member)
-    WHERE p.id_picture= $id   LIMIT 1");
+    WHERE p.id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
     if (empty($row['id_picture']))
@@ -614,21 +647,24 @@ function ViewPicture()
 
 
 	// Update the number of views.
-    $smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic
-		SET views = views + 1 WHERE id_picture= $id LIMIT 1");
+    $smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_pic
+		SET views = views + 1 WHERE id_picture = {int:id} LIMIT 1',
+		array('id' => $id));
 
 
 	$context['sub_template']  = 'view_picture';
 
 	$context['page_title'] = $context['gallery_pic']['title'];
 
-$dbresult = $smcFunc['db_query']('', "
+$dbresult = $smcFunc['db_query']('', '
 		SELECT
-			c.id_picture,  c.id_comment, c.date, c.comment, c.id_member, m.posts, m.member_name,m.real_name
+			c.id_picture, c.id_comment, c.date, c.comment, c.id_member, m.posts, m.member_name, m.real_name
 			FROM {db_prefix}gallery_comment as c
 			LEFT JOIN {db_prefix}members AS m ON (c.id_member = m.id_member)
-		WHERE  c.id_picture = " . $context['gallery_pic']['id_picture'] . "  ORDER BY c.id_comment DESC");
-		$context['gallery_comment_count'] = $smcFunc['db_affected_rows']();
+		WHERE c.id_picture = {int:pic_id} ORDER BY c.id_comment DESC',
+		array('pic_id' => $context['gallery_pic']['id_picture']));
+		$context['gallery_comment_count'] = $smcFunc['db_num_rows']($dbresult);
 		$context['gallery_comment_list'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -647,16 +683,23 @@ $dbresult = $smcFunc['db_query']('', "
 				$context['view_members_list'] = array();
 				$context['view_num_hidden'] = 0;
 				$whoID = (string) $id;
+				$who_url_pic = 's:7:"gallery";s:2:"sa";s:4:"view";s:3:"pic";s:' . strlen($whoID) . ':"' . $id . '";';
+				$who_url_id = 's:7:"gallery";s:2:"sa";s:4:"view";s:2:"id";s:' . strlen($whoID) . ':"' . $id . '";';
 
 				// Search for members who have this picture id set in their GET data.
-				$request = $smcFunc['db_query']('', "
+				$request = $smcFunc['db_query']('', '
 					SELECT
 						lo.id_member, lo.log_time, mem.real_name, mem.member_name, mem.show_online,
 						mg.online_color, mg.id_group, mg.group_name
 					FROM {db_prefix}log_online AS lo
 						LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = lo.id_member)
 						LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = IF(mem.id_group = 0, mem.id_post_group, mem.id_group))
-					WHERE INSTR(lo.url, 's:7:\"gallery\";s:2:\"sa\";s:4:\"view\";s:3:\"pic\";s:" . strlen($whoID ) .":\"$id\";')  OR INSTR(lo.url, 's:7:\"gallery\";s:2:\"sa\";s:4:\"view\";s:2:\"id\";s:" . strlen($whoID ) .":\"$id\";') OR lo.session = '" . ($user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id()) . "'");
+					WHERE INSTR(lo.url, {string:who_url_pic}) OR INSTR(lo.url, {string:who_url_id}) OR lo.session = {string:session}',
+				array(
+					'who_url_pic' => $who_url_pic,
+					'who_url_id' => $who_url_id,
+					'session' => $user_info['is_guest'] ? 'ip' . $user_info['ip'] : session_id(),
+				));
 				while ($row = $smcFunc['db_fetch_assoc']($request))
 				{
 					if (empty($row['id_member']))
@@ -751,10 +794,11 @@ function AddPicture()
 		create_control_richedit($editorOptions);
 		$context['post_box_name'] = $editorOptions['id'];
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
  	SELECT
  		id_cat, title
- 	FROM {db_prefix}gallery_cat ORDER BY roworder ASC");
+ 	FROM {db_prefix}gallery_cat ORDER BY roworder ASC',
+	array());
 	$context['gallery_cat_list'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -780,6 +824,7 @@ function AddPicture2()
 	global $id_member, $txt,  $modSettings, $context, $sourcedir, $gd2 , $smcFunc;
 
 	isAllowedTo('smfgallery_add');
+	checkSession();
     @ini_set('memory_limit', '512M');
 
 	// Check if gallery path is writable
@@ -938,22 +983,33 @@ function AddPicture2()
 				@chmod($modSettings['gallery_path'] . $thumbname, 0644);
 				// Create the Database entry
 				$t = time();
-				$smcFunc['db_query']('', "INSERT INTO {db_prefix}gallery_pic
-							(id_cat, filesize,thumbfilename,filename, height, width, keywords, title, description,id_member,date,approved,allowcomments)
-						VALUES ($cat, $filesize,'$thumbname', '$filename', $sizes[1], $sizes[0], '$keywords','$title', '$description',$id_member,$t,$approved, $allowcomments)");
+				$smcFunc['db_query']('', '
+					INSERT INTO {db_prefix}gallery_pic
+						(id_cat, filesize, thumbfilename, filename, height, width, keywords, title, description, id_member, date, approved, allowcomments)
+					VALUES ({int:cat}, {int:filesize}, {string:thumbname}, {string:filename}, {int:height}, {int:width}, {string:keywords}, {string:title}, {string:description}, {int:id_member}, {int:date}, {int:approved}, {int:allowcomments})',
+				array(
+					'cat' => $cat, 'filesize' => $filesize, 'thumbname' => $thumbname, 'filename' => $filename,
+					'height' => $sizes[1], 'width' => $sizes[0], 'keywords' => $keywords, 'title' => $title,
+					'description' => $description, 'id_member' => $id_member, 'date' => $t,
+					'approved' => $approved, 'allowcomments' => $allowcomments,
+				));
 
 			// Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money + " . $modSettings['gallery_shop_picadd'] . "
-				 	WHERE id_member = {$id_member}
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money + {int:shop_amount}
+				 	WHERE id_member = {int:id_member}
+				 	LIMIT 1',
+				 	array('shop_amount' => $modSettings['gallery_shop_picadd'], 'id_member' => $id_member));
 
 			if (isset($modSettings['Shop_importer_success']))
-								$smcFunc['db_query']('', "UPDATE {db_prefix}members
-									SET shopMoney = shopMoney + " . $modSettings['gallery_shop_picadd'] . "
-									WHERE id_member = " .  $id_member . "
-									LIMIT 1");
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}members
+					SET shopMoney = shopMoney + {int:shop_amount}
+					WHERE id_member = {int:id_member}
+					LIMIT 1',
+					array('shop_amount' => $modSettings['gallery_shop_picadd'], 'id_member' => $id_member));
 
  			// Badge Awards Mod Check
  			GalleryCheckBadgeAwards($id_member);
@@ -1000,13 +1056,14 @@ function EditPicture()
 		fatal_error($txt['gallery_error_no_pic_selected']);
 
 	//Check if the user owns the picture or is admin
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.id_picture, p.thumbfilename, p.width, p.height, p.allowcomments, p.id_cat, p.keywords,
     p.commenttotal, p.filesize, p.filename, p.approved, p.views, p.title, p.id_member, m.member_name, m.real_name, p.date, p.description
     FROM {db_prefix}gallery_pic as p
     LEFT JOIN {db_prefix}members AS m ON (m.id_member = p.id_member)
-    WHERE id_picture= $id LIMIT 1");
+    WHERE id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	// Gallery picture information
@@ -1050,10 +1107,10 @@ function EditPicture()
 		create_control_richedit($editorOptions);
 		$context['post_box_name'] = $editorOptions['id'];
 
-$dbresult = $smcFunc['db_query']('', "
+$dbresult = $smcFunc['db_query']('', '
  	SELECT
  		id_cat, title
- 	FROM {db_prefix}gallery_cat ORDER BY roworder ASC");
+ 	FROM {db_prefix}gallery_cat ORDER BY roworder ASC');
 	$context['gallery_cat_list'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1085,6 +1142,7 @@ function EditPicture2()
 	global $id_member, $txt, $modSettings, $sourcedir, $gd2, $smcFunc;
 
 	is_not_guest();
+	checkSession();
     @ini_set('memory_limit', '512M');
 
 	$id = (int) $_REQUEST['id'];
@@ -1106,11 +1164,12 @@ function EditPicture2()
 	}
 
 	// Check the user permissions
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
-    	id_member,thumbfilename,filename
+    	id_member, thumbfilename, filename
     FROM {db_prefix}gallery_pic
-    WHERE id_picture= $id LIMIT 1");
+    WHERE id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$memID = $row['id_member'];
 	$oldfilename = $row['filename'];
@@ -1243,8 +1302,19 @@ function EditPicture2()
 					//Update the Database entry
 					$t = time();
 
-					$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic
-					SET id_cat = $cat, filesize = $filesize, filename = '$filename',  thumbfilename = '$thumbname', height = $sizes[1], width = $sizes[0], approved = $approved, date =  $t, title = '$title', description = '$description', keywords = '$keywords', allowcomments = $allowcomments WHERE id_picture= $id LIMIT 1");
+					$smcFunc['db_query']('', '
+					UPDATE {db_prefix}gallery_pic
+					SET id_cat = {int:cat}, filesize = {int:filesize}, filename = {string:filename}, thumbfilename = {string:thumbname},
+						height = {int:height}, width = {int:width}, approved = {int:approved}, date = {int:date},
+						title = {string:title}, description = {string:description}, keywords = {string:keywords},
+						allowcomments = {int:allowcomments}
+					WHERE id_picture = {int:id} LIMIT 1',
+					array(
+						'cat' => $cat, 'filesize' => $filesize, 'filename' => $filename, 'thumbname' => $thumbname,
+						'height' => $sizes[1], 'width' => $sizes[0], 'approved' => $approved, 'date' => $t,
+						'title' => $title, 'description' => $description, 'keywords' => $keywords,
+						'allowcomments' => $allowcomments, 'id' => $id,
+					));
 
 
 					//Redirect to the users image page.
@@ -1255,8 +1325,15 @@ function EditPicture2()
 		else
 		{
 			//Update the image properties if no upload has been set
-			$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic
-				SET id_cat = $cat, title = '$title', description = '$description', keywords = '$keywords', allowcomments = $allowcomments WHERE id_picture= $id LIMIT 1");
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}gallery_pic
+				SET id_cat = {int:cat}, title = {string:title}, description = {string:description},
+					keywords = {string:keywords}, allowcomments = {int:allowcomments}
+				WHERE id_picture = {int:id} LIMIT 1',
+				array(
+					'cat' => $cat, 'title' => $title, 'description' => $description,
+					'keywords' => $keywords, 'allowcomments' => $allowcomments, 'id' => $id,
+				));
 
 			//Redirect to the users image page.
 			redirectexit('action=gallery;sa=myimages;u=' . $id_member);
@@ -1281,13 +1358,14 @@ function DeletePicture()
 		fatal_error($txt['gallery_error_no_pic_selected']);
 
 	//Check if the user owns the picture or is admin
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.id_picture, p.thumbfilename, p.width, p.height, p.allowcomments, p.id_cat, p.keywords, p.commenttotal, p.filesize, p.filename, p.approved,
         p.views, p.title, p.id_member, m.member_name, m.real_name, p.date, p.description
     FROM {db_prefix}gallery_pic as p
     LEFT JOIN {db_prefix}members AS m ON (m.id_member = p.id_member)
-    WHERE id_picture= $id  LIMIT 1");
+    WHERE id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 
 	//Gallery picture information
@@ -1329,17 +1407,19 @@ function DeletePicture()
 function DeletePicture2()
 {
 	global$txt, $id_member,  $modSettings, $smcFunc;
+	checkSession();
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['gallery_error_no_pic_selected']);
 
 	//Check if the user owns the picture or is admin
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
-    	p.id_picture, p.filename, p.thumbfilename,  p.id_member
+    	p.id_picture, p.filename, p.thumbfilename, p.id_member
     FROM {db_prefix}gallery_pic as p
-    WHERE id_picture= $id LIMIT 1");
+    WHERE id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$memID = $row['id_member'];
 	$smcFunc['db_free_result']($dbresult);
@@ -1356,25 +1436,35 @@ function DeletePicture2()
 
 		//Delete all the picture related db entries
 
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_comment WHERE id_picture = $id LIMIT 1");
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}gallery_comment WHERE id_picture = {int:id}',
+			array('id' => $id));
 
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_report WHERE id_picture = $id LIMIT 1");
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}gallery_report WHERE id_picture = {int:id}',
+			array('id' => $id));
 
 		//Delete the picture
-		$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_pic WHERE id_picture= $id LIMIT 1");
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}gallery_pic WHERE id_picture = {int:id} LIMIT 1',
+			array('id' => $id));
 
 		// Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money - " . $modSettings['gallery_shop_picadd'] . "
-				 	WHERE id_member = {$memID}
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money - {int:shop_amount}
+				 	WHERE id_member = {int:id_member}
+				 	LIMIT 1',
+				 	array('shop_amount' => $modSettings['gallery_shop_picadd'], 'id_member' => $memID));
 
 			if (isset($modSettings['Shop_importer_success']))
-								$smcFunc['db_query']('', "UPDATE {db_prefix}members
-									SET shopMoney = shopMoney - " . $modSettings['gallery_shop_picadd'] . "
-									WHERE id_member = " .  $memID . "
-									LIMIT 1");
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}members
+					SET shopMoney = shopMoney - {int:shop_amount}
+					WHERE id_member = {int:id_member}
+					LIMIT 1',
+					array('shop_amount' => $modSettings['gallery_shop_picadd'], 'id_member' => $memID));
 
 		// Redirect to the users image page.
 		redirectexit('action=gallery;sa=myimages;u=' . $id_member);
@@ -1412,6 +1502,7 @@ function ReportPicture2()
 	global $id_member, $txt, $smcFunc;
 
 	isAllowedTo('smfgallery_report');
+	checkSession();
 
 	$comment = $smcFunc['htmlspecialchars']($_REQUEST['comment'],ENT_QUOTES);
 	$id = (int) $_REQUEST['id'];
@@ -1423,9 +1514,11 @@ function ReportPicture2()
 
 	$commentdate = time();
 
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}gallery_report
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}gallery_report
 			(id_member, comment, date, id_picture)
-		VALUES ($id_member,'$comment', $commentdate,$id)");
+		VALUES ({int:id_member}, {string:comment}, {int:date}, {int:id})',
+		array('id_member' => $id_member, 'comment' => $comment, 'date' => $commentdate, 'id' => $id));
 
 	redirectexit('action=gallery;sa=view;pic=' . $id);
 
@@ -1445,11 +1538,12 @@ function AddComment()
 	$context['gallery_pic_id'] = $id;
 
 	// Comments allowed check
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.allowcomments
     FROM {db_prefix}gallery_pic as p
-    WHERE id_picture= $id LIMIT 1");
+    WHERE id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 	//Checked if comments are allowed
@@ -1494,6 +1588,7 @@ function AddComment2()
 	global $id_member, $txt, $modSettings, $smcFunc, $sourcedir;
 
 	isAllowedTo('smfgallery_comment');
+	checkSession();
 
 	// If we came from WYSIWYG then turn it back into BBC regardless.
 	if (!empty($_REQUEST['message_mode']) && isset($_REQUEST['message']))
@@ -1515,11 +1610,12 @@ function AddComment2()
 		fatal_error($txt['gallery_error_no_pic_selected']);
 
 	//Check if that picture allows comments.
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.allowcomments
     FROM {db_prefix}gallery_pic as p
-    WHERE id_picture= $id LIMIT 1");
+    WHERE id_picture = {int:id} LIMIT 1',
+    array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$smcFunc['db_free_result']($dbresult);
 	//Checked if comments are allowed
@@ -1531,30 +1627,38 @@ function AddComment2()
 
 	$commentdate = time();
 
-	$smcFunc['db_query']('', "INSERT INTO {db_prefix}gallery_comment
+	$smcFunc['db_query']('', '
+		INSERT INTO {db_prefix}gallery_comment
 			(id_member, comment, date, id_picture)
-		VALUES ($id_member,'$comment', $commentdate,$id)");
+		VALUES ({int:id_member}, {string:comment}, {int:date}, {int:id})',
+		array('id_member' => $id_member, 'comment' => $comment, 'date' => $commentdate, 'id' => $id));
 
 
 	// Update the SMF Shop Points
 	if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money + " . $modSettings['gallery_shop_commentadd'] . "
-				 	WHERE id_member = {$id_member}
-				 	LIMIT 1");
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}members
+			SET money = money + {int:shop_amount}
+			WHERE id_member = {int:id_member}
+			LIMIT 1',
+			array('shop_amount' => $modSettings['gallery_shop_commentadd'], 'id_member' => $id_member));
 
 	if (isset($modSettings['Shop_importer_success']))
-								$smcFunc['db_query']('', "UPDATE {db_prefix}members
-									SET shopMoney = shopMoney + " .  $modSettings['gallery_shop_commentadd'] . "
-									WHERE id_member = " .  $id_member . "
-									LIMIT 1");
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}members
+			SET shopMoney = shopMoney + {int:shop_amount}
+			WHERE id_member = {int:id_member}
+			LIMIT 1',
+			array('shop_amount' => $modSettings['gallery_shop_commentadd'], 'id_member' => $id_member));
 
 	// Badge Awards Mod Check
  	GalleryCheckBadgeAwards($id_member);
 
 	//Update Comment total
-	 $smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic
-		SET commenttotal = commenttotal + 1 WHERE id_picture= $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_pic
+		SET commenttotal = commenttotal + 1 WHERE id_picture = {int:id} LIMIT 1',
+		array('id' => $id));
 
 
 	redirectexit('action=gallery;sa=view;pic=' . $id);
@@ -1568,6 +1672,7 @@ function DeleteComment()
 	is_not_guest();
 
 	isAllowedTo('smfgallery_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
@@ -1575,11 +1680,12 @@ function DeleteComment()
 
 
 	// Get the picture ID for redirect
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
-		id_picture,ID_COMMENT, id_member
+		id_picture, ID_COMMENT, id_member
 	FROM {db_prefix}gallery_comment
-	WHERE ID_COMMENT = $id LIMIT 1");
+	WHERE ID_COMMENT = {int:id} LIMIT 1',
+	array('id' => $id));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$picid = $row['id_picture'];
 	if (empty($picid))
@@ -1588,25 +1694,33 @@ function DeleteComment()
 	$memID = $row['id_member'];
 	$smcFunc['db_free_result']($dbresult);
 	// Now delete the comment.
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_comment WHERE ID_COMMENT = $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}gallery_comment WHERE ID_COMMENT = {int:id} LIMIT 1',
+		array('id' => $id));
 
 
 	//Update Comment total
-	  $dbresult = $smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic
-		SET commenttotal = commenttotal - 1 WHERE id_picture= $picid LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_pic
+		SET commenttotal = commenttotal - 1 WHERE id_picture = {int:pic_id} LIMIT 1',
+		array('pic_id' => $picid));
 
 			// Update the SMF Shop Points
 			if (isset($modSettings['shopVersion']))
- 				$smcFunc['db_query']('', "UPDATE {db_prefix}members
-				 	SET money = money - " . $modSettings['gallery_shop_commentadd'] . "
-				 	WHERE id_member = {$memID}
-				 	LIMIT 1");
+ 				$smcFunc['db_query']('', '
+				 	UPDATE {db_prefix}members
+				 	SET money = money - {int:shop_amount}
+				 	WHERE id_member = {int:id_member}
+				 	LIMIT 1',
+				 	array('shop_amount' => $modSettings['gallery_shop_commentadd'], 'id_member' => $memID));
 
 		if (isset($modSettings['Shop_importer_success']))
-								$smcFunc['db_query']('', "UPDATE {db_prefix}members
-									SET shopMoney = shopMoney - " .  $modSettings['gallery_shop_commentadd'] . "
-									WHERE id_member = " .  $memID . "
-									LIMIT 1");
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}members
+				SET shopMoney = shopMoney - {int:shop_amount}
+				WHERE id_member = {int:id_member}
+				LIMIT 1',
+				array('shop_amount' => $modSettings['gallery_shop_commentadd'], 'id_member' => $memID));
 
 	// Redirect to the picture
 	redirectexit('action=gallery;sa=view;pic=' . $picid);
@@ -1634,8 +1748,10 @@ function AdminSettings()
 
 function AdminSettings2()
 {
+	global $smcFunc;
 
 	isAllowedTo('smfgallery_manage');
+	checkSession();
 
 	// Get the settings
 	$gallery_max_height = (int) $_REQUEST['gallery_max_height'];
@@ -1651,8 +1767,8 @@ function AdminSettings2()
 	$gallery_shop_picadd = (int) $_REQUEST['gallery_shop_picadd'];
 	$gallery_shop_commentadd = (int) $_REQUEST['gallery_shop_commentadd'];
 
-	$gallery_path = $_REQUEST['gallery_path'];
-	$gallery_url = $_REQUEST['gallery_url'];
+	$gallery_path = $smcFunc['htmlspecialchars']($_REQUEST['gallery_path'], ENT_QUOTES);
+	$gallery_url = $smcFunc['htmlspecialchars']($_REQUEST['gallery_url'], ENT_QUOTES);
 	$gallery_who_viewing = isset($_REQUEST['gallery_who_viewing']) ? 1 : 0;
 
 	// Image Linking codes
@@ -1700,10 +1816,11 @@ function AdminCats()
 
 	$context['sub_template']  = 'manage_cats';
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			id_cat, title, roworder, description, image
-		FROM {db_prefix}gallery_cat ORDER BY roworder ASC");
+		FROM {db_prefix}gallery_cat ORDER BY roworder ASC',
+		array());
 	$context['gallery_cat_list'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1724,33 +1841,39 @@ function CatUp()
 
 	//Check if there is a category above it
 	//First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		roworder
 	FROM {db_prefix}gallery_cat
-	WHERE id_cat = $cat");
+	WHERE id_cat = {int:cat}',
+	array('cat' => $cat));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	$oldrow = $row['roworder'];
 	$o = $row['roworder'];
 	$o--;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_cat, roworder
 	FROM {db_prefix}gallery_cat
-	WHERE roworder = $o");
-	if ($smcFunc['db_affected_rows']()== 0)
+	WHERE roworder = {int:o}',
+	array('o' => $o));
+	if ($smcFunc['db_num_rows']($dbresult)== 0)
 		fatal_error($txt['gallery_nocatabove'],false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
 
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_cat
-		SET roworder = $oldrow WHERE id_cat = " .$row2['id_cat']);
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_cat
+		SET roworder = {int:oldrow} WHERE id_cat = {int:cat_id}',
+		array('oldrow' => $oldrow, 'cat_id' => $row2['id_cat']));
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_cat
-		SET roworder = $o WHERE id_cat = $cat");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_cat
+		SET roworder = {int:o} WHERE id_cat = {int:cat}',
+		array('o' => $o, 'cat' => $cat));
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -1771,33 +1894,39 @@ function CatDown()
 	ReOrderCats($cat);
 	// Check if there is a category below it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
+	$dbresult1 = $smcFunc['db_query']('', '
 	SELECT
 		roworder
 	FROM {db_prefix}gallery_cat
-	WHERE id_cat = $cat LIMIT 1");
+	WHERE id_cat = {int:cat} LIMIT 1',
+	array('cat' => $cat));
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	$oldrow = $row['roworder'];
 	$o = $row['roworder'];
 	$o++;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_cat, roworder
 	FROM {db_prefix}gallery_cat
-	WHERE roworder = $o");
-	if ($smcFunc['db_affected_rows']()== 0)
+	WHERE roworder = {int:o}',
+	array('o' => $o));
+	if ($smcFunc['db_num_rows']($dbresult)== 0)
 		fatal_error($txt['gallery_nocatbelow'],false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
 
 	//Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_cat
-		SET roworder = $oldrow WHERE id_cat = " .$row2['id_cat']);
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_cat
+		SET roworder = {int:oldrow} WHERE id_cat = {int:cat_id}',
+		array('oldrow' => $oldrow, 'cat_id' => $row2['id_cat']));
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_cat
-		SET roworder = $o WHERE id_cat = $cat");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_cat
+		SET roworder = {int:o} WHERE id_cat = {int:cat}',
+		array('o' => $o, 'cat' => $cat));
 
 
 	$smcFunc['db_free_result']($dbresult);
@@ -1820,11 +1949,12 @@ function MyImages()
 	// Store the gallery userid
 	$context['gallery_userid'] = $u;
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	m.member_name, m.real_name
     FROM {db_prefix}members AS m
-    WHERE m.id_member = $u  LIMIT 1");
+    WHERE m.id_member = {int:u} LIMIT 1',
+    array('u' => $u));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['gallery_usergallery_name'] = $row['real_name'];
 	$smcFunc['db_free_result']($dbresult);
@@ -1841,19 +1971,22 @@ function MyImages()
 
 
 	$userid = $context['gallery_userid'];
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 		SELECT COUNT(*) AS total
 		 FROM {db_prefix}gallery_pic as p, {db_prefix}members AS m
-		WHERE p.id_member = $userid AND p.id_member = m.id_member " . ($id_member == $userid ? '' : ' AND p.approved = 1'));
+		WHERE p.id_member = {int:userid} AND p.id_member = m.id_member ' . ($id_member == $userid ? '' : ' AND p.approved = 1'),
+		array('userid' => $userid));
 	$row = $smcFunc['db_fetch_assoc']($dbresult);
 	$context['gallery_totalpic'] = $row['total'];
 	$smcFunc['db_free_result']($dbresult);
 
-    $dbresult = $smcFunc['db_query']('', "
+    $dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.id_picture, p.commenttotal, p.title, p.filesize, p.thumbfilename, p.approved, p.views, p.id_member, m.real_name, p.date, p.filename, p.height, p.width
     FROM {db_prefix}gallery_pic as p, {db_prefix}members AS m
-    WHERE p.id_member = $userid AND p.id_member = m.id_member " . ($id_member == $userid ? '' : ' AND p.approved = 1 ')  . " ORDER BY p.id_picture DESC LIMIT $context[start]," . $modSettings['gallery_set_images_per_page']);
+    WHERE p.id_member = {int:userid} AND p.id_member = m.id_member ' . ($id_member == $userid ? '' : ' AND p.approved = 1 ') . '
+    ORDER BY p.id_picture DESC LIMIT {int:start}, {int:limit}',
+    array('userid' => $userid, 'start' => $context['start'], 'limit' => $modSettings['gallery_set_images_per_page']));
 	$context['gallery_my_images'] = array();
  	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1875,13 +2008,14 @@ function ApproveList()
 	$context['sub_template']  = 'approvelist';
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 		  	SELECT
 		  		p.id_picture, p.thumbfilename, p.title, p.id_member, m.member_name, m.real_name, p.date, p.description,
 		  		p.filename, p.height, p.width
 		  	FROM {db_prefix}gallery_pic as p
 		  	LEFT JOIN {db_prefix}members AS m  on (p.id_member = m.id_member)
-		  	WHERE p.approved = 0 ORDER BY p.id_picture DESC");
+		  	WHERE p.approved = 0 ORDER BY p.id_picture DESC',
+		array());
 	$context['gallery_approve_list'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1896,13 +2030,16 @@ function ApprovePicture()
 	global $txt, $smcFunc;
 
 	isAllowedTo('smfgallery_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['gallery_error_no_pic_selected']);
 
 	// Update the approval
-	$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic SET approved = 1 WHERE id_picture= $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_pic SET approved = 1 WHERE id_picture = {int:id} LIMIT 1',
+		array('id' => $id));
 
 	// Redirect to approval list
 	redirectexit('action=admin;area=gallery;sa=approvelist');
@@ -1913,13 +2050,16 @@ function UnApprovePicture()
 	global $txt, $smcFunc;
 
 	isAllowedTo('smfgallery_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['pic'];
 	if (empty($id))
 		fatal_error($txt['gallery_error_no_pic_selected']);
 
 	// Update the approval
-	 $smcFunc['db_query']('', "UPDATE {db_prefix}gallery_pic SET approved = 0 WHERE id_picture= $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}gallery_pic SET approved = 0 WHERE id_picture = {int:id} LIMIT 1',
+		array('id' => $id));
 
 	// Redirect to approval list
 	redirectexit('action=admin;area=gallery;sa=approvelist');
@@ -1940,11 +2080,12 @@ function ReportList()
 
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 		  	SELECT
 		  		r.ID, r.id_picture, r.id_member, m.member_name, m.real_name, r.date,r.comment
 		  	FROM {db_prefix}gallery_report as r
-		  	LEFT JOIN {db_prefix}members AS m on (r.id_member = m.id_member) ORDER BY r.id_picture DESC");
+		  	LEFT JOIN {db_prefix}members AS m on (r.id_member = m.id_member) ORDER BY r.id_picture DESC',
+		array());
 	$context['gallery_report_list'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -1960,12 +2101,15 @@ function DeleteReport()
 
 	// Check the permission
 	isAllowedTo('smfgallery_manage');
+	checkSession('get');
 
 	$id = (int) $_REQUEST['id'];
 	if (empty($id))
 		fatal_error($txt['gallery_error_no_report_selected']);
 
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}gallery_report WHERE ID = $id LIMIT 1");
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}gallery_report WHERE ID = {int:id} LIMIT 1',
+		array('id' => $id));
 
 	// Redirect to redirect list
 	redirectexit('action=admin;area=gallery;sa=reportlist');
@@ -2018,7 +2162,7 @@ function Search2()
 		$s1 = 1;
 		$searchquery = '';
 		if ($searchtitle)
-			$searchquery = "p.title LIKE '%$searchfor%' ";
+			$searchquery = 'p.title LIKE {string:searchfor} ';
 		else
 			$s1 = 0;
 
@@ -2026,9 +2170,9 @@ function Search2()
 		if ($searchdescription)
 		{
 			if ($s1 == 1)
-				$searchquery = "p.title LIKE '%$searchfor%' OR p.description LIKE '%$searchfor%'";
+				$searchquery = 'p.title LIKE {string:searchfor} OR p.description LIKE {string:searchfor}';
 			else
-				$searchquery = "p.description LIKE '%$searchfor%'";
+				$searchquery = 'p.description LIKE {string:searchfor}';
 		}
 		else
 			$s2 = 0;
@@ -2036,16 +2180,17 @@ function Search2()
 		if ($searchkeywords)
 		{
 			if ($s1 == 1 || $s2 == 1)
-				$searchquery .= " OR p.keywords LIKE '%$searchfor%'";
+				$searchquery .= ' OR p.keywords LIKE {string:searchfor}';
 			else
-				$searchquery = "p.keywords LIKE '%$searchfor%'";
+				$searchquery = 'p.keywords LIKE {string:searchfor}';
 		}
 
 
 		if ($searchquery == '')
-			$searchquery = "p.title LIKE '%$searchfor%' ";
+			$searchquery = 'p.title LIKE {string:searchfor} ';
 
 		$context['gallery_search_query'] = $searchquery;
+		$context['gallery_search_param'] = '%' . $searchfor . '%';
 
 
 
@@ -2062,14 +2207,16 @@ function Search2()
 
 		$context['gallery_search'] = $keyword;
 
-		$context['gallery_search_query'] = "p.keywords LIKE '%$keyword%'";
+		$context['gallery_search_query'] = 'p.keywords LIKE {string:searchfor}';
+		$context['gallery_search_param'] = '%' . $keyword . '%';
 	}
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
     SELECT
     	p.id_picture, p.commenttotal, p.keywords, p.filesize, p.thumbfilename, p.approved, p.views, p.title, p.id_member, m.real_name, p.date, p.width, p.height, p.filename FROM {db_prefix}gallery_pic as p
     LEFT JOIN {db_prefix}members AS m ON (p.id_member = m.id_member)
-    WHERE p.approved = 1 AND (" . $context['gallery_search_query'] . ")");
+    WHERE p.approved = 1 AND (' . $context['gallery_search_query'] . ')',
+    array('searchfor' => $context['gallery_search_param']));
 	$context['gallery_search_results'] = array();
 	while($row = $smcFunc['db_fetch_assoc']($dbresult))
 		{
@@ -2092,18 +2239,20 @@ function ReOrderCats($cat)
 {
 	global $smcFunc;
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 	SELECT
 		id_cat, roworder
-	FROM {db_prefix}gallery_cat ORDER BY roworder ASC");
+	FROM {db_prefix}gallery_cat ORDER BY roworder ASC');
 
-	if ($smcFunc['db_affected_rows']() != 0)
+	if ($smcFunc['db_num_rows']($dbresult) != 0)
 	{
 		$count = 1;
 		while($row2 = $smcFunc['db_fetch_assoc']($dbresult))
 		{
-			$smcFunc['db_query']('', "UPDATE {db_prefix}gallery_cat
-			SET roworder = $count WHERE id_cat = " . $row2['id_cat']);
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}gallery_cat
+				SET roworder = {int:count} WHERE id_cat = {int:cat_id}',
+				array('count' => $count, 'cat_id' => $row2['id_cat']));
 			$count++;
 		}
 	}
@@ -2115,19 +2264,19 @@ function DoGalleryAdminTabs($overrideSelected = '')
 	global $context, $txt, $smcFunc;
 
 
-	$dbresult3 = $smcFunc['db_query']('', "
+	$dbresult3 = $smcFunc['db_query']('', '
 			SELECT
 				COUNT(*) AS total
 			FROM {db_prefix}gallery_pic
-			WHERE approved = 0");
+			WHERE approved = 0');
 			$totalrow = $smcFunc['db_fetch_assoc']($dbresult3);
 			$totalappoval = $totalrow['total'];
 			$smcFunc['db_free_result']($dbresult3);
 
-	$dbresult4 = $smcFunc['db_query']('', "
+	$dbresult4 = $smcFunc['db_query']('', '
 			SELECT
 				COUNT(*) AS total
-			FROM {db_prefix}gallery_report");
+			FROM {db_prefix}gallery_report');
 			$totalrow = $smcFunc['db_fetch_assoc']($dbresult4);
 	$totalreport = $totalrow['total'];
 	$smcFunc['db_free_result']($dbresult4);
@@ -2244,11 +2393,12 @@ function DoToolBarStrip($button_strip, $direction )
 function GetTotalPicturesByCATID($ID_CAT)
 {
 	global $smcFunc;
-	$dbresult2 = $smcFunc['db_query']('', "
+	$dbresult2 = $smcFunc['db_query']('', '
 		  	SELECT
 		  		COUNT(*) AS total
 		  	FROM {db_prefix}gallery_pic
-		  	WHERE id_cat = ". $ID_CAT . ' AND approved = 1');
+		  	WHERE id_cat = {int:cat_id} AND approved = 1',
+		  	array('cat_id' => $ID_CAT));
 	$rowTotal = $smcFunc['db_fetch_assoc']($dbresult2);
 	return $rowTotal['total'];
 }
@@ -2257,11 +2407,12 @@ function CheckGalleryCategoryExists($cat)
 {
 	global $smcFunc, $txt;
 
-	$dbresult2 = $smcFunc['db_query']('', "
+	$dbresult2 = $smcFunc['db_query']('', '
 		  	SELECT
 		  		COUNT(*) AS total
 		  	FROM {db_prefix}gallery_cat
-		  	WHERE ID_CAT = $cat ");
+		  	WHERE ID_CAT = {int:cat}',
+		  	array('cat' => $cat));
 	$rowTotal = $smcFunc['db_fetch_assoc']($dbresult2);
 	$smcFunc['db_free_result']($dbresult2);
 
@@ -2320,11 +2471,12 @@ function ReGenerateThumbnails()
 
 	// Get the category name
 
-		$dbresult1 = $smcFunc['db_query']('', "
+		$dbresult1 = $smcFunc['db_query']('', '
 			SELECT
 				title
 			FROM {db_prefix}gallery_cat
-			WHERE id_cat = $cat");
+			WHERE id_cat = {int:cat}',
+			array('cat' => $cat));
 
 		$row = $smcFunc['db_fetch_assoc']($dbresult1);
 		$context['gallery_cat_name'] = $row['title'];
@@ -2352,11 +2504,9 @@ function ReGenerateThumbnails2()
 		return;
 
 	isAllowedTo('smfgallery_manage');
-	$catWhere = '';
+	checkSession();
 
     $context['catid'] = $id;
-
-	$catWhere = " ID_CAT = $id";
 
 	// Check if gallery path is writable
 	if (!is_writable($modSettings['gallery_path']))
@@ -2375,11 +2525,12 @@ function ReGenerateThumbnails2()
 
 	$context['start'] = empty($_REQUEST['start']) ? 25 : (int) $_REQUEST['start'];
 
-	$request = $smcFunc['db_query']('', "
+	$request = $smcFunc['db_query']('', '
 	SELECT
 		COUNT(*)
 	FROM {db_prefix}gallery_pic
-	WHERE $catWhere");
+	WHERE ID_CAT = {int:cat_id}',
+	array('cat_id' => $id));
 	list($totalProcess) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
@@ -2391,11 +2542,12 @@ function ReGenerateThumbnails2()
 	$_REQUEST['start'] = (int) $_REQUEST['start'];
 
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			filename, id_picture
 		FROM {db_prefix}gallery_pic
-		WHERE $catWhere LIMIT " . $_REQUEST['start'] . ","  . ($increment));
+		WHERE ID_CAT = {int:cat_id} LIMIT {int:start}, {int:limit}',
+		array('cat_id' => $id, 'start' => $_REQUEST['start'], 'limit' => $increment));
 	$counter = 0;
 	$gallery_pics = array();
 	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
@@ -2418,9 +2570,10 @@ function ReGenerateThumbnails2()
 		$thumbnailPath = $extra_path  .  'thumb_' . $filename;
 
 
-			$smcFunc['db_query']('', "
-			UPDATE {db_prefix}gallery_pic SET thumbfilename = '$thumbnailPath'
-			WHERE ID_PICTURE = " . $row['id_picture']);
+			$smcFunc['db_query']('', '
+			UPDATE {db_prefix}gallery_pic SET thumbfilename = {string:thumbnailPath}
+			WHERE ID_PICTURE = {int:pic_id}',
+			array('thumbnailPath' => $thumbnailPath, 'pic_id' => $row['id_picture']));
 
 
 		$counter++;
@@ -2469,12 +2622,13 @@ function PreviousImage($id = 0, $picCat = 0, $return = false)
 	// Get the category
 	if (empty($picCat))
 	{
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 			SELECT
 				p.id_picture, p.id_cat
 			FROM {db_prefix}gallery_pic as p
 			LEFT JOIN {db_prefix}gallery_cat as c ON (p.id_cat = c.id_cat)
-			WHERE p.id_picture = $id LIMIT 1");
+			WHERE p.id_picture = {int:id} LIMIT 1',
+			array('id' => $id));
 
 		if ($smcFunc['db_num_rows']($dbresult) == 0)
 			fatal_error($txt['gallery_error_no_pic_selected'],false);
@@ -2500,13 +2654,14 @@ function PreviousImage($id = 0, $picCat = 0, $return = false)
 		$ordercat = 'ASC';
 
 	// Get previous image
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			p.id_picture
 		FROM {db_prefix}gallery_pic as p
-		WHERE p.id_cat = $id_cat AND  p.approved = 1 AND p.id_picture $ordersign $id
-		ORDER BY $sortcat $ordercat LIMIT 1");
-	if ($smcFunc['db_affected_rows']() != 0)
+		WHERE p.id_cat = {int:id_cat} AND p.approved = 1 AND p.id_picture ' . $ordersign . ' {int:id}
+		ORDER BY ' . $sortcat . ' ' . $ordercat . ' LIMIT 1',
+		array('id_cat' => $id_cat, 'id' => $id));
+	if ($smcFunc['db_num_rows']($dbresult) != 0)
 	{
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
 		$id_picture = $row['id_picture'];
@@ -2535,12 +2690,13 @@ function NextImage($id = 0, $picCat = 0, $return = false)
 	// Get the category
 	if (empty($picCat))
 	{
-		$dbresult = $smcFunc['db_query']('', "
+		$dbresult = $smcFunc['db_query']('', '
 			SELECT
 				p.id_picture, p.id_cat
 			FROM {db_prefix}gallery_pic as p
 			LEFT JOIN {db_prefix}gallery_cat as c ON (p.id_cat = c.id_cat)
-			WHERE p.id_picture = $id  LIMIT 1");
+			WHERE p.id_picture = {int:id} LIMIT 1',
+			array('id' => $id));
 
 		if ($smcFunc['db_num_rows']($dbresult) == 0)
 			fatal_error($txt['gallery_error_no_pic_selected'],false);
@@ -2568,14 +2724,15 @@ function NextImage($id = 0, $picCat = 0, $return = false)
 
 	// Get next image
 
-	$dbresult = $smcFunc['db_query']('', "
+	$dbresult = $smcFunc['db_query']('', '
 		SELECT
 			p.id_picture
 		FROM {db_prefix}gallery_pic as p
-		WHERE p.id_cat = $id_cat AND   p.approved = 1 AND p.id_picture $ordersign $id
-		ORDER BY $sortcat $ordercat LIMIT 1");
+		WHERE p.id_cat = {int:id_cat} AND p.approved = 1 AND p.id_picture ' . $ordersign . ' {int:id}
+		ORDER BY ' . $sortcat . ' ' . $ordercat . ' LIMIT 1',
+		array('id_cat' => $id_cat, 'id' => $id));
 
-	if ($smcFunc['db_affected_rows']() != 0)
+	if ($smcFunc['db_num_rows']($dbresult) != 0)
 	{
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
 		$id_picture = $row['id_picture'];
@@ -2630,6 +2787,7 @@ function Gallery_CopyrightRemoval()
 
     if (isset($_REQUEST['save']))
     {
+        checkSession();
 
         $gallery_copyrightkey = addslashes($_REQUEST['gallery_copyrightkey']);
 

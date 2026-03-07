@@ -4,7 +4,7 @@ SMF Gallery Lite Edition
 Version 8.0
 by:vbgamer45
 https://www.smfhacks.com
-Copyright 2008-2024 SMFHacks.com
+Copyright 2008-2026 SMFHacks.com
 
 ############################################
 License Information:
@@ -214,7 +214,7 @@ function template_image_listing()
 
 
 			if ($g_manage)
-				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if ($g_manage || $g_edit_own && $row['id_member'] == $id_member)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a>';
 			if ($g_manage || $g_delete_own && $row['id_member'] == $id_member)
@@ -400,6 +400,7 @@ echo '</td>
   </tr>
   <tr>
     <td width="28%" colspan="2" align="center" class="windowbg2">
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_text_addcategory'] . '" name="submit" /></td>
 
   </tr>
@@ -519,6 +520,7 @@ echo '</td>
   <tr>
     <td width="28%" colspan="2"  align="center" class="windowbg2">
     <input type="hidden" value="' . $context['gallery_cat_edit']['id_cat'] . '" name="catid" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_text_editcategory'] . '" name="submit" /></td>
 
   </tr>
@@ -551,6 +553,7 @@ function template_delete_category()
     <b>', $txt['gallery_warn_category'], '</b>
     <br />
     <input type="hidden" value="' . $context['gallery_catid'] . '" name="catid" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_text_delcategory'] . '" name="submit" /></td>
   </tr>
 </table>
@@ -729,6 +732,7 @@ echo '
   <tr class="windowbg2">
     <td width="28%" colspan="2"  align="center" class="windowbg2">
 
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_form_addpicture'] . '" name="submit" /><br />';
 
   	if (!allowedTo('smfgallery_autoapprove'))
@@ -891,6 +895,7 @@ echo '
   <tr class="windowbg2">
     <td width="28%" colspan="2" align="center" class="windowbg2">
 	<input type="hidden" name="id" value="' . $context['gallery_pic']['id_picture'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_form_editpicture'] . '" name="submit" /><br />';
 
   	if (!allowedTo('smfgallery_autoapprove'))
@@ -1023,7 +1028,7 @@ function template_view_picture()
 
 				// Show edit picture links if allowed
 				if ($g_manage)
-					echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $context['gallery_pic']['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+					echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $context['gallery_pic']['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 				if ($g_manage || $g_edit_own && $context['gallery_pic']['id_member'] == $id_member)
 					echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $context['gallery_pic']['id_picture']. '">' . $txt['gallery_text_edit'] . '</a>';
 				if ($g_manage || $g_delete_own && $context['gallery_pic']['id_member'] == $id_member)
@@ -1111,7 +1116,7 @@ echo '
 
 			// Check if the user is allowed to delete the comment.
 			if($g_manage)
-				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=delcomment&id=' . $row['id_comment'] . '">' . $txt['gallery_text_delcomment'] .'</a>';
+				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=delcomment;id=' . $row['id_comment'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_delcomment'] .'</a>';
 
 
 			echo '</td>';
@@ -1171,6 +1176,7 @@ function template_delete_picture()
 			' . $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' .  $context['gallery_pic']['id_picture'] . '" target="blank">' .  $context['gallery_pic']['commenttotal'] . '</a>)<br />
 	</div><br />
 	<input type="hidden" name="id" value="' . $context['gallery_pic']['id_picture'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_form_delpicture'] . '" name="submit" /><br />
     </td>
   </tr>
@@ -1268,7 +1274,8 @@ function template_add_comment()
 echo '
   <tr>
     <td width="28%" colspan="2" align="center" class="windowbg2">
-    <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />';
+    <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />';
    	if ($context['show_spellchecking'])
    		echo '
    									<input type="button" value="', $txt['spell_check'], '" onclick="spellCheck(\'cprofile\', \'message\');" />';
@@ -1311,6 +1318,7 @@ function template_report_picture()
   <tr>
     <td width="28%" colspan="2"  align="center" class="windowbg2">
     <input type="hidden" name="id" value="' . $context['gallery_pic_id'] . '" />
+    <input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
     <input type="submit" class="button_submit"  value="' . $txt['gallery_form_reportpicture'] . '" name="submit" /></td>
 
   </tr>
@@ -1457,7 +1465,7 @@ echo '
 
 
 
-				<tr class="windowbg2"><td colspan="2"><input type="submit" class="button_submit"  name="savesettings" value="',$txt['gallery_save_settings'],'" /></td></tr>
+				<tr class="windowbg2"><td colspan="2"><input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" /><input type="submit" class="button_submit"  name="savesettings" value="',$txt['gallery_save_settings'],'" /></td></tr>
 				</table>
 			</form>
 			<br />
@@ -1530,7 +1538,7 @@ echo '
 				else
 						echo '<td>' . $txt['gallery_guest'] . '</td>';
 
-				echo '<td><a href="' . $scripturl . '?action=gallery;sa=approve&id=' . $row['id_picture'] . '">' . $txt['gallery_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=delete;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_delete'] . '</a></td>';
+				echo '<td><a href="' . $scripturl . '?action=gallery;sa=approve;id=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_approve']  . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a><br /><a href="' . $scripturl . '?action=gallery;sa=delete;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -1602,7 +1610,7 @@ echo '
 					echo '<td>' .  $txt['gallery_guest'] . '</td>';
 
 				echo '<td><a href="' . $scripturl . '?action=gallery;sa=delete;pic=' . $row['id_picture'] . '">' . $txt['gallery_rep_deletepic']  . '</a>';
-				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=deletereport&id=' . $row['ID'] . '">' . $txt['gallery_rep_delete'] . '</a></td>';
+				echo '<br /><a href="' . $scripturl . '?action=gallery;sa=deletereport;id=' . $row['ID'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_rep_delete'] . '</a></td>';
 				echo '</tr>';
 
                 if ($styleclass == 'windowbg')
@@ -1728,7 +1736,7 @@ function template_search_results()
 			else
 				echo $txt['gallery_text_by'] . $txt['gallery_guest'] . '<br />';
 			if ($g_manage)
-				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if ($g_manage || $g_edit_own && $row['id_member'] == $id_member)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a>';
 			if ($g_manage || $g_delete_own && $row['id_member'] == $id_member)
@@ -1838,7 +1846,7 @@ function template_myimages()
 			echo $txt['gallery_text_comments'] . ' (<a href="' . $scripturl . '?action=gallery;sa=view;pic=' . $row['id_picture'] . '">' . $row['commenttotal'] . '</a>)<br />';
 			echo $txt['gallery_text_by'] . ' <a href="' . $scripturl . '?action=gallery;sa=myimages;u=' . $row['id_member'] . '">'  . $row['real_name'] . '</a><br />';
 			if($g_manage)
-				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
+				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=unapprove;pic=' . $row['id_picture'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $txt['gallery_text_unapprove'] . '</a>';
 			if($g_manage || $g_edit_own && $row['id_member'] == $id_member)
 				echo '&nbsp;<a href="' . $scripturl . '?action=gallery;sa=edit;pic=' . $row['id_picture'] . '">' . $txt['gallery_text_edit'] . '</a>';
 			if($g_manage || $g_delete_own && $row['id_member'] == $id_member)
@@ -1947,6 +1955,7 @@ function template_regenerate()
 
 			<br />
 			<input type="hidden" value="' . $context['catid'] . '" name="id" />
+			<input type="hidden" name="' . $context['session_var'] . '" value="' . $context['session_id'] . '" />
 			<input type="submit" class="button_submit"  value="' . $txt['gallery_text_regeneratethumbnails2'] . '" name="submit" />
 			<br />
 			</td>
@@ -1986,6 +1995,7 @@ function template_regenerate2()
 				', $context['continue_post_data'], '
 
 		    <input type="hidden" value="' . $context['catid'] . '" name="id" />
+		    <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 
 			</form>
 
@@ -2037,7 +2047,7 @@ function template_gallerycopyright()
         <td colspan="2">' . $txt['gallery_txt_copyremovalnote'] . '</td>
     </tr>
 	<tr class="windowbg2">
-		<td valign="top" colspan="2" align="center"><input type="submit" class="button_submit"  value="' . $txt['gallery_save_settings'] . '" />
+		<td valign="top" colspan="2" align="center"><input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" /><input type="submit" class="button_submit"  value="' . $txt['gallery_save_settings'] . '" />
 		</td>
 		</tr>
 	</table>

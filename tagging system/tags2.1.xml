@@ -18,6 +18,8 @@ $txt['smftags_addtag2'] = 'Add Tag';
 $txt['smftags_seperate'] = 'Separate each tag by a comma';
 
 $txt['smftags_topic'] = 'Tags: ';
+$txt['smftags_confirm_delete'] = 'Are you sure you want to remove this tag?';
+$txt['smftags_no_tags'] = 'No tags have been added yet.';
 $txt['permissiongroup_smftags'] = 'SMF Tags';
 $txt['permissiongroup_simple_smftags'] = 'SMF Tags';
 $txt['permissionname_smftags_suggest'] = 'Suggest Tags';
@@ -35,7 +37,7 @@ $txt['cannot_smftags_del'] = 'You are not allowed to delete this tags';
 $txt['permissionname_smftags_manage'] = 'Manage Tags';
 $txt['permissionhelp_smftags_manage'] = 'Users can modify the tag settings and add and remove ANY tags. This permission is normally given to forum admins only!';
 $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
-//END  Tagging System Strings			
+//END  Tagging System Strings
 ]]></add>
 	</operation>
 </file>
@@ -47,14 +49,409 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 		<add><![CDATA[
 
 		// Tagging system Mod
-		if(!isset($context['num_replies']) && allowedTo('smftags_add') )
+		global $smcFunc, $topic, $scripturl, $sourcedir;
+
+		require_once($sourcedir . '/Tags2.php');
+		LoadTagsCSS();
+
+		$is_new_topic = !isset($context['num_replies']);
+		$is_editing_first_post = false;
+		$existing_tags = array();
+		$canAdd = allowedTo('smftags_add');
+		$canDelete = allowedTo('smftags_del');
+
+		if (!$is_new_topic && isset($_REQUEST['msg']) && !empty($topic))
 		{
+			// Check if we're editing the first post
+			$dbresult = $smcFunc['db_query']('', '
+				SELECT id_first_msg
+				FROM {db_prefix}topics
+				WHERE id_topic = {int:topic}
+				LIMIT 1',
+				array(
+					'topic' => $topic,
+				)
+			);
+			$row = $smcFunc['db_fetch_assoc']($dbresult);
+			$smcFunc['db_free_result']($dbresult);
+
+			if (!empty($row) && $row['id_first_msg'] == (int) $_REQUEST['msg'])
+			{
+				$is_editing_first_post = true;
+
+				// Load existing tags for this topic
+				$dbresult = $smcFunc['db_query']('', '
+					SELECT t.tag, l.id, t.id_tag
+					FROM {db_prefix}tags_log AS l
+						INNER JOIN {db_prefix}tags AS t ON (t.id_tag = l.id_tag)
+					WHERE l.id_topic = {int:topic}',
+					array(
+						'topic' => $topic,
+					)
+				);
+				while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+				{
+					$existing_tags[] = array(
+						'id' => $row['id'],
+						'id_tag' => $row['id_tag'],
+						'tag' => $smcFunc['htmlspecialchars']($row['tag']),
+					);
+				}
+				$smcFunc['db_free_result']($dbresult);
+			}
+		}
+
+		if ($is_editing_first_post && ($canAdd || $canDelete))
+		{
+			// Editing first post: show tag pills + AJAX add/remove
+			$tags_html = '<div class="smftags_editor_pills" id="smftags_editor_pills">';
+
+			foreach ($existing_tags as $etag)
+			{
+				$tags_html .= '<span class="tag_pill" data-taglogid="' . $etag['id'] . '"><span class="tag">' . $etag['tag'] . '</span>';
+				if ($canDelete)
+					$tags_html .= '<a href="#" class="tag_delete smftags_pill_delete" data-taglogid="' . $etag['id'] . '" title="Remove tag">&times;</a>';
+				$tags_html .= '</span>';
+			}
+
+			$tags_html .= '</div>';
+
+			if ($canAdd)
+			{
+				$tags_html .= '<div style="display:flex;align-items:center;gap:6px">';
+				$tags_html .= '<span class="smftags_input_wrapper">';
+				$tags_html .= '<input type="text" id="smftags_post_input" class="smftags_post_input" placeholder="Add tags..." autocomplete="off">';
+				$tags_html .= '<div class="smftags_autocomplete" id="smftags_post_ac" style="display:none"></div>';
+				$tags_html .= '</span>';
+				$tags_html .= '<a href="#" id="smftags_post_add_btn" class="smftags_post_add_btn">&#10003; Add</a>';
+				$tags_html .= '<span id="smftags_post_error" class="smftags_post_error"></span>';
+				$tags_html .= '</div>';
+			}
+
+			$tags_html .= '<script>
+			(function() {
+				var scripturl = ' . JavaScriptEscape($scripturl) . ';
+				var topicId = ' . $topic . ';
+				var sessionVar = ' . JavaScriptEscape($context['session_var']) . ';
+				var sessionId = ' . JavaScriptEscape($context['session_id']) . ';
+				var canDelete = ' . ($canDelete ? 'true' : 'false') . ';
+				var canAdd = ' . ($canAdd ? 'true' : 'false') . ';
+				var pillsContainer = document.getElementById("smftags_editor_pills");
+				var acDropdown = document.getElementById("smftags_post_ac");
+				var input = document.getElementById("smftags_post_input");
+				var addBtn = document.getElementById("smftags_post_add_btn");
+				var errorEl = document.getElementById("smftags_post_error");
+				var acIndex = -1;
+				var debounceTimer = null;
+
+				function showError(msg) {
+					if (!errorEl) return;
+					errorEl.textContent = msg;
+					errorEl.style.display = "inline";
+					setTimeout(function() { errorEl.style.display = "none"; }, 3000);
+				}
+
+				// Delete pill via AJAX
+				if (canDelete && pillsContainer) {
+					pillsContainer.addEventListener("click", function(e) {
+						var del = e.target.closest(".smftags_pill_delete");
+						if (!del) return;
+						e.preventDefault();
+						var tagLogId = del.getAttribute("data-taglogid");
+						var pill = del.closest(".tag_pill");
+
+						var formData = new FormData();
+						formData.append("tagid", tagLogId);
+						formData.append(sessionVar, sessionId);
+
+						var xhr = new XMLHttpRequest();
+						xhr.open("POST", scripturl + "?action=tags;sa=deletetagajax");
+						xhr.onload = function() {
+							try { var data = JSON.parse(xhr.responseText); } catch(ex) { showError("Error removing tag"); return; }
+							if (data.success) {
+								if (pill) pill.remove();
+							} else {
+								showError(data.error || "Error removing tag");
+							}
+						};
+						xhr.onerror = function() { showError("Error removing tag"); };
+						xhr.send(formData);
+					});
+				}
+
+				// Add tags via AJAX
+				function submitNewTags() {
+					if (!input) return;
+					var val = input.value.trim();
+					if (!val) return;
+
+					addBtn.style.pointerEvents = "none";
+					addBtn.style.opacity = "0.5";
+
+					var formData = new FormData();
+					formData.append("tag", val);
+					formData.append("topic", topicId);
+					formData.append(sessionVar, sessionId);
+
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", scripturl + "?action=tags;sa=addtagajax");
+					xhr.onload = function() {
+						addBtn.style.pointerEvents = "";
+						addBtn.style.opacity = "";
+						try { var data = JSON.parse(xhr.responseText); } catch(ex) { showError("Error adding tags"); return; }
+						if (data.success && data.tags) {
+							for (var i = 0; i < data.tags.length; i++) {
+								var t = data.tags[i];
+								var pill = document.createElement("span");
+								pill.className = "tag_pill";
+								pill.setAttribute("data-taglogid", t.id);
+
+								var span = document.createElement("span");
+								span.className = "tag";
+								span.textContent = t.tag;
+								pill.appendChild(span);
+
+								if (canDelete) {
+									var delA = document.createElement("a");
+									delA.href = "#";
+									delA.className = "tag_delete smftags_pill_delete";
+									delA.setAttribute("data-taglogid", t.id);
+									delA.title = "Remove tag";
+									delA.innerHTML = "\u00d7";
+									pill.appendChild(delA);
+								}
+								pillsContainer.appendChild(pill);
+							}
+							input.value = "";
+							hideAC();
+						} else {
+							showError(data.error || "Error adding tags");
+						}
+					};
+					xhr.onerror = function() {
+						addBtn.style.pointerEvents = "";
+						addBtn.style.opacity = "";
+						showError("Error adding tags");
+					};
+					xhr.send(formData);
+				}
+
+				if (addBtn) {
+					addBtn.addEventListener("click", function(e) {
+						e.preventDefault();
+						submitNewTags();
+					});
+				}
+
+				// Autocomplete
+				function hideAC() {
+					if (acDropdown) { acDropdown.style.display = "none"; acDropdown.innerHTML = ""; }
+					acIndex = -1;
+				}
+
+				function fetchSuggestions(query) {
+					var xhr = new XMLHttpRequest();
+					xhr.open("GET", scripturl + "?action=tags;sa=suggesttagajax;search=" + encodeURIComponent(query));
+					xhr.onload = function() {
+						try { var data = JSON.parse(xhr.responseText); } catch(ex) { hideAC(); return; }
+						if (data.success && data.tags && data.tags.length > 0) {
+							acDropdown.innerHTML = "";
+							acIndex = -1;
+							for (var i = 0; i < data.tags.length; i++) {
+								var item = document.createElement("div");
+								item.className = "smftags_autocomplete_item";
+								item.textContent = data.tags[i].tag;
+								item.setAttribute("data-tag", data.tags[i].tag);
+								(function(itm) {
+									itm.addEventListener("mousedown", function(e) {
+										e.preventDefault();
+										selectSuggestion(itm.getAttribute("data-tag"));
+									});
+								})(item);
+								acDropdown.appendChild(item);
+							}
+							acDropdown.style.display = "block";
+							acDropdown.style.width = input.offsetWidth + "px";
+						} else {
+							hideAC();
+						}
+					};
+					xhr.onerror = function() { hideAC(); };
+					xhr.send();
+				}
+
+				function selectSuggestion(tag) {
+					// In edit mode, replace the current word portion of the input
+					var val = input.value;
+					var lastComma = val.lastIndexOf(",");
+					var prefix = lastComma >= 0 ? val.substring(0, lastComma + 1) + " " : "";
+					input.value = prefix + tag + ", ";
+					hideAC();
+					input.focus();
+				}
+
+				if (input) {
+					input.addEventListener("input", function() {
+						clearTimeout(debounceTimer);
+						var val = input.value;
+						var lastComma = val.lastIndexOf(",");
+						var currentWord = (lastComma >= 0 ? val.substring(lastComma + 1) : val).trim();
+						if (currentWord.length < 1) { hideAC(); return; }
+						debounceTimer = setTimeout(function() { fetchSuggestions(currentWord); }, 250);
+					});
+
+					input.addEventListener("keydown", function(e) {
+						if (!acDropdown || acDropdown.style.display === "none") {
+							if (e.key === "Enter") { e.preventDefault(); submitNewTags(); }
+							return;
+						}
+						var items = acDropdown.querySelectorAll(".smftags_autocomplete_item");
+						if (e.key === "ArrowDown") {
+							e.preventDefault();
+							acIndex = Math.min(acIndex + 1, items.length - 1);
+							updateACHighlight(items);
+						} else if (e.key === "ArrowUp") {
+							e.preventDefault();
+							acIndex = Math.max(acIndex - 1, 0);
+							updateACHighlight(items);
+						} else if (e.key === "Enter") {
+							e.preventDefault();
+							if (acIndex >= 0 && items[acIndex]) {
+								selectSuggestion(items[acIndex].getAttribute("data-tag"));
+							} else {
+								submitNewTags();
+							}
+						} else if (e.key === "Escape") {
+							hideAC();
+						}
+					});
+
+					input.addEventListener("blur", function() {
+						setTimeout(hideAC, 200);
+					});
+				}
+
+				function updateACHighlight(items) {
+					for (var i = 0; i < items.length; i++) {
+						items[i].classList.toggle("active", i === acIndex);
+					}
+				}
+			})();
+			</script>';
+
+			$context['posting_fields']['tags'] = array(
+				'label' => array('html' => '<label id="caption_tags">' . $txt['smftags_topic'] . '</label>'),
+				'input' => array('html' => $tags_html)
+			);
+		}
+		elseif ($is_new_topic && $canAdd)
+		{
+			// New topic: text input with name attr (form-submitted) + autocomplete
+			$new_tags_html = '<span class="smftags_input_wrapper">';
+			$new_tags_html .= '<input type="text" id="tags" name="tags" value="" class="smftags_post_input" style="width:80%" maxlength="255" autocomplete="off">';
+			$new_tags_html .= '<div class="smftags_autocomplete" id="smftags_new_ac" style="display:none"></div>';
+			$new_tags_html .= '</span>';
+			$new_tags_html .= '<br><span class="smalltext">' . $txt['smftags_seperate'] . '</span>';
+
+			$new_tags_html .= '<script>
+			(function() {
+				var scripturl = ' . JavaScriptEscape($scripturl) . ';
+				var input = document.getElementById("tags");
+				var acDropdown = document.getElementById("smftags_new_ac");
+				var acIndex = -1;
+				var debounceTimer = null;
+
+				function hideAC() {
+					if (acDropdown) { acDropdown.style.display = "none"; acDropdown.innerHTML = ""; }
+					acIndex = -1;
+				}
+
+				function fetchSuggestions(query) {
+					var xhr = new XMLHttpRequest();
+					xhr.open("GET", scripturl + "?action=tags;sa=suggesttagajax;search=" + encodeURIComponent(query));
+					xhr.onload = function() {
+						try { var data = JSON.parse(xhr.responseText); } catch(ex) { hideAC(); return; }
+						if (data.success && data.tags && data.tags.length > 0) {
+							acDropdown.innerHTML = "";
+							acIndex = -1;
+							for (var i = 0; i < data.tags.length; i++) {
+								var item = document.createElement("div");
+								item.className = "smftags_autocomplete_item";
+								item.textContent = data.tags[i].tag;
+								item.setAttribute("data-tag", data.tags[i].tag);
+								(function(itm) {
+									itm.addEventListener("mousedown", function(e) {
+										e.preventDefault();
+										selectSuggestion(itm.getAttribute("data-tag"));
+									});
+								})(item);
+								acDropdown.appendChild(item);
+							}
+							acDropdown.style.display = "block";
+							acDropdown.style.width = input.offsetWidth + "px";
+						} else {
+							hideAC();
+						}
+					};
+					xhr.onerror = function() { hideAC(); };
+					xhr.send();
+				}
+
+				function selectSuggestion(tag) {
+					var val = input.value;
+					var lastComma = val.lastIndexOf(",");
+					var prefix = lastComma >= 0 ? val.substring(0, lastComma + 1) + " " : "";
+					input.value = prefix + tag + ", ";
+					hideAC();
+					input.focus();
+				}
+
+				if (input) {
+					input.addEventListener("input", function() {
+						clearTimeout(debounceTimer);
+						var val = input.value;
+						var lastComma = val.lastIndexOf(",");
+						var currentWord = (lastComma >= 0 ? val.substring(lastComma + 1) : val).trim();
+						if (currentWord.length < 1) { hideAC(); return; }
+						debounceTimer = setTimeout(function() { fetchSuggestions(currentWord); }, 250);
+					});
+
+					input.addEventListener("keydown", function(e) {
+						if (!acDropdown || acDropdown.style.display === "none") return;
+						var items = acDropdown.querySelectorAll(".smftags_autocomplete_item");
+						if (e.key === "ArrowDown") {
+							e.preventDefault();
+							acIndex = Math.min(acIndex + 1, items.length - 1);
+							updateACHighlight(items);
+						} else if (e.key === "ArrowUp") {
+							e.preventDefault();
+							acIndex = Math.max(acIndex - 1, 0);
+							updateACHighlight(items);
+						} else if (e.key === "Enter" && acIndex >= 0 && items[acIndex]) {
+							e.preventDefault();
+							selectSuggestion(items[acIndex].getAttribute("data-tag"));
+						} else if (e.key === "Escape") {
+							hideAC();
+						}
+					});
+
+					input.addEventListener("blur", function() {
+						setTimeout(hideAC, 200);
+					});
+				}
+
+				function updateACHighlight(items) {
+					for (var i = 0; i < items.length; i++) {
+						items[i].classList.toggle("active", i === acIndex);
+					}
+				}
+			})();
+			</script>';
 
 			$context['posting_fields']['tags'] = array(
 				'label' => array('html' => '<label for="tags" id="caption_tags">' . $txt['smftags_topic'] . '</label>'),
-				'input' => array('html' => '<input type="text" id="tags" name="tags" value="" size="80" maxlength="80"><br /><span class="smalltext">', $txt['smftags_seperate'], '</span>')
+				'input' => array('html' => $new_tags_html)
 			);
-
 		}
 
 		// End Tagging system mod
@@ -68,36 +465,39 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 	<operation>
 		<search position="replace"><![CDATA[$topic = $topicOptions['id'];]]></search>
 	<add><![CDATA[$topic = $topicOptions['id'];
-	
-	
+
+
 //Tagging System
 
-	
+
 	if(isset($_REQUEST['tags']) && !isset($_REQUEST['num_replies']))
 	{
 		global $user_info;
 		//Get how many tags there have been for the topic
-		$dbresult = $smcFunc['db_query']('', "
-		SELECT 
-			COUNT(*) as total 
-		FROM {db_prefix}tags_log 
-		WHERE ID_TOPIC = " . $topic);
+		$dbresult = $smcFunc['db_query']('', '
+			SELECT COUNT(*) AS total
+			FROM {db_prefix}tags_log
+			WHERE id_topic = {int:topic}',
+			array(
+				'topic' => $topic,
+			)
+		);
 		$row = $smcFunc['db_fetch_assoc']($dbresult);
 		$totaltags = $row['total'];
 		$smcFunc['db_free_result']($dbresult);
 
-		// Check Tag restrictions
-		$tags = explode(',',htmlspecialchars($_REQUEST['tags'],ENT_QUOTES));
+		// Process tags - store raw, escape on output
+		$raw_input = $smcFunc['strtolower'](trim($_REQUEST['tags']));
+		$tags = explode(',', $raw_input);
 
 		if($totaltags < $modSettings['smftags_set_maxtags'])
 		{
 			$tagcount = 0;
 			foreach($tags as $tag)
 			{
-			
+
 				$tag = trim($tag);
-				$tag = strtolower($tag);
-				
+
 				if($tagcount >= $modSettings['smftags_set_maxtags'])
 					continue;
 
@@ -105,63 +505,85 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 					continue;
 
 				// Check min tag length
-				if (strlen($tag) < $modSettings['smftags_set_mintaglength'])
+				if ($smcFunc['strlen']($tag) < $modSettings['smftags_set_mintaglength'])
 					continue;
 				// Check max tag length
-				if (strlen($tag) > $modSettings['smftags_set_maxtaglength'])
+				if ($smcFunc['strlen']($tag) > $modSettings['smftags_set_maxtaglength'])
 					continue;
 
-				//Insert The tag
-				$dbresult = $smcFunc['db_query']('', "
-				SELECT 
-					ID_TAG 
-				FROM {db_prefix}tags 
-				WHERE tag = '$tag'");
-				
-				if ($smcFunc['db_affected_rows']() == 0)
+				// Check if tag already exists
+				$dbresult = $smcFunc['db_query']('', '
+					SELECT id_tag
+					FROM {db_prefix}tags
+					WHERE tag = {string:tag}
+					LIMIT 1',
+					array(
+						'tag' => $tag,
+					)
+				);
+
+				$row = $smcFunc['db_fetch_assoc']($dbresult);
+				$smcFunc['db_free_result']($dbresult);
+
+				if (empty($row))
 				{
-					//Insert into Tags table
-					$smcFunc['db_query']('', "INSERT INTO {db_prefix}tags
-						(tag, approved)
-					VALUES ('$tag',1)");	
-					$ID_TAG = $smcFunc['db_insert_id']("{db_prefix}tags",'ID_TAG');
-					//Insert into Tags log
-					$smcFunc['db_query']('', "INSERT INTO {db_prefix}tags_log
-						(ID_TAG,ID_TOPIC, ID_MEMBER)
-					VALUES ($ID_TAG,$topic,$user_info[id])");
+					// Insert into Tags table
+					$smcFunc['db_insert']('insert',
+						'{db_prefix}tags',
+						array('tag' => 'string', 'approved' => 'int'),
+						array($tag, 1),
+						array('id_tag')
+					);
+					$ID_TAG = $smcFunc['db_insert_id']('{db_prefix}tags', 'id_tag');
+
+					// Insert into Tags log
+					$smcFunc['db_insert']('insert',
+						'{db_prefix}tags_log',
+						array('id_tag' => 'int', 'id_topic' => 'int', 'id_member' => 'int'),
+						array($ID_TAG, $topic, $user_info['id']),
+						array('id')
+					);
 
 					$tagcount++;
 				}
-				else 
+				else
 				{
-					$row = $smcFunc['db_fetch_assoc']($dbresult);
-					$ID_TAG = $row['ID_TAG'];
-					$dbresult2= $smcFunc['db_query']('', "
-					SELECT 
-						ID FROM {db_prefix}tags_log 
-					WHERE ID_TAG  =  $ID_TAG  AND ID_TOPIC = $topic");
-					if ($smcFunc['db_affected_rows']() != 0)
-					{
+					$ID_TAG = $row['id_tag'];
+
+					// Check if already assigned
+					$dbresult2 = $smcFunc['db_query']('', '
+						SELECT id
+						FROM {db_prefix}tags_log
+						WHERE id_tag = {int:id_tag}
+							AND id_topic = {int:topic}',
+						array(
+							'id_tag' => $ID_TAG,
+							'topic' => $topic,
+						)
+					);
+					$existing = $smcFunc['db_fetch_assoc']($dbresult2);
+					$smcFunc['db_free_result']($dbresult2);
+
+					if (!empty($existing))
 						continue;
 
-					}
-					$smcFunc['db_free_result']($dbresult2);
-					//Insert into Tags log
-
-					$smcFunc['db_query']('', "INSERT INTO {db_prefix}tags_log
-						(ID_TAG,ID_TOPIC, ID_MEMBER)
-					VALUES ($ID_TAG,$topic,$user_info[id])");
+					// Insert into Tags log
+					$smcFunc['db_insert']('insert',
+						'{db_prefix}tags_log',
+						array('id_tag' => 'int', 'id_topic' => 'int', 'id_member' => 'int'),
+						array($ID_TAG, $topic, $user_info['id']),
+						array('id')
+					);
 					$tagcount++;
 
 				}
-				$smcFunc['db_free_result']($dbresult);
 			}
 		}
 	}
-	
+
 	//End Tagging System
-	
-	
+
+
 ]]></add>
 	</operation>
 </file>
@@ -188,20 +610,24 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 	require_once($sourcedir . '/Tags2.php');
 	LoadTagsCSS();
 
-	$dbresult= $smcFunc['db_query']('', "
-	SELECT 
-		t.tag,l.ID,t.ID_TAG 
-	FROM {db_prefix}tags_log as l, {db_prefix}tags as t 
-	WHERE t.ID_TAG = l.ID_TAG && l.ID_TOPIC = $topic");
-		$context['topic_tags'] = array();
-		 while($row = $smcFunc['db_fetch_assoc']($dbresult))
-			{
-				$context['topic_tags'][] = array(
-				'ID' => $row['ID'],
-				'ID_TAG' => $row['ID_TAG'],
-				'tag' => $row['tag'],
-				);
-		}
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT t.tag, l.id, t.id_tag
+		FROM {db_prefix}tags_log AS l
+			INNER JOIN {db_prefix}tags AS t ON (t.id_tag = l.id_tag)
+		WHERE l.id_topic = {int:topic}',
+		array(
+			'topic' => $topic,
+		)
+	);
+	$context['topic_tags'] = array();
+	while ($row = $smcFunc['db_fetch_assoc']($dbresult))
+	{
+		$context['topic_tags'][] = array(
+			'id' => $row['id'],
+			'id_tag' => $row['id_tag'],
+			'tag' => $smcFunc['htmlspecialchars']($row['tag']),
+		);
+	}
 	$smcFunc['db_free_result']($dbresult);
 	//End Tagging System
 ]]></add>
@@ -213,70 +639,175 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 		<add><![CDATA[
 		// Tagging System
 
-			echo '
-			<div class="clearfix windowbg largepadding">
-				<b>', $txt['smftags_topic'], '</b>';
+			global $topic;
+			$showAddTag = !$context['user']['is_guest'] && allowedTo('smftags_add');
+			$canDelete = !$context['user']['is_guest'] && allowedTo('smftags_del');
 
-				if (empty($modSettings['smftags_set_use_css_tags']))
+			if (!empty($context['topic_tags']) || $showAddTag)
+			{
+				echo '
+				<div class="smftags_bar">
+					<span class="smftags_label">', $txt['smftags_topictag'], '</span>
+					<ul class="tags" id="smftags_list">';
+
+				foreach ($context['topic_tags'] as $i => $tag)
 				{
-
-					foreach ($context['topic_tags'] as $i => $tag)
-					{
-						$tag['tag'] = str_replace("&#039;","'",$tag['tag']);
-
-						echo '<a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '" class="tag">' . $tag['tag'] . '</a>&nbsp;';
-						if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
-						echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
-
-
-
-					}
-
-					global $topic;
-					if(!$context['user']['is_guest'] && allowedTo('smftags_add'))
 					echo '
-					&nbsp;<a href="' . $scripturl . '?action=tags;sa=addtag;topic=',$topic, '">' . $txt['smftags_addtag'] . '</a>';
-
-
+						<li><span class="tag_pill"><a href="', $scripturl, '?action=tags;tagid=', $tag['id_tag'], '" class="tag">', $tag['tag'], '</a>';
+					if ($canDelete)
+						echo '<a href="', $scripturl, '?action=tags;sa=deletetag;tagid=', $tag['id'], ';', $context['session_var'], '=', $context['session_id'], '" class="tag_delete" onclick="return confirm(', JavaScriptEscape($txt['smftags_confirm_delete']), ');" title="', $txt['smftags_deletetag'], '">&times;</a>';
+					echo '</span></li>';
 				}
-				else
+
+				if ($showAddTag)
+					echo '
+						<li id="smftags_add_li">
+							<a href="', $scripturl, '?action=tags;sa=addtag;topic=', $topic, '" class="tag_add" id="smftags_add_btn">+ ', $txt['smftags_addtag2'], '</a>
+							<span id="smftags_add_form" style="display:none">
+								<input type="text" id="smftags_add_input" placeholder="tag1, tag2, ..." size="20">
+								<a href="#" id="smftags_add_submit" class="tag_add">&#10003;</a>
+								<a href="#" id="smftags_add_cancel" class="tag_delete">&times;</a>
+							</span>
+							<span id="smftags_add_error" class="error" style="display:none"></span>
+						</li>';
+
+				echo '
+					</ul>
+				</div>';
+
+				if ($showAddTag)
 				{
+					echo '
+					<script>
+					(function() {
+						var scripturl = ', JavaScriptEscape($scripturl), ';
+						var topicId = ', $topic, ';
+						var sessionVar = ', JavaScriptEscape($context['session_var']), ';
+						var sessionId = ', JavaScriptEscape($context['session_id']), ';
+						var canDelete = ', ($canDelete ? 'true' : 'false'), ';
+						var confirmDelete = ', JavaScriptEscape($txt['smftags_confirm_delete']), ';
+						var deleteTitle = ', JavaScriptEscape($txt['smftags_deletetag']), ';
+						var errAjax = ', JavaScriptEscape($txt['smftags_err_ajax']), ';
 
-					global $topic;
-					$showAddTag = 0;
-					if(!$context['user']['is_guest'] && allowedTo('smftags_add'))
-						$showAddTag = 1;
+						var addBtn = document.getElementById("smftags_add_btn");
+						var addForm = document.getElementById("smftags_add_form");
+						var addInput = document.getElementById("smftags_add_input");
+						var addSubmit = document.getElementById("smftags_add_submit");
+						var addCancel = document.getElementById("smftags_add_cancel");
+						var addError = document.getElementById("smftags_add_error");
+						var addLi = document.getElementById("smftags_add_li");
 
-					if (!empty($context['topic_tags']) || $showAddTag == 1)
-					{
-						echo '<ul class="tags">';
+						addBtn.addEventListener("click", function(e) {
+							e.preventDefault();
+							addBtn.style.display = "none";
+							addForm.style.display = "inline-flex";
+							addInput.focus();
+						});
 
-						foreach ($context['topic_tags'] as $i => $tag)
-						{
-							$tag['tag'] = str_replace("&#039;","'",$tag['tag']);
+						addCancel.addEventListener("click", function(e) {
+							e.preventDefault();
+							addForm.style.display = "none";
+							addInput.value = "";
+							addError.style.display = "none";
+							addBtn.style.display = "";
+						});
 
-							echo '<li><a href="' . $scripturl . '?action=tags;tagid=' . $tag['ID_TAG']  . '" class="tag">' . $tag['tag'] . '</a>&nbsp;';
-							if(!$context['user']['is_guest'] && allowedTo('smftags_del'))
-							echo '<a href="' . $scripturl . '?action=tags;sa=deletetag;tagid=' . $tag['ID']  . '"><font color="#FF0000">[X]</font></a>&nbsp;';
+						function submitTags() {
+							var tagValue = addInput.value.trim();
+							if (!tagValue) return;
 
-							echo '</li>';
+							addSubmit.style.pointerEvents = "none";
+							addSubmit.style.opacity = "0.5";
 
+							var formData = new FormData();
+							formData.append("tag", tagValue);
+							formData.append("topic", topicId);
+							formData.append(sessionVar, sessionId);
+
+							var xhr = new XMLHttpRequest();
+							xhr.open("POST", scripturl + "?action=tags;sa=addtagajax");
+							xhr.onload = function() {
+								addSubmit.style.pointerEvents = "";
+								addSubmit.style.opacity = "";
+
+								try {
+									var data = JSON.parse(xhr.responseText);
+								} catch(e) {
+									showError(errAjax);
+									return;
+								}
+
+								if (data.success && data.tags) {
+									for (var i = 0; i < data.tags.length; i++) {
+										var tag = data.tags[i];
+										var li = document.createElement("li");
+										var pill = document.createElement("span");
+										pill.className = "tag_pill";
+
+										var a = document.createElement("a");
+										a.href = scripturl + "?action=tags;tagid=" + tag.id_tag;
+										a.className = "tag";
+										a.textContent = tag.tag;
+										pill.appendChild(a);
+
+										if (canDelete) {
+											var del = document.createElement("a");
+											del.href = scripturl + "?action=tags;sa=deletetag;tagid=" + tag.id + ";" + sessionVar + "=" + sessionId;
+											del.className = "tag_delete";
+											del.title = deleteTitle;
+											del.innerHTML = "\u00d7";
+											(function(d) {
+												d.addEventListener("click", function(e) {
+													if (!confirm(confirmDelete)) e.preventDefault();
+												});
+											})(del);
+											pill.appendChild(del);
+										}
+
+										li.appendChild(pill);
+										addLi.parentNode.insertBefore(li, addLi);
+									}
+
+									addInput.value = "";
+									addForm.style.display = "none";
+									addBtn.style.display = "";
+								} else {
+									showError(data.error || errAjax);
+								}
+							};
+							xhr.onerror = function() {
+								addSubmit.style.pointerEvents = "";
+								addSubmit.style.opacity = "";
+								showError(errAjax);
+							};
+							xhr.send(formData);
 						}
 
-						if ($showAddTag == 1)
-						echo '
-						&nbsp;<li><a href="' . $scripturl . '?action=tags;sa=addtag;topic=',$topic, '">' . $txt['smftags_addtag'] . '</a></li>';
+						function showError(msg) {
+							addError.textContent = msg;
+							addError.style.display = "inline";
+							setTimeout(function() { addError.style.display = "none"; }, 3000);
+						}
 
-						echo '</ul>';
-					}
+						addInput.addEventListener("keydown", function(e) {
+							if (e.key === "Enter") {
+								e.preventDefault();
+								submitTags();
+							}
+						});
+
+						addSubmit.addEventListener("click", function(e) {
+							e.preventDefault();
+							submitTags();
+						});
+					})();
+					</script>';
 				}
-
-			echo '
-				</div>';
+			}
 
 		// End Tagging System
 
-		
+
 		]]></add>
 	</operation>
 </file>
@@ -292,10 +823,10 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 		)
 	);]]></search>
 		<add><![CDATA[
-		
+
 		// Tagging System for Topics
 				$smcFunc['db_query']('', '
-						DELETE FROM {db_prefix}tags_log 
+						DELETE FROM {db_prefix}tags_log
 						WHERE id_topic IN ({array_int:topics})',
 						array(
 							'topics' => $topics,
@@ -313,7 +844,7 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 		<add><![CDATA[// These are all registered types.
 	$searchTypes = array(
 		'tags' => 'Tags',
-		
+
 ]]></add>
 	</operation>
 	<operation>
@@ -322,17 +853,17 @@ $txt['cannot_smftags_manage'] = 'You are not allowed to manage tags.';
 <add><![CDATA[
 function AutoSuggest_Search_Tags()
 {
-	global $user_info, $txt, $smcFunc;
+	global $smcFunc;
 
 	$_REQUEST['search'] = trim($smcFunc['strtolower']($_REQUEST['search'])) . '*';
 	$_REQUEST['search'] = strtr($_REQUEST['search'], array('%' => '\%', '_' => '\_', '*' => '%', '?' => '_', '&#038;' => '&amp;'));
 
 	// Find tags
 	$request = $smcFunc['db_query']('', '
-		SELECT id_member, real_name
+		SELECT id_tag, tag
 		FROM {db_prefix}tags
-		WHERE tag LIKE {string:search} 
-		LIMIT ' . (strlen($_REQUEST['search']) <= 2 ? '100' : '800'),
+		WHERE tag LIKE {string:search}
+		LIMIT ' . ($smcFunc['strlen']($_REQUEST['search']) <= 2 ? '100' : '800'),
 		array(
 			'search' => $_REQUEST['search'],
 		)
@@ -345,9 +876,6 @@ function AutoSuggest_Search_Tags()
 	);
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-
-		$row['tag'] = str_replace("&#039;","'",$row['tag']);
-
 		$xml_data['tags']['children'][] = array(
 			'attributes' => array(
 				'id' => $row['id_tag'],
@@ -359,7 +887,7 @@ function AutoSuggest_Search_Tags()
 
 	return $xml_data;
 }
-		
+
 ]]></add>
 	</operation>
 
@@ -386,36 +914,39 @@ function AutoSuggest_Search_Tags()
 
 		if (empty($topic_ids))
 		{
-			$dbresult = $smcFunc['db_query']('', "
-			SELECT
-				t.tag,l.ID,t.ID_TAG,l.ID_TOPIC
-			FROM ({db_prefix}tags_log as l, {db_prefix}tags as t)
-				LEFT JOIN {db_prefix}topics as b ON (l.ID_TOPIC = b.ID_TOPIC)
-			WHERE t.ID_TAG = l.ID_TAG AND b.ID_BOARD = $board");
+			$dbresult = $smcFunc['db_query']('', '
+				SELECT t.tag, l.id, t.id_tag, l.id_topic
+				FROM {db_prefix}tags_log AS l
+					INNER JOIN {db_prefix}tags AS t ON (t.id_tag = l.id_tag)
+					INNER JOIN {db_prefix}topics AS b ON (l.id_topic = b.id_topic)
+				WHERE b.id_board = {int:current_board}',
+				array(
+					'current_board' => $board,
+				)
+			);
 		}
 		else
 		{
-			$dbresult = $smcFunc['db_query']('', "
-		SELECT
-			t.tag,l.ID,t.ID_TAG,l.ID_TOPIC
-		FROM ({db_prefix}tags_log as l, {db_prefix}tags as t)
-		WHERE t.ID_TAG = l.ID_TAG AND FIND_IN_SET(l.id_topic, {string:find_set_topics})",
+			$dbresult = $smcFunc['db_query']('', '
+				SELECT t.tag, l.id, t.id_tag, l.id_topic
+				FROM {db_prefix}tags_log AS l
+					INNER JOIN {db_prefix}tags AS t ON (t.id_tag = l.id_tag)
+				WHERE l.id_topic IN ({array_int:topic_ids})',
 				array(
-					'find_set_topics' => implode(',', $topic_ids),
-				));
+					'topic_ids' => $topic_ids,
+				)
+			);
 		}
 
 			 while($row = $smcFunc['db_fetch_assoc']($dbresult))
 				{
-					if (empty($context['topic_tags'][$row['ID_TOPIC']]))
-						$context['topic_tags'][$row['ID_TOPIC']] = array();
+					if (empty($context['topic_tags'][$row['id_topic']]))
+						$context['topic_tags'][$row['id_topic']] = array();
 
-					$row['tag'] = str_replace("&#039;","'",$row['tag']);
-
-					$context['topic_tags'][$row['ID_TOPIC']][] = array(
-					'ID' => $row['ID'],
-					'ID_TAG' => $row['ID_TAG'],
-					'tag' => $row['tag'],
+					$context['topic_tags'][$row['id_topic']][] = array(
+					'id' => $row['id'],
+					'id_tag' => $row['id_tag'],
+					'tag' => $smcFunc['htmlspecialchars']($row['tag']),
 					);
 			}
 		$smcFunc['db_free_result']($dbresult);
@@ -458,6 +989,7 @@ function AutoSuggest_Search_Tags()
 		';
 		// Tagging System
 
+		global $smcFunc;
 
 				$count = 0;
 				if (!empty($topic['tags']))
@@ -465,17 +997,16 @@ function AutoSuggest_Search_Tags()
 					foreach ($topic['tags'] as $i => $tag)
 					{
 						if ($count == 0)
-							echo '<br /><ul class="tags">';
-
-						$tag['tag'] = str_replace("&#039;","'",$tag['tag']);
+							echo '<br><ul class="tags">';
 
 						$count++;
 						// Check tag limit
 						if ($count <= $modSettings['smftags_set_msgindex_max_show'])
-							echo '<li><a href="' . $scripturl . '?topic=' . $topic['id'] . '.0" class="tag">' . $tag['tag'] . '</a></li>';
+							echo '<li><span class="tag_pill"><a href="' . $scripturl . '?action=tags;tagid=' . $tag['id_tag'] . '" class="tag">' . $tag['tag'] . '</a></span></li>';
 					}
 
-					echo '</ul>';
+					if ($count > 0)
+						echo '</ul>';
 				}
 		// End Tagging System
 		echo '

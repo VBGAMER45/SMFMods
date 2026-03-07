@@ -1,5 +1,16 @@
+7.0
+!Security: Converted ~125 SQL queries to use SMF parameterized syntax ({int:}, {string:}, {raw:}) across EzPortal2.php, Subs-EzPortalMain2.php, and EzPortalInstall2.php to prevent SQL injection.
+!Security: Fixed open redirect vulnerability in shoutbox redirect handlers (EzPortalAddShout, EzPortalRemoveShout).
+!Security: Added CSRF session token verification to noscript shout deletion (EzPortalRemoveShout).
+!Security: Fixed path traversal vulnerability in block file upload (EzPortalImportBlock) by sanitizing filename with basename().
+!Fixed shoutbox AJAX endpoints on SMF 2.1 showing raw JSON as the whole page instead of processing via JavaScript. AJAX handlers now dispatch before template loading and use clean output exit.
+!Fixed mobile device detection using outdated user-agent list (removed dead platforms: Symbian, Palm, BlackBerry Storm, PocketIE, Opera Mobile). Now uses modern keywords covering all current mobile browsers.
+!Fixed strpos() bug in mobile detection where a match at position 0 would be missed.
+!Fixed PHP notice from defined(WIRELESS) missing quotes, now defined('WIRELESS').
++Removed redundant meta-refresh from shoutbox iframe since AJAX shoutbox handles auto-refresh via JavaScript.
+
 6.5
-+Improved the shoutbox now ajax commpletely for add shouts, deleting shouts, and instead of iframe for refreshing, thanks to AI.
++Improved the shoutbox now ajax completely for add shouts, deleting shouts, and instead of iframe for refreshing, thanks to AI.
 
 6.0.1
 !Fixed Downloads Pro ezBlock to respect category level permissions.

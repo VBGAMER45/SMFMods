@@ -1,0 +1,876 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+    <!-- This information needs to be the same as that in the package-info.xml. -->
+    <id>RRasco:SMFGarage</id>
+    <version>3.0.0</version>
+
+    <!-- NOTE: The following edits are now handled by integration hooks (dohooks.php + GarageHooks.php):
+         - index.php: Action routing (integrate_actions)
+         - Admin.php: Admin menu integration (integrate_admin_areas + integrate_menu_buttons)
+         - Subs.php: Menu button + admin permission (integrate_menu_buttons)
+         - ManagePermissions.php: Permission groups, permission list, left groups (integrate_load_permissions)
+         - Security.php: Heavy permissions (integrate_heavy_permissions_session)
+         - Who.php: Who's Online display (integrate_whos_online + whos_online_after)
+    -->
+
+    <!-- 2.1: index.template.php - Global variable for garage settings
+         The heavy lifting for CSS/JS is done in Garage.php via loadCSSFile()/loadJavascriptFile(). -->
+    <file name="$themedir/index.template.php">
+
+        <operation>
+            <search position="after"><![CDATA[;
+
+	// Show right to left, the language code, and the character set for ease of translating.]]></search>
+            <add><![CDATA[, $smfgSettings]]></add>
+        </operation>
+
+    </file>
+
+    <!-- 2.1: Subs.php - constructPageIndex + Image action filtering -->
+    <file name="$sourcedir/Subs.php">
+
+        <operation>
+            <search position="before"><![CDATA[function constructPageIndex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false, $show_prevnext = true]]></search>
+            <add><![CDATA[, $type = "none"]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[$base_link = strtr($settings['page_index']['page'], array('{URL}' => $flexible_start ? $base_url : strtr($base_url, array('%' => '%%')) . ';start=%1$d'));]]></search>
+            <add><![CDATA[if($type == "blog") {
+        $typeStart = "blog_";
+        $tabType = "#blog";
+    } else if($type == "guestbook") {
+        $typeStart = "gb_";
+        $tabType = "#guestbook";
+    } else {
+        $typeStart = '';
+        $tabType = '';
+    }
+
+    $base_link = strtr($settings['page_index']['page'], array('{URL}' => $flexible_start ? $base_url : strtr($base_url, array('%' => '%%')) . ';'.$typeStart.'start=%1$d'.$tabType));]]></add>
+        </operation>
+
+        <!-- 2.1: Subs.php - Image action filtering -->
+        <operation>
+            <search position="replace"><![CDATA[if (preg_match('~action(=|%3d)(?!dlattach)~i', $imgtag) != 0)
+							$imgtag = preg_replace('~action(?:=|%3d)(?!dlattach)~i', 'action-', $imgtag);]]></search>
+            <add><![CDATA[//if (preg_match('~action(=|%3d)(?!dlattach)~i', $imgtag) != 0)
+                        if (preg_match('~action(=|%3d)(?!dlattach)(?!garage)~i', $imgtag) != 0)
+                            //$imgtag = preg_replace('~action(?:=|%3d)(?!dlattach)~i', 'action-', $imgtag);
+                            $imgtag = preg_replace('~action(=|%3d)(?!dlattach)(?!garage)~i', 'action-', $imgtag);]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: Subs-Post.php - Image action filtering
+         Note: If this exact search text is not found in SMF 2.1, this operation will fail gracefully. -->
+    <file name="$sourcedir/Subs-Post.php" error="skip">
+        <operation error="skip">
+            <search position="replace"><![CDATA[return "$m[1]" . preg_replace("~action(=|%3d)(?!dlattach)~i", "action-", "$m[2]") . "[/img]";]]></search>
+            <add><![CDATA[//return "$m[1]" . preg_replace("~action(=|%3d)(?!dlattach)~i", "action-", "$m[2]") . "[/img]"; //edit by SMF Garage
+			return "$m[1]" . preg_replace("~action(=|%3d)(?!dlattach)(?!garage)~i", "action-", "$m[2]") . "[/img]";]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: ManagePermissions.php - $groupLevels and $context['non_guest_permissions']
+         NOTE: Permission groups, permission list, and left groups are now handled by
+         integrate_load_permissions hook in GarageHooks.php -->
+    <file name="$sourcedir/ManagePermissions.php">
+
+        <operation>
+            <search position="before"><![CDATA[$groupLevels['board']['restrict'] = array(]]></search>
+            <add><![CDATA[
+        'view_garage',
+        'browse_vehicles',
+        'view_vehicles',
+        'own_vehicle',
+        'search_vehicles',
+        'browse_insurance',
+        'view_insurance',
+        'browse_shops',
+        'view_shops',
+        'browse_garages',
+        'view_garages',
+        'browse_qms',
+        'view_qms',
+        'browse_dynos',
+        'view_dynos',
+        'browse_laps',
+        'view_laps',
+        'post_comments',]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[$groupLevels['board']['moderator'] = array_merge($groupLevels['board']['standard'], array(]]></search>
+            <add><![CDATA[
+        'manage_garage_settings',
+        'manage_garage_general',
+        'manage_garage_menu',
+        'manage_garage_index',
+        'manage_garage_images',
+        'manage_garage_videos',
+        'manage_garage_modules',
+        'manage_garage',
+        'manage_garage_businesses',
+        'manage_garage_categories',
+        'manage_garage_makes_models',
+        'manage_garage_products',
+        'manage_garage_tools',
+        'manage_garage_tracks',
+        'manage_garage_other',
+        'manage_garage_pending',
+        'edit_all_vehicles',
+        'edit_all_comments',
+        'limit_exemption',
+        'post_comments',
+        'own_vehicle',]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[$context['non_guest_permissions'] = array(]]></search>
+            <add><![CDATA[
+        'manage_garage_settings',
+        'manage_garage_general',
+        'manage_garage_menu',
+        'manage_garage_index',
+        'manage_garage_images',
+        'manage_garage_videos',
+        'manage_garage_modules',
+        'manage_garage',
+        'manage_garage_businesses',
+        'manage_garage_categories',
+        'manage_garage_makes_models',
+        'manage_garage_products',
+        'manage_garage_tools',
+        'manage_garage_tracks',
+        'manage_garage_other',
+        'manage_garage_pending',
+        'edit_all_vehicles',
+        'edit_all_comments',
+        'limit_exemption',
+        'post_comments',
+        'own_vehicle',]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: Profile.php -->
+    <file name="$sourcedir/Profile.php">
+        <operation>
+            <search position="before"><![CDATA[require_once($sourcedir . '/Subs-Menu.php');]]></search>
+            <add><![CDATA[
+
+    // We need our functions!
+    require_once('GarageFunctions.php');
+    loadLanguage('Garage');
+
+    // Load settings
+    loadSmfgConfig();]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[updateMemberData($memID, $profile_vars);]]></search>
+            <add><![CDATA[
+
+            // Update garage notification options
+            checkSession();
+            if(!isset($_POST['pm_opt_out'])) $_POST['pm_opt_out'] = 0;
+            if(!isset($_POST['email_opt_out'])) $_POST['email_opt_out'] = 0;
+            if(!isset($_POST['gb_opt_out'])) $_POST['gb_opt_out'] = 0;
+
+            if($_POST['pm_opt_out'] != '' && $_POST['email_opt_out'] != '') {
+                $request = $smcFunc['db_query']('', '
+                    UPDATE {db_prefix}garage_notifications
+                    SET pm_opt_out = {int:pm_opt_out}, email_opt_out = {int:email_opt_out}
+                    WHERE user_id = {int:memID}',
+                    array (
+                        'pm_opt_out' => $_POST['pm_opt_out'],
+                        'email_opt_out' => $_POST['email_opt_out'],
+                        'memID' => $memID,
+                    )
+                );
+            }
+
+            if($_POST['gb_opt_out'] != '') {
+                $request = $smcFunc['db_query']('', '
+                    SELECT id
+                    FROM {db_prefix}garage_notifications_misc
+                    WHERE user_id = {int:memID}',
+                    array (
+                        'memID' => $memID,
+                    )
+                );
+                $numRows = $smcFunc['db_num_rows']($request);
+                $smcFunc['db_free_result']($request);
+                if($numRows == 0) {
+                    $request = $smcFunc['db_insert']('insert',
+                        '{db_prefix}garage_notifications_misc',
+                        array(
+                            'user_id' => 'int', 'gb_opt_out' => 'int',
+                        ),
+                        array(
+                            $memID, $_POST['gb_opt_out'],
+                        )
+                    );
+                } else {
+                    $request = $smcFunc['db_query']('', '
+                        UPDATE {db_prefix}garage_notifications_misc
+                        SET gb_opt_out = {int:gb_opt_out}
+                        WHERE user_id = {int:memID}',
+                        array (
+                            'gb_opt_out' => $_POST['gb_opt_out'],
+                            'memID' => $memID,
+                        )
+                    );
+                }
+            }]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[$context['page_title'] = $txt['profile'] . (isset($txt[$current_area]) ? ' - ' . $txt[$current_area] : '');]]></search>
+            <add><![CDATA[
+
+    // Get vehicle data
+    $request = $smcFunc['db_query']('', '
+        SELECT v.id, CONCAT_WS(" ", v.made_year, mk.make, md.model)
+        FROM {db_prefix}garage_vehicles AS v, {db_prefix}garage_makes AS mk, {db_prefix}garage_models AS md
+        WHERE v.user_id = {int:memID}
+            AND v.make_id = mk.id
+            AND v.model_id = md.id
+            AND v.main_vehicle = 1
+            AND v.pending != "1"
+            AND mk.pending != "1"
+            AND md.pending != "1"',
+        array(
+            'memID' => $memID,
+        )
+    );
+    list($context['member']['vid'],
+         $context['member']['vehicle']) = $smcFunc['db_fetch_row']($request);
+    $smcFunc['db_free_result']($request);
+
+    // Get total vehicles
+    $request = $smcFunc['db_query']('', '
+        SELECT COUNT(id)
+        FROM {db_prefix}garage_vehicles
+        WHERE user_id = {int:memID}
+        GROUP BY user_id',
+        array(
+            'memID' => $memID,
+        )
+    );
+    list($context['member']['total_vehicles']) = $smcFunc['db_fetch_row']($request);
+    $smcFunc['db_free_result']($request);]]></add>
+        </operation>
+
+        <!-- Removed duplicate notification block that was in 2.0 version -->
+    </file>
+
+    <!-- 2.1: Profile-Modify.php
+         In SMF 2.1, the globals line and notification section have changed.
+         We search for the function name instead. -->
+    <file name="$sourcedir/Profile-Modify.php">
+        <operation>
+            <search position="before"><![CDATA[function alert_configuration($memID, $defaultSettings = false)
+{]]></search>
+            <add><![CDATA[
+
+    // We need garage talk...
+    loadLanguage('Garage');]]></add>
+        </operation>
+
+        <operation error="skip">
+            <search position="after"><![CDATA[$context['member'] += array(
+		'alert_timeout' => isset($context['alert_prefs']['alert_timeout']) ? $context['alert_prefs']['alert_timeout'] : 10,]]></search>
+            <add><![CDATA[
+
+    // Get Garage pending notification options
+    $request = $smcFunc['db_query']('', '
+        SELECT user_id, pm_opt_out, email_opt_out
+        FROM {db_prefix}garage_notifications
+        WHERE user_id = {int:memID}',
+        array (
+            'memID' => $memID,
+        )
+    );
+    list($context['memID'],
+         $context['pm_opt_out'],
+         $context['email_opt_out']) = $smcFunc['db_fetch_row']($request);
+    $smcFunc['db_free_result']($request);
+
+    // And misc notifications
+    $request = $smcFunc['db_query']('', '
+        SELECT user_id, gb_opt_out
+        FROM {db_prefix}garage_notifications_misc
+        WHERE user_id = {int:memID}',
+        array (
+            'memID' => $memID,
+        )
+    );
+    list($context['userID'],
+         $context['gb_opt_out']) = $smcFunc['db_fetch_row']($request);
+    $smcFunc['db_free_result']($request);
+
+    // We need our functions!
+    require_once('GarageFunctions.php');
+    loadLanguage('Garage');
+
+    // Load settings
+    loadSmfgConfig();
+
+    if($context['pm_opt_out'] == 1) $context['pm_opt_out_check'] = " checked=\"checked\"";
+    if($context['email_opt_out'] == 1) $context['email_opt_out_check'] = " checked=\"checked\"";
+    if($context['gb_opt_out'] == 1) $context['gb_opt_out_check'] = " checked=\"checked\"";
+
+    if(!isset($context['pm_opt_out_check'])) $context['pm_opt_out_check'] = "";
+    if(!isset($context['email_opt_out_check'])) $context['email_opt_out_check'] = "";
+    if(!isset($context['gb_opt_out_check'])) $context['gb_opt_out_check'] = "";]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: Display.php - Vehicle data in topic display -->
+    <file name="$sourcedir/Display.php">
+
+        <!-- Add garage vehicle data to member context using prepareDisplayContext -->
+        <operation>
+            <search position="before"><![CDATA[global $settings, $txt, $modSettings, $scripturl, $options, $user_info, $smcFunc]]></search>
+            <add><![CDATA[, $smfgSettings]]></add>
+        </operation>
+
+        <operation>
+            <search position="after"><![CDATA[static $counter = null;]]></search>
+            <add><![CDATA[// A few garage items...
+    require_once('GarageFunctions.php');
+    loadSmfgConfig();
+    loadLanguage('Garage');
+
+	]]></add>
+        </operation>
+
+        <!-- For SMF 2.1, we add the vehicle lookup after the member context is built,
+             rather than modifying the message query directly. This avoids disableQueryCheck. -->
+        <operation>
+            <search position="before"><![CDATA[$memberContext[$message['id_member']]['ip'] = inet_dtop($message['poster_ip']);]]></search>
+            <add><![CDATA[
+    // Garage: Look up main vehicle for this member
+    $garage_veh_request = $smcFunc['db_query']('', '
+        SELECT CONCAT_WS(\' \', v.made_year, mk.make, md.model) AS vehicle, v.id AS vid
+        FROM {db_prefix}garage_vehicles AS v
+        INNER JOIN {db_prefix}garage_makes AS mk ON v.make_id = mk.id
+        INNER JOIN {db_prefix}garage_models AS md ON v.model_id = md.id
+        WHERE v.user_id = {int:user_id}
+            AND v.main_vehicle = 1
+            AND v.pending != {string:pending}
+            AND mk.pending != {string:pending}
+            AND md.pending != {string:pending}
+        LIMIT 1',
+        array(
+            'user_id' => $message['id_member'],
+            'pending' => '1',
+        )
+    );
+    if ($garage_veh_row = $smcFunc['db_fetch_assoc']($garage_veh_request)) {
+        $memberContext[$message['id_member']]['vid'] = $garage_veh_row['vid'];
+        $memberContext[$message['id_member']]['vehicle'] = $garage_veh_row['vehicle'];
+    } else {
+        $memberContext[$message['id_member']]['vid'] = '';
+        $memberContext[$message['id_member']]['vehicle'] = '';
+    }
+    $smcFunc['db_free_result']($garage_veh_request);
+]]></add>
+        </operation>
+
+    </file>
+
+    <!-- 2.1: Display.template.php
+         In SMF 2.1, the post count section uses <dt> with class attributes. -->
+    <file name="$themedir/Display.template.php">
+        <operation>
+            <search position="before"><![CDATA[// Show how many posts they have made.
+		if (!isset($context['disabled_fields']['posts']))
+			echo '
+								<li class="postcount">', $txt['member_postcount'], ': ', $message['member']['posts'], '</li>';]]></search>
+            <add><![CDATA[
+
+            if($smfgSettings['integrate_viewtopic'] && isset($message['member']['vehicle'])) {
+
+                // Show their main vehicle.
+                echo '
+                                    <li class="postcount">', $txt['smfg_vehicle'], ': <a href="'.$scripturl.'?action=garage;sa=view_vehicle;VID='.$message['member']['vid'].'">', $message['member']['vehicle'], '</a></li>';
+
+            }]]></add>
+        </operation>
+
+        <operation>
+            <search position="after"><![CDATA[;
+
+	$ignoring = false;]]></search>
+            <add><![CDATA[, $smfgSettings]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: Profile.template.php
+         In SMF 2.1, the template structure has changed. We use error="skip" for patches
+         that may not match exactly. -->
+    <file name="$themedir/Profile.template.php">
+
+        <operation>
+            <search position="after"><![CDATA[;
+
+	// Display the basic information about the user]]></search>
+            <add><![CDATA[, $smfgSettings]]></add>
+        </operation>
+
+        <!-- Vehicle display in profile - add after age display in SMF 2.1 -->
+        <operation error="skip">
+            <search position="before"><![CDATA[echo '
+				<dt>', $txt['age'], ':</dt>
+				<dd>', $context['member']['age'] . ($context['member']['today_is_birthday'] ? ' &nbsp; <img src="' . $settings['images_url'] . '/cake.png" alt="">' : ''), '</dd>';]]></search>
+            <add><![CDATA[
+
+    // Do they have a vehicle?
+    if(!empty($smfgSettings['integrate_profile']) && !empty($context['member']['vehicle'])) {
+
+    echo '
+				<dt>', $txt['smfg_vehicle'], ' (1 '.$txt['smfg_of'].' '.$context['member']['total_vehicles'].'):</dt>
+				<dd><a href="'.$scripturl.'?action=garage;sa=view_vehicle;VID='.$context['member']['vid'].'">', $context['member']['vehicle'], '</a></dd>';
+    }]]></add>
+        </operation>
+
+        <!-- Notification options in profile - use error="skip" since 2.1 uses alert system -->
+        <operation error="skip">
+            <search position="before"><![CDATA[<input type="number" size="4" id="notify_alert_timeout" name="opt_alert_timeout" min="0" max="127" value="', $context['member']['alert_timeout'], '">
+					</dd>';]]></search>
+            <add><![CDATA[
+
+    // Garage notification options
+    if(!empty($smfgSettings['enable_pm_pending_notify_optout'])) {
+    echo '
+					<dt>
+						<label for="pm_opt_out">', $txt['smfg_pm_opt_out'], '</label>
+					</dt>
+					<dd>
+						<input type="hidden" name="pm_opt_out" value="0">
+						<input type="checkbox" id="pm_opt_out" value="1" name="pm_opt_out"'.$context['pm_opt_out_check'].'>
+					</dd>';
+    }
+    if(!empty($smfgSettings['enable_email_pending_notify_optout'])) {
+    echo '
+					<dt>
+						<label for="email_opt_out">', $txt['smfg_email_opt_out'], '</label>
+					</dt>
+					<dd>
+						<input type="hidden" name="email_opt_out" value="0">
+						<input type="checkbox" id="email_opt_out" value="1" name="email_opt_out"'.$context['email_opt_out_check'].'>
+					</dd>';
+    }
+    echo '
+					<dt>
+						<label for="gb_opt_out">', $txt['smfg_gb_opt_out'], '</label>
+					</dt>
+					<dd>
+						<input type="hidden" name="gb_opt_out" value="0">
+						<input type="checkbox" id="gb_opt_out" value="1" name="gb_opt_out"'.$context['gb_opt_out_check'].'>
+					</dd>';]]></add>
+        </operation>
+
+        <!-- Signature section - In SMF 2.1 no colon after signature text -->
+        <operation error="skip">
+            <search position="replace"><![CDATA[<dt>
+								<strong>', $txt['signature'], '</strong><br>
+								<span class="smalltext">', $txt['sig_info'], '</span><br>
+								<br>';]]></search>
+            <add><![CDATA[
+            ';
+            
+            global $scripturl;
+echo '
+							<dt>
+								<strong>', $txt['signature'], '</strong><br>
+								<span class="smalltext">', $txt['sig_info'], '</span><br><br>
+								<a href="'.$scripturl.'?action=garage;sa=get_gcard;u='.$_REQUEST['u'].'" rel="shadowbox;width=605;height=600" title="'.$txt['smfg_gcard_info'].'">'.$txt['smfg_get_gcard'].'</a><br>
+								<br>';]]></add>
+        </operation>
+
+        <!-- In SMF 2.1, template_alert_configuration() needs $smfgSettings for notification options -->
+        <operation error="skip">
+            <search position="before"><![CDATA[global $context, $txt, $scripturl, $modSettings]]></search>
+            <add><![CDATA[, $smfgSettings]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: CSS - Fallback garage CSS rules appended to index.css -->
+    <file name="$themedir/css/index.css" error="skip">
+        <operation error="skip">
+            <search position="end" />
+            <add><![CDATA[
+
+/* SMF Garage - Pending background */
+.windowbg_pending
+{
+    color: #000;
+    background-color: #eeb4b4;
+}
+
+/* Responsive rules for small screens */
+@media screen and (min-width: 240px) and (max-width: 640px) {
+
+    /* Responsive Curve menu icon */
+    .responsive_menu.garage {
+        background: url(../images/garage.png) no-repeat;
+        height: 16px;
+        width: 16px;
+        display: inline-block;
+    }
+}
+]]></add>
+        </operation>
+    </file>
+
+    <!-- 2.1: Language files
+         In SMF 2.1, language files don't use -utf8 suffix. Files are just Garage.english.php.
+         These patches target the standard (non-utf8) filenames used in 2.1. -->
+    <file name="$languagedir/index.english.php">
+        <operation>
+            <search position="end" />
+            <add><![CDATA[
+
+$txt['smfg_garage'] = 'Garage';
+
+]]></add>
+        </operation>
+    </file>
+
+    <file name="$languagedir/Admin.english.php">
+        <operation>
+            <search position="end" />
+            <add><![CDATA[
+$txt['paid_subs_view'] = 'View Subscriptions';
+
+$txt['managegarage_settings'] = 'Manage Garage Settings';
+$txt['settings_general'] = 'This menu allows you to set your basic garage configuration options.';
+$txt['settings_menu'] = 'This menu allows you to enable/disable the links available in the main garage menu.';
+$txt['settings_index'] = 'This menu allows you to change the options and physical layout of the main garage page.';
+$txt['settings_images'] = 'This menu allows you to set your garage image options.';
+$txt['settings_videos'] = 'This menu allows you to set your garage video options.';
+$txt['settings_modules'] = 'This menu allows you to enable/disable the various modules of SMF Garage and other related settings.';
+$txt['managegarage_management'] = 'Garage Management';
+$txt['management_business'] = 'This menu will allow you to enable/disable, edit, or delete businesses.';
+$txt['management_categories'] = 'This menu will allow you to create, enable/disable, edit, or delete modification categories.';
+$txt['management_makesmodels'] = 'This menu will allow you to create, enable/disable, edit, or delete makes and models.';
+$txt['management_products'] = 'This menu will allow you to creat, enable/disable, edit, or delete modification products.';
+$txt['management_tracks'] = 'This menu will allow you to create, enable/disable, edit, or delete tracks.  It also allows for management of track conditions and lap types.';
+$txt['management_other'] = 'This menu will allow you to manage various other types in the garage.';
+$txt['management_tools'] = 'Here you can use the provided utilities to optimize the database.  The database will first be checked and you will be presented with your options prior to modifying the database or files.';
+$txt['management_pending'] = 'Any pending items will be shown here for you to approve, edit, or delete.  Any items that have been disabled will also show here until they are re-approved.';]]></add>
+        </operation>
+    </file>
+
+    <file name="$languagedir/Help.english.php">
+        <operation>
+            <search position="end" />
+            <add><![CDATA[
+
+$helptxt['year_range'] = 'This is the earliest year you want to appear as a selection for a new vehicle. Format CCYY.';
+$helptxt['year_offset'] = 'Amount of years offset from current year for latest year you want to appear for a new vehicle.';
+$helptxt['vehicle_quota'] = 'This is the max limit of vehicles per user.  This can be overridden by assigning \'Exempt from Limits\' permissions.';
+$helptxt['vehicles_per_page'] = 'This controls the number of vehicles that will be displayed per page under the various menu items; Browse, Quartermiles, Dynoruns, and Laptimes.';
+$helptxt['user_make_submission'] = 'Will allow for users to submit makes to the database which do not already exist.';
+$helptxt['user_model_submission'] = 'Will allow for users to submit models to the database which do not already exist.';
+$helptxt['user_business_submission'] = 'Will allow for users to submit businesses to the database which do not already exist.';
+$helptxt['user_product_submission'] = 'Will allow for users to submit modification products to the database which do not already exist.';
+$helptxt['pending_pm'] = 'Enable pending PM notifications on submitted items which require approval.';
+$helptxt['pm_opt_out'] = 'Allow users on the pending notification list to opt out of PM notifications.';
+$helptxt['pending_email'] = 'Enable pending email notifications on submitted items which require approval.';
+$helptxt['email_opt_out'] = 'Allow users on the pending notification list to opt out of email notifications.';
+$helptxt['pending_subject'] = 'Subject for pending PM and email notifications.';
+$helptxt['pending_sender_id'] = 'ID of the user in which PMs will be sent from.';
+$helptxt['integrate_viewtopic'] = 'Show user\'s main vehicle with profile information in posts.';
+$helptxt['integrate_profile'] = 'Show user\'s main vehicle information in their user profile.';
+$helptxt['rating_system'] = 'Select which type of rating you would like to use.  Cumulative will total all votes together (ie. 91/100) and Average will average all the votes (ie. 9.1/10).';
+$helptxt['members_notify'] = 'All users on this list will receive PM and email notifications on all pending items which require approval.  These users will have additional options in their profile settings to opt out of PM and email notifications.';
+$helptxt['featured_vehicle'] = 'You may disable the featured vehicle or select which method to identify a featured vehicle by.  You may specify a vehicle ID, choose a block which will show its top vehicle, or select a random vehicle on each refresh.';
+$helptxt['featured_vehicle_image_required'] = 'This option ensures an image is displayed on the Featured Vehicle block. The \'Random\' option will only display vehicles with images attached to them. \'From vehicle ID\' and \'From block\' options will display a \'No Image\' place holder for vehicle with no images attached to them.';
+$helptxt['featured_vehicle_id'] = 'If featured vehicle is set to \'From vehicle ID\', use the ID of the vehicle you want to feature.';
+$helptxt['featured_vehicle_block'] = 'If featured vehicle is set to \'From block\', choose a block to determine the vehicle to feature.';
+$helptxt['featured_vehicle_description'] = 'You may choose to add a description below the featured vehicle.  Leave this blank to disable.';
+$helptxt['columns_index'] = 'You may choose to show all the enabled blocks on the front page with one or two columns.';
+$helptxt['black_management'] = 'Here you can enable/disable, re-order, and set the limits for each of the blocks on the main garage page.';
+$helptxt['store_remote_locally'] = 'You can choose to either store remote images locally or link to their remote locations.  All images will be thumbnailed and thumbnails will always be stored locally.<br /><br />This setting is not retroactive, for example, if you choose to store remote images locally and then choose to not store them locally then all previously stored images will remain stored locally unless you delete and re-upload the image.';
+$helptxt['enable_lightbox'] = 'Lightbox is the effects module for displaying images.';
+$helptxt['gallery_limit'] = 'The max number of images allowed in each gallery.  Each vehicle, modification, quartermile, dynorun, and laptime is considered its own gallery.';
+$helptxt['gallery_limit_video'] = 'The max number of videos allowed in each gallery.  Each vehicle, modification, quartermile, dynorun, and laptime is considered its own gallery.';
+$helptxt['upload_directory'] = 'This is the directory where images and thumbnails will be stored.  The path is relative to your forum root and should not use a starting forward slash, and must have an ending forward slash.<br /><br /><b>Default:</b> \'<i>Garage/uploads/\'</i><br /><br />A cache directory should have been automatically created in this location on installation.  Original file uploads are stored in the upload directory, while watermarked versions of images and thumbnails are stored in the cache directory.  If the cache directory does not exist, the garage attempts to create it on install, on image upload, and on this page load.  If it has failed to created the directory, you may have to manually create it.';
+$helptxt['watermark_source'] = 'This is the path to the image you would like to use as a watermark.  The path is relative to your forum root and should not use a starting forward slash.<br /><br /><b>Default:</b> \'<i>Themes/default/images/watermark.png\'</i>';
+$helptxt['IM_convert'] = 'SMF Garage utilizes ImageMagick for watermarks and thumbnails, provide the path to the ImageMagick \'convert\' directory.  The path is relative to your forum root and must use a starting forward slash, and should not have an ending forward slash.<br /><br /><b>Default:</b> \'<i>/usr/bin/convert\'</i>';
+$helptxt['IM_composite'] = 'SMF Garage utilizes ImageMagick for watermarks and thumbnails, provide the path to the ImageMagick \'composite\' directory.  The path is relative to your forum root and must use a starting forward slash, and should not have an ending forward slash.<br /><br /><b>Default:</b> \'<i>/usr/bin/composite\'</i>';
+$helptxt['create_model'] = 'First select a make, then enter the model you would like to create.';
+$helptxt['create_product'] = 'First select a manufacturer, then enter the product you would like to create.';
+$helptxt['garage_settings'] = '
+    <ul>
+        <li>
+            <b>General</b><br />
+            Modify general settings for the garage.  Year ranges, vehicle quotas, date format, pagination options, user submission and approvals, and notification options for pending items.
+        </li><li>
+            <b>Menu</b><br />
+            Configure the main garage menu tabs.
+        </li><li>
+            <b>Index Page</b><br />
+            Modify the look and layout of the main garage page.  Featured vehicle options.  Also allows for enable/disable, re-order, or set the limits for the number of vehicles to display per block.
+        </li><li>
+            <b>Images</b><br />
+            Modify image settings, enable/display galleries for each module, remote image handling, set filesize options, upload directory, watermark configuration, and ImageMagick directories.
+        </li><li>
+            <b>Modules</b><br />
+            Enable/disable the various garage modules and set pertinent options for each module.
+        </li>
+    </ul>';
+$helptxt['garage_management'] = '
+    <ul>
+        <li>
+            <b>Businesses</b><br />
+            Approve, enable/disable, edit, or delete businesses.
+        </li><li>
+            <b>Categories</b><br />
+            Re-order, edit, or delete modification categories.
+        </li><li>
+            <b>Makes/Models</b><br />
+            Approve, enable/disable, edit, or delete makes or models.
+        </li><li>
+            <b>Products</b><br />
+            Approve, enable/disable, edit, or delete modification products.
+        </li><li>
+            <b>Tracks</b><br />
+            Approve, enable/disable, edit or delete tracks.  Also allows to re-order, edit, or delete track conditions and lap types.
+        </li><li>
+            <b>Other</b><br />
+            Allows to re-order, edit, or delete; premium types, engine types, service types, and currency types.
+        </li><li>
+            <b>Tools</b><br />
+            Utilities to help optimize the database.  This utility will find any existing files not listed in the database, and vice-versa, find any database entries missing files and remove them from the database if you approve the action after it returns the results to you.
+        </li><li>
+            <b>Pending</b><br />
+            Any pending or disabled items will display here.  Only items which require approval can be pending, but by disabling an item it will also show in this list until it is re-approved.
+        </li>
+    </ul>';]]></add>
+        </operation>
+    </file>
+
+    <file name="$languagedir/Errors.english.php">
+        <operation>
+            <search position="end" />
+            <add><![CDATA[
+
+$txt['cannot_view_garage'] = 'You can\'t view the garage because you don\'t have permission to.';
+$txt['cannot_browse_vehicles'] = 'You are not allowed to browse vehicles.';
+$txt['cannot_view_vehicles'] = 'You cannot view vehicles based on your permissions.';
+$txt['cannot_own_vehicle'] = 'You cannot create a vehicle based on your permissions.';
+$txt['cannot_search_vehicles'] = 'You are not allowed to search vehicles.';
+$txt['cannot_browse_insurance'] = 'You are not allowed to browse insurance companies.';
+$txt['cannot_view_insurance'] = 'You can\'t view insurance based on your permissions.';
+$txt['cannot_browse_shops'] = 'You are not allowed to browse shops.';
+$txt['cannot_view_shops'] = 'You can\'t view shops based on your permissions.';
+$txt['cannot_browse_garages'] = 'You are not allowed to browse garages.';
+$txt['cannot_view_garages'] = 'You can\'t view garages based on your permissions.';
+$txt['cannot_browse_qms'] = 'You are not allowed to browse quartermile runs.';
+$txt['cannot_view_qms'] = 'You can\'t view quartermile runs based on your permissions.';
+$txt['cannot_browse_dynos'] = 'You are not allowed to browse dyno runs.';
+$txt['cannot_view_dynos'] = 'You can\'t view dyno runs based on your permissions.';
+$txt['cannot_browse_laps'] = 'You are not allowed to browse lap times.';
+$txt['cannot_view_laps'] = 'You can\'t view lap times based on your permissions.';
+$txt['cannot_post_comments'] = 'You are not allowed to post comments in the garage.';
+
+$txt['cannot_manage_garage_settings'] = 'You are not allowed to manage the garage settings.';
+$txt['cannot_manage_garage_general'] = 'You are not allowed to manage the garage\'s general settings.';
+$txt['cannot_manage_garage_menu'] = 'You are not allowed to manage the garage menu.';
+$txt['cannot_manage_garage_index'] = 'You are not allowed to manage the garage index page.';
+$txt['cannot_manage_garage_images'] = 'You are not allowed to manage image settings.';
+$txt['cannot_manage_garage_modules'] = 'You are not allowed to manage module settings.';
+$txt['cannot_manage_garage_quotas'] = 'You are not allowed to manage quota settings.';
+$txt['cannot_manage_garage'] = 'You are not allowed to manage garage content.';
+$txt['cannot_manage_garage_businesses'] = 'You are not allowed to manage businesses.';
+$txt['cannot_manage_garage_categories'] = 'You are not allowed to manage modification categories.';
+$txt['cannot_manage_garage_makes_models'] = 'You are not allowed to manage makes/models.';
+$txt['cannot_manage_garage_products'] = 'You are not allowed to manage products.';
+$txt['cannot_manage_garage_tools'] = 'You are not allowed to use garage tools.';
+$txt['cannot_manage_garage_tracks'] = 'You are not allowed to manage tracks.';
+$txt['cannot_manage_garage_other'] = 'You are not allowed to manage these settings.';
+
+$txt['garage_filesize_error'] = 'The file you are attempting to upload exceeds the maximum filesize allowed.  Please click back and select a file that meets the filesize restrictions.';
+$txt['garage_resolution_error'] = 'The image you are attempting to upload exceeds the maximum file resolution allowed.  Please click back and select an image that meets the resolution restrictions or resize the image to meet them.';
+$txt['garage_no_image_supplied'] = 'You did not select an image, please go back and select an image before submitting.';
+$txt['garage_video_unsupported'] = 'The video you are attempting to upload is not a supported video site.  Please use a video sharing site listed on the supported sites list.';
+$txt['garage_video_title_required'] = 'You have submitted a video with no title, a title is required if you wish to submit a video.';
+$txt['garage_rating_error2'] = 'You are not allowed to rate your own vehicle.';
+$txt['garage_owner_error'] = 'This vehicle does not belong to you, quit trying to edit other people\'s vehicles.';
+$txt['garage_edit_comment_error'] = 'You cannot edit other user\'s comments.';
+$txt['garage_rating_error'] = 'You cannot remove other user\'s ratings.';
+$txt['garage_double_rating_error'] = 'You cannot rate the same vehicle more than once.';
+$txt['garage_gallery_limit_error'] = 'This gallery already has the maximum number of images allowed.  Before adding more images you must delete one or more existing images.';
+$txt['garage_gallery_limit_video_error'] = 'This gallery already has the maximum number of videos allowed.  Before adding more videos you must delete one or more existing videos';
+$txt['garage_vehicle_limit_error'] = 'Your garage has already reached the maximum number of vehicles allowed.  Before adding more vehicles you must delete one or more existing vehicles.';
+$txt['garage_submit_make_error'] = 'The make you are trying to submit already exists, there is no need to re-submit the make.  To use the desired make, go back and select it from the \'Make\' drop down.';
+$txt['garage_submit_model_error'] = 'The model you are trying to submit already exists, there is no need to re-submit the model.  To use the desired model, go back and select the appropriate make from the \'Make\' drop down, the select the model from the \'Model\' drop down.';
+$txt['garage_submit_business_error'] = 'The business you are trying to submit already exists, there is no need to re-submit the business.  To use the desired business, go back and select it from the \'Business\' drop down.';
+$txt['garage_submit_product_error'] = 'The product you are trying to submit already exists, there is no need to re-submit the product.  To use the desired product, go back and select it from the \'Product\' drop down.';
+$txt['garage_submit_track_error'] = 'The track you are trying to submit already exists, there is no need to re-submit the track.  To use the desired track, go back and select it from the \'Track\' drop down.';
+$txt['garage_required_image_error'] = 'The administrator has chosen to require an image with this submission.  Please go back and select an image to submit.';
+$txt['garage_disabled_module_error'] = 'This module is disabled.  Please contact the administrator if you feel this is an error.';
+$txt['garage_nonexistent_member_error'] = 'The member name you supplied does not match any current members.  Please go back and try again.';
+$txt['garage_pending_vehicle_error'] = 'The vehicle you are attempting to view is currently pending, unless you are the vehicle owner or have permission to view pending items, you cannot view this vehicle at this time.';
+$txt['garage_pending_item_error'] = 'The item you are attempting to view is currently pending, unless you have permission to view pending items you cannot view this item at this time.';
+$txt['garage_disabled_error'] = 'The garage has been disabled at this time for maintenance.  Please check back later or contact the administrator if you feel this is an error.';
+$txt['garage_no_search_criteria'] = 'You must select criteria to search for.  Make sure you check the box next to the criteria you would like to search.';
+$txt['garage_no_direct_page_access'] = 'Sorry this page can not be access directly.';
+$txt['garage_no_vehicle'] = 'Vehicle does not exist.';
+$txt['garage_no_modification'] = 'Modification does not exist.';
+$txt['garage_no_quartermile'] = 'Quartermile does not exist.';
+$txt['garage_no_dynorun'] = 'Dynorun does not exist.';
+$txt['garage_no_laptime'] = 'Laptime does not exist.';
+$txt['garage_no_track'] = 'Track does not exist.';]]></add>
+        </operation>
+
+        <operation>
+            <search position="after"><![CDATA[$txt['no_access'] = 'You are not allowed to access this section';]]></search>
+            <add><![CDATA[
+global $smfgSettings;
+
+]]></add>
+        </operation>
+    </file>
+
+    <file name="$languagedir/Who.english.php">
+        <operation>
+            <search position="end" />
+            <add><![CDATA[
+
+$txt['whoall_garage'] = 'Viewing the <a href="' . $scripturl . '?action=garage">Garage</a>.';
+$txt['whoall_garage_user_garage'] = 'Viewing own <a href="' . $scripturl . '?action=garage">garage</a>.';
+$txt['whoall_garage_view_own_vehicle'] = 'Viewing own <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">vehicle</a>.';
+$txt['whoall_garage_edit_vehicle'] = 'Editing the vehicle <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_edit_modification'] = 'Editing the modification <a href="' . $scripturl . '?action=garage;sa=view_modification;VID=%d;MID=%d">%s<a/>.';
+$txt['whoall_garage_edit_quartermile'] = 'Editing the quartermile <a href="' . $scripturl . '?action=garage;sa=view_quartermile;VID=%d;QID=%d">%s<a/>.';
+$txt['whoall_garage_edit_dynorun'] = 'Editing the dynorun <a href="' . $scripturl . '?action=garage;sa=view_dynorun;VID=%d;DID=%d">%s<a/>.';
+$txt['whoall_garage_edit_laptime'] = 'Editing the laptime <a href="' . $scripturl . '?action=garage;sa=view_laptime;VID=%d;LID=%d">%s<a/>.';
+$txt['whoall_garage_edit_insurance'] = 'Editing a premium for <a href="' . $scripturl . '?action=garage;sa=view_insurance;VID=%d#premiums">%s<a/>.';
+$txt['whoall_garage_edit_service'] = 'Editing a service for <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d#services">%s<a/>.';
+$txt['whoall_garage_edit_blog'] = 'Editing a blog post for <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d#blog">%s<a/>.';
+$txt['whoall_garage_edit_comment'] = 'Editing a guestbook comment for <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d#guestbook">%s<a/>.';
+$txt['whoall_garage_view_vehicle'] = 'Viewing the vehicle <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_browse'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=browse">Garage</a>.';
+$txt['whoall_garage_search'] = 'Searching <a href="' . $scripturl . '?action=garage;sa=search">Garage</a>.';
+$txt['whoall_garage_search_results'] = 'Viewing <a href="' . $scripturl . '?action=garage">Garage</a> Search Results.';
+$txt['whoall_garage_insurance'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=insurance">Insurance Reviews</a>.';
+$txt['whoall_garage_insurance_review'] = 'Viewing insurance review for <a href="' . $scripturl . '?action=garage;sa=insurance_review;BID=%d">%s<a/>.';
+$txt['whoall_garage_shops'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=shops">Shop Reviews</a>.';
+$txt['whoall_garage_shop_review'] = 'Viewing shop reviews for <a href="' . $scripturl . '?action=garage;sa=shop_review;BID=%d">%s<a/>.';
+$txt['whoall_garage_garages'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=garages">Garage Reviews</a>.';
+$txt['whoall_garage_garage_review'] = 'Viewing garage reviews for <a href="' . $scripturl . '?action=garage;sa=garage_review;BID=%d">%s<a/>.';
+$txt['whoall_garage_quartermiles'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=quartermiles">Quartermiles</a>.';
+$txt['whoall_garage_view_quartermile'] = 'Viewing the quartermile <a href="' . $scripturl . '?action=garage;sa=view_quartermile;VID=%d;QID=%d">%s<a/>.';
+$txt['whoall_garage_dynoruns'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=dynoruns">Dynoruns</a>.';
+$txt['whoall_garage_view_dynorun'] = 'Viewing the dynorun <a href="' . $scripturl . '?action=garage;sa=view_dynorun;VID=%d;DID=%d">%s<a/>.';
+$txt['whoall_garage_laptimes'] = 'Browsing <a href="' . $scripturl . '?action=garage;sa=laptimes">Laptimes</a>.';
+$txt['whoall_garage_view_laptime'] = 'Viewing the laptime <a href="' . $scripturl . '?action=garage;sa=view_laptime;VID=%d;LID=%d">%s<a/>.';
+$txt['whoall_garage_view_modification'] = 'Viewing the modification <a href="' . $scripturl . '?action=garage;sa=view_modification;VID=%d;MID=%d">%s<a/>.';
+$txt['whoall_garagesettings'] = 'Changing garage settings.';
+$txt['whoall_garagemanagement'] = 'Managing garage content.';
+$txt['whoall_garage_unknown'] = 'Playing around some place in the <a href="' . $scripturl . '?action=garage">Garage</a>.';
+$txt['whoall_garage_add_service'] = 'Adding a new service to <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_add_laptime'] = 'Adding a new laptime to <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_add_dynorun'] = 'Adding a new dynorun to <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_add_quartermile'] = 'Adding a new quartermile to <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_add_insurance'] = 'Adding a new premium to <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';
+$txt['whoall_garage_add_modification'] = 'Adding a new modification to <a href="' . $scripturl . '?action=garage;sa=view_vehicle;VID=%d">%s<a/>.';]]></add>
+        </operation>
+    </file>
+
+    <file name="$languagedir/ManagePermissions.english.php">
+        <operation>
+            <search position="end" />
+            <add><![CDATA[
+
+$txt['permissiongroup_simple_garage'] = 'Use the garage';
+$txt['permissiongroup_simple_garage_acp'] = 'Manage the garage';
+
+$txt['permissiongroup_garage'] = 'Garage';
+$txt['permissionname_view_garage'] = 'View Garage';
+$txt['permissionhelp_view_garage'] = 'This permission allows a user to view the garage.';
+$txt['permissionname_browse_vehicles'] = 'Browse Vehicles';
+$txt['permissionhelp_browse_vehicles'] = 'This permission allows a user to browse vehicles.';
+$txt['permissionname_view_vehicles'] = 'View Vehicles';
+$txt['permissionhelp_view_vehicles'] = 'This permission allows a user to view vehicle profiles.';
+$txt['permissionname_own_vehicle'] = 'Create Vehicle';
+$txt['permissionhelp_own_vehicle'] = 'This permission allows a user to create a vehicle.';
+$txt['permissionname_search_vehicles'] = 'Search Vehicles';
+$txt['permissionhelp_search_vehicles'] = 'This permission allows a user to search vehicles in the garage.';
+$txt['permissionname_browse_insurance'] = 'Browse Insurance';
+$txt['permissionhelp_browse_insurance'] = 'This permission allows a user to browse insurance companies.';
+$txt['permissionname_view_insurance'] = 'View Insurance';
+$txt['permissionhelp_view_insurance'] = 'This permission allows a user to view insurance company profiles.';
+$txt['permissionname_browse_shops'] = 'Browse Shops';
+$txt['permissionhelp_browse_shops'] = 'This permission allows a user to browse shops in the garage.';
+$txt['permissionname_view_shops'] = 'View Shops';
+$txt['permissionhelp_view_shops'] = 'This permission allows a user to view shop profiles.';
+$txt['permissionname_browse_garages'] = 'Browse Garages';
+$txt['permissionhelp_browse_garages'] = 'This permission allows a user to browse garages in the garage.';
+$txt['permissionname_view_garages'] = 'View Garages';
+$txt['permissionhelp_view_garages'] = 'This permission allows a user to view garage profiles.';
+$txt['permissionname_browse_qms'] = 'Browse Quartermiles';
+$txt['permissionhelp_browse_qms'] = 'This permission allows a user to browse quartermiles in the garage.';
+$txt['permissionname_view_qms'] = 'View Quartermile Runs';
+$txt['permissionhelp_view_qms'] = 'This permission allows a user to view quartermile runs.';
+$txt['permissionname_browse_dynos'] = 'Browse Dyno Runs';
+$txt['permissionname_view_dynos'] = 'View Dyno Runs';
+$txt['permissionhelp_view_dynos'] = 'This permission allows a user to view dyno runs.';
+$txt['permissionhelp_browse_dynos'] = 'This permission allows a user to browse dyno runs in the garage.';
+$txt['permissionname_browse_laps'] = 'Browse Lap Times';
+$txt['permissionhelp_browse_laps'] = 'This permission allows a user to browse lap times in the garage.';
+$txt['permissionname_view_laps'] = 'View Lap Times';
+$txt['permissionhelp_view_laps'] = 'This permission allows a user to view lap times.';
+$txt['permissionname_post_comments'] = 'Post Comments';
+$txt['permissionhelp_post_comments'] = 'This permission allows a user to post comments in other users guestbooks.';
+
+$txt['permissiongroup_garage_acp'] = 'Garage Management';
+$txt['permissionname_manage_garage_settings'] = 'Manage Garage Settings';
+$txt['permissionhelp_manage_garage_settings'] = 'This permission allows a user to manage the garage\'s settings.  In order for a user to edit any garage settings they must first be granted this permission.';
+$txt['permissionname_manage_garage_general'] = 'Edit General Settings';
+$txt['permissionhelp_manage_garage_general'] = 'This permission allows a user to manage the garage\'s general configuration settings.';
+$txt['permissionname_manage_garage_menu'] = 'Edit Menu Settings';
+$txt['permissionhelp_manage_garage_menu'] = 'This permission allows a user to manage the garage\'s menu by enabling/disabling menu options.';
+$txt['permissionname_manage_garage_index'] = 'Edit Index Settings';
+$txt['permissionhelp_manage_garage_index'] = 'This permissions allows a user to configure the front page index:<ul><li>Number of columns</li><li>Enable featured vehicle</li><li>Enable/Disable front page display blocks</li><li>Set front page display block limits</li></ul>';
+$txt['permissionname_manage_garage_images'] = 'Edit Image Settings';
+$txt['permissionhelp_manage_garage_images'] = 'This permission allows a user to manage garage image settings.';
+$txt['permissionname_manage_garage_videos'] = 'Edit Video Settings';
+$txt['permissionhelp_manage_garage_videos'] = 'This permission allows a user to manage garage video settings.';
+$txt['permissionname_manage_garage_modules'] = 'Edit Module Settings';
+$txt['permissionhelp_manage_garage_modules'] = 'This permission allows a user to manage garage module settings.';
+$txt['permissionname_manage_garage'] = 'Manage Garage Contents';
+$txt['permissionhelp_manage_garage'] = 'This permission allows a user to manage the garage\'s content such as businesses, modification categories, tracks, and vehicle data types.  In order for a user to manage any garage content they must first be granted this permission.';
+$txt['permissionname_manage_garage_businesses'] = 'Manage Businesses';
+$txt['permissionhelp_manage_garage_businesses'] = 'This permissions allows a user to add/edit/delete existing businesses.';
+$txt['permissionname_manage_garage_categories'] = 'Manage Categories';
+$txt['permissionhelp_manage_garage_categories'] = 'This permissions allows a user to add/edit/delete existing modification categories.';
+$txt['permissionname_manage_garage_makes_models'] = 'Manage Makes/Models';
+$txt['permissionhelp_manage_garage_makes_models'] = 'This permissions allows a user to add/edit/delete existing makes/models.';
+$txt['permissionname_manage_garage_products'] = 'Manage Products';
+$txt['permissionhelp_manage_garage_products'] = 'This permissions allows a user to add/edit/delete existing modification products.';
+$txt['permissionname_manage_garage_tools'] = 'Manage Tools';
+$txt['permissionhelp_manage_garage_tools'] = 'This permission allows a user to run garage tools/utilities.';
+$txt['permissionname_manage_garage_tracks'] = 'Manage Tracks';
+$txt['permissionhelp_manage_garage_tracks'] = 'This permissions allows a user to add/edit/delete existing tracks.';
+$txt['permissionname_manage_garage_other'] = 'Manage Other';
+$txt['permissionhelp_manage_garage_other'] = 'This permissions allows a user to manage the contents of the \'other\' tab.';
+$txt['permissionname_manage_garage_pending'] = 'Manage Pending Items';
+$txt['permissionhelp_manage_garage_pending'] = 'This permissions allows a user to manage pending items in the garage.';
+$txt['permissionname_edit_all_vehicles'] = 'Edit Any Vehicle';
+$txt['permissionhelp_edit_all_vehicles'] = 'This permissions allows a user to edit other user\'s vehicles in the garage.';
+$txt['permissionname_edit_all_comments'] = 'Edit Any Comment';
+$txt['permissionhelp_edit_all_comments'] = 'This permissions allows a user to edit other user\'s comments in the guestbooks.';
+$txt['permissionname_limit_exemption'] = 'Exempt from Limits';
+$txt['permissionhelp_limit_exemption'] = 'This permissions allows a user to be exempt from gallery or vehicle limits.';]]></add>
+        </operation>
+    </file>
+
+</modification>

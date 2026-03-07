@@ -20,6 +20,7 @@ function tags_load_permissions(&$permissionGroups, &$permissionList, &$leftPermi
    $permissionList['membergroup'] += array(
 	   'smftags_add' => array(false, 'smftags', 'smftags'),
 	   'smftags_del' => array(false, 'smftags', 'smftags'),
+	   'smftags_suggest' => array(false, 'smftags', 'smftags'),
 	   'smftags_manage' => array(false, 'smftags', 'smftags')
    );
 

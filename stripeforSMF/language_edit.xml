@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>stripesmf:stripe-payment-gateway_language</id>
+	<version>1.0.0</version>
+
+	<file name="$languagedir/ManagePaid.english.php">
+		<!-- Add Stripe language strings before the closing PHP tag -->
+		<operation>
+			<search position="end"></search>
+			<add><![CDATA[
+// Stripe payment gateway
+$txt['stripe'] = 'Stripe';
+$txt['paidsubs_gateway_title_Stripe'] = 'Stripe';
+$txt['stripe_secret_key'] = 'Stripe Secret Key';
+$txt['stripe_secret_key_desc'] = 'Your Stripe secret API key (sk_live_ or sk_test_). Leave blank to disable Stripe.';
+$txt['stripe_publishable_key'] = 'Stripe Publishable Key';
+$txt['stripe_publishable_key_desc'] = 'Your Stripe publishable API key (pk_live_ or pk_test_).';
+$txt['stripe_webhook_secret'] = 'Stripe Webhook Signing Secret';
+$txt['stripe_webhook_secret_desc'] = 'Found in Stripe Dashboard > Developers > Webhooks (whsec_...).';
+$txt['paid_confirm_stripe'] = 'To pay using <a href="https://stripe.com">Stripe</a> click the button below. You will be directed to Stripe for secure payment.';
+$txt['paid_stripe_order'] = 'Pay with Stripe';
+$txt['stripe_could_not_connect'] = 'Could not connect to Stripe server';
+
+]]></add>
+		</operation>
+	</file>
+</modification>

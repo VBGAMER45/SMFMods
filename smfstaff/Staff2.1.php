@@ -29,7 +29,7 @@ function Staff()
 	);
 
 	// Follow the sa or just go to main staff page.
-	if (!empty($subActions[@$_GET['sa']]))
+	if (isset($_GET['sa']) && !empty($subActions[$_GET['sa']]))
 		$subActions[$_GET['sa']]();
 	else
 		ViewStaffPage();	
@@ -136,7 +136,7 @@ function ViewStaffPage()
 					'lastLogin' => $row3['last_login'],
 					'dateRegistered' => $row3['date_registered'],
 					'emailAddress' => $row3['email_address'],
-					'avatar' => $row['avatar'],
+					'avatar' => $row3['avatar'],
 					'forums' =>  $bmods[$row3['ID_MEMBER']],
 					);
 
@@ -212,7 +212,8 @@ function StaffSettings()
 function StaffSettings2()
 {
 	isAllowedTo('admin_forum');
-	
+	checkSession();
+
 	// Staff Page settings
 	$smfstaff_showavatar = isset($_REQUEST['smfstaff_showavatar']) ? 1 : 0;
 	$smfstaff_showlastactive = isset($_REQUEST['smfstaff_showlastactive']) ? 1 : 0;
@@ -238,19 +239,21 @@ function StaffSettings2()
 function Staff_AddGroup()
 {
 	global $smcFunc, $txt;
-	
+
 	// Check permissions
 	isAllowedTo('admin_forum');
+	checkSession('get');
 
 	// Get the Group ID
 	$id = (int) $_REQUEST['id'];
-	
+
 	// Get Last Group ID
-	$query = $smcFunc['db_query']('', "
-	SELECT 
-		roworder 
-	FROM {db_prefix}staff 
-	ORDER BY roworder DESC LIMIT 1");
+	$query = $smcFunc['db_query']('', '
+		SELECT roworder
+		FROM {db_prefix}staff
+		ORDER BY roworder DESC LIMIT 1',
+		array()
+	);
 	$row = $smcFunc['db_fetch_assoc']($query);
 
 	if (empty($row['roworder']))
@@ -259,30 +262,38 @@ function Staff_AddGroup()
 	$lastgroupid = $row['roworder'];
 	$lastgroupid++;
 	$smcFunc['db_free_result']($query);
-	
+
 	// Check if that group exists already
-	$query = $smcFunc['db_query']('', "
-	SELECT 
-		ID_GROUP 
-	FROM {db_prefix}staff 
-	WHERE ID_GROUP = $id LIMIT 1");
-	if ($smcFunc['db_affected_rows']() != 0)
+	$query = $smcFunc['db_query']('', '
+		SELECT ID_GROUP
+		FROM {db_prefix}staff
+		WHERE ID_GROUP = {int:id} LIMIT 1',
+		array(
+			'id' => $id,
+		)
+	);
+	if ($smcFunc['db_num_rows']($query) != 0)
 	{
 		// The group already exists!
-		
+
 		$smcFunc['db_free_result']($query);
-		
+
 		fatal_error($txt['smfstaff_errgroupexists'],false);
 	}
-	else 
-	{	
-		$row = $smcFunc['db_fetch_assoc']($query);
+	else
+	{
 		$smcFunc['db_free_result']($query);
-		
+
 		// Insert the Group
-		$smcFunc['db_query']('', "INSERT INTO {db_prefix}staff
-			(ID_GROUP, roworder)
-		VALUES ($id, $lastgroupid)");	
+		$smcFunc['db_query']('', '
+			INSERT INTO {db_prefix}staff
+				(ID_GROUP, roworder)
+			VALUES ({int:id}, {int:roworder})',
+			array(
+				'id' => $id,
+				'roworder' => $lastgroupid,
+			)
+		);
 	}
 	
 	redirectexit('action=admin;area=staff;sa=admin');
@@ -291,15 +302,21 @@ function Staff_AddGroup()
 function Staff_DeleteGroup()
 {
 	global $smcFunc;
-	
+
 	// Check Admin Permission
 	isAllowedTo('admin_forum');
-	
+	checkSession('get');
+
 	// Get the Group ID
 	$id = (int) $_REQUEST['id'];
-	
-	$smcFunc['db_query']('', "DELETE FROM {db_prefix}staff 
-			WHERE ID_GROUP = " . $id);
+
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}staff
+		WHERE ID_GROUP = {int:id}',
+		array(
+			'id' => $id,
+		)
+	);
 	
 	// Fix the row orders
 	ReAdjustGroupOrder();
@@ -318,16 +335,20 @@ function Staff_CatUp()
 	global $smcFunc, $txt;
 	// Check if they are allowed to manage the forum
 	isAllowedTo('admin_forum');
+	checkSession('get');
 
 	// Get the cat id
-	$cat = (int) @$_REQUEST['id'];
+	$cat = (int) $_REQUEST['id'];
 	// Check if there is a category above it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
-	SELECT 
-		roworder 
-	FROM {db_prefix}staff 
-	WHERE ID_GROUP = $cat");
+	$dbresult1 = $smcFunc['db_query']('', '
+		SELECT roworder
+		FROM {db_prefix}staff
+		WHERE ID_GROUP = {int:cat}',
+		array(
+			'cat' => $cat,
+		)
+	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 	if (empty($row['roworder']))
 		$row['roworder'] = 0;
@@ -337,23 +358,38 @@ function Staff_CatUp()
 	$o--;
 
 	$smcFunc['db_free_result']($dbresult1);
-	$dbresult = $smcFunc['db_query']('', "
-	SELECT 
-		ID_GROUP, roworder 
-	FROM {db_prefix}staff 
-	WHERE roworder = $o");
-	if ($smcFunc['db_affected_rows']()== 0)
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT ID_GROUP, roworder
+		FROM {db_prefix}staff
+		WHERE roworder = {int:roworder}',
+		array(
+			'roworder' => $o,
+		)
+	);
+	if ($smcFunc['db_num_rows']($dbresult) == 0)
 		fatal_error($txt['smfstaff_nocatabove'],false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
-
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}staff
-		SET roworder = $oldrow WHERE ID_GROUP = " .$row2['ID_GROUP']);
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}staff
+		SET roworder = {int:roworder}
+		WHERE ID_GROUP = {int:id_group}',
+		array(
+			'roworder' => $oldrow,
+			'id_group' => $row2['ID_GROUP'],
+		)
+	);
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}staff
-		SET roworder = $o WHERE ID_GROUP = $cat");
-
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}staff
+		SET roworder = {int:roworder}
+		WHERE ID_GROUP = {int:cat}',
+		array(
+			'roworder' => $o,
+			'cat' => $cat,
+		)
+	);
 
 	$smcFunc['db_free_result']($dbresult);
 
@@ -367,16 +403,20 @@ function Staff_CatDown()
 
 	// Check if they are allowed to manage the forum
 	isAllowedTo('admin_forum');
+	checkSession('get');
 
 	// Get the cat id
-	$cat = (int) @$_REQUEST['id'];
+	$cat = (int) $_REQUEST['id'];
 	// Check if there is a category below it
 	// First get our row order
-	$dbresult1 = $smcFunc['db_query']('', "
-	SELECT 
-		roworder 
-	FROM {db_prefix}staff 
-	WHERE ID_GROUP = $cat");
+	$dbresult1 = $smcFunc['db_query']('', '
+		SELECT roworder
+		FROM {db_prefix}staff
+		WHERE ID_GROUP = {int:cat}',
+		array(
+			'cat' => $cat,
+		)
+	);
 	$row = $smcFunc['db_fetch_assoc']($dbresult1);
 
 	if (empty($row['roworder']))
@@ -386,24 +426,39 @@ function Staff_CatDown()
 	$o = $row['roworder'];
 	$o++;
 	$smcFunc['db_free_result']($dbresult1);
-	
-	$dbresult = $smcFunc['db_query']('', "
-	SELECT 
-		ID_GROUP, roworder 
-	FROM {db_prefix}staff 
-	WHERE roworder = $o");
-	if ($smcFunc['db_affected_rows']()== 0)
+
+	$dbresult = $smcFunc['db_query']('', '
+		SELECT ID_GROUP, roworder
+		FROM {db_prefix}staff
+		WHERE roworder = {int:roworder}',
+		array(
+			'roworder' => $o,
+		)
+	);
+	if ($smcFunc['db_num_rows']($dbresult) == 0)
 		fatal_error($txt['smfstaff_nocatbelow'],false);
 	$row2 = $smcFunc['db_fetch_assoc']($dbresult);
 
-
 	// Swap the order Id's
-	$smcFunc['db_query']('', "UPDATE {db_prefix}staff
-		SET roworder = $oldrow WHERE ID_GROUP = " .$row2['ID_GROUP']);
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}staff
+		SET roworder = {int:roworder}
+		WHERE ID_GROUP = {int:id_group}',
+		array(
+			'roworder' => $oldrow,
+			'id_group' => $row2['ID_GROUP'],
+		)
+	);
 
-	$smcFunc['db_query']('', "UPDATE {db_prefix}staff
-		SET roworder = $o WHERE ID_GROUP = $cat");
-
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}staff
+		SET roworder = {int:roworder}
+		WHERE ID_GROUP = {int:cat}',
+		array(
+			'roworder' => $o,
+			'cat' => $cat,
+		)
+	);
 
 	$smcFunc['db_free_result']($dbresult);
 
@@ -415,25 +470,32 @@ function Staff_CatDown()
 function ReAdjustGroupOrder()
 {
 	global $smcFunc;
-	
-	$query = $smcFunc['db_query']('', "
-	SELECT 
-		ID_GROUP 
-	FROM {db_prefix}staff 
-	ORDER BY roworder");
+
+	$query = $smcFunc['db_query']('', '
+		SELECT ID_GROUP
+		FROM {db_prefix}staff
+		ORDER BY roworder',
+		array()
+	);
 	$groups = array();
 	while ($row = $smcFunc['db_fetch_assoc']($query))
-		$groups[] = array('ID_GROUP' =>$row['ID_GROUP']);
+		$groups[] = array('ID_GROUP' => $row['ID_GROUP']);
 
 	$smcFunc['db_free_result']($query);
-	
+
 	$roworder = 0;
 	foreach ($groups as $id => $data)
 	{
-	
-		$smcFunc['db_query']('', "UPDATE {db_prefix}staff
-		SET roworder = $roworder WHERE ID_GROUP = " . $data['ID_GROUP']);
-		$roworder++;	
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}staff
+			SET roworder = {int:roworder}
+			WHERE ID_GROUP = {int:id_group}',
+			array(
+				'roworder' => $roworder,
+				'id_group' => $data['ID_GROUP'],
+			)
+		);
+		$roworder++;
 	}
 }
 
@@ -486,7 +548,7 @@ function staff_admin_areas(&$admin_areas)
 					'custom_url' => $scripturl . '?action=admin;area=staff;sa=admin',
 					'icon' => 'group.png',
 					'subsections' => array(
-						'adminset' => array($txt['smfstaff_admin']),
+						'admin' => array($txt['smfstaff_admin']),
 					),
 				);
 

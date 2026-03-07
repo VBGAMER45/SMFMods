@@ -4,7 +4,7 @@
 <id>vbgamer45:SMFLinks</id>
 <name>SMF Links</name>
 <type>modification</type>
-<version>4.1</version>
+<version>5.1.1</version>
 
 	<install for="1.1 - 1.1.99,1.1 RC2,1.1 RC3">
 		<redirect url="?action=links;sa=admin">redirect.txt</redirect>
@@ -69,6 +69,7 @@
 			<require-file name="LinksHooks.php" destination="$sourcedir" />
 			<require-file name="Links2.1.template.php" destination="$themedir" />
 			<require-file name="Links.english.php" destination="$themedir/languages" />
+			<require-file name="LinksSort.js" destination="$themedir/scripts" />
 			<code>linksql2.php</code>
 		</install>
 		<uninstall for="2.1 - 2.1.99">

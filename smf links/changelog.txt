@@ -1,3 +1,27 @@
+5.1.1
++Added Cloudflare block detection - links behind Cloudflare are shown as "Cloudflare Block" instead of false positives
++Ported link checker (Check Links page) to SMF 2.0 template
+
+5.1 for SMF 2.0/2.1
++Link checker now uses a modern Chrome browser user agent to avoid being blocked by webservers
++Added configurable batch size setting for link checker (5-200, default 25)
++Added fail counter (check_fails column) that increments each time a link fails and resets on success
++Added "Fails" column to link checker results table showing cumulative fail count per link
++Added PM notification system for broken links - admin can select bad links and notify submitters
++Each user receives a single PM listing all their broken links with status details
++Added "Link Checker Settings" section to the settings page (both SMF 2.0 and 2.1 templates)
+!Use curl multi to check domains quicker!!
+
+5.0 for SMF 2.1
++Added drag-and-drop category reordering in admin (replaces Up/Down links when JavaScript is enabled)
++Added bad link checker admin tool - checks all links in batches via AJAX with HEAD/GET fallback
++Added bulk delete for broken links found by the link checker
++Added link thumbnail previews via thum.io with lazy loading
++Added new admin tab "Check Links" under Links Configuration
++Added last_checked and last_status columns to links table for link checker tracking
++Added LinksSort.js for HTML5 native drag-and-drop (no jQuery UI dependency)
+!Up/Down category reorder links kept as fallback when JavaScript is disabled
+
 4.0
 +Added support for SMF 2.1
 !Fixed bug with reorder links.

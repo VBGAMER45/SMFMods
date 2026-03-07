@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.w3.org)",
+      "WebFetch(domain:activitypub.rocks)",
+      "WebFetch(domain:docs.joinmastodon.org)",
+      "WebFetch(domain:www.rfc-editor.org)",
+      "WebFetch(domain:codeberg.org)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:imrannazar.com)",
+      "WebFetch(domain:socialhub.activitypub.rocks)",
+      "WebFetch(domain:blog.joinmastodon.org)",
+      "WebFetch(domain:swicg.github.io)",
+      "WebFetch(domain:seb.jambor.dev)",
+      "WebFetch(domain:docs.nodebb.org)",
+      "WebFetch(domain:chrastecky.dev)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(node:*)"
+    ]
+  }
+}
