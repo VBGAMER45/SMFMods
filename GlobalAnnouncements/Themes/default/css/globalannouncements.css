@@ -1,0 +1,86 @@
+/* Global Announcements - Styles */
+
+/* Announcement bar on message index */
+.global_announcement_bar {
+	margin-bottom: 4px;
+}
+
+.global_announcement_bar .message_index_title a {
+	font-weight: bold;
+}
+
+/* Full view page */
+.global_announcement_view {
+	margin-bottom: 16px;
+}
+
+.global_announcement_view .windowbg {
+	padding: 16px;
+}
+
+.global_announcement_view_title {
+	font-size: 1.4em;
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+
+.global_announcement_view_meta {
+	font-size: 0.85em;
+	color: #888;
+	margin-bottom: 16px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+.global_announcement_view_body {
+	line-height: 1.6;
+	margin-bottom: 16px;
+}
+
+.global_announcement_view_stats {
+	font-size: 0.85em;
+	color: #888;
+	padding-top: 8px;
+	border-top: 1px solid #ddd;
+}
+
+/* Comments section */
+.global_announcement_comments {
+	margin-top: 16px;
+}
+
+.global_announcement_comment {
+	padding: 12px 16px;
+	margin-bottom: 4px;
+}
+
+.global_announcement_comment_header {
+	font-size: 0.9em;
+	color: #666;
+	margin-bottom: 8px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #eee;
+}
+
+.global_announcement_comment_body {
+	line-height: 1.5;
+}
+
+.global_announcement_comment_actions {
+	margin-top: 8px;
+	font-size: 0.85em;
+}
+
+.global_announcement_comment_modified {
+	font-size: 0.8em;
+	color: #999;
+	font-style: italic;
+	margin-top: 4px;
+}
+
+/* Separator bar */
+.global_announcement_separator {
+	border-top: 2px solid #ccc;
+	margin: 8px 0;
+}
+

@@ -1,0 +1,17 @@
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>smfmods:opensearch-for-smf</id>
+	<name>OpenSearch for SMF</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.1.0-2.1.99">
+		<move-file name="SearchAPI-Opensearch.php" destination="$sourcedir" />
+		<move-file name="Admin-OpenSearch.english.php" destination="$themes_dir/default/languages" />
+		<redirect url="?action=admin;area=managesearch;sa=method" />
+	</install>
+	<uninstall for="2.1.0-2.1.99">
+		<remove-file name="$sourcedir/SearchAPI-Opensearch.php" />
+		<remove-file name="$themes_dir/default/languages/Admin-OpenSearch.english.php" />
+	</uninstall>
+</package-info>

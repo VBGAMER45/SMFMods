@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Daniel15:Blog</id>
 	<name>SMFBlog</name>
-	<version>2.0</version>
+	<version>3.0</version>
 	<type>modification</type>
 
 	<install for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
@@ -20,8 +20,61 @@
 		<remove-file name="$sourcedir/Blog.php" />
 		<remove-file name="$themedir/Blog.template.php" />
 		<remove-file name="$themedir/blog.css" />
-		
+
 		<modification format="xml" type="file" reverse="true">install.xml</modification>
+		<code>UnInstall.php</code>
+	</uninstall>
+
+	<!-- SMF 2.1 install -->
+	<install for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3">
+		<readme parsebbc="true">readme.txt</readme>
+		<require-file name="Blog.php" destination="$sourcedir" />
+		<require-file name="blogHooks.php" destination="$sourcedir" />
+		<require-file name="Blog2.1.template.php" destination="$themedir" />
+		<require-file name="blog.css" destination="$themedir" />
+		<modification format="xml" type="file">install2.1.xml</modification>
+
+		<!-- Hooks -->
+		<hook hook="integrate_actions" function="blog_actions" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_pre_boardindex" function="blog_pre_boardindex" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_boardindex_board" function="blog_boardindex_board" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_modify_features" function="blog_modify_features" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_post2_end" function="blog_post2_end" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_redirect" function="blog_redirect" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_buffer" function="blog_buffer_rewrite" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_menu_buttons" function="blog_menu_buttons" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_modify_board" function="blog_modify_board" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_create_board" function="blog_create_board" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_pre_boardtree" function="blog_pre_boardtree" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_boardtree_board" function="blog_boardtree_board" file="$sourcedir/blogHooks.php" />
+		<hook hook="integrate_edit_board" function="blog_edit_board" file="$sourcedir/blogHooks.php" />
+
+		<code>installScript.php</code>
+	</install>
+
+	<!-- SMF 2.1 uninstall -->
+	<uninstall for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3, 2.1 RC4, 2.1 Beta 3">
+		<modification format="xml" type="file" reverse="true">install2.1.xml</modification>
+
+		<!-- Hooks -->
+		<hook hook="integrate_actions" function="blog_actions" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_pre_boardindex" function="blog_pre_boardindex" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_boardindex_board" function="blog_boardindex_board" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_modify_features" function="blog_modify_features" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_post2_end" function="blog_post2_end" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_redirect" function="blog_redirect" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_buffer" function="blog_buffer_rewrite" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_menu_buttons" function="blog_menu_buttons" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_modify_board" function="blog_modify_board" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_create_board" function="blog_create_board" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_pre_boardtree" function="blog_pre_boardtree" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_boardtree_board" function="blog_boardtree_board" file="$sourcedir/blogHooks.php" reverse="true" />
+		<hook hook="integrate_edit_board" function="blog_edit_board" file="$sourcedir/blogHooks.php" reverse="true" />
+
+		<remove-file name="$sourcedir/Blog.php" />
+		<remove-file name="$sourcedir/blogHooks.php" />
+		<remove-file name="$themedir/Blog2.1.template.php" />
+		<remove-file name="$themedir/blog.css" />
 		<code>UnInstall.php</code>
 	</uninstall>
 </package-info>

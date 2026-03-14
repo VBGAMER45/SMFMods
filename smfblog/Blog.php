@@ -4,16 +4,15 @@
 ***********************************************************************************
 * SMFBlog: A (very) simple Blog system for Simple Machines Forum                  *
 * =============================================================================== *
-* Software Version:           SMFBlog 2.0       
+* Software Version:           SMFBlog 3.0
 * Updated by:                 vbgamer45 (http://www.smfhacks.com)                 *
 * Updated by:                 Runic (http://www.smfservices.org)                  *
 * Original Mod by:            Daniel15 (http://www.dansoftaustralia.net/)         *
-* Copyright 2010 by:           vbgamer45 (http://www.smfhacks.com)                *
+* Copyright 2010-2026 by:           vbgamer45 (http://www.smfhacks.com)           *
 * Copyright 2009-2010 by:     Runic (http://www.smfservices.org)                  *
 * Copyright 2007-2009 by:     Daniel15 (http://www.dansoftaustralia.net/)         *
 ***********************************************************************************
 *********************************************************************************/
-ini_set("display_errors",1);
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
@@ -43,7 +42,7 @@ function Blog()
 	
 	// Some version stuff
 	$context['blog_version'] = array(
-		'version' => '2.0',
+		'version' => '3.0',
 		'build' => '1',
 		'revision' => '$Revision: 1 $',
 		'date' => '$Date: 2010-01-30 18:54:44 +0 $',
@@ -62,12 +61,18 @@ function Blog()
 
 	// We need some SSI functions.
 	require_once($boarddir . '/SSI.php');
-	// Load our template.
-	loadTemplate('Blog');
+	// Load our template - use 2.1 variant if available.
+	if (defined('SMF_VERSION') && version_compare(SMF_VERSION, '2.1', '>='))
+		loadTemplate('Blog2.1');
+	else
+		loadTemplate('Blog');
 	// Use the blog layer
 	$context['template_layers'][] = 'blog';
 	// Add our stylesheet.
-	$context['html_headers'] .= '
+	if (function_exists('loadCSSFile'))
+		loadCSSFile($settings['default_theme_url'] . '/blog.css');
+	else
+		$context['html_headers'] .= '
 	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/blog.css" />';
 	// A default page title.
 	$context['page_title'] = $context['forum_name'] . ' ' . $txt['blog'];
@@ -263,7 +268,7 @@ function BlogViewPost()
 		'width' => '90%',
 		'form' => 'postmodify',
 		'labels' => array(
-			'post_button' => '',
+			'post_button' => $txt['smfblog_save'],
 		),
 	);
 	create_control_richedit($editorOptions);
@@ -319,7 +324,7 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 	$result = $smcFunc['db_query']('', '
 		SELECT
 			t.id_topic, t.id_board, t.id_first_msg, t.id_last_msg, t.id_member_started, t.num_replies, t.locked, m.id_member,m.icon, m.subject, 
-			m.poster_time, m.body, m.smileys_enabled, m.id_msg, IFNULL(mem.real_name, m.poster_name) AS poster_name, b.name AS board_name
+			m.poster_time, m.body, m.smileys_enabled, m.id_msg, COALESCE(mem.real_name, m.poster_name) AS poster_name, b.name AS board_name
 		FROM ({db_prefix}topics AS t
 			INNER JOIN {db_prefix}messages AS m
 			INNER JOIN {db_prefix}boards AS b)
@@ -420,7 +425,7 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 		$result = $smcFunc['db_query']('', '
 			SELECT
 				m.id_msg, m.poster_time, m.id_member, m.subject,
-				IFNULL(mem.real_name, m.poster_name) AS poster_name,
+				COALESCE(mem.real_name, m.poster_name) AS poster_name,
 				m.poster_ip, m.smileys_enabled, m.modified_time,
 				m.modified_name, m.body, m.icon
 			FROM {db_prefix}messages AS m

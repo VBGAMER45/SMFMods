@@ -1,5 +1,5 @@
 <?php
-// Install script for SMFBlog 2.0
+// Install script for SMFBlog 3.0
 
 // If you like how this install script works, please feel free to use any part
 // of it in your own mods :)
@@ -34,16 +34,29 @@ $mod_settings = array(
 	'blog_hide_boards' => 0,
 );
 
-// Go through all the fields
-foreach ($db_fields as $db_field)
+// Check if we can use the SMF 2.1 portable approach
+if (isset($smcFunc['db_add_column']))
 {
-	// Does it exist?
-	$result = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}{$db_field['table']} LIKE '{$db_field['name']}'");
-	// Nope...
-	if ($smcFunc['db_num_rows']($result) == 0) 
-		//... add it!
-		$smcFunc['db_query']('', "ALTER TABLE {db_prefix}{$db_field['table']} ADD `{$db_field['name']}` {$db_field['attribs']}");
-	$smcFunc['db_free_result']($result);
+	$smcFunc['db_add_column']('{db_prefix}boards',
+		array('name' => 'is_blog', 'type' => 'tinyint', 'size' => 1, 'unsigned' => true, 'default' => 0),
+		array(), 'ignore');
+	$smcFunc['db_add_column']('{db_prefix}boards',
+		array('name' => 'blog_alias', 'type' => 'varchar', 'size' => 50, 'default' => ''),
+		array(), 'ignore');
+}
+else
+{
+	// Existing MySQL approach (SMF 2.0)
+	foreach ($db_fields as $db_field)
+	{
+		// Does it exist?
+		$result = $smcFunc['db_query']('', "SHOW COLUMNS FROM {db_prefix}{$db_field['table']} LIKE '{$db_field['name']}'");
+		// Nope...
+		if ($smcFunc['db_num_rows']($result) == 0)
+			//... add it!
+			$smcFunc['db_query']('', "ALTER TABLE {db_prefix}{$db_field['table']} ADD `{$db_field['name']}` {$db_field['attribs']}");
+		$smcFunc['db_free_result']($result);
+	}
 }	
 
 // Now for the settings...

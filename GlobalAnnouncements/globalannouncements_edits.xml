@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>smfhacks:globalannouncements</id>
+	<version>1.0</version>
+
+	<!-- MessageIndex.template.php: Add global announcements above topic list -->
+	<file name="$themedir/MessageIndex.template.php">
+		<operation>
+			<search position="after"><![CDATA[foreach ($context['topics'] as $topic)]]></search>
+			<add><![CDATA[
+		if (!empty($context['global_announcements_active']) && !empty($context['global_announcements']))
+			template_globalannouncements_index_bar();
+
+]]></add>
+		</operation>
+	</file>
+
+
+</modification>

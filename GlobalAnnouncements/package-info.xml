@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>smfhacks:globalannouncements</id>
+	<name>Global Announcements</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="2.1 - 2.1.99">
+		<redirect url="?action=admin;area=globalannouncements;sa=settings">redirect.txt</redirect>
+		<readme parsebbc="true">readme.txt</readme>
+
+		<require-file name="Sources/GlobalAnnouncements.php" destination="$sourcedir" />
+		<require-file name="Sources/GlobalAnnouncementsHooks.php" destination="$sourcedir" />
+		<require-file name="Themes/default/GlobalAnnouncements.template.php" destination="$themedir" />
+		<require-file name="Themes/default/css/globalannouncements.css" destination="$themedir/css" />
+		<require-file name="Themes/default/languages/GlobalAnnouncements.english.php" destination="$languagedir" />
+
+		<!-- Hooks -->
+		<hook hook="integrate_actions" function="globalannouncements_actions" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<hook hook="integrate_admin_areas" function="globalannouncements_admin_areas" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<hook hook="integrate_load_permissions" function="globalannouncements_load_permissions" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<hook hook="integrate_load_theme" function="globalannouncements_load_theme" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<hook hook="integrate_message_index" function="globalannouncements_message_index" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<hook hook="integrate_whos_online" function="globalannouncements_whos_online" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<hook hook="integrate_mod_buttons" function="globalannouncements_mod_buttons" file="$sourcedir/GlobalAnnouncementsHooks.php" />
+
+		<modification>globalannouncements_edits.xml</modification>
+		<code>globalannouncements_install.php</code>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<modification reverse="true">globalannouncements_edits.xml</modification>
+		<code>globalannouncements_uninstall.php</code>
+
+		<!-- Hooks -->
+		<hook hook="integrate_actions" function="globalannouncements_actions" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+		<hook hook="integrate_admin_areas" function="globalannouncements_admin_areas" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+		<hook hook="integrate_load_permissions" function="globalannouncements_load_permissions" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+		<hook hook="integrate_load_theme" function="globalannouncements_load_theme" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+		<hook hook="integrate_message_index" function="globalannouncements_message_index" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+		<hook hook="integrate_whos_online" function="globalannouncements_whos_online" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+		<hook hook="integrate_mod_buttons" function="globalannouncements_mod_buttons" file="$sourcedir/GlobalAnnouncementsHooks.php" reverse="true" />
+
+		<remove-file name="$sourcedir/GlobalAnnouncements.php" />
+		<remove-file name="$sourcedir/GlobalAnnouncementsHooks.php" />
+		<remove-file name="$themedir/GlobalAnnouncements.template.php" />
+		<remove-file name="$themedir/css/globalannouncements.css" />
+		<remove-file name="$languagedir/GlobalAnnouncements.english.php" />
+	</uninstall>
+</package-info>

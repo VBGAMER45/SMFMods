@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+    <id>Daniel15:Blog21</id>
+    <version>3.0</version>
+
+	<!-- Edit 1: Post.template.php - Add hidden blog form fields -->
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+			<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">
+]]></search>
+			<add><![CDATA[
+			<input type="hidden" name="seqnum" value="', $context['form_sequence_number'], '">', (!empty($_POST['blog_post']) ? '
+			<input type="hidden" name="blog_post" value="' . $_POST['blog_post'] . '">' : ''), (!empty($_POST['blog_name']) ? '
+			<input type="hidden" name="blog_name" value="' . htmlentities($_POST['blog_name']) . '">' : ''), '
+]]></add>
+		</operation>
+	</file>
+
+	<!-- Edit 2: ManageBoards.template.php - "Use as blog" checkbox -->
+	<file name="$themedir/ManageBoards.template.php">
+		<operation>
+			<search position="replace"><![CDATA[if (empty($context['board']['is_recycle']) && empty($context['board']['topics']))]]></search>
+			<add><![CDATA[
+
+			echo '
+							<dl class="settings">
+								<dt><b>', $txt['blog_board'], '</b><br>
+									', $txt['blog_board_desc'], '<br><br>
+								</dt>
+								<dd valign="top" align="right">
+									<input type="checkbox" name="is_blog"', $context['board']['is_blog'] ? ' checked' : '', ' class="check">
+								</dd>
+							</dl>
+	';
+
+	if (empty($context['board']['is_recycle']) && empty($context['board']['topics']))
+]]></add>
+		</operation>
+	</file>
+
+	<!-- Edit 3: Modifications.english.php - Language strings (no -utf8 variant needed for 2.1) -->
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="after"><![CDATA[?>]]></search>
+			<add><![CDATA[
+// --- Begin modification - SMFBlog ---
+// General text strings
+$txt['blog'] = 'Blog';
+// Text used in the frontend (user section).
+$txt['blog_boards'] = 'Blog boards';
+$txt['blog_blogs'] = 'Available blogs:';
+$txt['blog_comments'] = 'Comments';
+$txt['blog_no_comments'] = 'No comments have been posted for this post yet.';
+$txt['blog_write_comment'] = 'Write a Comment';
+// Errors in the frontend.
+$txt['blog_error_disabled'] = 'Sorry, but blogs are currently disabled!';
+$txt['blog_error_login'] = 'Sorry, you must be logged in to post a comment!';
+$txt['blog_error_not_exist'] = 'Sorry, but the blog you requested does not exist!';
+$txt['blog_error_not_blog'] = 'Sorry, but this board is not a blog!';
+
+// Settings for the blog administration.
+$txt['blog_comments_perpage'] = 'Number of comments to display per page';
+$txt['blog_posts_perpage'] = 'Number of blog posts to display per page';
+$txt['blog_enable'] = 'Enable blog?';
+$txt['blog_enable_rewrite'] = 'Enable pretty URLs?';
+$txt['blog_hide_boards'] = 'Hide blog boards?';
+$txt['blog_settings'] = 'Blog Settings';
+// Board administration.
+$txt['blog_board'] = 'Use this board as a blog?';
+$txt['blog_board_desc'] = 'Enabling this option will show this board on the blog page.';
+// --- End modification ---
+
+// --- Begin modification - SSI Topic and Replies ---
+$txt['ssiTopic_no_id'] = 'ssi_topic(): Please specify a topic ID';
+$txt['ssiTopic_notfound'] = 'The topic you are looking for appears to be either missing or off limits to you.';
+$txt['ssiTopic_replies'] = 'Replies';
+$txt['ssiTopic_reply'] = 'Reply ';
+// --- End modification ---
+
+// Template
+$txt['smfblog_by'] = 'by';
+$txt['smfblog_subject'] = 'Subject';
+$txt['smfblog_re'] = 'Re: ';
+$txt['smfblog_shortcuts'] = 'shortcuts: hit alt+s to submit/post or alt+p to preview';
+$txt['smfblog_save'] = 'Save';
+$txt['smfblog_preview'] = 'Preview';
+// END SMF Blog
+]]></add>
+		</operation>
+	</file>
+
+</modification>

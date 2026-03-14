@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>ArmySystem:ArmySystem</id>
+	<name>Army System</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.1 - 2.1.99">
+		<readme>readme.txt</readme>
+
+		<!-- Source files -->
+		<require-file name="Sources/ArmySystem.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Subs.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Race.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Armor.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Training.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Mercenaries.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Attack.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Spy.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Clans.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Transfer.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Events.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Admin.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySystem-Scheduled.php" destination="$sourcedir" />
+
+		<!-- Template files -->
+		<require-file name="Themes/default/ArmySystem.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Race.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Armor.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Training.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Mercenaries.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Attack.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Spy.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Clans.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Transfer.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Events.template.php" destination="$themedir" />
+		<require-file name="Themes/default/ArmySystem-Admin.template.php" destination="$themedir" />
+
+		<!-- Images -->
+		<require-dir name="Themes/default/images/army" destination="$themedir/images/army" />
+
+		<!-- CSS -->
+		<require-file name="Themes/default/css/army_system.css" destination="$themedir/css" />
+
+		<!-- Language -->
+		<require-file name="Themes/default/languages/ArmySystem.english.php" destination="$languagedir" />
+
+		<!-- Database setup, default data, permissions, scheduled tasks -->
+		<code>install.php</code>
+
+		<!-- Register hooks -->
+		<code>dohooks.php</code>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<!-- Remove hooks -->
+		<code>dohooks.php</code>
+
+		<!-- Remove scheduled tasks -->
+		<code>uninstall.php</code>
+
+		<!-- Source files -->
+		<remove-file name="$sourcedir/ArmySystem.php" />
+		<remove-file name="$sourcedir/ArmySystem-Subs.php" />
+		<remove-file name="$sourcedir/ArmySystem-Race.php" />
+		<remove-file name="$sourcedir/ArmySystem-Armor.php" />
+		<remove-file name="$sourcedir/ArmySystem-Training.php" />
+		<remove-file name="$sourcedir/ArmySystem-Mercenaries.php" />
+		<remove-file name="$sourcedir/ArmySystem-Attack.php" />
+		<remove-file name="$sourcedir/ArmySystem-Spy.php" />
+		<remove-file name="$sourcedir/ArmySystem-Clans.php" />
+		<remove-file name="$sourcedir/ArmySystem-Transfer.php" />
+		<remove-file name="$sourcedir/ArmySystem-Events.php" />
+		<remove-file name="$sourcedir/ArmySystem-Admin.php" />
+		<remove-file name="$sourcedir/ArmySystem-Scheduled.php" />
+
+		<!-- Template files -->
+		<remove-file name="$themedir/ArmySystem.template.php" />
+		<remove-file name="$themedir/ArmySystem-Race.template.php" />
+		<remove-file name="$themedir/ArmySystem-Armor.template.php" />
+		<remove-file name="$themedir/ArmySystem-Training.template.php" />
+		<remove-file name="$themedir/ArmySystem-Mercenaries.template.php" />
+		<remove-file name="$themedir/ArmySystem-Attack.template.php" />
+		<remove-file name="$themedir/ArmySystem-Spy.template.php" />
+		<remove-file name="$themedir/ArmySystem-Clans.template.php" />
+		<remove-file name="$themedir/ArmySystem-Transfer.template.php" />
+		<remove-file name="$themedir/ArmySystem-Events.template.php" />
+		<remove-file name="$themedir/ArmySystem-Admin.template.php" />
+
+		<!-- Images -->
+		<remove-dir name="$themedir/images/army" />
+
+		<!-- CSS -->
+		<remove-file name="$themedir/css/army_system.css" />
+
+		<!-- Language -->
+		<remove-file name="$languagedir/ArmySystem.english.php" />
+	</uninstall>
+</package-info>
