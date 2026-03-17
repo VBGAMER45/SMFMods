@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>vbgamer45:UltimateShoutbox</id>
 	<name>Ultimate Shoutbox &amp; Chatroom</name>
-	<version>1.2.5</version>
+	<version>1.3.2</version>
 	<type>modification</type>
 
 	<install  for="2.1 - 2.1.99">

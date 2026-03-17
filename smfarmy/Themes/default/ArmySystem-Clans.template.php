@@ -513,6 +513,7 @@ function template_army_clan_view()
 			<div class="roundframe">
 				<form action="', $scripturl, '?action=army;sa=clan;id=', $clan['id'], '" method="post" accept-charset="UTF-8">
 					<input type="hidden" name="', $context['army_session_var'], '" value="', $context['army_session_id'], '">
+					<input type="hidden" name="clan_action" value="edit">
 					<textarea name="clan_notes" rows="6" cols="60" class="input_text" style="width: 100%;">', htmlspecialchars($clan['notes']), '</textarea>
 					<br>
 					<div class="righttext">

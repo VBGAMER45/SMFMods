@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>MagicLlama:MagicLlama</id>
+	<name>Magic Llama Mod</name>
+	<version>2.0.0</version>
+	<type>modification</type>
+
+	<install for="2.1.0 - 2.1.99">
+		<readme>readme.txt</readme>
+
+		<require-file name="Sources/MagicLlama.php" destination="$sourcedir" />
+		<require-file name="Themes/default/MagicLlama.template.php" destination="$themedir" />
+		<require-file name="Themes/default/css/magicllama.css" destination="$themedir/css" />
+		<require-file name="Themes/default/images/golden_llama2.gif" destination="$themedir/images" />
+		<require-file name="Themes/default/languages/MagicLlama.english.php" destination="$languagedir" />
+
+		<code>install.php</code>
+		<redirect url="?action=admin;area=modsettings;sa=general" />
+	</install>
+
+	<uninstall for="2.1.0 - 2.1.99">
+		<code>uninstall.php</code>
+		<code>uninstalldb.php</code>
+
+		<remove-file name="$sourcedir/MagicLlama.php" />
+		<remove-file name="$themedir/MagicLlama.template.php" />
+		<remove-file name="$themedir/css/magicllama.css" />
+		<remove-file name="$themedir/images/golden_llama2.gif" />
+		<remove-file name="$languagedir/MagicLlama.english.php" />
+	</uninstall>
+</package-info>

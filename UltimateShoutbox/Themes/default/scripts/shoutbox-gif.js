@@ -77,6 +77,12 @@
 					self.close();
 			});
 
+			// Reposition on scroll/resize (picker is position:fixed).
+			$(window).on('scroll resize', function() {
+				if (self.isOpen)
+					self.position();
+			});
+
 			// Set up IntersectionObserver for lazy loading images.
 			if ('IntersectionObserver' in window) {
 				this.observer = new IntersectionObserver(function(entries) {
@@ -107,8 +113,39 @@
 		open: function() {
 			this.isOpen = true;
 			this.$picker.show();
+			this.position();
 			this.$searchInput.val('').focus();
 			this.search(''); // Load featured/trending.
+		},
+
+		position: function() {
+			var $btn = $('#shoutbox_gif_btn');
+			if (!$btn.length) return;
+
+			var btnRect = $btn[0].getBoundingClientRect();
+			var pickerWidth = this.$picker.outerWidth();
+			var pickerHeight = this.$picker.outerHeight();
+
+			// Position above the button by default.
+			var top = btnRect.top - pickerHeight - 8;
+			var left = btnRect.right - pickerWidth;
+
+			// If it goes off the top, position below the button instead.
+			if (top < 10)
+				top = btnRect.bottom + 8;
+
+			// Keep within horizontal bounds.
+			if (left < 10)
+				left = 10;
+			if (left + pickerWidth > window.innerWidth - 10)
+				left = window.innerWidth - pickerWidth - 10;
+
+			this.$picker.css({
+				top: top + 'px',
+				left: left + 'px',
+				bottom: 'auto',
+				right: 'auto'
+			});
 		},
 
 		close: function() {

@@ -99,6 +99,10 @@ function template_shoutbox_widget_html()
 			echo '
 					<button type="button" id="shoutbox_gif_btn" class="shoutbox-btn" title="', $txt['shoutbox_gif'], '">GIF</button>';
 
+		if (!empty($config['enableAttachments']))
+			echo '
+					<button type="button" id="shoutbox_upload_btn" class="shoutbox-btn" title="', $txt['shoutbox_upload'], '">&#128247;</button>';
+
 		echo '
 					<button type="button" id="shoutbox_send_btn" class="shoutbox-btn shoutbox-btn-primary" title="', $txt['shoutbox_send'], '">&#10148;</button>
 				</div>
@@ -128,6 +132,9 @@ function template_shoutbox_widget_html()
 						: $txt['shoutbox_gif_powered_by_tenor']),
 			'</div>
 		</div>
+
+		<input type="file" id="shoutbox_file_input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" />
+		<div id="shoutbox_drop_overlay" class="shoutbox-drop-overlay" style="display:none;">', $txt['shoutbox_upload_drop'], '</div>
 
 		<div id="shoutbox_smiley_picker" class="shoutbox-smiley-picker" style="display:none;"></div>
 		<div id="shoutbox_mention_dropdown" class="shoutbox-mention-dropdown" style="display:none;"></div>
@@ -224,6 +231,10 @@ function template_shoutbox_chatroom()
 			echo '
 						<button type="button" id="shoutbox_gif_btn" class="shoutbox-btn" title="', $txt['shoutbox_gif'], '">GIF</button>';
 
+		if (!empty($config['enableAttachments']))
+			echo '
+						<button type="button" id="shoutbox_upload_btn" class="shoutbox-btn" title="', $txt['shoutbox_upload'], '">&#128247;</button>';
+
 		echo '
 						<button type="button" id="shoutbox_send_btn" class="shoutbox-btn shoutbox-btn-primary">', $txt['shoutbox_send'], '</button>
 					</div>
@@ -263,6 +274,9 @@ function template_shoutbox_chatroom()
 						: $txt['shoutbox_gif_powered_by_tenor']),
 			'</div>
 		</div>
+
+		<input type="file" id="shoutbox_file_input" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" />
+		<div id="shoutbox_drop_overlay" class="shoutbox-drop-overlay" style="display:none;">', $txt['shoutbox_upload_drop'], '</div>
 
 		<div id="shoutbox_smiley_picker" class="shoutbox-smiley-picker" style="display:none;"></div>
 		<div id="shoutbox_mention_dropdown" class="shoutbox-mention-dropdown" style="display:none;"></div>

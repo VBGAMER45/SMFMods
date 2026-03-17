@@ -365,6 +365,8 @@ $txt['army_train_available'] = 'Available';
 $txt['army_train_success'] = 'Soldiers trained successfully!';
 $txt['army_train_success_msg'] = 'Soldiers trained successfully!';
 $txt['army_not_enough_soldiers'] = 'You do not have enough soldiers for this action.';
+$txt['army_train_invalid_count'] = 'Please enter a valid number of soldiers to train.';
+$txt['army_not_enough_gold'] = 'You do not have enough gold for this purchase.';
 $txt['army_upgrade_success'] = 'Upgrade successful!';
 $txt['army_upgrade_success_msg'] = 'Unit production upgraded successfully!';
 
@@ -410,6 +412,7 @@ $txt['army_btn_hire'] = 'Hire';
 $txt['army_btn_fire'] = 'Fire';
 $txt['army_fire_no_refund'] = 'No refund';
 $txt['army_no_refund'] = 'No refund';
+$txt['army_merc_invalid_count'] = 'Please enter a valid number of mercenaries.';
 $txt['army_merc_success'] = 'Mercenary action completed successfully!';
 $txt['army_merc_success_msg'] = 'Mercenary action completed successfully!';
 

@@ -95,6 +95,26 @@ $tables[] = array(
 	),
 );
 
+$tables[] = array(
+	'table_name' => '{db_prefix}shoutbox_attachments',
+	'columns' => array(
+		array('name' => 'id_attachment', 'type' => 'int', 'size' => 10, 'unsigned' => true, 'auto' => true),
+		array('name' => 'id_msg', 'type' => 'int', 'size' => 10, 'unsigned' => true, 'default' => 0),
+		array('name' => 'id_member', 'type' => 'mediumint', 'size' => 8, 'unsigned' => true, 'default' => 0),
+		array('name' => 'filename', 'type' => 'varchar', 'size' => 255, 'default' => ''),
+		array('name' => 'stored_name', 'type' => 'varchar', 'size' => 255, 'default' => ''),
+		array('name' => 'mime_type', 'type' => 'varchar', 'size' => 100, 'default' => ''),
+		array('name' => 'file_size', 'type' => 'int', 'size' => 10, 'unsigned' => true, 'default' => 0),
+		array('name' => 'created_at', 'type' => 'int', 'size' => 10, 'unsigned' => true, 'default' => 0),
+	),
+	'indexes' => array(
+		array('type' => 'primary', 'columns' => array('id_attachment')),
+		array('type' => 'index', 'name' => 'idx_msg', 'columns' => array('id_msg')),
+		array('type' => 'index', 'name' => 'idx_member', 'columns' => array('id_member')),
+		array('type' => 'index', 'name' => 'idx_orphan', 'columns' => array('id_msg', 'created_at')),
+	),
+);
+
 // Use SMF's db_create_table function.
 db_extend('packages');
 
@@ -196,7 +216,11 @@ $settings = array(
 	'shoutbox_disable_cache' => '0',
 	'shoutbox_disable_chatroom' => '0',
 	'shoutbox_newest_first' => '0',
+	'shoutbox_widget_height' => '280',
+	'shoutbox_enable_attachments' => '0',
+	'shoutbox_attachment_max_size' => '1024',
 	'shoutbox_show_on_boardindex' => '1',
+	'shoutbox_show_on_portal' => '1',
 	'shoutbox_show_on_boards' => '1',
 	'shoutbox_show_on_topics' => '1',
 	'shoutbox_show_on_other' => '1',

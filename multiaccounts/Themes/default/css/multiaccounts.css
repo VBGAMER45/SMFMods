@@ -1,0 +1,123 @@
+/* Multi Accounts - Styles */
+
+/* Account card grid layout */
+.multiaccounts_grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	padding: 10px 0;
+}
+
+.multiaccounts_card {
+	flex: 1 1 280px;
+	max-width: 350px;
+	padding: 12px;
+}
+
+.multiaccounts_card_header {
+	font-size: 1.1em;
+	font-weight: bold;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 8px;
+}
+
+.multiaccounts_card_header a {
+	text-decoration: none;
+}
+
+.multiaccounts_card_info {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 0.9em;
+}
+
+.multiaccounts_card_info .multiaccounts_group {
+	color: #666;
+}
+
+.multiaccounts_card_actions {
+	margin-top: 10px;
+	padding-top: 8px;
+	border-top: 1px solid #ddd;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+}
+
+.multiaccounts_card_actions .button {
+	font-size: 0.85em;
+	padding: 3px 8px;
+}
+
+/* Account switcher widget */
+#multiaccounts_switcher {
+	display: inline-block;
+	padding: 4px 10px;
+	font-size: 0.9em;
+}
+
+.multiaccounts_switch_label {
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+.multiaccounts_switch_list {
+	display: inline;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.multiaccounts_switch_list li {
+	display: inline;
+}
+
+.multiaccounts_switch_list li:not(:last-child)::after {
+	content: ' | ';
+	color: #999;
+}
+
+.multiaccounts_switch_list a {
+	text-decoration: none;
+}
+
+.multiaccounts_switch_list a:hover {
+	text-decoration: underline;
+}
+
+/* Post-as dropdown in post form */
+.multiaccounts_post_as {
+	margin: 5px 0;
+}
+
+.multiaccounts_post_as select {
+	padding: 2px 5px;
+}
+
+/* Profile linked accounts display */
+.multiaccounts_profile_list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.multiaccounts_profile_list li {
+	display: inline;
+}
+
+.multiaccounts_profile_list li:not(:last-child)::after {
+	content: ', ';
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+	.multiaccounts_grid {
+		flex-direction: column;
+	}
+
+	.multiaccounts_card {
+		max-width: 100%;
+	}
+}

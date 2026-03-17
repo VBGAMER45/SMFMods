@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>ArmySystem:ArmySystem</id>
 	<name>Army System</name>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<type>modification</type>
 
 	<install for="2.1 - 2.1.99">
@@ -22,7 +22,7 @@
 		<require-file name="Sources/ArmySystem-Transfer.php" destination="$sourcedir" />
 		<require-file name="Sources/ArmySystem-Events.php" destination="$sourcedir" />
 		<require-file name="Sources/ArmySystem-Admin.php" destination="$sourcedir" />
-		<require-file name="Sources/ArmySystem-Scheduled.php" destination="$sourcedir" />
+		<require-file name="Sources/ArmySched.php" destination="$sourcedir" />
 
 		<!-- Template files -->
 		<require-file name="Themes/default/ArmySystem.template.php" destination="$themedir" />
@@ -73,7 +73,7 @@
 		<remove-file name="$sourcedir/ArmySystem-Transfer.php" />
 		<remove-file name="$sourcedir/ArmySystem-Events.php" />
 		<remove-file name="$sourcedir/ArmySystem-Admin.php" />
-		<remove-file name="$sourcedir/ArmySystem-Scheduled.php" />
+		<remove-file name="$sourcedir/ArmySched.php" />
 
 		<!-- Template files -->
 		<remove-file name="$themedir/ArmySystem.template.php" />

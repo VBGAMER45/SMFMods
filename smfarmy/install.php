@@ -677,20 +677,20 @@ foreach ($default_permissions as $perm)
 $smcFunc['db_insert']('ignore',
 	'{db_prefix}scheduled_tasks',
 	array('next_time' => 'int', 'time_offset' => 'int', 'time_regularity' => 'int', 'time_unit' => 'string', 'disabled' => 'int', 'task' => 'string', 'callable' => 'string'),
-	array(time() + 3600, 0, 1, 'h', 0, 'army_auto_gain', '$sourcedir/ArmySystem-Scheduled.php|scheduled_army_auto_gain'),
+	array(time() + 3600, 0, 1, 'h', 0, 'army_auto_gain', '$sourcedir/ArmySched.php|scheduled_army_auto_gain'),
 	array('task')
 );
 
 $smcFunc['db_insert']('ignore',
 	'{db_prefix}scheduled_tasks',
 	array('next_time' => 'int', 'time_offset' => 'int', 'time_regularity' => 'int', 'time_unit' => 'string', 'disabled' => 'int', 'task' => 'string', 'callable' => 'string'),
-	array(time() + 7200, 0, 2, 'h', 0, 'army_merc_upkeep', '$sourcedir/ArmySystem-Scheduled.php|scheduled_army_merc_upkeep'),
+	array(time() + 7200, 0, 2, 'h', 0, 'army_merc_upkeep', '$sourcedir/ArmySched.php|scheduled_army_merc_upkeep'),
 	array('task')
 );
 
 $smcFunc['db_insert']('ignore',
 	'{db_prefix}scheduled_tasks',
 	array('next_time' => 'int', 'time_offset' => 'int', 'time_regularity' => 'int', 'time_unit' => 'string', 'disabled' => 'int', 'task' => 'string', 'callable' => 'string'),
-	array(time() + 86400, 0, 1, 'd', 0, 'army_inactive_check', '$sourcedir/ArmySystem-Scheduled.php|scheduled_army_inactive_check'),
+	array(time() + 86400, 0, 1, 'd', 0, 'army_inactive_check', '$sourcedir/ArmySched.php|scheduled_army_inactive_check'),
 	array('task')
 );

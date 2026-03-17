@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:MultiAccounts</id>
+	<name>Multi Accounts</name>
+	<type>modification</type>
+	<version>1.0.3</version>
+
+	<install for="2.1 - 2.1.99">
+		<redirect url="?action=admin;area=multiaccounts;sa=settings">redirect.txt</redirect>
+		<readme parsebbc="true">readme.txt</readme>
+
+		<require-file name="Sources/MultiAccounts.php" destination="$sourcedir" />
+		<require-file name="Sources/MultiAccounts-Admin.php" destination="$sourcedir" />
+		<require-file name="Sources/MultiAccountsHooks.php" destination="$sourcedir" />
+		<require-file name="Themes/default/MultiAccounts.template.php" destination="$themedir" />
+		<require-file name="Themes/default/css/multiaccounts.css" destination="$themedir/css" />
+		<require-file name="Themes/default/languages/MultiAccounts.english.php" destination="$languagedir" />
+
+		<!-- Hooks -->
+		<hook hook="integrate_actions" function="multiaccounts_actions" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_menu_buttons" function="multiaccounts_menu_buttons" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_admin_areas" function="multiaccounts_admin_areas" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_profile_areas" function="multiaccounts_profile_areas" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_load_permissions" function="multiaccounts_load_permissions" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_validate_login" function="multiaccounts_validate_login" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_user_info" function="multiaccounts_user_info" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_load_member_data" function="multiaccounts_load_member_data" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_member_context" function="multiaccounts_member_context" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_load_theme" function="multiaccounts_load_theme" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_search_params" function="multiaccounts_search_params" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_change_member_data" function="multiaccounts_change_member_data" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_create_post" function="multiaccounts_create_post" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_modify_post" function="multiaccounts_modify_post" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_credits" function="multiaccounts_credits" file="$sourcedir/MultiAccountsHooks.php" />
+		<hook hook="integrate_pre_log_stats" function="multiaccounts_pre_log_stats" file="$sourcedir/MultiAccountsHooks.php" />
+
+		<modification>multiaccounts_edits.xml</modification>
+		<code>multiaccounts_install.php</code>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<modification reverse="true">multiaccounts_edits.xml</modification>
+		<code>multiaccounts_uninstall.php</code>
+
+		<!-- Hooks -->
+		<hook hook="integrate_actions" function="multiaccounts_actions" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_menu_buttons" function="multiaccounts_menu_buttons" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_admin_areas" function="multiaccounts_admin_areas" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_profile_areas" function="multiaccounts_profile_areas" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_load_permissions" function="multiaccounts_load_permissions" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_validate_login" function="multiaccounts_validate_login" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_user_info" function="multiaccounts_user_info" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_load_member_data" function="multiaccounts_load_member_data" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_member_context" function="multiaccounts_member_context" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_load_theme" function="multiaccounts_load_theme" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_search_params" function="multiaccounts_search_params" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_change_member_data" function="multiaccounts_change_member_data" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_create_post" function="multiaccounts_create_post" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_modify_post" function="multiaccounts_modify_post" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_credits" function="multiaccounts_credits" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+		<hook hook="integrate_pre_log_stats" function="multiaccounts_pre_log_stats" file="$sourcedir/MultiAccountsHooks.php" reverse="true" />
+
+		<remove-file name="$sourcedir/MultiAccounts.php" />
+		<remove-file name="$sourcedir/MultiAccounts-Admin.php" />
+		<remove-file name="$sourcedir/MultiAccountsHooks.php" />
+		<remove-file name="$themedir/MultiAccounts.template.php" />
+		<remove-file name="$themedir/css/multiaccounts.css" />
+		<remove-file name="$languagedir/MultiAccounts.english.php" />
+	</uninstall>
+</package-info>

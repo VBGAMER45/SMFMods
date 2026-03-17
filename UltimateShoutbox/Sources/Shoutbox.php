@@ -169,8 +169,15 @@ function shoutbox_load_theme()
 
 	// Page visibility check - determine current page type and check settings.
 	$page_type = 'other';
-	if (empty($_REQUEST['action']) && empty($_REQUEST['board']) && empty($_REQUEST['topic']))
+	if ((!empty($_REQUEST['action']) && $_REQUEST['action'] == 'forum')  && empty($_REQUEST['board']) && empty($_REQUEST['topic']))
 		$page_type = 'boardindex';
+	else if (empty($_REQUEST['action']) && empty($_REQUEST['board']) && empty($_REQUEST['topic']))
+	{
+		if (!function_exists("BoardIndex"))
+			$page_type = 'portal';
+		else
+			$page_type = 'boardindex';
+	}
 	elseif (!empty($_REQUEST['board']) && empty($_REQUEST['topic']))
 		$page_type = 'boards';
 	elseif (!empty($_REQUEST['topic']))
@@ -217,6 +224,9 @@ function shoutbox_load_theme()
 		'isGuest' => $user_info['is_guest'],
 		'placement' => !empty($modSettings['shoutbox_placement']) ? $modSettings['shoutbox_placement'] : 'top',
 		'newestFirst' => !empty($modSettings['shoutbox_newest_first']),
+		'widgetHeight' => !empty($modSettings['shoutbox_widget_height']) ? (int) $modSettings['shoutbox_widget_height'] : 280,
+		'enableAttachments' => !empty($modSettings['shoutbox_enable_attachments']),
+		'attachmentMaxSize' => !empty($modSettings['shoutbox_attachment_max_size']) ? (int) $modSettings['shoutbox_attachment_max_size'] : 1024,
 		'isChatroom' => false,
 		'chatroomDisabled' => !empty($modSettings['shoutbox_disable_chatroom']),
 		'roomId' => $default_room_id,
@@ -312,6 +322,7 @@ function ShoutboxMain()
 		'mutelist' => 'ShoutboxMutelist',
 		'admin_msg' => 'ShoutboxAdminMsg',
 		'react' => 'ShoutboxReact',
+		'upload' => 'ShoutboxUpload',
 		'gif_proxy' => 'ShoutboxGifProxy',
 		'history_page' => 'ShoutboxHistoryPage',
 		'history' => 'ShoutboxHistoryData',
@@ -410,6 +421,9 @@ function ShoutboxChatroom()
 		'isGuest' => $user_info['is_guest'],
 		'placement' => 'none',
 		'newestFirst' => !empty($modSettings['shoutbox_newest_first']),
+		'widgetHeight' => !empty($modSettings['shoutbox_widget_height']) ? (int) $modSettings['shoutbox_widget_height'] : 280,
+		'enableAttachments' => !empty($modSettings['shoutbox_enable_attachments']),
+		'attachmentMaxSize' => !empty($modSettings['shoutbox_attachment_max_size']) ? (int) $modSettings['shoutbox_attachment_max_size'] : 1024,
 		'isChatroom' => true,
 		'roomId' => $default_room_id,
 		'rooms' => $js_rooms,
@@ -468,10 +482,12 @@ function ShoutboxFetch()
 		$request = $smcFunc['db_query']('', '
 			SELECT sm.id_msg, sm.id_member, sm.member_name, sm.parsed_body, sm.is_whisper,
 				sm.whisper_to, sm.is_action, sm.created_at, sm.edited_by, sm.edited_at,
-				mem.avatar, COALESCE(mem.real_name, sm.member_name) AS real_name,
+				mem.avatar, COALESCE(att.id_attach, 0) AS id_attach, att.filename AS att_filename,
+				att.attachment_type, COALESCE(mem.real_name, sm.member_name) AS real_name,
 				COALESCE(mg.online_color, pg.online_color, {string:empty}) AS member_color
 			FROM {db_prefix}shoutbox_messages AS sm
 				LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = sm.id_member)
+				LEFT JOIN {db_prefix}attachments AS att ON (att.id_member = sm.id_member AND att.attachment_type IN (0, 1))
 				LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = mem.id_group)
 				LEFT JOIN {db_prefix}membergroups AS pg ON (pg.id_group = mem.id_post_group)
 			WHERE sm.id_msg > {int:last_id}
@@ -519,10 +535,12 @@ function ShoutboxFetch()
 			$request = $smcFunc['db_query']('', '
 				SELECT sm.id_msg, sm.id_member, sm.member_name, sm.parsed_body, sm.is_whisper,
 					sm.whisper_to, sm.is_action, sm.created_at, sm.edited_by, sm.edited_at,
-					mem.avatar, COALESCE(mem.real_name, sm.member_name) AS real_name,
+					mem.avatar, COALESCE(att.id_attach, 0) AS id_attach, att.filename AS att_filename,
+					att.attachment_type, COALESCE(mem.real_name, sm.member_name) AS real_name,
 					COALESCE(mg.online_color, pg.online_color, {string:empty}) AS member_color
 				FROM {db_prefix}shoutbox_messages AS sm
 					LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = sm.id_member)
+					LEFT JOIN {db_prefix}attachments AS att ON (att.id_member = sm.id_member AND att.attachment_type IN (0, 1))
 					LEFT JOIN {db_prefix}membergroups AS mg ON (mg.id_group = mem.id_group)
 					LEFT JOIN {db_prefix}membergroups AS pg ON (pg.id_group = mem.id_post_group)
 				WHERE sm.id_room = {int:id_room}
@@ -653,6 +671,31 @@ function ShoutboxSend()
 		array('id_msg')
 	);
 
+	$id_msg = $smcFunc['db_insert_id']('{db_prefix}shoutbox_messages');
+
+	// Link pending attachments to this message.
+	if (!empty($_POST['attachment_ids']) && !empty($modSettings['shoutbox_enable_attachments']))
+	{
+		$att_ids = array_map('intval', (array) $_POST['attachment_ids']);
+		$att_ids = array_filter($att_ids, function($v) { return $v > 0; });
+
+		if (!empty($att_ids))
+		{
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}shoutbox_attachments
+				SET id_msg = {int:id_msg}
+				WHERE id_attachment IN ({array_int:att_ids})
+					AND id_member = {int:id_member}
+					AND id_msg = 0',
+				array(
+					'id_msg' => $id_msg,
+					'att_ids' => $att_ids,
+					'id_member' => (int) $user_info['id'],
+				)
+			);
+		}
+	}
+
 	shoutbox_invalidate_cache($id_room);
 	shoutbox_json_response(array('success' => true));
 }
@@ -782,6 +825,9 @@ function ShoutboxDelete()
 	if (!allowedTo('shoutbox_moderate') && $row['id_member'] != $user_info['id'])
 		shoutbox_json_error('shoutbox_no_permission');
 
+	// Delete attachments for this message.
+	shoutbox_delete_attachments_for_messages(array($id_msg));
+
 	// Delete reactions for this message.
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}shoutbox_reactions
@@ -907,6 +953,9 @@ function ShoutboxPrune()
 
 	if (!empty($ids))
 	{
+		// Delete attachments for these messages.
+		shoutbox_delete_attachments_for_messages($ids);
+
 		// Delete reactions for these messages.
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}shoutbox_reactions
@@ -949,6 +998,23 @@ function ShoutboxClean()
 		$requested_room = shoutbox_get_default_room_id();
 	$id_room = shoutbox_validate_room_access($requested_room);
 
+	// Collect message IDs for attachment cleanup.
+	$request = $smcFunc['db_query']('', '
+		SELECT id_msg
+		FROM {db_prefix}shoutbox_messages
+		WHERE id_room = {int:id_room}',
+		array(
+			'id_room' => $id_room,
+		)
+	);
+	$clean_ids = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$clean_ids[] = (int) $row['id_msg'];
+	$smcFunc['db_free_result']($request);
+
+	if (!empty($clean_ids))
+		shoutbox_delete_attachments_for_messages($clean_ids);
+
 	// Delete reactions for messages in this room.
 	$smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}shoutbox_reactions
@@ -968,6 +1034,137 @@ function ShoutboxClean()
 
 	shoutbox_invalidate_cache($id_room);
 	shoutbox_json_response(array('success' => true));
+}
+
+/**
+ * Upload an image attachment.
+ * POST ?action=shoutbox;sa=upload
+ */
+function ShoutboxUpload()
+{
+	global $smcFunc, $modSettings, $user_info, $boarddir, $boardurl;
+
+	isAllowedTo('shoutbox_post');
+	checkSession('request');
+
+	if (empty($modSettings['shoutbox_enable_attachments']))
+		shoutbox_json_error('shoutbox_no_permission');
+
+	if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK)
+		shoutbox_json_error('shoutbox_upload_error');
+
+	$file = $_FILES['file'];
+
+	// Validate extension.
+	$allowed_ext = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+	$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+	if (!in_array($ext, $allowed_ext))
+		shoutbox_json_error('shoutbox_upload_invalid_type');
+
+	// Validate MIME type.
+	$allowed_mime = array('image/jpeg', 'image/png', 'image/gif', 'image/webp');
+	$finfo = finfo_open(FILEINFO_MIME_TYPE);
+	$mime = finfo_file($finfo, $file['tmp_name']);
+	finfo_close($finfo);
+	if (!in_array($mime, $allowed_mime))
+		shoutbox_json_error('shoutbox_upload_invalid_type');
+
+	// Validate size.
+	$max_size = !empty($modSettings['shoutbox_attachment_max_size']) ? (int) $modSettings['shoutbox_attachment_max_size'] : 1024;
+	if ($file['size'] > $max_size * 1024)
+		shoutbox_json_error('shoutbox_upload_too_large');
+
+	// Create upload directory if needed.
+	$upload_dir = $boarddir . '/shoutbox_uploads';
+	if (!is_dir($upload_dir))
+	{
+		@mkdir($upload_dir, 0755, true);
+
+		// Security: deny PHP execution.
+		@file_put_contents($upload_dir . '/.htaccess', "Options -Indexes\n<Files *.php>\nOrder Deny,Allow\nDeny from all\n</Files>");
+		@file_put_contents($upload_dir . '/index.php', '<?php // No direct access.');
+	}
+
+	// Generate random filename.
+	$stored_name = bin2hex(random_bytes(16)) . '.' . $ext;
+	$dest = $upload_dir . '/' . $stored_name;
+
+	if (!move_uploaded_file($file['tmp_name'], $dest))
+		shoutbox_json_error('shoutbox_upload_error');
+
+	// Sanitize original filename.
+	$filename = $smcFunc['htmlspecialchars'](basename($file['name']));
+
+	// Insert DB row with id_msg = 0 (pending).
+	$smcFunc['db_insert']('insert',
+		'{db_prefix}shoutbox_attachments',
+		array(
+			'id_msg' => 'int',
+			'id_member' => 'int',
+			'filename' => 'string',
+			'stored_name' => 'string',
+			'mime_type' => 'string',
+			'file_size' => 'int',
+			'created_at' => 'int',
+		),
+		array(
+			0,
+			(int) $user_info['id'],
+			$filename,
+			$stored_name,
+			$mime,
+			(int) $file['size'],
+			time(),
+		),
+		array('id_attachment')
+	);
+
+	$id_attachment = $smcFunc['db_insert_id']('{db_prefix}shoutbox_attachments');
+	$url = $boardurl . '/shoutbox_uploads/' . $stored_name;
+
+	shoutbox_json_response(array(
+		'success' => true,
+		'id' => $id_attachment,
+		'url' => $url,
+	));
+}
+
+/**
+ * Delete attachment files from disk and DB for given message IDs.
+ */
+function shoutbox_delete_attachments_for_messages($msg_ids)
+{
+	global $smcFunc, $boarddir;
+
+	if (empty($msg_ids))
+		return;
+
+	$upload_dir = $boarddir . '/shoutbox_uploads';
+
+	$request = $smcFunc['db_query']('', '
+		SELECT id_attachment, stored_name
+		FROM {db_prefix}shoutbox_attachments
+		WHERE id_msg IN ({array_int:ids})',
+		array(
+			'ids' => $msg_ids,
+		)
+	);
+
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$file_path = $upload_dir . '/' . $row['stored_name'];
+		if (file_exists($file_path))
+			@unlink($file_path);
+	}
+	$smcFunc['db_free_result']($request);
+
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}shoutbox_attachments
+		WHERE id_msg IN ({array_int:ids})',
+		array(
+			'ids' => $msg_ids,
+		)
+	);
 }
 
 /**
@@ -1437,11 +1634,11 @@ function ShoutboxGifProxy()
 		if (!empty($query))
 		{
 			$params['q'] = $query;
-			$url = 'https://tenor.googleapis.com/v2/search?' . http_build_query($params);
+			$url = 'https://tenor.googleapis.com/v2/search?' . http_build_query($params, '', '&');
 		}
 		else
 		{
-			$url = 'https://tenor.googleapis.com/v2/featured?' . http_build_query($params);
+			$url = 'https://tenor.googleapis.com/v2/featured?' . http_build_query($params, '', '&');
 		}
 
 		if (!empty($pos))
@@ -1458,11 +1655,11 @@ function ShoutboxGifProxy()
 		if (!empty($query))
 		{
 			$params['q'] = $query;
-			$url = 'https://api.giphy.com/v1/gifs/search?' . http_build_query($params);
+			$url = 'https://api.giphy.com/v1/gifs/search?' . http_build_query($params, '', '&');
 		}
 		else
 		{
-			$url = 'https://api.giphy.com/v1/gifs/trending?' . http_build_query($params);
+			$url = 'https://api.giphy.com/v1/gifs/trending?' . http_build_query($params, '', '&');
 		}
 
 		if (!empty($pos))
@@ -1480,11 +1677,11 @@ function ShoutboxGifProxy()
 		if (!empty($query))
 		{
 			$params['q'] = $query;
-			$url = 'https://api.klipy.com/api/v1/' . urlencode($api_key) . '/gifs/search?' . http_build_query($params);
+			$url = 'https://api.klipy.com/api/v1/' . urlencode($api_key) . '/gifs/search?' . http_build_query($params, '', '&');
 		}
 		else
 		{
-			$url = 'https://api.klipy.com/api/v1/' . urlencode($api_key) . '/gifs/trending?' . http_build_query($params);
+			$url = 'https://api.klipy.com/api/v1/' . urlencode($api_key) . '/gifs/trending?' . http_build_query($params, '', '&');
 		}
 
 		if (!empty($pos))
@@ -2069,6 +2266,18 @@ function shoutbox_parse_bbc($body)
 	// Use SMF's parse_bbc.
 	$parsed = parse_bbc($body, !empty($modSettings['shoutbox_enable_smileys']), '', $disabled);
 
+	// Style inline quotes: @Name: "quoted text"
+	// Match curly quotes in all possible forms (raw UTF-8, named entity, numeric entity, or straight &quot;).
+	$lq = "\xe2\x80\x9c";
+	$rq = "\xe2\x80\x9d";
+	$lq_pattern = '(?:' . $lq . '|&ldquo;|&#8220;|&quot;)';
+	$rq_pattern = '(?:' . $rq . '|&rdquo;|&#8221;|&quot;)';
+	$parsed = preg_replace(
+		'/@([^:]+):\s*' . $lq_pattern . '(.*?)' . $rq_pattern . '/s',
+		'<span class="shoutbox-inline-quote"><span class="shoutbox-quote-author">@$1</span>: <span class="shoutbox-quote-text">&ldquo;$2&rdquo;</span></span>',
+		$parsed
+	);
+
 	return $parsed;
 }
 
@@ -2080,12 +2289,24 @@ function shoutbox_format_message($row, $reactions = array())
 	global $scripturl, $modSettings, $settings;
 
 	$avatar_url = '';
-	if (!empty($modSettings['shoutbox_show_avatars']) && !empty($row['avatar']))
+	if (!empty($modSettings['shoutbox_show_avatars']))
 	{
-		if (stripos($row['avatar'], 'http') === 0)
-			$avatar_url = $row['avatar'];
-		else
-			$avatar_url = $settings['images_url'] . '/avatars/' . $row['avatar'];
+		if (!empty($row['avatar']))
+		{
+			// External URL or gallery avatar (matches SMF's set_avatar_data logic).
+			if (stripos($row['avatar'], 'http') === 0)
+				$avatar_url = $row['avatar'];
+			else
+				$avatar_url = $modSettings['avatar_url'] . '/' . $row['avatar'];
+		}
+		elseif (!empty($row['att_filename']))
+		{
+			// Uploaded avatar: custom_avatar dir (type 1) or attachment download (type 0).
+			if (!empty($row['attachment_type']))
+				$avatar_url = $modSettings['custom_avatar_url'] . '/' . $row['att_filename'];
+			else
+				$avatar_url = $scripturl . '?action=dlattach;attach=' . $row['id_attach'] . ';type=avatar';
+		}
 	}
 
 	return array(
@@ -2186,29 +2407,77 @@ function shoutbox_check_ban()
  */
 function shoutbox_auto_prune()
 {
-	global $smcFunc, $modSettings;
+	global $smcFunc, $modSettings, $boarddir;
 
 	$days = !empty($modSettings['shoutbox_auto_prune_days']) ? (int) $modSettings['shoutbox_auto_prune_days'] : 0;
 
-	if ($days <= 0)
-		return;
+	if ($days > 0)
+	{
+		$cutoff = time() - ($days * 86400);
 
-	$cutoff = time() - ($days * 86400);
+		// Collect message IDs for attachment cleanup.
+		$request = $smcFunc['db_query']('', '
+			SELECT id_msg
+			FROM {db_prefix}shoutbox_messages
+			WHERE created_at < {int:cutoff}',
+			array(
+				'cutoff' => $cutoff,
+			)
+		);
+		$prune_ids = array();
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$prune_ids[] = (int) $row['id_msg'];
+		$smcFunc['db_free_result']($request);
 
-	// Delete reactions for old messages.
-	$smcFunc['db_query']('', '
-		DELETE FROM {db_prefix}shoutbox_reactions
-		WHERE id_msg IN (SELECT id_msg FROM {db_prefix}shoutbox_messages WHERE created_at < {int:cutoff})',
+		if (!empty($prune_ids))
+			shoutbox_delete_attachments_for_messages($prune_ids);
+
+		// Delete reactions for old messages.
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}shoutbox_reactions
+			WHERE id_msg IN (SELECT id_msg FROM {db_prefix}shoutbox_messages WHERE created_at < {int:cutoff})',
+			array(
+				'cutoff' => $cutoff,
+			)
+		);
+
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}shoutbox_messages
+			WHERE created_at < {int:cutoff}',
+			array(
+				'cutoff' => $cutoff,
+			)
+		);
+	}
+
+	// Clean orphaned attachments (pending uploads older than 1 hour).
+	$orphan_cutoff = time() - 3600;
+	$upload_dir = $boarddir . '/shoutbox_uploads';
+
+	$request = $smcFunc['db_query']('', '
+		SELECT id_attachment, stored_name
+		FROM {db_prefix}shoutbox_attachments
+		WHERE id_msg = 0
+			AND created_at < {int:orphan_cutoff}',
 		array(
-			'cutoff' => $cutoff,
+			'orphan_cutoff' => $orphan_cutoff,
 		)
 	);
 
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$file_path = $upload_dir . '/' . $row['stored_name'];
+		if (file_exists($file_path))
+			@unlink($file_path);
+	}
+	$smcFunc['db_free_result']($request);
+
 	$smcFunc['db_query']('', '
-		DELETE FROM {db_prefix}shoutbox_messages
-		WHERE created_at < {int:cutoff}',
+		DELETE FROM {db_prefix}shoutbox_attachments
+		WHERE id_msg = 0
+			AND created_at < {int:orphan_cutoff}',
 		array(
-			'cutoff' => $cutoff,
+			'orphan_cutoff' => $orphan_cutoff,
 		)
 	);
 }

@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>Daniel15:Blog</id>
 	<name>SMFBlog</name>
-	<version>3.0</version>
+	<version>3.0.2a</version>
 	<type>modification</type>
 
 	<install for="2.0 - 2.0.99,2.0 RC2,2.0 RC3,2.0 RC4,2.0 RC5">
@@ -31,7 +31,7 @@
 		<require-file name="Blog.php" destination="$sourcedir" />
 		<require-file name="blogHooks.php" destination="$sourcedir" />
 		<require-file name="Blog2.1.template.php" destination="$themedir" />
-		<require-file name="blog.css" destination="$themedir" />
+		<require-file name="blog.css" destination="$themedir/css" />
 		<modification format="xml" type="file">install2.1.xml</modification>
 
 		<!-- Hooks -->
@@ -74,7 +74,7 @@
 		<remove-file name="$sourcedir/Blog.php" />
 		<remove-file name="$sourcedir/blogHooks.php" />
 		<remove-file name="$themedir/Blog2.1.template.php" />
-		<remove-file name="$themedir/blog.css" />
+		<remove-file name="$themedir/css/blog.css" />
 		<code>UnInstall.php</code>
 	</uninstall>
 </package-info>

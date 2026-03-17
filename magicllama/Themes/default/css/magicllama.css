@@ -1,0 +1,129 @@
+/* Magic Llama Mod 2.0 - Styles */
+
+/* Floating llama container */
+#magic_llama_float {
+	transition: none;
+	pointer-events: auto;
+}
+
+#magic_llama_float img {
+	border: none;
+	display: block;
+	animation: magic_llama_pulse 2s ease-in-out infinite;
+}
+
+@keyframes magic_llama_pulse {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.05); }
+}
+
+#magic_llama_float:hover img {
+	animation: magic_llama_glow 0.5s ease-in-out infinite;
+}
+
+@keyframes magic_llama_glow {
+	0%, 100% { filter: brightness(1); }
+	50% { filter: brightness(1.3); }
+}
+
+/* AJAX catch overlay */
+.magic_llama_overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 10000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.magic_llama_dialog {
+	background: #fff;
+	border-radius: 8px;
+	padding: 2em;
+	max-width: 400px;
+	width: 90%;
+	text-align: center;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.magic_llama_dialog h3 {
+	margin: 0 0 0.5em;
+	font-size: 1.3em;
+}
+
+.magic_llama_dialog p {
+	margin: 0 0 1.5em;
+	line-height: 1.5;
+}
+
+.magic_llama_dialog.magic_llama_good h3 {
+	color: #2e7d32;
+}
+
+.magic_llama_dialog.magic_llama_evil h3 {
+	color: #c62828;
+}
+
+.magic_llama_dialog.magic_llama_late h3 {
+	color: #f57f17;
+}
+
+/* Full page catch result */
+.magic_llama_catch_page {
+	max-width: 600px;
+	margin: 2em auto;
+}
+
+.magic_llama_catch_page .magic_llama_good {
+	border-left: 4px solid #2e7d32;
+}
+
+.magic_llama_catch_page .magic_llama_evil {
+	border-left: 4px solid #c62828;
+}
+
+.magic_llama_catch_page .magic_llama_late {
+	border-left: 4px solid #f57f17;
+}
+
+.magic_llama_catch_page p {
+	padding: 1em;
+	font-size: 1.1em;
+}
+
+/* Admin log table */
+.magic_llama_log_table {
+	width: 100%;
+}
+
+.magic_llama_log_table th {
+	white-space: nowrap;
+}
+
+/* Poster info sidebar (in-post display) */
+.magic_llama_poster_stats {
+	font-size: 0.85em;
+}
+
+.magic_llama_net.positive {
+	color: #2e7d32;
+	font-weight: bold;
+}
+
+.magic_llama_net.negative {
+	color: #c62828;
+	font-weight: bold;
+}
+
+/* Profile stats */
+.magic_llama_profile_stats dt {
+	font-weight: bold;
+}
+
+.magic_llama_profile_stats dd {
+	margin-bottom: 0.5em;
+}

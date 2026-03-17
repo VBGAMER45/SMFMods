@@ -352,8 +352,10 @@
 			}
 
 			// Action buttons (shown on hover).
-			if (config.canModerate || (config.userId === msg.memberId && config.canPost) || (config.enableReactions && !config.isGuest && config.canPost)) {
+			if (config.canModerate || (config.userId === msg.memberId && config.canPost) || (!config.isGuest && config.canPost)) {
 				html += '<div class="shoutbox-message-actions">';
+				if (!config.isGuest && config.canPost)
+					html += '<button class="shoutbox-msg-action-btn shoutbox-quote-btn" title="Quote">&#8220;</button>';
 				if (config.canModerate || config.userId === msg.memberId)
 					html += '<button class="shoutbox-msg-action-btn shoutbox-edit-btn" title="Edit">&#9998;</button>';
 				if (config.canModerate || config.userId === msg.memberId)
@@ -472,14 +474,23 @@
 			this.sending = true;
 			var self = this;
 
+			var sendData = postData({
+				sa: 'send',
+				body: body,
+				room_id: this.state.currentRoomId
+			});
+
+			// Include pending attachment IDs if uploader is available.
+			if (ShoutBox.controller && ShoutBox.controller.fileUploader) {
+				var attIds = ShoutBox.controller.fileUploader.getPendingAttachments();
+				for (var ai = 0; ai < attIds.length; ai++)
+					sendData['attachment_ids[' + ai + ']'] = attIds[ai];
+			}
+
 			$.ajax({
 				url: config.ajaxUrl,
 				method: 'POST',
-				data: postData({
-					sa: 'send',
-					body: body,
-					room_id: this.state.currentRoomId
-				}),
+				data: sendData,
 				dataType: 'json'
 			})
 			.done(function() {
@@ -1849,6 +1860,159 @@
 	};
 
 	// =========================================================================
+	// FileUploader - Image upload via button, drag-drop, paste
+	// =========================================================================
+
+	ShoutBox.FileUploader = function(inputHandler) {
+		this.inputHandler = inputHandler;
+		this.$btn = $('#shoutbox_upload_btn');
+		this.$fileInput = $('#shoutbox_file_input');
+		this.$container = this.$btn.closest('.shoutbox-widget, .shoutbox-chatroom');
+		this.$dropOverlay = $('#shoutbox_drop_overlay');
+		this.pendingAttachments = [];
+		this.uploading = false;
+
+		if (config.enableAttachments && this.$btn.length)
+			this.init();
+	};
+
+	ShoutBox.FileUploader.prototype = {
+		init: function() {
+			var self = this;
+
+			// Click upload button -> trigger file input.
+			this.$btn.on('click', function(e) {
+				e.stopPropagation();
+				self.$fileInput.trigger('click');
+			});
+
+			// File selected.
+			this.$fileInput.on('change', function() {
+				if (this.files && this.files[0])
+					self.upload(this.files[0]);
+				// Reset so same file can be selected again.
+				this.value = '';
+			});
+
+			// Drag-drop on container.
+			if (this.$container.length) {
+				this.$container.on('dragover', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					self.$dropOverlay.show();
+				});
+
+				this.$container.on('dragleave', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					// Only hide if we left the container.
+					var rect = self.$container[0].getBoundingClientRect();
+					if (e.originalEvent.clientX <= rect.left || e.originalEvent.clientX >= rect.right ||
+						e.originalEvent.clientY <= rect.top || e.originalEvent.clientY >= rect.bottom)
+						self.$dropOverlay.hide();
+				});
+
+				this.$container.on('drop', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					self.$dropOverlay.hide();
+
+					var files = e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files;
+					if (files && files.length > 0 && files[0].type.indexOf('image/') === 0)
+						self.upload(files[0]);
+				});
+			}
+
+			// Clipboard paste.
+			$(document).on('paste', function(e) {
+				if (!config.enableAttachments)
+					return;
+
+				var items = e.originalEvent.clipboardData && e.originalEvent.clipboardData.items;
+				if (!items)
+					return;
+
+				for (var i = 0; i < items.length; i++) {
+					if (items[i].type.indexOf('image/') === 0) {
+						var file = items[i].getAsFile();
+						if (file)
+							self.upload(file);
+						break;
+					}
+				}
+			});
+		},
+
+		upload: function(file) {
+			if (this.uploading)
+				return;
+
+			// Client-side size check.
+			var maxKB = config.attachmentMaxSize || 1024;
+			if (file.size > maxKB * 1024) {
+				$(document).trigger('shoutbox:error', ['File is too large. Max: ' + maxKB + ' KB.']);
+				return;
+			}
+
+			// Client-side type check.
+			var allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+			var typeOk = false;
+			for (var i = 0; i < allowed.length; i++) {
+				if (file.type === allowed[i]) {
+					typeOk = true;
+					break;
+				}
+			}
+			if (!typeOk) {
+				$(document).trigger('shoutbox:error', ['Invalid file type. Allowed: JPG, PNG, GIF, WebP.']);
+				return;
+			}
+
+			this.uploading = true;
+			this.$btn.addClass('shoutbox-btn-uploading');
+
+			var formData = new FormData();
+			formData.append('file', file);
+			formData.append('sa', 'upload');
+			formData.append(config.sessionVar, config.sessionId);
+
+			var self = this;
+
+			$.ajax({
+				url: config.ajaxUrl,
+				method: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				dataType: 'json'
+			})
+			.done(function(data) {
+				if (data && data.success) {
+					self.pendingAttachments.push(data.id);
+					self.inputHandler.insertText('[img]' + data.url + '[/img]');
+				} else {
+					$(document).trigger('shoutbox:error', ['Upload failed.']);
+				}
+			})
+			.fail(function(jqXHR) {
+				var resp = jqXHR.responseJSON;
+				var msg = (resp && resp.message) ? resp.message : 'Upload failed.';
+				$(document).trigger('shoutbox:error', [msg]);
+			})
+			.always(function() {
+				self.uploading = false;
+				self.$btn.removeClass('shoutbox-btn-uploading');
+			});
+		},
+
+		getPendingAttachments: function() {
+			var ids = this.pendingAttachments.slice();
+			this.pendingAttachments = [];
+			return ids;
+		}
+	};
+
+	// =========================================================================
 	// Controller - Main coordinator
 	// =========================================================================
 
@@ -1865,6 +2029,7 @@
 		this.moderation = new ShoutBox.Moderation(this.state, this.renderer);
 		this.reactions = new ShoutBox.Reactions(this.state, this.renderer);
 		this.smileyPicker = new ShoutBox.SmileyPicker(this.input);
+		this.fileUploader = new ShoutBox.FileUploader(this.input);
 		this.bbcToolbar = new ShoutBox.BBCodeBar(this.input);
 		this.notifications = new ShoutBox.Notifications(this.state);
 		this.onlineUsers = new ShoutBox.OnlineUsers();
@@ -1959,6 +2124,22 @@
 				} catch (e) {}
 			}
 
+			// Quote button handler.
+			$(document).on('click', '.shoutbox-quote-btn', function(e) {
+				e.stopPropagation();
+				var $msg = $(this).closest('.shoutbox-message');
+				var authorName = $msg.find('.shoutbox-message-author').text().trim();
+				var bodyText = $msg.find('.shoutbox-message-body').text().trim();
+
+				// Truncate long quotes to 150 chars.
+				if (bodyText.length > 150)
+					bodyText = bodyText.substring(0, 150) + '...';
+
+				var quoteText = '@' + authorName + ': \u201C' + bodyText + '\u201D ';
+				self.input.insertText(quoteText);
+				self.input.$input.focus();
+			});
+
 			// Lazy-load GIF picker JS if needed.
 			if (config.gifProvider !== 'none' && config.canGif) {
 				$('#shoutbox_gif_btn').on('click', function() {
@@ -1967,10 +2148,9 @@
 						var script = document.createElement('script');
 						script.src = smf_default_theme_url + '/scripts/shoutbox-gif.js?v=' + (config.version || '1.0');
 						script.onload = function() {
-							if (ShoutBox.gifPicker)
-								ShoutBox.gifPicker.toggle();
-							else
+							if (!ShoutBox.gifPicker)
 								ShoutBox.gifPicker = new ShoutBox.GifPicker(self.input);
+							ShoutBox.gifPicker.toggle();
 						};
 						document.head.appendChild(script);
 					} else {
@@ -2048,6 +2228,11 @@
 	$(function() {
 		// Read config now - by document.ready, the inline config script has executed.
 		config = window.smf_shoutbox_config || {};
+
+		// Apply configurable widget height via CSS variable.
+		if (config.widgetHeight)
+			document.documentElement.style.setProperty('--shoutbox-widget-height', config.widgetHeight + 'px');
+
 		if (config.ajaxUrl)
 			ShoutBox.controller = new ShoutBox.Controller();
 	});

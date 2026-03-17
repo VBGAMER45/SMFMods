@@ -1,0 +1,6 @@
+Multi Accounts has been successfully installed!
+
+You will be redirected to the Multi Accounts settings page where you can enable and configure the mod.
+
+If you are not redirected automatically, please go to:
+Admin > Members > Multi Accounts > Settings

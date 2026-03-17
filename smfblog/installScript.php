@@ -10,6 +10,11 @@ if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 elseif (!defined('SMF'))
 	die('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
 
+global $smcFunc;
+
+db_extend('packages');
+db_extend('extra');
+
 // Fields to add
 $db_fields = array(
 	array(

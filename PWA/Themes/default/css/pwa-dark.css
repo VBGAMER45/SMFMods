@@ -1,0 +1,275 @@
+/**
+ * Mobile-First PWA Shell — Dark Mode Styles
+ *
+ * CSS custom properties for dark theme, applied via .pwa-dark class on <html>.
+ * Also respects prefers-color-scheme for initial load.
+ *
+ * @package smfmods:pwa-shell
+ */
+
+/* ─── Dark Mode Variables ───────────────────────────────────────────────────── */
+
+html.pwa-dark {
+	--pwa-bg-primary: #121212;
+	--pwa-bg-surface: #1e1e1e;
+	--pwa-bg-elevated: #2d2d2d;
+	--pwa-text-primary: #e0e0e0;
+	--pwa-text-secondary: #a0a0a0;
+	--pwa-accent: #7bafd4;
+	--pwa-accent-light: rgba(123, 175, 212, 0.15);
+	--pwa-border: #333333;
+	--pwa-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* System preference auto-detect (only when no explicit preference set) */
+@media (prefers-color-scheme: dark) {
+	html.pwa-dark-auto {
+		--pwa-bg-primary: #121212;
+		--pwa-bg-surface: #1e1e1e;
+		--pwa-bg-elevated: #2d2d2d;
+		--pwa-text-primary: #e0e0e0;
+		--pwa-text-secondary: #a0a0a0;
+		--pwa-accent: #7bafd4;
+		--pwa-accent-light: rgba(123, 175, 212, 0.15);
+		--pwa-border: #333333;
+		--pwa-shadow: rgba(0, 0, 0, 0.3);
+	}
+}
+
+/* ─── Body & Global ─────────────────────────────────────────────────────────── */
+
+html.pwa-dark body,
+html.pwa-dark-auto body {
+	background: var(--pwa-bg-primary);
+	color: var(--pwa-text-primary);
+}
+
+/* ─── Top Section ───────────────────────────────────────────────────────────── */
+
+html.pwa-dark #top_section,
+html.pwa-dark-auto #top_section {
+	background: var(--pwa-bg-surface);
+	border-color: var(--pwa-border);
+}
+
+html.pwa-dark #upper_section,
+html.pwa-dark-auto #upper_section {
+	background: var(--pwa-bg-surface);
+}
+
+/* ─── Main Content Areas ────────────────────────────────────────────────────── */
+
+html.pwa-dark .windowbg,
+html.pwa-dark .windowbg2,
+html.pwa-dark-auto .windowbg,
+html.pwa-dark-auto .windowbg2 {
+	background: var(--pwa-bg-surface);
+	color: var(--pwa-text-primary);
+}
+
+html.pwa-dark .titlebg,
+html.pwa-dark .titlebg2,
+html.pwa-dark .catbg,
+html.pwa-dark .catbg2,
+html.pwa-dark-auto .titlebg,
+html.pwa-dark-auto .titlebg2,
+html.pwa-dark-auto .catbg,
+html.pwa-dark-auto .catbg2 {
+	background: var(--pwa-bg-elevated);
+	color: var(--pwa-text-primary);
+}
+
+/* ─── Roundframes & Panels ──────────────────────────────────────────────────── */
+
+html.pwa-dark .roundframe,
+html.pwa-dark-auto .roundframe {
+	background: var(--pwa-bg-surface);
+	border-color: var(--pwa-border);
+	color: var(--pwa-text-primary);
+}
+
+html.pwa-dark .description,
+html.pwa-dark-auto .description {
+	background: var(--pwa-bg-elevated);
+	color: var(--pwa-text-secondary);
+}
+
+/* ─── Links ─────────────────────────────────────────────────────────────────── */
+
+html.pwa-dark a,
+html.pwa-dark-auto a {
+	color: var(--pwa-accent);
+}
+
+html.pwa-dark a:hover,
+html.pwa-dark-auto a:hover {
+	color: #9cc5e3;
+}
+
+/* ─── Buttons ───────────────────────────────────────────────────────────────── */
+
+html.pwa-dark .button,
+html.pwa-dark .button_submit,
+html.pwa-dark-auto .button,
+html.pwa-dark-auto .button_submit {
+	background: var(--pwa-accent);
+	color: #fff;
+	border-color: var(--pwa-border);
+}
+
+html.pwa-dark input[type="text"],
+html.pwa-dark input[type="password"],
+html.pwa-dark input[type="email"],
+html.pwa-dark input[type="url"],
+html.pwa-dark input[type="search"],
+html.pwa-dark textarea,
+html.pwa-dark select,
+html.pwa-dark-auto input[type="text"],
+html.pwa-dark-auto input[type="password"],
+html.pwa-dark-auto input[type="email"],
+html.pwa-dark-auto input[type="url"],
+html.pwa-dark-auto input[type="search"],
+html.pwa-dark-auto textarea,
+html.pwa-dark-auto select {
+	background: var(--pwa-bg-elevated);
+	color: var(--pwa-text-primary);
+	border-color: var(--pwa-border);
+}
+
+/* ─── Navigation & Menus ────────────────────────────────────────────────────── */
+
+html.pwa-dark #main_menu,
+html.pwa-dark-auto #main_menu {
+	background: var(--pwa-bg-surface);
+}
+
+html.pwa-dark .dropmenu li,
+html.pwa-dark-auto .dropmenu li {
+	background: var(--pwa-bg-surface);
+}
+
+html.pwa-dark .dropmenu a,
+html.pwa-dark-auto .dropmenu a {
+	color: var(--pwa-text-primary);
+}
+
+html.pwa-dark .dropmenu a:hover,
+html.pwa-dark-auto .dropmenu a:hover {
+	background: var(--pwa-bg-elevated);
+}
+
+/* ─── Post Separators & Borders ─────────────────────────────────────────────── */
+
+html.pwa-dark hr,
+html.pwa-dark .separator,
+html.pwa-dark-auto hr,
+html.pwa-dark-auto .separator {
+	border-color: var(--pwa-border);
+}
+
+html.pwa-dark .post_wrapper,
+html.pwa-dark-auto .post_wrapper {
+	border-color: var(--pwa-border);
+}
+
+/* ─── Footer ────────────────────────────────────────────────────────────────── */
+
+html.pwa-dark #footer_section,
+html.pwa-dark-auto #footer_section {
+	background: var(--pwa-bg-surface);
+	color: var(--pwa-text-secondary);
+	border-color: var(--pwa-border);
+}
+
+/* ─── Smalltext & Meta ──────────────────────────────────────────────────────── */
+
+html.pwa-dark .smalltext,
+html.pwa-dark .lastpost,
+html.pwa-dark-auto .smalltext,
+html.pwa-dark-auto .lastpost {
+	color: var(--pwa-text-secondary);
+}
+
+/* ─── Quoting & Code Blocks ─────────────────────────────────────────────────── */
+
+html.pwa-dark .bbc_standard_quote,
+html.pwa-dark blockquote,
+html.pwa-dark-auto .bbc_standard_quote,
+html.pwa-dark-auto blockquote {
+	background: var(--pwa-bg-elevated);
+	border-color: var(--pwa-border);
+	color: var(--pwa-text-secondary);
+}
+
+html.pwa-dark .bbc_code,
+html.pwa-dark code,
+html.pwa-dark-auto .bbc_code,
+html.pwa-dark-auto code {
+	background: var(--pwa-bg-elevated);
+	color: var(--pwa-text-primary);
+	border-color: var(--pwa-border);
+}
+
+/* ─── Alerts & Notifications ────────────────────────────────────────────────── */
+
+html.pwa-dark .alert,
+html.pwa-dark-auto .alert {
+	background: var(--pwa-bg-elevated);
+	border-color: var(--pwa-border);
+	color: var(--pwa-text-primary);
+}
+
+/* ─── Page Navigation ───────────────────────────────────────────────────────── */
+
+html.pwa-dark .pagelinks .nav_page a,
+html.pwa-dark-auto .pagelinks .nav_page a {
+	background: var(--pwa-bg-elevated);
+	color: var(--pwa-text-primary);
+	border-color: var(--pwa-border);
+}
+
+html.pwa-dark .pagelinks .nav_page .current_page,
+html.pwa-dark-auto .pagelinks .nav_page .current_page {
+	background: var(--pwa-accent);
+	color: #fff;
+}
+
+/* ─── Tables ────────────────────────────────────────────────────────────────── */
+
+html.pwa-dark table.table_grid,
+html.pwa-dark-auto table.table_grid {
+	border-color: var(--pwa-border);
+}
+
+html.pwa-dark table.table_grid td,
+html.pwa-dark table.table_grid th,
+html.pwa-dark-auto table.table_grid td,
+html.pwa-dark-auto table.table_grid th {
+	border-color: var(--pwa-border);
+	color: var(--pwa-text-primary);
+}
+
+/* ─── Poster Info ───────────────────────────────────────────────────────────── */
+
+html.pwa-dark .poster h4,
+html.pwa-dark .poster h4 a,
+html.pwa-dark-auto .poster h4,
+html.pwa-dark-auto .poster h4 a {
+	color: var(--pwa-accent);
+}
+
+/* ─── Scrollbar (WebKit) ────────────────────────────────────────────────────── */
+
+html.pwa-dark ::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+html.pwa-dark ::-webkit-scrollbar-track {
+	background: var(--pwa-bg-primary);
+}
+
+html.pwa-dark ::-webkit-scrollbar-thumb {
+	background: var(--pwa-border);
+	border-radius: 4px;
+}

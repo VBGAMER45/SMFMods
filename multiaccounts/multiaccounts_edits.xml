@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>vbgamer45:MultiAccounts edits</id>
+	<version>1.0</version>
+
+	<!-- 1. Post.template.php - Add "Post as" dropdown after post header -->
+	<file name="$themedir/Post.template.php">
+		<operation>
+			<search position="after"><![CDATA[	// The post header... important stuff
+	template_post_header();]]></search>
+			<add><![CDATA[
+	// Multi Accounts: Post as dropdown (static guard prevents duplicate output)
+	static $multiaccounts_post_as_shown = false;
+	if (!$multiaccounts_post_as_shown && !empty($context['user']['multiaccounts']) && count($context['user']['multiaccounts']) > 1)
+	{
+		$multiaccounts_post_as_shown = true;
+		echo '
+					<div class="multiaccounts_post_as">
+						<label for="multiaccount_post_as"><strong>', $txt['multiaccounts_post_as'], ':</strong></label>
+						<select name="multiaccount_post_as" id="multiaccount_post_as">';
+
+		foreach ($context['user']['multiaccounts'] as $ma_id => $ma_account)
+			echo '
+							<option value="', $ma_id, '"', $ma_id == $context['user']['id'] ? ' selected' : '', '>', $ma_account['name'], '</option>';
+
+		echo '
+						</select>
+					</div>';
+	}]]></add>
+		</operation>
+	</file>
+
+	<!-- 2. Display.template.php - Add "Post as" dropdown in quick reply -->
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="replace"><![CDATA[	// Guests just need more.
+	if ($context['user']['is_guest'])]]></search>
+			<add><![CDATA[	// Multi Accounts: Post as dropdown in quick reply
+	if (!empty($context['user']['multiaccounts']) && count($context['user']['multiaccounts']) > 1)
+	{
+		echo '
+						<div class="multiaccounts_post_as">
+							<label for="multiaccount_post_as_qr"><strong>', $txt['multiaccounts_post_as'], ':</strong></label>
+							<select name="multiaccount_post_as" id="multiaccount_post_as_qr">';
+
+		foreach ($context['user']['multiaccounts'] as $ma_id => $ma_account)
+			echo '
+								<option value="', $ma_id, '"', $ma_id == $context['user']['id'] ? ' selected' : '', '>', $ma_account['name'], '</option>';
+
+		echo '
+							</select>
+						</div>';
+	}
+
+	// Guests just need more.
+	if ($context['user']['is_guest'] && empty($context['user']['multiaccounts']))]]></add>
+		</operation>
+	</file>
+
+	<!-- 3. Search.template.php - Add "Include linked accounts" checkbox -->
+	<file name="$themedir/Search.template.php">
+		<operation>
+			<search position="after"><![CDATA[				<dd>
+					<input id="userspec" type="text" name="userspec" value="', empty($context['search_params']['userspec']) ? '*' : $context['search_params']['userspec'], '" size="40">
+				</dd>]]></search>
+			<add><![CDATA[';
+				// Multi Accounts: Include linked accounts checkbox
+				if (!empty($context['user']['multiaccounts']) && count($context['user']['multiaccounts']) > 1)
+				{
+					echo '
+				<dt></dt>
+				<dd>
+					<label><input type="checkbox" name="multiaccounts_search" value="1"> ', $txt['multiaccounts_search_linked'], '</label>
+				</dd>';
+				}
+				echo ']]></add>
+		</operation>
+	</file>
+
+	<!-- 4. Profile.template.php - Show linked accounts in profile summary -->
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[	echo '
+		</div><!-- #detailedinfo -->
+	</div><!-- #profileview -->';]]></search>
+			<add><![CDATA[	// Multi Accounts: Show linked accounts in profile
+	if (!empty($modSettings['multiaccountsShowInProfile']) && !empty($context['member']['multiaccounts_list']))
+	{
+		echo '
+			<div class="multiaccounts_profile">
+				<dt>', $txt['multiaccounts_manage'], ':</dt>
+				<dd>
+					<ul class="multiaccounts_profile_list">';
+
+		foreach ($context['member']['multiaccounts_list'] as $ma)
+			echo '
+						<li><a href="', $ma['href'], '">', $ma['name'], '</a></li>';
+
+		echo '
+					</ul>
+				</dd>
+			</div>';
+	}
+
+]]></add>
+		</operation>
+	</file>
+</modification>

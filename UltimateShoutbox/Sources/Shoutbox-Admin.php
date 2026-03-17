@@ -135,7 +135,11 @@ function ShoutboxAdminSettings()
 			'shoutbox_disable_cache' => !empty($_POST['shoutbox_disable_cache']) ? '1' : '0',
 			'shoutbox_disable_chatroom' => !empty($_POST['shoutbox_disable_chatroom']) ? '1' : '0',
 			'shoutbox_newest_first' => !empty($_POST['shoutbox_newest_first']) ? '1' : '0',
+			'shoutbox_widget_height' => max(100, (int) ($_POST['shoutbox_widget_height'] ?? 280)),
+			'shoutbox_enable_attachments' => !empty($_POST['shoutbox_enable_attachments']) ? '1' : '0',
+			'shoutbox_attachment_max_size' => max(1, (int) ($_POST['shoutbox_attachment_max_size'] ?? 1024)),
 			'shoutbox_show_on_boardindex' => !empty($_POST['shoutbox_show_on_boardindex']) ? '1' : '0',
+			'shoutbox_show_on_portal' => !empty($_POST['shoutbox_show_on_portal']) ? '1' : '0',
 			'shoutbox_show_on_boards' => !empty($_POST['shoutbox_show_on_boards']) ? '1' : '0',
 			'shoutbox_show_on_topics' => !empty($_POST['shoutbox_show_on_topics']) ? '1' : '0',
 			'shoutbox_show_on_other' => !empty($_POST['shoutbox_show_on_other']) ? '1' : '0',
@@ -264,6 +268,14 @@ function ShoutboxAdminSettings()
 		'value' => !empty($modSettings['shoutbox_newest_first']),
 	);
 
+	$context['config_vars'][] = array(
+		'name' => 'shoutbox_widget_height',
+		'label' => $txt['shoutbox_widget_height'],
+		'subtext' => $txt['shoutbox_widget_height_desc'],
+		'type' => 'int',
+		'value' => !empty($modSettings['shoutbox_widget_height']) ? $modSettings['shoutbox_widget_height'] : 280,
+	);
+
 	// Widget Visibility section.
 	$context['config_vars'][] = $txt['shoutbox_admin_visibility'];
 
@@ -273,6 +285,13 @@ function ShoutboxAdminSettings()
 		'subtext' => $txt['shoutbox_show_on_boardindex_desc'],
 		'type' => 'check',
 		'value' => !empty($modSettings['shoutbox_show_on_boardindex']),
+	);
+	$context['config_vars'][] = array(
+		'name' => 'shoutbox_show_on_portal',
+		'label' => $txt['shoutbox_show_on_portal'],
+		'subtext' => $txt['shoutbox_show_on_portal_desc'],
+		'type' => 'check',
+		'value' => !empty($modSettings['shoutbox_show_on_portal']),
 	);
 	$context['config_vars'][] = array(
 		'name' => 'shoutbox_show_on_boards',
@@ -369,6 +388,25 @@ function ShoutboxAdminSettings()
 		'subtext' => $txt['shoutbox_show_bbc_toolbar_desc'],
 		'type' => 'check',
 		'value' => !empty($modSettings['shoutbox_show_bbc_toolbar']),
+	);
+
+	// Attachment Settings section.
+	$context['config_vars'][] = $txt['shoutbox_admin_attachments'];
+
+	$context['config_vars'][] = array(
+		'name' => 'shoutbox_enable_attachments',
+		'label' => $txt['shoutbox_enable_attachments'],
+		'subtext' => $txt['shoutbox_enable_attachments_desc'],
+		'type' => 'check',
+		'value' => !empty($modSettings['shoutbox_enable_attachments']),
+	);
+
+	$context['config_vars'][] = array(
+		'name' => 'shoutbox_attachment_max_size',
+		'label' => $txt['shoutbox_attachment_max_size'],
+		'subtext' => $txt['shoutbox_attachment_max_size_desc'],
+		'type' => 'int',
+		'value' => !empty($modSettings['shoutbox_attachment_max_size']) ? $modSettings['shoutbox_attachment_max_size'] : 1024,
 	);
 
 	// GIF Settings section.

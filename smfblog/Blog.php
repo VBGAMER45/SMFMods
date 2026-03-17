@@ -5,10 +5,10 @@
 * SMFBlog: A (very) simple Blog system for Simple Machines Forum                  *
 * =============================================================================== *
 * Software Version:           SMFBlog 3.0
-* Updated by:                 vbgamer45 (http://www.smfhacks.com)                 *
+* Updated by:                 vbgamer45 (https://www.smfhacks.com)                 *
 * Updated by:                 Runic (http://www.smfservices.org)                  *
 * Original Mod by:            Daniel15 (http://www.dansoftaustralia.net/)         *
-* Copyright 2010-2026 by:           vbgamer45 (http://www.smfhacks.com)           *
+* Copyright 2010-2026 by:           vbgamer45 (https://www.smfhacks.com)           *
 * Copyright 2009-2010 by:     Runic (http://www.smfservices.org)                  *
 * Copyright 2007-2009 by:     Daniel15 (http://www.dansoftaustralia.net/)         *
 ***********************************************************************************
@@ -45,7 +45,7 @@ function Blog()
 		'version' => '3.0',
 		'build' => '1',
 		'revision' => '$Revision: 1 $',
-		'date' => '$Date: 2010-01-30 18:54:44 +0 $',
+		'date' => '$Date: 2026-01-30 18:54:44 +0 $',
 	);
 	
 	// Is the blog disabled?
@@ -59,8 +59,6 @@ function Blog()
 		'name' => $txt['blog']
 	);
 
-	// We need some SSI functions.
-	require_once($boarddir . '/SSI.php');
 	// Load our template - use 2.1 variant if available.
 	if (defined('SMF_VERSION') && version_compare(SMF_VERSION, '2.1', '>='))
 		loadTemplate('Blog2.1');
@@ -69,11 +67,13 @@ function Blog()
 	// Use the blog layer
 	$context['template_layers'][] = 'blog';
 	// Add our stylesheet.
-	if (function_exists('loadCSSFile'))
-		loadCSSFile($settings['default_theme_url'] . '/blog.css');
+	if (defined('SMF_VERSION') && version_compare(SMF_VERSION, '2.1', '>='))
+		loadCSSFile('blog.css', array('default_theme' => true, 'validate' => false));
+	elseif (function_exists('loadCSSFile'))
+		loadCSSFile($settings['default_theme_url'] . '/css/blog.css');
 	else
 		$context['html_headers'] .= '
-	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/blog.css" />';
+	<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/blog.css" />';
 	// A default page title.
 	$context['page_title'] = $context['forum_name'] . ' ' . $txt['blog'];
 	
@@ -242,7 +242,7 @@ function BlogView()
 	$context['blog']['pageindex'] = constructPageIndex($scripturl . '?action=blog;sa=view_blog;name=' . $row['blog_alias'] . ';start=%d', $_REQUEST['start'], $post_count, $modSettings['blog_posts_perpage'], true);
 
 	// Get all the recent posts.
-	$context['blog']['posts'] = ssi_boardNews($row['id_board'], $modSettings['blog_posts_perpage'], null, null, array());
+	$context['blog']['posts'] = blog_boardNews($row['id_board'], $modSettings['blog_posts_perpage']);
 		
 	// Use the "view" template.
 	$context['sub_template'] = 'view';
@@ -325,13 +325,11 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 		SELECT
 			t.id_topic, t.id_board, t.id_first_msg, t.id_last_msg, t.id_member_started, t.num_replies, t.locked, m.id_member,m.icon, m.subject, 
 			m.poster_time, m.body, m.smileys_enabled, m.id_msg, COALESCE(mem.real_name, m.poster_name) AS poster_name, b.name AS board_name
-		FROM ({db_prefix}topics AS t
-			INNER JOIN {db_prefix}messages AS m
-			INNER JOIN {db_prefix}boards AS b)
+		FROM {db_prefix}topics AS t
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
+			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
 		WHERE t.id_topic = {int:current_topic}
-			AND m.id_msg = t.id_first_msg
-			AND b.id_board = t.id_board
 			AND FIND_IN_SET({int:full_group}, b.member_groups)',
 		array(
 			'full_group' => -1,
@@ -426,7 +424,7 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 			SELECT
 				m.id_msg, m.poster_time, m.id_member, m.subject,
 				COALESCE(mem.real_name, m.poster_name) AS poster_name,
-				m.poster_ip, m.smileys_enabled, m.modified_time,
+				m.poster_email, m.poster_ip, m.smileys_enabled, m.modified_time,
 				m.modified_name, m.body, m.icon
 			FROM {db_prefix}messages AS m
 				LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
@@ -452,8 +450,8 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 				$memberContext[$row['id_member']]['id'] = 0;
 				$memberContext[$row['id_member']]['group'] = $txt['guest'];
 				$memberContext[$row['id_member']]['link'] = $row['poster_name'];
-				$memberContext[$row['id_member']]['email'] = $row['posterEmail'];
-				$memberContext[$row['id_member']]['hide_email'] = $row['posterEmail'] == '' || (!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']);
+				$memberContext[$row['id_member']]['email'] = $row['poster_email'];
+				$memberContext[$row['id_member']]['hide_email'] = $row['poster_email'] == '' || (!empty($modSettings['guest_hideContacts']) && $user_info['is_guest']);
 				$memberContext[$row['id_member']]['is_guest'] = true;
 			}
 			else
@@ -541,6 +539,108 @@ function BlogTopic($topic = null, $num_replies = null, $start = null, $output_me
 			<hr style="margin: 2ex 0;" width="100%" />';
 			
 	}
+}
+
+/**
+ * Fetch blog posts for a board (replaces ssi_boardNews which is unavailable inside SMF).
+ */
+function blog_boardNews($board, $limit = 5)
+{
+	global $scripturl, $txt, $settings, $modSettings, $context, $smcFunc;
+
+	loadLanguage('Stats');
+
+	$board = (int) $board;
+	$limit = max(1, (int) $limit);
+	$start = isset($_REQUEST['start']) ? max(0, (int) $_REQUEST['start']) : 0;
+
+	$icon_sources = array();
+	if (!empty($context['stable_icons']))
+		foreach ($context['stable_icons'] as $icon)
+			$icon_sources[$icon] = 'images_url';
+
+	// Find the first message IDs for recent topics.
+	$request = $smcFunc['db_query']('', '
+		SELECT t.id_first_msg
+		FROM {db_prefix}topics AS t
+		WHERE t.id_board = {int:current_board}' . (!empty($modSettings['postmod_active']) ? '
+			AND t.approved = {int:is_approved}' : '') . '
+		ORDER BY t.id_first_msg DESC
+		LIMIT {int:start}, {int:limit}',
+		array(
+			'current_board' => $board,
+			'is_approved' => 1,
+			'start' => $start,
+			'limit' => $limit,
+		)
+	);
+	$posts = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$posts[] = $row['id_first_msg'];
+	$smcFunc['db_free_result']($request);
+
+	if (empty($posts))
+		return array();
+
+	// Fetch the actual post data.
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			m.icon, m.subject, m.body, COALESCE(mem.real_name, m.poster_name) AS poster_name,
+			m.poster_time, t.num_replies, t.id_topic, m.id_member, m.smileys_enabled,
+			m.id_msg, t.locked, t.id_last_msg
+		FROM {db_prefix}topics AS t
+			INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
+			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = m.id_member)
+		WHERE t.id_first_msg IN ({array_int:post_list})
+		ORDER BY t.id_first_msg DESC
+		LIMIT ' . count($posts),
+		array(
+			'post_list' => $posts,
+		)
+	);
+
+	$return = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$row['body'] = parse_bbc($row['body'], $row['smileys_enabled'], $row['id_msg']);
+
+		if (!empty($modSettings['messageIconChecks_enable']) && !isset($icon_sources[$row['icon']]))
+			$icon_sources[$row['icon']] = file_exists($settings['theme_dir'] . '/images/post/' . $row['icon'] . '.png') ? 'images_url' : 'default_images_url';
+		elseif (!isset($icon_sources[$row['icon']]))
+			$icon_sources[$row['icon']] = 'images_url';
+
+		censorText($row['subject']);
+		censorText($row['body']);
+
+		$return[] = array(
+			'id' => $row['id_topic'],
+			'message_id' => $row['id_msg'],
+			'icon' => '<img src="' . $settings[$icon_sources[$row['icon']]] . '/post/' . $row['icon'] . '.png" alt="' . $row['icon'] . '">',
+			'subject' => $row['subject'],
+			'time' => timeformat($row['poster_time']),
+			'timestamp' => $row['poster_time'],
+			'body' => $row['body'],
+			'href' => $scripturl . '?topic=' . $row['id_topic'] . '.0',
+			'link' => '<a href="' . $scripturl . '?topic=' . $row['id_topic'] . '.0">' . $row['num_replies'] . ' ' . ($row['num_replies'] == 1 ? $txt['ssi_comment'] : $txt['ssi_comments']) . '</a>',
+			'replies' => $row['num_replies'],
+			'comment_href' => !empty($row['locked']) ? '' : $scripturl . '?action=post;topic=' . $row['id_topic'] . '.' . $row['num_replies'] . ';last_msg=' . $row['id_last_msg'],
+			'comment_link' => !empty($row['locked']) ? '' : '<a href="' . $scripturl . '?action=post;topic=' . $row['id_topic'] . '.' . $row['num_replies'] . ';last_msg=' . $row['id_last_msg'] . '">' . $txt['ssi_write_comment'] . '</a>',
+			'poster' => array(
+				'id' => $row['id_member'],
+				'name' => $row['poster_name'],
+				'href' => !empty($row['id_member']) ? $scripturl . '?action=profile;u=' . $row['id_member'] : '',
+				'link' => !empty($row['id_member']) ? '<a href="' . $scripturl . '?action=profile;u=' . $row['id_member'] . '">' . $row['poster_name'] . '</a>' : $row['poster_name'],
+			),
+			'locked' => !empty($row['locked']),
+			'is_last' => false,
+		);
+	}
+	$smcFunc['db_free_result']($request);
+
+	if (!empty($return))
+		$return[count($return) - 1]['is_last'] = true;
+
+	return $return;
 }
 
 ?>

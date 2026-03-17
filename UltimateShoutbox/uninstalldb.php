@@ -24,6 +24,7 @@ $smcFunc['db_drop_table']('{db_prefix}shoutbox_messages');
 $smcFunc['db_drop_table']('{db_prefix}shoutbox_bans');
 $smcFunc['db_drop_table']('{db_prefix}shoutbox_rooms');
 $smcFunc['db_drop_table']('{db_prefix}shoutbox_reactions');
+$smcFunc['db_drop_table']('{db_prefix}shoutbox_attachments');
 
 // =========================================================================
 // 2. Remove settings
@@ -54,10 +55,14 @@ $settings_to_remove = array(
 	'shoutbox_show_bbc_toolbar',
 	'shoutbox_newest_first',
 	'shoutbox_show_on_boardindex',
+	'shoutbox_show_on_portal',
 	'shoutbox_show_on_boards',
 	'shoutbox_show_on_topics',
 	'shoutbox_show_on_other',
 	'shoutbox_exclude_actions',
+	'shoutbox_widget_height',
+	'shoutbox_enable_attachments',
+	'shoutbox_attachment_max_size',
 );
 
 $smcFunc['db_query']('', '
@@ -77,3 +82,20 @@ $smcFunc['db_query']('', '
 		'var' => 'shoutbox_removed',
 	)
 );
+
+// Delete uploaded attachment files.
+global $boarddir;
+$upload_dir = $boarddir . '/shoutbox_uploads';
+if (is_dir($upload_dir))
+{
+	$files = glob($upload_dir . '/*');
+	if ($files)
+	{
+		foreach ($files as $file)
+		{
+			if (is_file($file))
+				@unlink($file);
+		}
+	}
+	@rmdir($upload_dir);
+}

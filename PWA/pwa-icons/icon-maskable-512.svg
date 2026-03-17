@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Full bleed background for maskable display -->
+  <rect width="512" height="512" fill="#557EA0"/>
+  <!-- Content within 40% safe zone (center 60% = ~307px, inset ~102px each side) -->
+  <text x="256" y="256" font-family="Arial, Helvetica, sans-serif" font-size="220" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="central">F</text>
+</svg>

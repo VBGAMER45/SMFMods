@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info"
+	xmlns:smf="http://www.simplemachines.org/">
+	<id>smfmods:pwa-shell</id>
+	<name>Mobile-First PWA Shell</name>
+	<version>1.0.1</version>
+	<type>modification</type>
+
+	<install for="2.1.*">
+		<require-dir name="Sources/PWA" destination="$sourcedir" />
+		<require-dir name="Themes" destination="$boarddir" />
+		<require-dir name="pwa-icons" destination="$boarddir" />
+		<require-file name="sw.js" destination="$boarddir" />
+		<require-file name="offline.html" destination="$boarddir" />
+		<database>install_db.php</database>
+		<code>install.php</code>
+
+		<hook hook="integrate_actions"
+			file="$sourcedir/PWA/PWAIntegration.php"
+			function="PWA\PWAIntegration::hookActions#" />
+		<hook hook="integrate_load_theme"
+			file="$sourcedir/PWA/PWAIntegration.php"
+			function="PWA\PWAIntegration::hookLoadTheme#" />
+		<hook hook="integrate_admin_areas"
+			file="$sourcedir/PWA/PWAAdmin.php"
+			function="PWA\PWAAdmin::hookAdminAreas#" />
+
+		<redirect url="?action=admin;area=pwa_settings">Thank you for installing Mobile-First PWA Shell! Redirecting to settings...</redirect>
+	</install>
+
+	<uninstall for="2.1.*">
+		<hook hook="integrate_actions"
+			file="$sourcedir/PWA/PWAIntegration.php"
+			function="PWA\PWAIntegration::hookActions#" reverse="true" />
+		<hook hook="integrate_load_theme"
+			file="$sourcedir/PWA/PWAIntegration.php"
+			function="PWA\PWAIntegration::hookLoadTheme#" reverse="true" />
+		<hook hook="integrate_admin_areas"
+			file="$sourcedir/PWA/PWAAdmin.php"
+			function="PWA\PWAAdmin::hookAdminAreas#" reverse="true" />
+		<code>uninstall.php</code>
+		<remove-dir name="$sourcedir/PWA" />
+		<remove-file name="$themedir/css/pwa-shell.css" />
+		<remove-file name="$themedir/css/pwa-dark.css" />
+		<remove-file name="$themedir/scripts/pwa-app.js" />
+		<remove-file name="$themedir/scripts/pwa-sw-register.js" />
+		<remove-file name="$themedir/scripts/pwa-push.js" />
+		<remove-file name="$themedir/PWAAdmin.template.php" />
+		<remove-file name="$boarddir/sw.js" />
+		<remove-file name="$boarddir/offline.html" />
+		<remove-dir name="$boarddir/pwa-icons" />
+	</uninstall>
+</package-info>

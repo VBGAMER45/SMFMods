@@ -1,0 +1,510 @@
+/**
+ * Mobile-First PWA Shell — Shell Styles
+ *
+ * Transforms SMF's default theme into a mobile-native layout.
+ * Only activates when .pwa-active class is on <body>.
+ * Desktop remains completely unaffected.
+ *
+ * @package smfmods:pwa-shell
+ */
+
+/* ─── CSS Variables (Light defaults) ────────────────────────────────────────── */
+
+:root {
+	--pwa-bg-primary: #f5f5f5;
+	--pwa-bg-surface: #ffffff;
+	--pwa-bg-elevated: #ffffff;
+	--pwa-text-primary: #1a1a1a;
+	--pwa-text-secondary: #666666;
+	--pwa-accent: #557EA0;
+	--pwa-accent-light: rgba(85, 126, 160, 0.1);
+	--pwa-border: #e0e0e0;
+	--pwa-shadow: rgba(0, 0, 0, 0.1);
+	--pwa-nav-height: 56px;
+	--pwa-header-height: 48px;
+	--pwa-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ─── Bottom Tab Navigation ─────────────────────────────────────────────────── */
+
+.pwa-bottom-nav {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: var(--pwa-nav-height);
+	background: var(--pwa-bg-surface);
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-top: 1px solid var(--pwa-border);
+	z-index: 1000;
+	padding-bottom: var(--pwa-safe-bottom);
+	box-shadow: 0 -1px 8px var(--pwa-shadow);
+	/* Hidden by default, shown via JS when PWA active */
+	display: none;
+}
+
+body.pwa-active .pwa-bottom-nav {
+	display: flex;
+}
+
+.pwa-bottom-nav a {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	font-size: 10px;
+	color: var(--pwa-text-secondary);
+	gap: 2px;
+	padding: 6px 0;
+	min-width: 56px;
+	position: relative;
+	-webkit-tap-highlight-color: transparent;
+	transition: color 0.15s;
+}
+
+.pwa-bottom-nav a:hover,
+.pwa-bottom-nav a:focus {
+	color: var(--pwa-accent);
+}
+
+.pwa-bottom-nav a.active {
+	color: var(--pwa-accent);
+}
+
+.pwa-bottom-nav a.active .pwa-nav-icon {
+	background: var(--pwa-accent-light);
+	border-radius: 16px;
+}
+
+.pwa-nav-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4px 16px;
+	border-radius: 16px;
+	transition: background 0.15s;
+}
+
+.pwa-nav-icon svg {
+	width: 24px;
+	height: 24px;
+	min-width: 24px;
+	min-height: 24px;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	display: block;
+}
+
+.pwa-nav-label {
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: 0.01em;
+}
+
+/* Badge on nav items */
+.pwa-badge {
+	position: absolute;
+	top: 2px;
+	right: 10px;
+	min-width: 16px;
+	height: 16px;
+	background: #e53935;
+	color: #fff;
+	font-size: 9px;
+	font-weight: 700;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 4px;
+	line-height: 1;
+}
+
+.pwa-badge:empty,
+.pwa-badge[data-count="0"] {
+	display: none;
+}
+
+/* ─── Sticky Header ─────────────────────────────────────────────────────────── */
+
+.pwa-header {
+	display: none;
+}
+
+body.pwa-active .pwa-header {
+	display: flex;
+	position: sticky;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: var(--pwa-header-height);
+	background: var(--pwa-bg-surface);
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 16px;
+	z-index: 999;
+	border-bottom: 1px solid var(--pwa-border);
+	box-shadow: 0 1px 4px var(--pwa-shadow);
+}
+
+.pwa-header-title {
+	font-size: 17px;
+	font-weight: 600;
+	color: var(--pwa-text-primary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 60%;
+}
+
+.pwa-header-actions {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.pwa-header-btn {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	border: none;
+	background: transparent;
+	color: var(--pwa-text-secondary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition: background 0.15s;
+}
+
+.pwa-header-btn:hover {
+	background: var(--pwa-accent-light);
+}
+
+.pwa-header-btn svg {
+	width: 20px;
+	height: 20px;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* ─── Layout Transforms (Mobile Only) ──────────────────────────────────────── */
+
+@media (max-width: 768px) {
+
+	/* Body padding for fixed nav and header */
+	body.pwa-active #footerfix {
+		padding-bottom: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom) + 16px);
+	}
+
+	/* Hide default top navigation on mobile when PWA active */
+	body.pwa-active #main_menu,
+	body.pwa-active #top_section .inner_wrap > *:not(.pwa-header) {
+		display: none;
+	}
+
+	body.pwa-active #top_section {
+		padding: 0;
+		background: none;
+		border: none;
+		box-shadow: none;
+	}
+
+	/* Compact board listing */
+	body.pwa-active .up_contain {
+		padding: 8px 12px;
+	}
+
+	body.pwa-active .board_icon {
+		display: none;
+	}
+
+	body.pwa-active .info {
+		padding-left: 0;
+	}
+
+	body.pwa-active .info a {
+		font-size: 15px;
+		font-weight: 500;
+	}
+
+	body.pwa-active .info p {
+		font-size: 12px;
+		line-height: 1.4;
+		margin-top: 2px;
+	}
+
+	body.pwa-active .board_stats {
+		display: none;
+	}
+
+	body.pwa-active .lastpost {
+		font-size: 11px;
+	}
+
+	/* Topic list compacting */
+	body.pwa-active #topic_container .windowbg,
+	body.pwa-active #topic_container .windowbg2 {
+		padding: 10px 12px;
+	}
+
+	body.pwa-active .topic_details {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+	}
+
+	/* Full-width content */
+	body.pwa-active #wrapper {
+		max-width: 100%;
+		padding: 0;
+	}
+
+	body.pwa-active #content_section {
+		padding: 0;
+	}
+
+	body.pwa-active .roundframe {
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+	}
+
+	/* Message posts — full width */
+	body.pwa-active .post_wrapper {
+		padding: 10px 12px;
+	}
+
+	body.pwa-active .poster {
+		float: none;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 0 0 8px;
+		border-bottom: 1px solid var(--pwa-border);
+		margin-bottom: 8px;
+	}
+
+	body.pwa-active .poster .avatar img {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+	}
+
+	body.pwa-active .poster h4 {
+		font-size: 14px;
+	}
+
+	body.pwa-active .poster .smalltext {
+		font-size: 11px;
+	}
+
+	body.pwa-active .postarea {
+		margin-left: 0;
+	}
+
+	body.pwa-active .inner {
+		font-size: 14px;
+		line-height: 1.6;
+	}
+}
+
+/* ─── Floating Action Button ────────────────────────────────────────────────── */
+
+.pwa-fab {
+	display: none;
+}
+
+body.pwa-active .pwa-fab {
+	display: flex;
+	position: fixed;
+	right: 16px;
+	bottom: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom) + 16px);
+	width: 52px;
+	height: 52px;
+	border-radius: 16px;
+	background: var(--pwa-accent);
+	color: #fff;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 12px var(--pwa-shadow);
+	border: none;
+	cursor: pointer;
+	z-index: 999;
+	-webkit-tap-highlight-color: transparent;
+	transition: transform 0.15s, box-shadow 0.15s;
+}
+
+body.pwa-active .pwa-fab:active {
+	transform: scale(0.92);
+}
+
+body.pwa-active .pwa-fab svg {
+	width: 24px;
+	height: 24px;
+	stroke: currentColor;
+	stroke-width: 2;
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* ─── Pull to Refresh Indicator ─────────────────────────────────────────────── */
+
+.pwa-ptr-indicator {
+	position: fixed;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%) translateY(-100%);
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: var(--pwa-bg-surface);
+	box-shadow: 0 2px 8px var(--pwa-shadow);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10001;
+	transition: transform 0.2s;
+}
+
+.pwa-ptr-indicator.pulling {
+	transform: translateX(-50%) translateY(16px);
+}
+
+.pwa-ptr-indicator.refreshing {
+	transform: translateX(-50%) translateY(16px);
+}
+
+.pwa-ptr-spinner {
+	width: 20px;
+	height: 20px;
+	border: 2px solid var(--pwa-border);
+	border-top-color: var(--pwa-accent);
+	border-radius: 50%;
+}
+
+.pwa-ptr-indicator.refreshing .pwa-ptr-spinner {
+	animation: pwa-spin 0.6s linear infinite;
+}
+
+@keyframes pwa-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* ─── Add to Home Screen Banner ─────────────────────────────────────────────── */
+
+.pwa-a2hs-banner {
+	position: fixed;
+	bottom: calc(var(--pwa-nav-height) + var(--pwa-safe-bottom) + 8px);
+	left: 8px;
+	right: 8px;
+	background: var(--pwa-bg-surface);
+	border-radius: 12px;
+	padding: 14px 16px;
+	box-shadow: 0 4px 20px var(--pwa-shadow);
+	z-index: 10000;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	animation: pwa-slide-up 0.3s ease-out;
+}
+
+.pwa-a2hs-banner .pwa-a2hs-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	flex-shrink: 0;
+}
+
+.pwa-a2hs-banner .pwa-a2hs-text {
+	flex: 1;
+	min-width: 0;
+}
+
+.pwa-a2hs-banner .pwa-a2hs-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--pwa-text-primary);
+}
+
+.pwa-a2hs-banner .pwa-a2hs-desc {
+	font-size: 12px;
+	color: var(--pwa-text-secondary);
+	margin-top: 2px;
+}
+
+.pwa-a2hs-banner button {
+	padding: 8px 16px;
+	border-radius: 8px;
+	border: none;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	flex-shrink: 0;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.pwa-a2hs-install {
+	background: var(--pwa-accent);
+	color: #fff;
+}
+
+.pwa-a2hs-dismiss {
+	background: transparent;
+	color: var(--pwa-text-secondary);
+	padding: 8px !important;
+}
+
+/* iOS share icon inline in A2HS instructions */
+.pwa-a2hs-share-icon {
+	display: inline-flex;
+	vertical-align: middle;
+	width: 18px;
+	height: 18px;
+	color: #007AFF;
+}
+
+.pwa-a2hs-share-icon svg {
+	width: 18px;
+	height: 18px;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+@keyframes pwa-slide-up {
+	from { opacity: 0; transform: translateY(20px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Dark Mode Toggle (in header) ──────────────────────────────────────────── */
+
+.pwa-dark-toggle {
+	cursor: pointer;
+}
+
+/* ─── Ensure nothing looks broken when non-mobile loads these styles ────────── */
+
+@media (min-width: 769px) {
+	.pwa-bottom-nav,
+	.pwa-header,
+	.pwa-fab,
+	.pwa-a2hs-banner,
+	.pwa-ptr-indicator {
+		display: none !important;
+	}
+}

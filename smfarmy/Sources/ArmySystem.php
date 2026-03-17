@@ -117,14 +117,14 @@ function army_integrate_menu_buttons(&$buttons)
  * - New topics earn post_point_topic gold
  * - Every post_per_guy posts, the player gains guy_per_post untrained soldiers
  *
- * @param array &$msgOptions    Message options from createPost()
- * @param array &$topicOptions  Topic options from createPost()
- * @param array &$posterOptions Poster options from createPost()
+ * @param array $msgOptions    Message options from createPost()
+ * @param array $topicOptions  Topic options from createPost()
+ * @param array $posterOptions Poster options from createPost()
  * @param array $message_columns  Column definitions (unused)
  * @param array $message_parameters Parameter values (unused)
  * @return void
  */
-function army_integrate_post_gain(&$msgOptions, &$topicOptions, &$posterOptions, $message_columns, $message_parameters)
+function army_integrate_post_gain($msgOptions, $topicOptions, $posterOptions, $message_columns, $message_parameters)
 {
 	global $smcFunc, $modSettings;
 

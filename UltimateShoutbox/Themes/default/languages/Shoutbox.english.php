@@ -241,6 +241,8 @@ $txt['shoutbox_bbc_code'] = 'Code';
 // Message Order
 $txt['shoutbox_newest_first'] = 'Newest Messages First';
 $txt['shoutbox_newest_first_desc'] = 'Display newest messages at the top instead of the bottom. Applies to both the widget and chatroom.';
+$txt['shoutbox_widget_height'] = 'Widget Height (px)';
+$txt['shoutbox_widget_height_desc'] = 'Height of the shoutbox widget message area in pixels. Default: 280.';
 
 // Visibility
 $txt['shoutbox_admin_visibility'] = 'Widget Visibility';
@@ -254,6 +256,18 @@ $txt['shoutbox_show_on_other'] = 'Show on Other Pages';
 $txt['shoutbox_show_on_other_desc'] = 'Display the shoutbox widget on other pages like profiles, member list, calendar, etc.';
 $txt['shoutbox_exclude_actions'] = 'Exclude Actions';
 $txt['shoutbox_exclude_actions_desc'] = 'Comma-separated list of actions where the widget should not appear. Example: quiz,arcade,gallery';
+
+// Attachments
+$txt['shoutbox_upload'] = 'Upload Image';
+$txt['shoutbox_upload_drop'] = 'Drop image here';
+$txt['shoutbox_upload_error'] = 'Upload failed. Please try again.';
+$txt['shoutbox_upload_too_large'] = 'File is too large. Maximum size: %s KB.';
+$txt['shoutbox_upload_invalid_type'] = 'Invalid file type. Allowed: JPG, PNG, GIF, WebP.';
+$txt['shoutbox_enable_attachments'] = 'Enable Image Attachments';
+$txt['shoutbox_enable_attachments_desc'] = 'Allow users to upload images in shoutbox messages. Supports drag-drop, clipboard paste, and file selection.';
+$txt['shoutbox_attachment_max_size'] = 'Max Attachment Size (KB)';
+$txt['shoutbox_attachment_max_size_desc'] = 'Maximum file size for uploaded images in kilobytes. Default: 1024 (1 MB).';
+$txt['shoutbox_admin_attachments'] = 'Attachment Settings';
 
 // Error messages
 $txt['shoutbox_error_connection'] = 'Unable to connect to the shoutbox. Retrying...';

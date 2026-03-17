@@ -1,0 +1,6 @@
+24:02:04.461105 dns-monitor Log continuation - Log started 2023-11-11T07:27:21.402294100Z
+24:02:04.461160 dns-monitor HostDnsMonitor: unchanged
+36:02:04.691453 dns-monitor HostDnsMonitor: updating information
+36:02:04.691537 dns-monitor HostDnsMonitor: unchanged
+48:02:04.780610 dns-monitor HostDnsMonitor: updating information
+48:02:04.780720 dns-monitor Log rotated - Log started 2023-11-11T07:27:21.402294100Z
