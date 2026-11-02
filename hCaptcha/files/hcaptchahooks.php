@@ -36,37 +36,49 @@ function hcaptcha_integrate_create_control_verification_pre(&$verificationOption
         $context['controls']['verification'][$verificationOptions['id']]['show_visual'] = 0;
         $context['controls']['verification'][$verificationOptions['id']]['can_hcaptcha'] = 1;
 
+        // Added per request rather than in package-info.xml: the settings table key only covers the first 30 characters,
+        // which this hook name shares with integrate_create_control_verification_pre, so both can't be stored
+        if ($do_test)
+            add_integration_function('integrate_create_control_verification_test', 'hcaptcha_integrate_create_control_verification_test', false);
     }
 }
 
-function hcaptcha_integrate_create_control_verification_test(&$thisVerification, &$verification_errors)
+function hcaptcha_integrate_create_control_verification_test($thisVerification, &$verification_errors)
 {
-    global $modSettings, $sourcedir;
-	$verification_errors = array();
+    global $modSettings, $sourcedir, $user_info;
 
-    if ($thisVerification['can_hcaptcha'] == 1)
-     {
+    if (empty($thisVerification['can_hcaptcha']))
+        return;
 
-         $thisVerification['show_visual'] = 0;
-         // Verify the captcha
-         if(isset($_REQUEST["h-captcha-response"]))
-         {
-             require_once($sourcedir . '/Subs-Package.php');
-             $response = fetch_web_data('https://hcaptcha.com/siteverify?secret=' . $modSettings['hcaptcha_private_key'] . '&response=' . $_REQUEST["h-captcha-response"] . '&remoteip=' . $_SERVER["REMOTE_ADDR"]);
-             $response = json_decode($response, true);
+    if (empty($_REQUEST['h-captcha-response']) || !is_string($_REQUEST['h-captcha-response']))
+    {
+        $verification_errors[] = 'hcaptcha_verification_code';
+        return;
+    }
 
-             if (true != $response["success"])
-                 $verification_errors[] = 'hcaptcha_verification_code';
+    // siteverify only accepts a POST body. Pass '&' explicitly since SMF sets arg_separator.output to &amp;
+    require_once($sourcedir . '/Subs-Package.php');
+    $raw = fetch_web_data('https://api.hcaptcha.com/siteverify', http_build_query(array(
+        'secret' => $modSettings['hcaptcha_private_key'],
+        'response' => $_REQUEST['h-captcha-response'],
+        'remoteip' => $user_info['ip'],
+        'sitekey' => $modSettings['hcaptcha_public_key'],
+    ), '', '&'));
+    $response = json_decode((string) $raw, true);
 
-         }
-         else
-             $verification_errors[] = 'hcaptcha_verification_code';
+    if (!empty($response['success']))
+        return;
 
+    $verification_errors[] = 'hcaptcha_verification_code';
 
+    // Log connection and setup problems, but not ordinary bad or expired captchas
+    $user_errors = array('invalid-input-response', 'expired-input-response', 'already-seen-response', 'invalid-or-already-seen-response');
+    $error_codes = isset($response['error-codes']) ? (array) $response['error-codes'] : array();
 
-
-
-     }
+    if ($raw === false)
+        log_error('hCaptcha: no reply from api.hcaptcha.com', 'general');
+    elseif (empty($error_codes) || array_diff($error_codes, $user_errors))
+        log_error('hCaptcha: verification rejected (' . (empty($error_codes) ? 'unexpected reply' : implode(', ', $error_codes)) . ')', 'general');
 }
 
 

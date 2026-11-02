@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>vbgamer45:hcaptchaforsmf</id>
 	<name>hCaptcha for SMF</name>
-	<version>3.1</version>
+	<version>3.2</version>
 	<type>modification</type>
 	<install for="2.0 - 2.0.99,2.0 RC2, 2.0 RC3, 2.0 RC4, 2.0 RC">
 		<readme>README.md</readme>
@@ -34,7 +34,6 @@
 		<modification>install2.1.xml</modification>
 		<hook hook="integrate_spam_settings" function="hcaptcha_integrate_spam_settings" file="$sourcedir/hcaptchahooks.php"/>
 		<hook hook="integrate_create_control_verification_pre" function="hcaptcha_integrate_create_control_verification_pre" file="$sourcedir/hcaptchahooks.php"/>
-		<hook hook="integrate_integrate_create_control_verification_test" function="hcaptcha_integrate_create_control_verification_test" file="$sourcedir/hcaptchahooks.php"/>
 
 
 	</install>
@@ -48,7 +47,6 @@
 		<modification reverse="true">install2.1.xml</modification>
 		<hook hook="integrate_spam_settings" function="hcaptcha_integrate_spam_settings" file="$sourcedir/hcaptchahooks.php"  reverse="true" />
 		<hook hook="integrate_create_control_verification_pre" function="hcaptcha_integrate_create_control_verification_pre" file="$sourcedir/hcaptchahooks.php" reverse="true" />
-		<hook hook="integrate_integrate_create_control_verification_test" function="hcaptcha_integrate_create_control_verification_test" file="$sourcedir/hcaptchahooks.php" reverse="true" />
 
 	</uninstall>
 </package-info>

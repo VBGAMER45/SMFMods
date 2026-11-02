@@ -18,6 +18,9 @@ elseif (!defined('SMF'))
 add_integration_function('integrate_theme_include', '$sourcedir/hcaptcha.php', TRUE);
 add_integration_function('integrate_load_theme', 'load_hcaptcha', TRUE);
 
+// 3.1 and earlier stored the verification test hook under a misspelled name that SMF never calls
+remove_integration_function('integrate_integrate_create_control_verification_test', 'hcaptcha_integrate_create_control_verification_test', TRUE, '$sourcedir/hcaptchahooks.php');
+
 
 
 // Insert the settings
